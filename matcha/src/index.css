@@ -31,10 +31,19 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+  font-family: 'ComfortaaBold', cursive;
+  font-size: 3em;
+  color: rgb(255, 255, 255);
+  background-color: rgb(253, 243, 138);
 }
 
-#root {
-  font-family: 'ComfortaaLight', cursive;
-  font-size: 1em;
+h1, i {
+  /* background: url(https://media.giphy.com/media/fX7odl0eM6X28/giphy.gif); */
+  opacity: 0.95;
+  background: url(https://media.giphy.com/media/pWhWtKdqwOAco/giphy.gif);
+  /* background: url(https://media.giphy.com/media/Eqz8ZFUScPHH2/giphy.gif); */
+  background-size: cover;
+  /* background-repeat: no-repeat; */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }

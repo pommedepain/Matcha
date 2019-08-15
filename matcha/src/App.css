@@ -1,4 +1,14 @@
 .App {
-  text-align: center;
+  text-align: left;
+  margin-left: 5%;
+  margin-top: 2%;
 }
 
+
+/* .memory {
+  display: flex;
+  flex-wrap: wrap;
+  width: 300px;
+  margin: auto;
+  user-select: none;
+} */
