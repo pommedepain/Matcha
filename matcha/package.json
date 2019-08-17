@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "eslint-plugin-jsx-a11y": "^6.2.3",
     "lodash.shuffle": "^4.2.0",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
@@ -14,11 +13,17 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint *.js **/*.js"
   },
   "devDependencies": {
     "ajv": "^6.10.2",
     "ajv-keywords": "^2.1.1",
-    "babel-loader": "^8.0.6"
+    "babel-loader": "^8.0.6",
+    "eslint": "^6.1.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.14.3"
   }
 }
