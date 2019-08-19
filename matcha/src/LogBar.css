@@ -1,6 +1,25 @@
 .LogBar {
-	/* width: 15%; */
 	margin-right: 2%;
 	margin-top: 2%;
-	height: 120%;
+}
+
+.sidebar {
+	border: 1px solid rgb(116, 209, 234);
+	border-radius: 15px;
+	margin-bottom: 5px;
+}
+
+.sidebar:hover {
+	background-color: rgb(116, 209, 234);
+}
+
+.sidebar > a {
+	display: block;
+	color: rgb(116, 209, 234);
+	padding: 5px 15px 5px 15px;
+	text-decoration: none;
+}
+
+.sidebar > a:hover {
+	color: white;
 }

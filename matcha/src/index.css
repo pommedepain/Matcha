@@ -32,13 +32,54 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'ComfortaaBold', cursive;
-  font-size: 2em;
-  color: rgb(255, 255, 255);
-  background-color: rgb(253, 243, 138);
+  font-size: 1.5em;
+  background-color: white;
 }
 
 .conteneur{
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+
+.display_page {
+  height: 100vh;
+  text-align: center;
+  background-color: rgb(116, 209, 234);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.display_page > .sign_up {
+  list-style: none;
+  /* border: 1px solid white; */
+  background-color: white;
+	border-radius: 15px;
+	margin-bottom: 5px;
+}
+
+.display_page > .sign_up:hover {
+	color: #f2f2f2;
+  box-shadow: 10px 10px 10px rgb(53, 161, 190);
+  opacity: 1;
+  background: #e2a9e5;
+  background: -moz-linear-gradient(-45deg, #e2a9e5 15%, #2b94e5 100%);
+  background: -webkit-linear-gradient(-45deg, #e2a9e5 15%,#2b94e5 100%);
+  background: linear-gradient(135deg, #e2a9e5 15%,#2b94e5 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e2a9e5', endColorstr='#2b94e5',GradientType=1 );
+}
+
+.display_page > .sign_up > a {
+  font-size: 0.7em;
+	display: block;
+	color:  rgb(116, 209, 234);
+	padding: 5px 15px 5px 15px;
+	text-decoration: none;
+}
+
+.display_page > .sign_up > a:hover {
+  color: white;
 }
