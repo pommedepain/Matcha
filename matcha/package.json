@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "animate.css": "^3.7.2",
     "eslint": "^5.16.0",
     "lodash.shuffle": "^4.2.0",
     "react": "^16.9.0",

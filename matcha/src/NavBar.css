@@ -1,9 +1,13 @@
-.App {
+.NavBar {
   text-align: left;
   margin-left: 5%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 }
 
-h1, i {
+.logo > i {
   /* background: url(https://media.giphy.com/media/fX7odl0eM6X28/giphy.gif); */
   /* font-size: 2.5em; */
   opacity: 0.9;

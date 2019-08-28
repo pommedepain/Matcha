@@ -23,53 +23,44 @@ class PopUp extends Component {
 		//show the next fieldset
 		next_fs.style.display = "block"; 
 
-		@keyframes current_fs.fadeOutLeft {
-			from {
-			  opacity: 1;
-			}
-		  
-			to {
-			  opacity: 0;
-			  transform: translate3d(-100%, 0, 0);
-			}
-		  }
+		current_fs.style.display = 'none';
 		//hide the current fieldset with style
-		// current_fs.animate({opacity: 0}, {
-		// 	step: function(now, mx) {
-		// 		//as the opacity of current_fs reduces to 0 - stored in "now"
-		// 		//1. scale current_fs down to 80%
-		// 		scale = 1 - (1 - now) * 0.2;
-		// 		//2. bring next_fs from the right(50%)
-		// 		left = (now * 50)+"%";
-		// 		//3. increase opacity of next_fs to 1 as it moves in
-		// 		opacity = 1 - now;
-		// 		current_fs.style = {
-	    //     		'transform': 'scale('+scale+')',
-	    //     		'position': 'absolute'
-	    //   		};
-		// 		next_fs.style = {'left': left, 'opacity': opacity};
-		// 	}, 
-		// 	duration: 800, 
-		// 	complete: function(){
-		// 		current_fs.style.display = 'none';
-		// 		animating = false;
-		// 	}, 
-			//this comes from the custom easing plugin
-			// easing: 'easeInOutBack'
-		});
+	// 	current_fs.animate([
+	// 		{opacity: 0}, 
+	// 		{step: function(now, mx) {
+	// 			//as the opacity of current_fs reduces to 0 - stored in "now"
+	// 			//1. scale current_fs down to 80%
+	// 			scale = 1 - (1 - now) * 0.2;
+	// 			//2. bring next_fs from the right(50%)
+	// 			left = (now * 50)+"%";
+	// 			//3. increase opacity of next_fs to 1 as it moves in
+	// 			opacity = 1 - now;
+	// 			current_fs.style = {
+	//         		transform: 'scale('+scale+')',
+	//         		position: 'absolute'
+	//       		};
+	// 			next_fs.style = {'left': left, 'opacity': opacity};}
+	// 		], 
+	// 		{ duration: 800, 
+	// 		complete: function(){
+	// 			current_fs.style.display = 'none';
+	// 			animating = false;
+	// 		}, 
+	// 		// this comes from the custom easing plugin
+	// 		easing: 'ease-in-out'
+	// 	});
 	}
 
-
-	// previousStep = () => {
-	// 	if (animating) return false;
+	// $(".previous").click(function(){
+	// 	if(animating) return false;
 	// 	animating = true;
-		
+
 	// 	current_fs = $(this).parent();
 	// 	previous_fs = $(this).parent().prev();
-		
+
 	// 	//de-activate current step on progressbar
 	// 	$("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
-		
+
 	// 	//show the previous fieldset
 	// 	previous_fs.show(); 
 	// 	//hide the current fieldset with style
@@ -93,11 +84,11 @@ class PopUp extends Component {
 	// 		//this comes from the custom easing plugin
 	// 		easing: 'easeInOutBack'
 	// 	});
-	// }
+	// });
 
-	// submit = () => {
+	// $(".submit").click(function(){
 	// 	return false;
-	// }
+	// });
 	
 	render() {
 		return (
