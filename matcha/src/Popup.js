@@ -3,22 +3,25 @@ import './Popup.css';
 
 class PopUp extends Component {
 	state = {
+		pseudo: "",
 		firstName: "", 
 		lastName: "",
 		email: "",
 		passwd: "",
-		confPasswd: ""
+		confPasswd: "",
+		gender: ""
 	}
 
 	handleChange = (event) => {
-		const {name, value} = event.target
-		this.setState({
-			[name] : value
-		})
+		const {name, value, checked, type} = event.target
+		type === "checkbox" ?
+		this.setState({[name]: checked})
+		: 
+		this.setState({[name]: value})
 	} 
 
 	nextStep = (props) => {
-		let current_fs, next_fs, previous_fs; //fieldsets
+		let current_fs, next_fs; //fieldsets
 		let left, opacity, scale; //fieldset properties which we will animate
 		let animating; //flag to prevent quick multi-click glitches
 			
@@ -27,19 +30,22 @@ class PopUp extends Component {
 		// animating = true;
 		
 		current_fs = props.target.parentElement;
-		console.log(current_fs);
 		next_fs = current_fs.nextElementSibling;
-		console.log(next_fs);
 		
 		// activate next step on progressbar using the index of next_fs
-		if (document.querySelectorAll('#progressbar li') !== "active")
-			document.querySelectorAll('#progressbar li').item("active").nextElementSibling.classList.add("active")
-		
+		for (let i = 0; i < document.querySelectorAll('#progressbar li').length; i++)
+			if (document.querySelectorAll('#progressbar li')[i].className !== "active")
+			{
+				document.querySelectorAll('#progressbar li')[i].classList.add("active")
+				break;
+			}
+
 		//show the next fieldset
 		next_fs.style.display = "block"; 
-
+		
+		//hide the current fieldset
 		current_fs.style.display = 'none';
-		//hide the current fieldset with style
+
 	// 	current_fs.animate([
 	// 		{opacity: 0}, 
 	// 		{step: function(now, mx) {
@@ -66,18 +72,26 @@ class PopUp extends Component {
 	// 	});
 	}
 
-	// $(".previous").click(function(){
-	// 	if(animating) return false;
-	// 	animating = true;
 
-	// 	current_fs = $(this).parent();
-	// 	previous_fs = $(this).parent().prev();
+	previousStep = (props) => {
+		let current_fs, previous_fs;
 
-	// 	//de-activate current step on progressbar
-	// 	$("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
+		current_fs = props.target.parentElement;
+		previous_fs = current_fs.previousElementSibling;
 
-	// 	//show the previous fieldset
-	// 	previous_fs.show(); 
+		for (let i = (document.querySelectorAll('#progressbar li').length - 1); i > 0; i--)
+			if (document.querySelectorAll('#progressbar li')[i].className === "active")
+			{
+				document.querySelectorAll('#progressbar li')[i].classList.remove("active")
+				break;
+			}
+
+		//show the previous fieldset
+		previous_fs.style.display = "block"; 
+		
+		//hide the current fieldset
+		current_fs.style.display = 'none';
+	
 	// 	//hide the current fieldset with style
 	// 	current_fs.animate({opacity: 0}, {
 	// 		step: function(now, mx) {
@@ -100,6 +114,7 @@ class PopUp extends Component {
 	// 		easing: 'easeInOutBack'
 	// 	});
 	// });
+	}
 
 	// $(".submit").click(function(){
 	// 	return false;
@@ -113,8 +128,8 @@ class PopUp extends Component {
 						<button onClick={this.props.closePopup} className="close heavy rounded"></button>
 						<ul id="progressbar">
 							<li className="active">Account Setup</li>
-							<li>Social Profiles</li>
 							<li>Personal Details</li>
+							<li>Preferences</li>
 						</ul>
 						<fieldset>
 							<h2 className="fs-title">Create your account</h2>
@@ -131,6 +146,13 @@ class PopUp extends Component {
 								name="lastName" 
 								placeholder="Last Name"
 								value={this.state.lastName}
+								onChange={this.handleChange.bind(this)}
+							/>
+							<input 
+								type="text" 
+								name="pseudo" 
+								placeholder="Pseudo"
+								value={this.state.pseudo}
 								onChange={this.handleChange.bind(this)}
 							/>
 							<input
@@ -163,24 +185,47 @@ class PopUp extends Component {
 							/>
 						</fieldset>
 						<fieldset>
-							<h2 className="fs-title">Social Profiles</h2>
-							<h3 className="fs-subtitle">Your presence on the social network</h3>
+							<h2 className="fs-title">Tell us more about yourself</h2>
+							<h3 className="fs-subtitle">Who are you ?</h3>
+							<div className="genderGroup">
+								<label>
+								  <input
+								  	className="gender"
+									type="radio"
+									value="male"
+									name="gender"
+									checked={this.state.gender === "male"}
+									onChange={this.handleChange.bind(this)}
+								  /> Male
+								</label>
+								<label>
+								  <input
+								  	className="gender"
+									type="radio"
+									value="female"
+									name="gender"
+									checked={this.state.gender === "female"}
+									onChange={this.handleChange.bind(this)}
+								  /> Female
+								</label>
+								<label>
+								  <input
+								  	className="gender"
+									type="radio"
+									value="genderqueer"
+									name="gender"
+									checked={this.state.gender === "genderqueer"}
+									onChange={this.handleChange.bind(this)}
+								  /> Genderqueer
+								</label>
+							</div>
 							<input 
-								type="text" 
-								name="twitter" 
-								placeholder="Twitter"
+								type="button" 
+								name="previous" 
+								className="previous action-button" 
+								value="Previous" 
+								onClick={this.previousStep.bind(this)}
 							/>
-							<input 
-								type="text" 
-								name="facebook" 
-								placeholder="Facebook" 
-							/>
-							<input 
-								type="text" 
-								name="gplus" 
-								placeholder="Google Plus" 
-							/>
-							<input type="button" name="previous" className="previous action-button" value="Previous" /*onClick={this.previousStep}*//>
 							<input 
 								type="button" 
 								name="next" 
@@ -188,16 +233,35 @@ class PopUp extends Component {
 								value="Next"
 								onClick={this.nextStep.bind(this)}
 							/>
+							<input 
+								type="button" 
+								name="next" 
+								className="skip" 
+								value="Skip"
+								onClick={this.nextStep.bind(this)}
+							/>
 						</fieldset>
 						<fieldset>
-							<h2 className="fs-title">Personal Details</h2>
-							<h3 className="fs-subtitle">We will never sell it</h3>
+							<h2 className="fs-title">What are you looking for?</h2>
+							<h3 className="fs-subtitle">This will improve our algorithm</h3>
 							<input type="text" name="fname" placeholder="First Name" />
 							<input type="text" name="lname" placeholder="Last Name" />
 							<input type="text" name="phone" placeholder="Phone" />
 							<textarea name="address" placeholder="Address"></textarea>
-							<input type="button" name="previous" className="previous action-button" value="Previous" />
-							<input type="submit" name="submit" className="submit action-button" value="Submit" /*onClick={this.submit}*//>
+							<input 
+								type="button" 
+								name="previous" 
+								className="previous action-button" 
+								value="Previous"
+								onClick={this.previousStep.bind(this)}
+							/>
+							<input 
+								type="submit" 
+								name="submit" 
+								className="submit action-button" 
+								value="Submit" 
+								/*onClick={this.submit}*/
+							/>
 						</fieldset>
 					</form>
 				</div>

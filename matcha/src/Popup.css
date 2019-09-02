@@ -195,3 +195,29 @@ html {
 	background: #27AE60;
 	color: white;
 }
+
+#msform .skip {
+	width: 50px;
+	background: rgb(184, 184, 184);
+	font-size: 0.4em;
+	color: white;
+	border: 0 none;
+	border-radius: 5px;
+	position: relative;
+	left: 31%;
+	cursor: pointer;
+	padding: 5px 2px;
+	margin: 5px 2px;
+}
+
+.genderGroup {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	/* align-items: right; */
+	/* width: 90%;
+	height: 20%; */
+}
+.genderGroup > label {
+	font-size: 0.5em;
+}
