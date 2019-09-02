@@ -6,8 +6,9 @@
 	left: 0;  
 	right: 0;  
 	bottom: 0;  
-	margin: auto;  
-	background-color: rgba(0,0,0, 0.5);  
+	margin: auto;
+	z-index: 2;
+	/* background-color: rgba(0,0,0, 0.5);  */
 }
 
 .popup_inner {  
@@ -18,8 +19,52 @@
 	bottom: 25%;  
 	margin: auto;  
 	border-radius: 20px;  
-	background: white;  
+	/* background: white;   */
 	color:black;
+}
+.close {
+	position: relative;
+	left: -40%;
+	display: inline-block;
+	width: 40px;
+	height: 40px;
+	overflow: hidden;
+	background: none;
+	border: none;
+}
+.close:hover::before, .close:hover::after {
+	background: rgb(204, 76, 76);
+}
+.close::before, .close::after {
+	content: '';
+	position: absolute;
+	height: 2px;
+	width: 100%;
+	top: 50%;
+	left: 0;
+	margin-top: -1px;
+	background: #000;
+}
+.close::before {
+	-webkit-transform: rotate(45deg);
+	-moz-transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
+	-o-transform: rotate(45deg);
+	transform: rotate(45deg);
+}
+.close::after {
+	-webkit-transform: rotate(-45deg);
+	-moz-transform: rotate(-45deg);
+	-ms-transform: rotate(-45deg);
+	-o-transform: rotate(-45deg);
+	transform: rotate(-45deg);
+}
+.close.heavy::before, .close.heavy::after {
+	height: 12px;
+	margin-top: -6px;
+}
+.close.rounded::before, .close.rounded::after {
+	border-radius: 5px;
 }
 
 /*custom font*/
@@ -37,9 +82,6 @@ html {
 		linear-gradient(rgba(196, 102, 0, 0.6), rgba(155, 89, 182, 0.6));
 }
 
-body {
-	font-family: montserrat, arial, verdana;
-}
 /*form styles*/
 #msform {
 	width: 400px;

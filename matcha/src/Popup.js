@@ -2,23 +2,38 @@ import React, { Component } from 'react';
 import './Popup.css';
 
 class PopUp extends Component {
-	
+	state = {
+		firstName: "", 
+		lastName: "",
+		email: "",
+		passwd: "",
+		confPasswd: ""
+	}
+
+	handleChange = (event) => {
+		const {name, value} = event.target
+		this.setState({
+			[name] : value
+		})
+	} 
+
 	nextStep = (props) => {
 		let current_fs, next_fs, previous_fs; //fieldsets
 		let left, opacity, scale; //fieldset properties which we will animate
 		let animating; //flag to prevent quick multi-click glitches
 			
-		if(animating) 
-			return false;
-		animating = true;
+		// if(animating) 
+		// 	return false;
+		// animating = true;
 		
-		current_fs = document.querySelector('fieldset')
+		current_fs = props.target.parentElement;
 		console.log(current_fs);
 		next_fs = current_fs.nextElementSibling;
 		console.log(next_fs);
 		
 		// activate next step on progressbar using the index of next_fs
-		document.querySelectorAll('#progressbar li')[1].classList.add("active");
+		if (document.querySelectorAll('#progressbar li') !== "active")
+			document.querySelectorAll('#progressbar li').item("active").nextElementSibling.classList.add("active")
 		
 		//show the next fieldset
 		next_fs.style.display = "block"; 
@@ -95,6 +110,7 @@ class PopUp extends Component {
 			<div className="popup">
 				<div className="popup_inner">
 					<form id="msform">
+						<button onClick={this.props.closePopup} className="close heavy rounded"></button>
 						<ul id="progressbar">
 							<li className="active">Account Setup</li>
 							<li>Social Profiles</li>
@@ -103,19 +119,75 @@ class PopUp extends Component {
 						<fieldset>
 							<h2 className="fs-title">Create your account</h2>
 							<h3 className="fs-subtitle">This is step 1</h3>
-							<input type="text" name="email" placeholder="Email" />
-							<input type="password" name="pass" placeholder="Password" />
-							<input type="password" name="cpass" placeholder="Confirm Password" />
-							<input type="button" name="next" className="next action-button" value="Next" onClick={this.nextStep.bind(this)} />
+							<input 
+								type="text" 
+								name="firstName" 
+								placeholder="Fist Name"
+								value={this.state.firstName}
+								onChange={this.handleChange.bind(this)}
+							/>
+							<input 
+								type="text" 
+								name="lastName" 
+								placeholder="Last Name"
+								value={this.state.lastName}
+								onChange={this.handleChange.bind(this)}
+							/>
+							<input
+								type="text" 
+								name="email" 
+								placeholder="Email"
+								value={this.state.email}
+								onChange={this.handleChange.bind(this)}
+							/>
+							<input 
+								type="password" 
+								name="pass" 
+								placeholder="Password"
+								value={this.state.passwd}
+								onChange={this.handleChange.bind(this)}
+							/>
+							<input 
+								type="password" 
+								name="cpass" 
+								placeholder="Confirm Password"
+								value={this.state.confPasswd}
+								onChange={this.handleChange.bind(this)}
+							/>
+							<input 
+								type="button" 
+								name="next" 
+								className="next action-button" 
+								value="Next" 
+								onClick={this.nextStep.bind(this)} 
+							/>
 						</fieldset>
 						<fieldset>
 							<h2 className="fs-title">Social Profiles</h2>
 							<h3 className="fs-subtitle">Your presence on the social network</h3>
-							<input type="text" name="twitter" placeholder="Twitter" />
-							<input type="text" name="facebook" placeholder="Facebook" />
-							<input type="text" name="gplus" placeholder="Google Plus" />
+							<input 
+								type="text" 
+								name="twitter" 
+								placeholder="Twitter"
+							/>
+							<input 
+								type="text" 
+								name="facebook" 
+								placeholder="Facebook" 
+							/>
+							<input 
+								type="text" 
+								name="gplus" 
+								placeholder="Google Plus" 
+							/>
 							<input type="button" name="previous" className="previous action-button" value="Previous" /*onClick={this.previousStep}*//>
-							<input type="button" name="next" className="next action-button" value="Next" />
+							<input 
+								type="button" 
+								name="next" 
+								className="next action-button" 
+								value="Next"
+								onClick={this.nextStep.bind(this)}
+							/>
 						</fieldset>
 						<fieldset>
 							<h2 className="fs-title">Personal Details</h2>
@@ -128,7 +200,6 @@ class PopUp extends Component {
 							<input type="submit" name="submit" className="submit action-button" value="Submit" /*onClick={this.submit}*//>
 						</fieldset>
 					</form>
-					<button onClick={this.props.ClosePopup}>close me</button>
 				</div>
 			</div>
 		);
