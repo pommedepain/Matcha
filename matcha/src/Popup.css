@@ -84,8 +84,8 @@ html {
 
 /*form styles*/
 #msform {
-	width: 400px;
-	margin: 50px auto;
+	width: 100%;
+	margin: 0 auto;
 	text-align: center;
 	position: relative;
 }
@@ -203,8 +203,9 @@ html {
 	color: white;
 	border: 0 none;
 	border-radius: 5px;
-	position: relative;
-	left: 31%;
+	position: absolute;
+	left: 62%;
+	bottom: 0%;
 	cursor: pointer;
 	padding: 5px 2px;
 	margin: 5px 2px;
@@ -212,12 +213,123 @@ html {
 
 .genderGroup {
 	display: flex;
+	flex-direction: row;
+	justify-content: center;
+}
+input[type="radio"] {
+	position: absolute;
+	opacity: 0;
+	z-index: -2;
+}
+label {
+	position: relative;
+	font-size: 0.5em;
+	margin-right: 1em;
+	padding-left: 2em;
+	padding-right: 0.5em;
+	line-height: 2;
+	cursor: pointer;
+	padding-top: 0.15em;
+	margin-bottom: 1%;
+	z-index: 1000;
+}
+label:before {
+	box-sizing: border-box;
+	content: " ";
+	position: absolute;
+	top: 0.2em;
+	left: 5%;
+	display: block;
+	width: 1.4em;
+	height: 1.4em;
+	border: 1px solid black;
+	border-radius: .25em;
+	/* z-index: -1; */
+}  
+input[type="radio"] + label::before {
+	border-radius: 1em;
+}
+input[type="radio"]:checked + label {
+	padding-left: 1.5em;
+	padding-right: 1em;
+	color: white;
+}
+input[type="radio"]:checked + label:before {
+	top: 0;
+	width: 100%;
+	height: 2vh;
+	background: #27AE60;
+	border: 1px solid #27AE60;
+	z-index: -1;
+}  
+  /* Transition */
+label,
+label::before {
+	transition: .25s all ease;
+}
+
+#sexualOrient {
+	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	/* align-items: right; */
-	/* width: 90%;
-	height: 20%; */
 }
-.genderGroup > label {
-	font-size: 0.5em;
+
+.questions {
+	font-size: 0.7em;
+	position: relative;
+	/* text-align: left; */
+	margin-bottom: 2%;
+	margin-top: 4%;
+}
+
+#passwd-cont {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 10px;
+}
+#msform .passwd {
+	margin-bottom: 0;
+}
+.passwdButton {
+	position: absolute;
+	right: 10%;
+	top: 65%;
+	background: #727272;
+  	color: white;
+  	padding: 4px 8px;
+  	border-radius: 4px;
+  	font-weight: 700;
+	font-size: .4em;
+	cursor: pointer;
+}
+.passwdStrength {
+	position: relative;
+	height: 5px;
+	top: -3%;  
+  	background: transparent;
+  	transition: all 300ms ease-in-out;
+}
+.passwdStrength[data-score="null"] {
+	width: 0;
+	background: red;
+}
+.passwdStrength[data-score="0"] {
+	width: 5%;
+	background: #F44336;
+}
+.passwdStrength[data-score="1"] {
+	width: 25%;
+	background: #F44336;
+}
+.passwdStrength[data-score="2"] {
+	width: 50%;
+	background: #FFEB3B;
+}
+.passwdStrength[data-score="3"] {
+	width: 75%;
+	background: #4CAF50;
+}
+.passwdStrength[data-score="4"] {
+	width: 100%;
+	background: #4CAF50;
 }

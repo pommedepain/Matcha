@@ -1,5 +1,13 @@
 import React, { Component } from 'react';
 import './Popup.css';
+import { WithContext as ReactTags } from 'react-tag-input'
+
+const KeyCodes = {
+	comma: 118,
+	enter: 13
+};
+
+const delimiters = [KeyCodes.comma, KeyCodes.enter];
 
 class PopUp extends Component {
 	state = {
@@ -8,8 +16,23 @@ class PopUp extends Component {
 		lastName: "",
 		email: "",
 		passwd: "",
-		confPasswd: "",
-		gender: ""
+		cPasswd: "",
+		hidden: true,
+		score: "",
+		gender: "",
+		sexOrient: "",
+		bio: "",
+		tags: [
+			{ id: "athletic", text: "Athletic" },
+			{ id: "geek", text: "Geek" }
+		],
+		suggestions: [
+			{ id: "cinema", text: "Cinema Lover" },
+			{ id: "traveler", text: "Traveler" },
+			{ id: "cat", text: "Cat Person" },
+			{ id: "dog", text: "Dog Person" },
+			{ id: "nature", text: "Nature Lover" },
+		]
 	}
 
 	handleChange = (event) => {
@@ -18,7 +41,51 @@ class PopUp extends Component {
 		this.setState({[name]: checked})
 		: 
 		this.setState({[name]: value})
-	} 
+	}
+
+	toggleShow = (event) => {
+		event.preventDefault()
+		this.setState({ hidden: !this.state.hidden })
+	}
+
+	passwordStrength = (event) => {
+		var zxcvbn = require('zxcvbn');
+		event.preventDefault()
+		let value = zxcvbn(event.target.value)
+		event.target.value === "" ?
+		this.setState({ 
+			score: null,
+			passwd: null
+		})
+		:
+		this.setState({ 
+			score: value.score,
+			passwd: event.target.value
+		})
+	}
+
+	handleDelete = (i) => {
+		this.setState({
+			tags: this.state.filter((tag, index) => index !== i)
+		})
+	}
+
+	handleAddition = (tag) => {
+		this.setState(
+			state => ({ tags: [...state.tags, tag] })
+		)
+	}
+
+	handleDrag = (tag, currPos, newPos) => {
+		const tags = [...this.state.tags]
+		const newTags = tags.slice()
+
+		newTags.splice(currPos, 1)
+		newTags.splice(newPos, 0, tag)
+
+		/* re-render */
+		this.setState({ tags: newTags })
+	}
 
 	nextStep = (props) => {
 		let current_fs, next_fs; //fieldsets
@@ -121,6 +188,7 @@ class PopUp extends Component {
 	// });
 	
 	render() {
+		const { tags, suggestions } = this.state
 		return (
 			<div className="popup">
 				<div className="popup_inner">
@@ -162,18 +230,29 @@ class PopUp extends Component {
 								value={this.state.email}
 								onChange={this.handleChange.bind(this)}
 							/>
+							<div id="passwd-cont">
+								<input
+									className="passwd"
+									type={this.state.hidden ? "password" : "text"}
+									name="passwd" 
+									placeholder="Password"
+									value={this.state.passwd}
+									onChange={this.passwordStrength.bind(this)}
+								/>
+								<span
+									className="passwdButton"
+									onClick={this.toggleShow.bind(this)}
+								>{this.state.hidden ? "Show" : "Hide"}</span>
+								<span
+									className="passwdStrength"
+									data-score={this.state.score}
+								></span>
+							</div>
 							<input 
-								type="password" 
-								name="pass" 
-								placeholder="Password"
-								value={this.state.passwd}
-								onChange={this.handleChange.bind(this)}
-							/>
-							<input 
-								type="password" 
-								name="cpass" 
+								type={this.state.hidden ? "password" : "text"}
+								name="cPasswd" 
 								placeholder="Confirm Password"
-								value={this.state.confPasswd}
+								value={this.state.cPasswd}
 								onChange={this.handleChange.bind(this)}
 							/>
 							<input 
@@ -187,38 +266,84 @@ class PopUp extends Component {
 						<fieldset>
 							<h2 className="fs-title">Tell us more about yourself</h2>
 							<h3 className="fs-subtitle">Who are you ?</h3>
+							<h3 className="questions">Gender</h3>
 							<div className="genderGroup">
-								<label>
-								  <input
-								  	className="gender"
+								<input
+									className="gender"
+									id="male"
 									type="radio"
 									value="male"
 									name="gender"
 									checked={this.state.gender === "male"}
 									onChange={this.handleChange.bind(this)}
-								  /> Male
-								</label>
-								<label>
-								  <input
-								  	className="gender"
+								/>
+								<label htmlFor="male">Male</label>
+								<input
+									className="gender"
+									id="female"
 									type="radio"
 									value="female"
 									name="gender"
 									checked={this.state.gender === "female"}
 									onChange={this.handleChange.bind(this)}
-								  /> Female
-								</label>
-								<label>
-								  <input
-								  	className="gender"
+								/>
+								<label htmlFor="female">Female</label>
+								<input
+									className="gender"
+									id="genderqueer"
 									type="radio"
 									value="genderqueer"
 									name="gender"
 									checked={this.state.gender === "genderqueer"}
 									onChange={this.handleChange.bind(this)}
-								  /> Genderqueer
-								</label>
+								/>
+								<label htmlFor="genderqueer">Genderqueer</label>
 							</div>
+							<h3 className="questions">Sexual Orientation</h3>
+							<div id="sexualOrient">
+								<input
+									id="hetero"
+									type="radio"
+									value="hetero"
+									name="sexOrient"
+									checked={this.state.sexOrient === "hetero"}
+									onChange={this.handleChange.bind(this)}
+								/>
+								<label htmlFor="hetero">Heterosexual</label>
+								<input
+									id="homo"
+									type="radio"
+									value="homo"
+									name="sexOrient"
+									checked={this.state.sexOrient === "homo"}
+									onChange={this.handleChange.bind(this)}
+								/>
+								<label htmlFor="homo">Homosexual</label>
+								<input
+									id="bi"
+									type="radio"
+									value="bi"
+									name="sexOrient"
+									checked={this.state.sexOrient === "bi"}
+									onChange={this.handleChange.bind(this)}
+								/>
+								<label htmlFor="bi">Bisexual</label>
+								<input
+									id="pan"
+									type="radio"
+									value="pan"
+									name="sexOrient"
+									checked={this.state.sexOrient === "pan"}
+									onChange={this.handleChange.bind(this)}
+								/>
+								<label htmlFor="pan">Pansexual</label>
+							</div>
+							<h3 className="questions">Bio</h3>
+							<textarea
+								value={this.state.bio}
+								name="bio"
+								onChange={this.handleChange.bind(this)}
+							></textarea>
 							<input 
 								type="button" 
 								name="previous" 
@@ -233,21 +358,24 @@ class PopUp extends Component {
 								value="Next"
 								onClick={this.nextStep.bind(this)}
 							/>
-							<input 
+							{/* <input 
 								type="button" 
 								name="next" 
 								className="skip" 
 								value="Skip"
 								onClick={this.nextStep.bind(this)}
-							/>
+							/> */}
 						</fieldset>
 						<fieldset>
 							<h2 className="fs-title">What are you looking for?</h2>
 							<h3 className="fs-subtitle">This will improve our algorithm</h3>
-							<input type="text" name="fname" placeholder="First Name" />
-							<input type="text" name="lname" placeholder="Last Name" />
-							<input type="text" name="phone" placeholder="Phone" />
-							<textarea name="address" placeholder="Address"></textarea>
+							<ReactTags
+								tags={tags}
+								suggestions={suggestions}
+								handleDelete={this.handleDelete.bind(this)}
+								handleAddition={this.handleAddition.bind(this)}
+								handleDrag={this.handleDrag.bind(this)}
+							/>
 							<input 
 								type="button" 
 								name="previous" 
