@@ -15,6 +15,7 @@ class PopUp extends Component {
 		pseudo: "",
 		firstName: "", 
 		lastName: "",
+		birthdate: "",
 		email: "",
 		passwd: "",
 		cPasswd: "",
@@ -23,6 +24,7 @@ class PopUp extends Component {
 		gender: "",
 		sexOrient: "",
 		bio: "",
+		range: [18, 25],
 		tags: [
 			{ id: "athlete", text: "Athlete" },
 			{ id: "geek", text: "Geek" }
@@ -278,6 +280,14 @@ class PopUp extends Component {
 						<fieldset>
 							<h2 className="fs-title">Tell us more about yourself</h2>
 							<h3 className="fs-subtitle">Who are you ?</h3>
+							<h3 className="questions">Birthdate</h3>
+							<input
+								type="date"
+								id="birthdate"
+								value={this.state.birthdate}
+								name="birthdate"
+								onChange={this.handleChange.bind(this)}
+							/>
 							<h3 className="questions">Gender</h3>
 							<div className="genderGroup">
 								<input
@@ -381,6 +391,33 @@ class PopUp extends Component {
 						<fieldset>
 							<h2 className="fs-title">What are you looking for?</h2>
 							<h3 className="fs-subtitle">This will improve our algorithm</h3>
+							<h3 className="questions">Age Range</h3>
+							{/* <ReactDualRangeSlider
+								limits={[18, 110]}
+								values={this.state.range}
+								rangeColor="#0f6"
+								onChange={this.handleChange.bind(this)}
+							/> */}
+							{/* <section className="range-slider">
+								<span className="rangeValues"></span>
+								<input 
+									value={this.state.minRange} 
+									min="18" 
+									max="110" 
+									step="1" 
+									type="range"
+									onChange={this.handleChange.bind(this)}
+								/>
+								<input 
+									value={this.state.maxRange} 
+									min="18" 
+									max="110" 
+									step="1" 
+									type="range"
+									onChange={this.handleChange.bind(this)}
+								/>
+							</section> */}
+							<h3 className="questions">What traits do you find most attractive?</h3>
 							<ReactTags
 								tags={tags}
 								suggestions={suggestions}
