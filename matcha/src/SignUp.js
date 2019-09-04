@@ -27,7 +27,7 @@ class SignUp extends Component {
 			<div>
 				<div className="display_page" style={this.state.style}>
 					<h2>Matchez, Discutez<br />Faites des rencontres.</h2>
-					<li className="sign_up"><a onClick={this.togglePopup.bind(this)}>Sign Up</a></li>
+					<button className="sign_up" onClick={this.togglePopup.bind(this)}>Sign Up</button>
 				</div>
 				{this.state.showPopup ?  
 					<Popup 

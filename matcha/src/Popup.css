@@ -32,6 +32,9 @@
 	background: none;
 	border: none;
 }
+.close:focus {
+	outline: 0;
+}
 .close:hover::before, .close:hover::after {
 	background: rgb(204, 76, 76);
 }
@@ -380,7 +383,7 @@ div.ReactTags__selected a.ReactTags__remove {
     cursor: pointer;
 }
 div.ReactTags__selected span.ReactTags__tag:hover a.ReactTags__remove:hover {
-	color: red;
+	color: rgb(219, 58, 58);
 }
 
 /* Styles for suggestions */
@@ -394,7 +397,7 @@ div.ReactTags__suggestions ul {
     list-style-type: none;
     box-shadow: .05em .01em .5em rgba(0,0,0,.2);
     background: white;
-    width: 165%;
+    width: 130%;
 }
 div.ReactTags__suggestions li {
     border-bottom: 1px solid #ddd;

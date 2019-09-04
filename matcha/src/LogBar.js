@@ -17,12 +17,12 @@ class LogBar extends Component {
 			{
 				this.user === 'not_logged' ?
 				[<div className="not_logged" key={1}>
-					<li className="sidebar"><a>Log In</a></li>
+					<button className="sidebar">Log In</button>
 				</div>]
 				:
 				[<div className="logged" key={2}>
-					<li className="sidebar"><a>Account</a></li>
-					<li className="sidebar"><a>Log Out</a></li>
+					<button className="sidebar">Account</button>
+					<button className="sidebar">Log Out</button>
 				</div>]
 			}
 			</div>

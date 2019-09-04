@@ -4,10 +4,11 @@ import { WithContext as ReactTags } from 'react-tag-input'
 
 const KeyCodes = {
 	comma: 118,
-	enter: 13
+	enter: 13, 
+	tab: 9
 };
 
-const delimiters = [KeyCodes.comma, KeyCodes.enter];
+const delimiters = [KeyCodes.comma, KeyCodes.enter, KeyCodes.tab];
 
 class PopUp extends Component {
 	state = {
@@ -23,7 +24,7 @@ class PopUp extends Component {
 		sexOrient: "",
 		bio: "",
 		tags: [
-			{ id: "athletic", text: "Athletic" },
+			{ id: "athlete", text: "Athlete" },
 			{ id: "geek", text: "Geek" }
 		],
 		suggestions: [
@@ -32,6 +33,14 @@ class PopUp extends Component {
 			{ id: "cat", text: "Cat Person" },
 			{ id: "dog", text: "Dog Person" },
 			{ id: "nature", text: "Nature Lover" },
+			{ id: "family", text: "Family-Oriented" },
+			{ id: "party", text: "Party Animal" },
+			{ id: "book", text: "Bookworm" },
+			{ id: "extrovert", text: "Extrovert" },
+			{ id: "introvert", text: "Introvert" },
+			{ id: "creative", text: "Creative" },
+			{ id: "animal", text: "Animal Lover" },
+			{ id: "arts", text: "Patron of the Arts" },
 		]
 	}
 
@@ -77,21 +86,23 @@ class PopUp extends Component {
 		)
 	}
 
-	handleDrag = (tag, currPos, newPos) => {
-		const tags = [...this.state.tags]
-		const newTags = tags.slice()
+	// handleDrag = (tag, currPos, newPos) => {
+	// 	const tags = [...this.state.tags]
+	// 	const newTags = tags.slice()
 
-		newTags.splice(currPos, 1)
-		newTags.splice(newPos, 0, tag)
+	// 	console.log("currPos: " + currPos + ", newPos: " + newPos)
+	// 	console.log(tag)
+	// 	newTags.splice(currPos, 1)
+	// 	newTags.splice(newPos, 0, tag)
 
-		/* re-render */
-		this.setState({ tags: newTags })
-	}
+	// 	/* re-render */
+	// 	this.setState({ tags: newTags })
+	// }
 
 	nextStep = (props) => {
 		let current_fs, next_fs; //fieldsets
-		let left, opacity, scale; //fieldset properties which we will animate
-		let animating; //flag to prevent quick multi-click glitches
+		// let left, opacity, scale; //fieldset properties which we will animate
+		// let animating; //flag to prevent quick multi-click glitches
 			
 		// if(animating) 
 		// 	return false;
@@ -375,7 +386,12 @@ class PopUp extends Component {
 								suggestions={suggestions}
 								handleDelete={this.handleDelete.bind(this)}
 								handleAddition={this.handleAddition.bind(this)}
-								handleDrag={this.handleDrag.bind(this)}
+								// handleDrag={this.handleDrag.bind(this)}
+								delimiters={delimiters}
+								minQueryLength={0}
+								inputFieldPosition="top"
+								allowDeleteFromEmptyInput={false}
+								allowDragDrop={false}
 							/>
 							<input 
 								type="button" 
