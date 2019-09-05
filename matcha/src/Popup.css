@@ -365,16 +365,28 @@ label::before {
 /* Step 3 */
 
 /*
-	AGE RANGE
+	RANGE & SLIDER
 */
-
+.questionsS3 {
+	font-size: 0.7em;
+	position: relative;
+}
+.step3 {
+	margin-top: 5%; 
+}
+.values {
+	font-size: 0.6em;
+	font-family: 'ComfortaaLight', cursive;
+	text-align: end;
+}
 
 /* 
 	TAGS 
 */
 
 div.ReactTags__tags {
-    position: relative;
+	position: relative;
+	margin-top: 3%;
 }
 
 /* Styles for the input */

@@ -10,6 +10,7 @@
     "babel-cli": "^6.26.0",
     "lodash": "^4.17.15",
     "lodash.shuffle": "^4.2.0",
+    "rc-slider": "^8.7.0",
     "react": "^16.9.0",
     "react-dnd": "^5.0.0",
     "react-dnd-cjs": "^9.3.9",
@@ -30,7 +31,7 @@
   },
   "devDependencies": {
     "ajv": "^6.10.2",
-    "ajv-keywords": "^2.1.1",
+    "ajv-keywords": "^3.4.1",
     "babel-loader": "^8.0.6"
   },
   "browserslist": {

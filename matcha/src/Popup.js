@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import './Popup.css';
 import { WithContext as ReactTags } from 'react-tag-input'
+import Slider, {Range} from 'rc-slider';
+import 'rc-slider/assets/index.css';
 
 const KeyCodes = {
 	comma: 118,
@@ -9,6 +11,10 @@ const KeyCodes = {
 };
 
 const delimiters = [KeyCodes.comma, KeyCodes.enter, KeyCodes.tab];
+
+// const Slider = require('rc-slider');
+// const createSliderWithTooltip = Slider.createSliderWithTooltip;
+// const Range = createSliderWithTooltip(Slider.Range);
 
 class PopUp extends Component {
 	state = {
@@ -25,6 +31,7 @@ class PopUp extends Component {
 		sexOrient: "",
 		bio: "",
 		range: [18, 25],
+		localisation: 5,
 		tags: [
 			{ id: "athlete", text: "Athlete" },
 			{ id: "geek", text: "Geek" }
@@ -391,45 +398,46 @@ class PopUp extends Component {
 						<fieldset>
 							<h2 className="fs-title">What are you looking for?</h2>
 							<h3 className="fs-subtitle">This will improve our algorithm</h3>
-							<h3 className="questions">Age Range</h3>
-							{/* <ReactDualRangeSlider
-								limits={[18, 110]}
-								values={this.state.range}
-								rangeColor="#0f6"
-								onChange={this.handleChange.bind(this)}
-							/> */}
-							{/* <section className="range-slider">
-								<span className="rangeValues"></span>
-								<input 
-									value={this.state.minRange} 
-									min="18" 
-									max="110" 
-									step="1" 
-									type="range"
-									onChange={this.handleChange.bind(this)}
+							<div className="step3">
+								<h3 className="questionsS3">Age Range</h3>
+								<h4 className="values">{this.state.range[0]} - {this.state.range[1]}</h4>
+								<Range
+									min={18}
+									max={100}
+									defaultValue={[18, 25]}
+									value={this.state.range}
+									count={1}
+									pushable={true}
+									onChange={newRange => {this.setState({range: newRange})}}
 								/>
-								<input 
-									value={this.state.maxRange} 
-									min="18" 
-									max="110" 
-									step="1" 
-									type="range"
-									onChange={this.handleChange.bind(this)}
+							</div>
+							<div className="step3">
+								<h3 className="questionsS3">Maximum Distance</h3>
+								<h4 className="values">{this.state.localisation}km</h4>
+								<Slider
+									min={3}
+									max={160}
+									defaultValue={5}
+									value={this.state.localisation}
+									count={1}
+									onChange={newValue => {this.setState({localisation: newValue})}}
 								/>
-							</section> */}
-							<h3 className="questions">What traits do you find most attractive?</h3>
-							<ReactTags
-								tags={tags}
-								suggestions={suggestions}
-								handleDelete={this.handleDelete.bind(this)}
-								handleAddition={this.handleAddition.bind(this)}
-								// handleDrag={this.handleDrag.bind(this)}
-								delimiters={delimiters}
-								minQueryLength={0}
-								inputFieldPosition="top"
-								allowDeleteFromEmptyInput={false}
-								allowDragDrop={false}
-							/>
+							</div>
+							<div className="step3">
+								<h3 className="questionsS3">What traits do you find most attractive?</h3>
+								<ReactTags
+									tags={tags}
+									suggestions={suggestions}
+									handleDelete={this.handleDelete.bind(this)}
+									handleAddition={this.handleAddition.bind(this)}
+									// handleDrag={this.handleDrag.bind(this)}
+									delimiters={delimiters}
+									minQueryLength={0}
+									inputFieldPosition="top"
+									allowDeleteFromEmptyInput={false}
+									allowDragDrop={false}
+								/>
+							</div>
 							<input 
 								type="button" 
 								name="previous" 
