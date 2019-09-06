@@ -1,8 +1,16 @@
 import React, { Component } from 'react';
 import './Popup.css';
 import { WithContext as ReactTags } from 'react-tag-input'
-import Slider, {Range} from 'rc-slider';
+import Slider, { Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
+
+import PasswdStrength from '../utils/PasswdStrength'
+
+const axios = require('axios');
+
+
+
+
 
 const KeyCodes = {
 	comma: 118,
@@ -18,12 +26,12 @@ const delimiters = [KeyCodes.comma, KeyCodes.enter, KeyCodes.tab];
 
 class PopUp extends Component {
 	state = {
-		pseudo: "",
+		username: "",
 		firstName: "", 
 		lastName: "",
 		birthdate: "",
 		email: "",
-		passwd: "",
+		password: "",
 		cPasswd: "",
 		hidden: true,
 		score: "",
@@ -73,12 +81,12 @@ class PopUp extends Component {
 		event.target.value === "" ?
 		this.setState({ 
 			score: null,
-			passwd: null
+			password: null
 		})
 		:
 		this.setState({ 
 			score: value.score,
-			passwd: event.target.value
+			password: event.target.value
 		})
 	}
 
@@ -204,9 +212,28 @@ class PopUp extends Component {
 	// });
 	}
 
-	// $(".submit").click(function(){
-	// 	return false;
-	// });
+	submit = (event) => {
+		console.log(this.state)
+		event.preventDefault()
+		const data = this.state
+
+		axios.post(`http://localhost:4000/API/users`, {
+			firstName: data.firstName,
+			lastName: data.lastName,
+			username: data.username,
+			password: data.password,
+			birthdate: data.birthdate,
+			email: data.email
+		})
+        .then((response) => {
+			console.log(response.data)
+          return (response.data.payload);
+        })
+        .catch(error => {
+			console.log(error)
+          return (false);
+        })
+	}
 	
 	render() {
 		const { tags, suggestions } = this.state
@@ -239,9 +266,9 @@ class PopUp extends Component {
 							/>
 							<input 
 								type="text" 
-								name="pseudo" 
-								placeholder="Pseudo"
-								value={this.state.pseudo}
+								name="username" 
+								placeholder="Username"
+								value={this.state.username}
 								onChange={this.handleChange.bind(this)}
 							/>
 							<input
@@ -255,19 +282,16 @@ class PopUp extends Component {
 								<input
 									className="passwd"
 									type={this.state.hidden ? "password" : "text"}
-									name="passwd" 
+									name="password" 
 									placeholder="Password"
-									value={this.state.passwd}
+									value={this.state.password || ''}
 									onChange={this.passwordStrength.bind(this)}
 								/>
 								<span
 									className="passwdButton"
 									onClick={this.toggleShow.bind(this)}
 								>{this.state.hidden ? "Show" : "Hide"}</span>
-								<span
-									className="passwdStrength"
-									data-score={this.state.score}
-								></span>
+								<PasswdStrength score={this.state.score} />
 							</div>
 							<input 
 								type={this.state.hidden ? "password" : "text"}
@@ -450,7 +474,7 @@ class PopUp extends Component {
 								name="submit" 
 								className="submit action-button" 
 								value="Submit" 
-								/*onClick={this.submit}*/
+								onClick={this.submit.bind(this)}
 							/>
 						</fieldset>
 					</form>

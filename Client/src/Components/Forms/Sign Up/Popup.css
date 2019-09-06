@@ -262,7 +262,7 @@ html {
 	font-size: .4em;
 	cursor: pointer;
 }
-.passwdStrength {
+/* .passwdStrength {
 	position: relative;
 	height: 5px;
 	top: -3%;  
@@ -292,7 +292,7 @@ html {
 .passwdStrength[data-score="4"] {
 	width: 100%;
 	background: #4CAF50;
-}
+} */
 
 /* Step 2 */
 #birthdate::-webkit-inner-spin-button { 
