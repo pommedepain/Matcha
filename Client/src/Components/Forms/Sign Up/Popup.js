@@ -8,10 +8,6 @@ import PasswdStrength from '../utils/PasswdStrength'
 
 const axios = require('axios');
 
-
-
-
-
 const KeyCodes = {
 	comma: 118,
 	enter: 13, 
@@ -33,8 +29,8 @@ class PopUp extends Component {
 		email: "",
 		password: "",
 		cPasswd: "",
-		hidden: true,
 		score: "",
+		score2: "",
 		gender: "",
 		sexOrient: "",
 		bio: "",
@@ -69,25 +65,22 @@ class PopUp extends Component {
 		this.setState({[name]: value})
 	}
 
-	toggleShow = (event) => {
-		event.preventDefault()
-		this.setState({ hidden: !this.state.hidden })
-	}
-
 	passwordStrength = (event) => {
+		const name = event.target.name
+		const score = (name === "password" ? "score" : "score2")
 		var zxcvbn = require('zxcvbn');
 		event.preventDefault()
 		let value = zxcvbn(event.target.value)
 		event.target.value === "" ?
-		this.setState({ 
-			score: null,
-			password: null
-		})
+			this.setState({ 
+				[score]: null,
+				[name]: null
+			})
 		:
-		this.setState({ 
-			score: value.score,
-			password: event.target.value
-		})
+			this.setState({ 
+				[score]: value.score,
+				[name]: event.target.value
+			})
 	}
 
 	handleDelete = (i) => {
@@ -241,7 +234,7 @@ class PopUp extends Component {
 			<div className="popup">
 				<div className="popup_inner">
 					<form id="msform">
-						<button onClick={this.props.closePopup} className="close heavy rounded"></button>
+						<button type="button" onClick={this.props.closePopup} className="close heavy rounded"></button>
 						<ul id="progressbar">
 							<li className="active">Account Setup</li>
 							<li>Personal Details</li>
@@ -278,27 +271,19 @@ class PopUp extends Component {
 								value={this.state.email}
 								onChange={this.handleChange.bind(this)}
 							/>
-							<div id="passwd-cont">
-								<input
-									className="passwd"
-									type={this.state.hidden ? "password" : "text"}
-									name="password" 
-									placeholder="Password"
-									value={this.state.password || ''}
-									onChange={this.passwordStrength.bind(this)}
-								/>
-								<span
-									className="passwdButton"
-									onClick={this.toggleShow.bind(this)}
-								>{this.state.hidden ? "Show" : "Hide"}</span>
-								<PasswdStrength score={this.state.score} />
-							</div>
-							<input 
-								type={this.state.hidden ? "password" : "text"}
+							<PasswdStrength 
+								name="password"
+								placeholder="Password"
+								password={this.state.password}
+								score={this.state.score} 
+								strengthMeter={this.passwordStrength.bind(this)}
+							/>
+							<PasswdStrength 
 								name="cPasswd" 
 								placeholder="Confirm Password"
-								value={this.state.cPasswd}
-								onChange={this.handleChange.bind(this)}
+								password={this.state.cPasswd} 
+								score={this.state.score2} 
+								strengthMeter={this.passwordStrength.bind(this)}
 							/>
 							<input 
 								type="button" 

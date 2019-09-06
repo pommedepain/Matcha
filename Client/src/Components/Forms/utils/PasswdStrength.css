@@ -1,3 +1,10 @@
+#passwd-cont {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 10px;
+}
+
 .passwdStrength {
 	position: relative;
 	height: 5px;
@@ -28,4 +35,22 @@
 .passwdStrength[data-score="4"] {
 	width: 100%;
 	background: #4CAF50;
+}
+
+#msform .passwd {
+	margin-bottom: 0;
+}
+
+.passwdButton {
+	position: absolute;
+	width: 8%;
+	left: 85%;
+	bottom: 45%;
+	background: #727272;
+  	color: white;
+  	padding: 4px 8px;
+  	border-radius: 4px;
+  	font-weight: 700;
+	font-size: .4em;
+	cursor: pointer;
 }

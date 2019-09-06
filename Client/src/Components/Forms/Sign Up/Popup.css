@@ -242,7 +242,7 @@ html {
 	PASSWORD STRENGTH METER
 */
 
-#passwd-cont {
+/* #passwd-cont {
 	display: flex;
 	flex-direction: column;
 	margin-bottom: 10px;
@@ -261,7 +261,7 @@ html {
   	font-weight: 700;
 	font-size: .4em;
 	cursor: pointer;
-}
+} */
 /* .passwdStrength {
 	position: relative;
 	height: 5px;
