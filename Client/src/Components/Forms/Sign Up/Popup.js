@@ -210,14 +210,20 @@ class PopUp extends Component {
 		event.preventDefault()
 		const data = this.state
 
-		axios.post(`http://localhost:4000/API/users`, {
-			firstName: data.firstName,
-			lastName: data.lastName,
-			username: data.username,
-			password: data.password,
-			birthdate: data.birthdate,
-			email: data.email
-		})
+		axios.post('http://localhost:4000/API/users', {
+            firstName: data.firstName,
+            lastName: data.lastName,
+            username: data.username,
+            password: data.password,
+            birthdate: data.birthdate,
+            email: data.email,
+            bio: data.bio,
+            gender: data.gender,
+            ageMin: data.range[0],
+            ageMax: data.range[1],
+            sexOrient: data.sexOrient,
+            tags: data.tags,
+        })
         .then((response) => {
 			console.log(response.data)
           return (response.data.payload);
