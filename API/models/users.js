@@ -191,7 +191,7 @@ class User {
       newProperties.forEach((property) => { addReq = ` ${addReq}${property} : $${property},`; });
       addReq = `${addReq}}`;
       addReq = addReq.replace(',}', '}');
-
+      debug(addReq);
       session.run(`CREATE (n:User ${addReq}) RETURN n`, this.user)
         .then((result) => {
           session.close();
