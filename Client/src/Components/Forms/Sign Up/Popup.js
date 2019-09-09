@@ -1,20 +1,12 @@
 import React, { Component } from 'react';
-import './Popup.css';
-import { WithContext as ReactTags } from 'react-tag-input'
 import Slider, { Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
 
 import PasswdStrength from '../utils/PasswdStrength'
+import Tags from '../utils/Tags'
+import './Popup.css';
 
 const axios = require('axios');
-
-const KeyCodes = {
-	comma: 118,
-	enter: 13, 
-	tab: 9
-};
-
-const delimiters = [KeyCodes.comma, KeyCodes.enter, KeyCodes.tab];
 
 // const Slider = require('rc-slider');
 // const createSliderWithTooltip = Slider.createSliderWithTooltip;
@@ -39,21 +31,6 @@ class PopUp extends Component {
 		tags: [
 			{ id: "athlete", text: "Athlete" },
 			{ id: "geek", text: "Geek" }
-		],
-		suggestions: [
-			{ id: "cinema", text: "Cinema Lover" },
-			{ id: "traveler", text: "Traveler" },
-			{ id: "cat", text: "Cat Person" },
-			{ id: "dog", text: "Dog Person" },
-			{ id: "nature", text: "Nature Lover" },
-			{ id: "family", text: "Family-Oriented" },
-			{ id: "party", text: "Party Animal" },
-			{ id: "book", text: "Bookworm" },
-			{ id: "extrovert", text: "Extrovert" },
-			{ id: "introvert", text: "Introvert" },
-			{ id: "creative", text: "Creative" },
-			{ id: "animal", text: "Animal Lover" },
-			{ id: "arts", text: "Patron of the Arts" },
 		]
 	}
 
@@ -95,19 +72,6 @@ class PopUp extends Component {
 			state => ({ tags: [...state.tags, tag] })
 		)
 	}
-
-	// handleDrag = (tag, currPos, newPos) => {
-	// 	const tags = [...this.state.tags]
-	// 	const newTags = tags.slice()
-
-	// 	console.log("currPos: " + currPos + ", newPos: " + newPos)
-	// 	console.log(tag)
-	// 	newTags.splice(currPos, 1)
-	// 	newTags.splice(newPos, 0, tag)
-
-	// 	/* re-render */
-	// 	this.setState({ tags: newTags })
-	// }
 
 	nextStep = (props) => {
 		let current_fs, next_fs; //fieldsets
@@ -235,7 +199,6 @@ class PopUp extends Component {
 	}
 	
 	render() {
-		const { tags, suggestions } = this.state
 		return (
 			<div className="popup">
 				<div className="popup_inner">
@@ -438,21 +401,13 @@ class PopUp extends Component {
 									onChange={newValue => {this.setState({localisation: newValue})}}
 								/>
 							</div>
-							<div className="step3">
-								<h3 className="questionsS3">What traits do you find most attractive?</h3>
-								<ReactTags
-									tags={tags}
-									suggestions={suggestions}
+								<Tags
+									divclassname="step3"
+									h3classname="questionsS3"
+									tags={this.state.tags}
 									handleDelete={this.handleDelete.bind(this)}
 									handleAddition={this.handleAddition.bind(this)}
-									// handleDrag={this.handleDrag.bind(this)}
-									delimiters={delimiters}
-									minQueryLength={0}
-									inputFieldPosition="top"
-									allowDeleteFromEmptyInput={false}
-									allowDragDrop={false}
 								/>
-							</div>
 							<input 
 								type="button" 
 								name="previous" 
