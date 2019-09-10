@@ -1,4 +1,45 @@
 /*
+	DISPLAY PAGE BEFORE POPUP
+*/
+
+.display_page {
+	height: 100vh;
+	text-align: center;
+	background-color: rgb(116, 209, 234);
+	color: white;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}  
+.display_page > .sign_up {
+	display: block;
+	background-color: white;
+	font-family: 'ComfortaaBold', cursive;
+	font-size: 0.7em;
+	border-radius: 15px;
+	margin-bottom: 5px;
+	margin-top: 2%;
+	color:  rgb(116, 209, 234);
+	padding: 5px 15px 5px 15px;
+	cursor: pointer;
+}
+.sign_up:focus {
+	outline: 0;
+}
+  
+.display_page > .sign_up:hover {
+	color: #f2f2f2;
+	box-shadow: 10px 10px 10px rgb(53, 161, 190);
+	opacity: 1;
+	background: #e2a9e5;
+	background: -moz-linear-gradient(-45deg, #e2a9e5 15%, #2b94e5 100%);
+	background: -webkit-linear-gradient(-45deg, #e2a9e5 15%,#2b94e5 100%);
+	background: linear-gradient(135deg, #e2a9e5 15%,#2b94e5 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e2a9e5', endColorstr='#2b94e5',GradientType=1 );
+}
+
+/*
 	POPUP WINDOW BASICS
 */
 
@@ -15,7 +56,8 @@
 	/* background-color: rgba(0,0,0, 0.5);  */
 }
 
-.popup_inner {  
+.popup_inner {
+	display: flex;
 	position: absolute;  
 	left: 25%;  
 	right: 25%;  
@@ -40,15 +82,36 @@
 	CLOSE BUTTON
 */
 
-.close {
-	position: relative;
-	left: -40%;
-	display: inline-block;
-	width: 40px;
-	height: 40px;
-	overflow: hidden;
-	background: none;
-	border: none;
+@media only screen and (max-device-width: 375px) {
+	.close {
+		position: relative;
+		left: -45%;
+		/* top: -25%; */
+		display: inline-block;
+		width: 30px;
+		height: 30px;
+		overflow: hidden;
+		background: none;
+		border: none;
+		z-index:50;
+	}
+	.close:target {
+		color: rgb(204, 76, 76);
+	}
+}
+
+@media only screen and (min-device-width: 380px) {
+	.close {
+		position: relative;
+		left: -40%;
+		/* top: 5%; */
+		display: inline-block;
+		width: 40px;
+		height: 40px;
+		overflow: hidden;
+		background: none;
+		border: none;
+	}
 }
 .close:focus {
 	outline: 0;
@@ -91,23 +154,28 @@
 /*custom font*/
 @import url(https://fonts.googleapis.com/css?family=Montserrat);
 
-html {
-	height: 100%;
-	/*Image only BG fallback*/
-	
-	/*background = gradient + image pattern combo*/
-	background: 
-		linear-gradient(rgba(196, 102, 0, 0.6), rgba(155, 89, 182, 0.6));
-}
-
 /*
 	FORM STYLES
 */
-#msform {
-	width: 100%;
-	margin: 0 auto;
-	text-align: center;
-	position: relative;
+@media only screen and (max-device-width: 375px) {
+	#msform {
+		min-width: 350px;
+		position: relative;
+		text-align: center;
+		margin: 0 auto;
+		left: -40%;
+		top: -20%;
+	}
+}
+
+@media only screen and (min-device-width: 380px) {
+	#msform {
+		width: 100%;
+		max-width: 500px;
+		margin: 0 auto;
+		text-align: center;
+		position: relative;
+	}
 }
 #msform fieldset {
 	background: white;
