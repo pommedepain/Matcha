@@ -10,7 +10,7 @@ module.exports = class Request {
 
   post() {
     return (
-      axios.post(`http://localhost:3000${this.route}`, this.data)
+      axios.post(`http://localhost:4000${this.route}`, this.data)
         .then((response) => {
           debug('Success: ', response.data.payload);
           return (response.data.payload);
@@ -24,7 +24,7 @@ module.exports = class Request {
 
   get() {
     return (
-      axios.get(`http://localhost:3000${this.route}`, { headers: { 'x-auth-token': this.data } })
+      axios.get(`http://localhost:4000${this.route}`, { headers: { 'x-auth-token': this.data } })
         .then((response) => {
           debug('Success: ', response.data.payload);
           return (response.data.success);
@@ -38,7 +38,7 @@ module.exports = class Request {
 
   put() {
     return (
-      axios.put(`http://localhost:3000${this.route}`, this.data.user, { headers: { 'x-auth-token': this.data.token } })
+      axios.put(`http://localhost:4000${this.route}`, this.data.user, { headers: { 'x-auth-token': this.data.token } })
         .then((response) => {
           debug('Success: ', response.data.payload);
           return (response.data.success);
@@ -52,7 +52,7 @@ module.exports = class Request {
 
   delete() {
     return (
-      axios.delete(`http://localhost:3000${this.route}`, { headers: { 'x-auth-token': this.data } })
+      axios.delete(`http://localhost:4000${this.route}`, { headers: { 'x-auth-token': this.data } })
         .then((response) => {
           debug('Success: ', response.data.payload);
           return (response.data.success);

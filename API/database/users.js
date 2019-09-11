@@ -10,7 +10,7 @@ const session = driver.session();
 
 
 const requiredProperties = ['username', 'firstName', 'lastName', 'password', 'email', 'birthdate'];
-const optionalProperties = ['bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'tags', 'optional'];
+const optionalProperties = ['bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'tags', 'optional', 'isAdmin'];
 const users = [
   {
     username: 'Jean',
@@ -24,7 +24,6 @@ const users = [
     ageMin: '19',
     ageMax: '31',
     sexOrient: 'Heterosexual',
-    tags: [{ id: 'cinema', text: 'Cinema Lover' }, { id: 'cat', text: 'Cat Person' }],
   },
   {
     username: 'Camille',

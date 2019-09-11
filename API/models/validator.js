@@ -32,23 +32,23 @@ class Validator {
       { id: 'animal', text: 'Animal Lover' },
       { id: 'arts', text: 'Patron of the Arts' },
     ];
-    // if (
-    //   this.data.username === 'undefined' || this.data.username === 0 || this.data.username === null
-    //   || this.data.firstName === 'undefined' || this.data.firstName === 0 || this.data.firstName === null
-    //   || this.data.lastName === 'undefined' || this.data.lastName === 0 || this.data.lastName === null
-    //   || this.data.firstName === 'undefined' || this.data.firstName === 0 || this.data.firstName === null
-    //   || this.data.password === 'undefined' || this.data.password === 0 || this.data.password === null
-    //   || this.data.birthdate === 'undefined' || this.data.birthdate === 0 || this.data.birthdate === null
-    //   || this.data.bio === 'undefined' || this.data.bio === 0 || this.data.bio === null
-    //   || this.data.gender === 'undefined' || this.data.gender === 0 || this.data.gender === null
-    //   || this.data.ageMin === 'undefined' || this.data.ageMin === 0 || this.data.ageMin === null
-    //   || this.data.ageMax === 'undefined' || this.data.ageMax === 0 || this.data.ageMax === null
-    //   || this.data.sexOrient === 'undefined' || this.data.sexOrient === 0 || this.data.sexOrient === null
-    //   || this.data.tags === 'undefined' || this.data.tags === 0 || this.data.tags === null
-    //   || this.data.isAdmin === 'undefined' || this.data.isAdmin === 0 || this.data.isAdmin === null
-    // ) this.data = null;
+    if (
+      this.data.username === 'undefined' || this.data.username === 0 || this.data.username === null
+      || this.data.firstName === 'undefined' || this.data.firstName === 0 || this.data.firstName === null
+      || this.data.lastName === 'undefined' || this.data.lastName === 0 || this.data.lastName === null
+      || this.data.firstName === 'undefined' || this.data.firstName === 0 || this.data.firstName === null
+      || this.data.password === 'undefined' || this.data.password === 0 || this.data.password === null
+      || this.data.birthdate === 'undefined' || this.data.birthdate === 0 || this.data.birthdate === null
+      || this.data.bio === 'undefined' || this.data.bio === 0 || this.data.bio === null
+      || this.data.gender === 'undefined' || this.data.gender === 0 || this.data.gender === null
+      || this.data.ageMin === 'undefined' || this.data.ageMin === 0 || this.data.ageMin === null
+      || this.data.ageMax === 'undefined' || this.data.ageMax === 0 || this.data.ageMax === null
+      || this.data.sexOrient === 'undefined' || this.data.sexOrient === 0 || this.data.sexOrient === null
+      || this.data.tags === 'undefined' || this.data.tags === 0 || this.data.tags === null
+      || this.data.isAdmin === 'undefined' || this.data.isAdmin === 0 || this.data.isAdmin === null
+    ) this.data = null;
 
-    if (Array.isArray(this.data.tags) === true && this.data.tags.length >= 1) {
+    if (this.data && this.data.tags && Array.isArray(this.data.tags) === true && this.data.tags.length >= 1) {
       debug(this.data.tags, 'length', this.data.tags.length);
       debug(this.validTags, 'length', this.validTags.length);
       this.count = this.data.tags.length;
