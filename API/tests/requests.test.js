@@ -20,11 +20,11 @@ const invalidUserAuth = {
 
 const validNewUser = {
   username: 'Claudinete',
-  firstname: 'camillle',
-  lastname: 'julien',
+  firstName: 'camillle',
+  lastName: 'julien',
   password: 'Test12345*',
   email: 'cludne@gmail.com',
-  birthyear: '1905',
+  birthdate: '1905-20-03',
   optional: 'lalala',
   isAdmin: 'true',
 };

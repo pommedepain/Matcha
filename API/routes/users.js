@@ -9,8 +9,8 @@ const handler = require('../middleware/handler');
 const router = express.Router();
 const User = require('../models/users');
 
-const validProperties = ['username', 'firstName', 'lastName', 'password', 'email', 'birthdate', 'optional'];
-const publicProperties = ['username', 'email', 'birthdate', 'optional'];
+const validProperties = ['username', 'firstName', 'lastName', 'password', 'email', 'birthdate', 'bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'tags', 'optional'];
+const publicProperties = ['username', 'firstName', 'lastName', 'password', 'email', 'birthdate', 'bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'tags', 'optional'];
 
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));

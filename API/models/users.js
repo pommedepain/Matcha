@@ -186,12 +186,11 @@ class User {
   addUser(hash) {
     return new Promise((resolve, reject) => {
       this.user.password = hash;
-      const newProperties = Object.keys(this.user);
+      const newProperties = Object.keys(_.pick(this.user, this.allProperties));
       let addReq = '{';
       newProperties.forEach((property) => { addReq = ` ${addReq}${property} : $${property},`; });
       addReq = `${addReq}}`;
       addReq = addReq.replace(',}', '}');
-
       session.run(`CREATE (n:User ${addReq}) RETURN n`, this.user)
         .then((result) => {
           session.close();
