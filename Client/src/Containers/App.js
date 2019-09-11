@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import NavBar from '../Components/NavBar'
-import SignUp from '../Components/Forms/Sign Up/SignUp'
+import Main from '../Components/Forms/SSignUp'
 import Footer from './Footer'
 
 class App extends Component {
@@ -8,7 +8,7 @@ class App extends Component {
     return (
       <div>
         <NavBar />
-        <SignUp />
+        <Main />
         <Footer />
       </div>
     );

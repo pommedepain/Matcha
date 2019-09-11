@@ -1,0 +1,186 @@
+import React, { Component } from 'react';
+import Form from './DSignUp';
+import './SignUp.css';
+
+const axios = require('axios');
+
+class SignUp extends Component {
+	state = {
+		showPopup: false,
+		style: {},
+		username: "",
+		firstName: "", 
+		lastName: "",
+		birthdate: "",
+		email: "",
+		password: "",
+		cPasswd: "",
+		score: "",
+		score2: "",
+		gender: "",
+		sexOrient: "",
+		bio: "",
+		range: [18, 25],
+		localisation: 5,
+		tags: [
+			{ id: "athlete", text: "Athlete" },
+			{ id: "geek", text: "Geek" }
+		]
+	}
+
+	togglePopup = () => {
+		this.state.showPopup ?
+		this.setState({
+			showPopup: !this.state.showPopup,
+			style: {}
+		}) :
+		this.setState({
+			showPopup: !this.state.showPopup,
+			style: {
+				filter: 'blur(3px)'
+			}
+		});
+	}
+
+	handleChange = (event) => {
+		const {name, value, checked, type} = event.target
+		type === "checkbox" ?
+		this.setState({[name]: checked})
+		: 
+		this.setState({[name]: value})
+	}
+
+	handleSlider = (newValue) =>{
+		this.setState(
+			{localisation: newValue}
+		)
+	}
+
+	handleRange = (newValue) =>{
+		this.setState(
+			{range: newValue}
+		)
+	}
+
+	passwordStrength = (event) => {
+		const name = event.target.name
+		const score = (name === "password" ? "score" : "score2")
+		var zxcvbn = require('zxcvbn');
+		event.preventDefault()
+		let value = zxcvbn(event.target.value)
+		event.target.value === "" ?
+			this.setState({ 
+				[score]: null,
+				[name]: null
+			})
+		:
+			this.setState({ 
+				[score]: value.score,
+				[name]: event.target.value
+			})
+	}
+
+	handleDelete = (i) => {
+		const { tags } = this.state
+		this.setState({
+			tags: tags.filter((tag, index) => index !== i),
+		})
+	}
+
+	handleAddition = (tag) => {
+		this.setState(
+			state => ({ tags: [...state.tags, tag] })
+		)
+	}
+
+	nextStep = (props) => {
+		let current_fs, next_fs; //fieldsets
+		
+		current_fs = props.target.parentElement;
+		next_fs = current_fs.nextElementSibling;
+		
+		// activate next step on progressbar using the index of next_fs
+		for (let i = 0; i < document.querySelectorAll('#progressbar li').length; i++)
+			if (document.querySelectorAll('#progressbar li')[i].className !== "active")
+			{
+				document.querySelectorAll('#progressbar li')[i].classList.add("active")
+				break;
+			}
+
+		//show the next fieldset
+		next_fs.style.display = "block"; 
+		
+		//hide the current fieldset
+		current_fs.style.display = 'none';
+	}
+
+
+	previousStep = (props) => {
+		let current_fs, previous_fs;
+
+		current_fs = props.target.parentElement;
+		previous_fs = current_fs.previousElementSibling;
+
+		for (let i = (document.querySelectorAll('#progressbar li').length - 1); i > 0; i--)
+			if (document.querySelectorAll('#progressbar li')[i].className === "active")
+			{
+				document.querySelectorAll('#progressbar li')[i].classList.remove("active")
+				break;
+			}
+
+		//show the previous fieldset
+		previous_fs.style.display = "block"; 
+		
+		//hide the current fieldset
+		current_fs.style.display = 'none';
+	}
+
+	submit = (event) => {
+		console.log(this.state)
+		event.preventDefault()
+		const data = this.state
+
+		axios.post('http://localhost:4000/API/users', {
+            firstName: data.firstName,
+            lastName: data.lastName,
+            username: data.username,
+            password: data.password,
+            birthdate: data.birthdate,
+            email: data.email,
+            bio: data.bio,
+            gender: data.gender,
+            ageMin: data.range[0],
+            ageMax: data.range[1],
+            sexOrient: data.sexOrient,
+            tags: data.tags,
+        })
+        .then((response) => {
+			console.log(response.data)
+          return (response.data.payload);
+        })
+        .catch(error => {
+			console.log(error)
+          return (false);
+        })
+	}
+	
+	render () {
+		return (
+			<Form 
+				popup={this.togglePopup.bind(this)}
+				handleChange={this.handleChange.bind(this)}
+				passwordStrength={this.passwordStrength.bind(this)}
+				nextStep={this.nextStep.bind(this)}
+				previousStep={this.previousStep.bind(this)}
+				handleRange={this.handleRange.bind(this)}
+				handleSlider={this.handleSlider.bind(this)}
+				handleAddition={this.handleChange.bind(this)}
+				handleDelete={this.handleDelete.bind(this)}
+				submit={this.submit.bind(this)}
+				{...this.state}
+			/>
+		);
+	}
+}
+
+export default SignUp;

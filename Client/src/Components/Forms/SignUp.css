@@ -1,4 +1,45 @@
 /*
+	DISPLAY PAGE BEFORE POPUP
+*/
+
+.display_page {
+	height: 100vh;
+	text-align: center;
+	background-color: rgb(116, 209, 234);
+	color: white;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}  
+.display_page > .sign_up {
+	display: block;
+	background-color: white;
+	font-family: 'ComfortaaBold', cursive;
+	font-size: 0.7em;
+	border-radius: 15px;
+	margin-bottom: 5px;
+	margin-top: 2%;
+	color:  rgb(116, 209, 234);
+	padding: 5px 15px 5px 15px;
+	cursor: pointer;
+}
+.sign_up:focus {
+	outline: 0;
+}
+  
+.display_page > .sign_up:hover {
+	color: #f2f2f2;
+	box-shadow: 10px 10px 10px rgb(53, 161, 190);
+	opacity: 1;
+	background: #e2a9e5;
+	background: -moz-linear-gradient(-45deg, #e2a9e5 15%, #2b94e5 100%);
+	background: -webkit-linear-gradient(-45deg, #e2a9e5 15%,#2b94e5 100%);
+	background: linear-gradient(135deg, #e2a9e5 15%,#2b94e5 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e2a9e5', endColorstr='#2b94e5',GradientType=1 );
+}
+
+/*
 	POPUP WINDOW BASICS
 */
 
@@ -15,7 +56,8 @@
 	/* background-color: rgba(0,0,0, 0.5);  */
 }
 
-.popup_inner {  
+.popup_inner {
+	display: flex;
 	position: absolute;  
 	left: 25%;  
 	right: 25%;  
@@ -40,15 +82,36 @@
 	CLOSE BUTTON
 */
 
-.close {
-	position: relative;
-	left: -40%;
-	display: inline-block;
-	width: 40px;
-	height: 40px;
-	overflow: hidden;
-	background: none;
-	border: none;
+@media only screen and (max-device-width: 375px) {
+	.close {
+		position: relative;
+		left: -45%;
+		/* top: -25%; */
+		display: inline-block;
+		width: 30px;
+		height: 30px;
+		overflow: hidden;
+		background: none;
+		border: none;
+		z-index:50;
+	}
+	.close:target {
+		color: rgb(204, 76, 76);
+	}
+}
+
+@media only screen and (min-device-width: 380px) {
+	.close {
+		position: relative;
+		left: -40%;
+		/* top: 5%; */
+		display: inline-block;
+		width: 40px;
+		height: 40px;
+		overflow: hidden;
+		background: none;
+		border: none;
+	}
 }
 .close:focus {
 	outline: 0;
@@ -91,23 +154,28 @@
 /*custom font*/
 @import url(https://fonts.googleapis.com/css?family=Montserrat);
 
-html {
-	height: 100%;
-	/*Image only BG fallback*/
-	
-	/*background = gradient + image pattern combo*/
-	background: 
-		linear-gradient(rgba(196, 102, 0, 0.6), rgba(155, 89, 182, 0.6));
-}
-
 /*
 	FORM STYLES
 */
-#msform {
-	width: 100%;
-	margin: 0 auto;
-	text-align: center;
-	position: relative;
+@media only screen and (max-device-width: 375px) {
+	#msform {
+		min-width: 350px;
+		position: relative;
+		text-align: center;
+		margin: 0 auto;
+		left: -40%;
+		top: -20%;
+	}
+}
+
+@media only screen and (min-device-width: 380px) {
+	#msform {
+		width: 100%;
+		max-width: 500px;
+		margin: 0 auto;
+		text-align: center;
+		position: relative;
+	}
 }
 #msform fieldset {
 	background: white;
@@ -235,65 +303,6 @@ html {
 	SPECIFIC STYLES
 */
 
-
-/* Step 1 */
-
-/*
-	PASSWORD STRENGTH METER
-*/
-
-/* #passwd-cont {
-	display: flex;
-	flex-direction: column;
-	margin-bottom: 10px;
-}
-#msform .passwd {
-	margin-bottom: 0;
-}
-.passwdButton {
-	position: absolute;
-	right: 10%;
-	top: 65%;
-	background: #727272;
-  	color: white;
-  	padding: 4px 8px;
-  	border-radius: 4px;
-  	font-weight: 700;
-	font-size: .4em;
-	cursor: pointer;
-} */
-/* .passwdStrength {
-	position: relative;
-	height: 5px;
-	top: -3%;  
-  	background: transparent;
-  	transition: all 300ms ease-in-out;
-}
-.passwdStrength[data-score="null"] {
-	width: 0;
-	background: red;
-}
-.passwdStrength[data-score="0"] {
-	width: 5%;
-	background: #F44336;
-}
-.passwdStrength[data-score="1"] {
-	width: 25%;
-	background: #F44336;
-}
-.passwdStrength[data-score="2"] {
-	width: 50%;
-	background: #FFEB3B;
-}
-.passwdStrength[data-score="3"] {
-	width: 75%;
-	background: #4CAF50;
-}
-.passwdStrength[data-score="4"] {
-	width: 100%;
-	background: #4CAF50;
-} */
-
 /* Step 2 */
 #birthdate::-webkit-inner-spin-button { 
 	display: none; 
@@ -378,85 +387,4 @@ label::before {
 	font-size: 0.6em;
 	font-family: 'ComfortaaLight', cursive;
 	text-align: end;
-}
-
-/* 
-	TAGS 
-*/
-
-div.ReactTags__tags {
-	position: relative;
-	margin-top: 3%;
-}
-
-/* Styles for the input */
-div.ReactTags__tagInput {
-    width: 50%;
-    border-radius: 2px;
-    display: inline-block;
-}
-div.ReactTags__tagInput input.ReactTags__tagInputField,
-div.ReactTags__tagInput input.ReactTags__tagInputField:focus {
-    height: 1vh;
-    margin: 0;
-    font-size: 0.5em;
-    width: 100%;
-    border: 1px solid #eee;
-    padding: 0 4px;
-}
-
-/* Styles for selected tags */
-div.ReactTags__selected span.ReactTags__tag {
-    border: 1px solid #ddd;
-    background: #eee;
-    font-size: 0.5em;
-    display: inline-block;
-    padding: 6px;
-    margin: 0 5px 5px 5px;
-	cursor: default !important;
-    border-radius: 2px;
-}
-div.ReactTags__selected span.ReactTags__tag:hover {
-	background: #27AE60;
-	border: 1px solid rgba(39, 174, 95, 0.877);
-	color: white;
-}
-div.ReactTags__selected span.ReactTags__tag:hover a.ReactTags__remove {
-	color: white;
-}
-div.ReactTags__selected a.ReactTags__remove {
-    color: #9c9c9c;
-    margin-left: 5px;
-    cursor: pointer;
-}
-div.ReactTags__selected span.ReactTags__tag:hover a.ReactTags__remove:hover {
-	color: rgb(219, 58, 58);
-}
-
-/* Styles for suggestions */
-div.ReactTags__suggestions {
-    position: absolute;
-    color: #000 !important;
-    font-weight: normal !important;
-    font-size: 0.5em !important;
-}
-div.ReactTags__suggestions ul {
-    list-style-type: none;
-    box-shadow: .05em .01em .5em rgba(0,0,0,.2);
-    background: white;
-    width: 130%;
-}
-div.ReactTags__suggestions li {
-    border-bottom: 1px solid #ddd;
-    padding: 15px 10px;
-    margin: 0;
-}
-div.ReactTags__suggestions li mark {
-    text-decoration: underline;
-    background: none;
-    font-weight: 600;
-}
-div.ReactTags__suggestions ul li.ReactTags__activeSuggestion {
-    background: #b7cfe0;
-    cursor: pointer;
 }
