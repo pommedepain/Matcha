@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const neo4j = require('neo4j-driver').v1;
 const bcrypt = require('bcrypt');
-const Validator = require('./validator');
+const UserValidator = require('./uservalidator');
 const userTemplate = require('../tests/usertemplate');
 
 const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
@@ -112,7 +112,7 @@ class User {
   getUserInfo() {
     return new Promise((resolve, reject) => {
       debug('Getting user info for :', this.user);
-      new Validator(this.getRequirements, this.user).validate()
+      new UserValidator(this.getRequirements, this.user).validate()
         .then(() => session.run(
           'MATCH (n:User) WHERE n.username=$username RETURN n',
           { username: this.user.username },
@@ -213,7 +213,7 @@ class User {
 
   createUser() {
     return new Promise((resolve, reject) => (
-      new Validator(this.creationRequirements, this.user).validate()
+      new UserValidator(this.creationRequirements, this.user).validate()
         .then(() => this.redundancyCheck())
         .then(() => this.hashGenerator())
         .then(hash => this.addUser(hash))
@@ -224,7 +224,7 @@ class User {
 
   updateUser() {
     return new Promise((resolve, reject) => (
-      new Validator(this.updateRequirements, this.user).validate()
+      new UserValidator(this.updateRequirements, this.user).validate()
         .then(() => this.hashGenerator())
         .then(hash => this.changeUserProperies(hash))
         .then(user => resolve(_.pick(user, this.publicProperties.concat(this.optionalProperties))))
@@ -234,7 +234,7 @@ class User {
 
   deleteUser() {
     return new Promise((resolve, reject) => (
-      new Validator(this.deleteRequirements, this.user).validate()
+      new UserValidator(this.deleteRequirements, this.user).validate()
         .then(() => this.deleteRelationships())
         .then(() => this.deleteNode())
         .then(user => resolve(user))
@@ -244,7 +244,7 @@ class User {
 
   authenticateUser() {
     return new Promise((resolve, reject) => (
-      new Validator(this.authRequirements, this.user).validate()
+      new UserValidator(this.authRequirements, this.user).validate()
         .then(() => this.getUserInfo())
         .then(existingUser => this.matchPasswords(existingUser))
         .then(existingUser => this.generateAuthToken(existingUser))

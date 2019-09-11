@@ -23,7 +23,7 @@ const users = [
     gender: 'male',
     ageMin: '19',
     ageMax: '31',
-    sexOrient: 'Heterosexual',
+    sexOrient: 'hetero',
   },
   {
     username: 'Camille',
@@ -60,22 +60,6 @@ const users = [
   },
 ];
 
-const relationships = {
-  user_a: 'Jean',
-  user_b: 'Boby',
-  type: 'LIKES',
-};
-
-function resetDb() {
-  return new Promise((resolve) => {
-    debug('Reseting DB...');
-    session.run('MATCH p=()-[r]->() DELETE p')
-      .then(() => (session.run('MATCH (n) DELETE n')))
-      .then(() => resolve(true))
-      .catch(err => debug(err));
-  });
-}
-
 function populateUsers() {
   const promises = [];
   debug('Populating DB...');
@@ -86,23 +70,4 @@ function populateUsers() {
   return Promise.all(promises);
 }
 
-function createRelationships() {
-  return new Promise((resolve, reject) => {
-    debug('Creating Relationships...');
-    new RelationShips(relationships).addRelationShip()
-      .then(() => resolve(true))
-      .catch(err => reject(err));
-  });
-}
-
-function populateDb() {
-  return new Promise((resolve, reject) => {
-    resetDb()
-      .then(() => populateUsers())
-      .then(() => createRelationships())
-      .then(() => resolve(true))
-      .catch(err => reject(err));
-  });
-}
-
-module.exports = populateDb;
+module.exports = populateUsers;

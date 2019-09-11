@@ -3,7 +3,7 @@ const debug = require('debug')('app:model_user');
 const config = require('config');
 const _ = require('lodash');
 const neo4j = require('neo4j-driver').v1;
-const Validator = require('./validator');
+const Validator = require('./uservalidator');
 const User = require('./users');
 
 const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
