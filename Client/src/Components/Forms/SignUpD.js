@@ -4,6 +4,7 @@ import 'rc-slider/assets/index.css';
 
 import PasswdStrength from './utils/PasswdStrength'
 import Tags from './utils/Tags'
+import classes from './SignUp.module.css';
 
 // const Slider = require('rc-slider');
 // const createSliderWithTooltip = Slider.createSliderWithTooltip;
@@ -12,23 +13,23 @@ import Tags from './utils/Tags'
 const SignUp = (props) => {
 	return (
 		<div>
-			<div className="display_page" id="display_page" style={props.style}>
+			<div className={classes.display_page} id="display_page" style={props.style}>
 				<h2>Matchez, Discutez<br />Faites des rencontres.</h2>
-				<button className="sign_up" onClick={props.popup}>Sign Up</button>
+				<button className={classes.sign_up} onClick={props.popup}>Sign Up</button>
 			</div>
 			{props.showPopup ?  
-			<div className="popup">
-				<div className="popup_inner">
-					<form id="msform">
-						<button type="button" onClick={props.popup} className="close heavy rounded"></button>
-						<ul id="progressbar">
-							<li className="active">Account Setup</li>
+			<div className={classes.popup}>
+				<div className={classes.popup_inner}>
+					<form id={classes.msform}>
+						<button type="button" onClick={props.popup} className={`${classes.close} ${classes.heavy} ${classes.rounded}`}></button>
+						<ul id={classes.progressbar}>
+							<li className={classes.active}>Account Setup</li>
 							<li>Personal Details</li>
 							<li>Preferences</li>
 						</ul>
 						<fieldset>
-							<h2 className="fs-title">Create your account</h2>
-							<h3 className="fs-subtitle">This is step 1</h3>
+							<h2 className={classes.fs_title}>Create your account</h2>
+							<h3 className={classes.fs_subtitle}>This is step 1</h3>
 							<input 
 								type="text" 
 								name="firstName" 
@@ -59,13 +60,15 @@ const SignUp = (props) => {
 							/>
 							<PasswdStrength 
 								name="password"
+								style={{marginBottom: '0'}}
 								placeholder="Password"
 								password={props.password}
 								score={props.score} 
 								strengthMeter={props.passwordStrength}
 							/>
 							<PasswdStrength 
-								name="cPasswd" 
+								name="cPasswd"
+								style={{marginBottom: '0'}}
 								placeholder="Confirm Password"
 								password={props.cPasswd} 
 								score={props.score2} 
@@ -74,26 +77,25 @@ const SignUp = (props) => {
 							<input 
 								type="button" 
 								name="next" 
-								className="next action-button" 
+								className={`${classes.next} ${classes.action_button}`} 
 								value="Next" 
 								onClick={props.nextStep} 
 							/>
 						</fieldset>
 						<fieldset>
-							<h2 className="fs-title">Tell us more about yourself</h2>
-							<h3 className="fs-subtitle">Who are you ?</h3>
-							<h3 className="questions">Birthdate</h3>
+							<h2 className={classes.fs_title}>Tell us more about yourself</h2>
+							<h3 className={classes.fs_subtitle}>Who are you ?</h3>
+							<h3 className={classes.questions}>Birthdate</h3>
 							<input
 								type="date"
-								id="birthdate"
+								id={classes.birthdate}
 								value={props.birthdate}
 								name="birthdate"
 								onChange={props.handleChange}
 							/>
-							<h3 className="questions">Gender</h3>
-							<div className="genderGroup">
+							<h3 className={classes.questions}>Gender</h3>
+							<div className={classes.genderGroup}>
 								<input
-									className="gender"
 									id="male"
 									type="radio"
 									value="male"
@@ -103,7 +105,6 @@ const SignUp = (props) => {
 								/>
 								<label htmlFor="male">Male</label>
 								<input
-									className="gender"
 									id="female"
 									type="radio"
 									value="female"
@@ -113,7 +114,6 @@ const SignUp = (props) => {
 								/>
 								<label htmlFor="female">Female</label>
 								<input
-									className="gender"
 									id="genderqueer"
 									type="radio"
 									value="genderqueer"
@@ -123,8 +123,8 @@ const SignUp = (props) => {
 								/>
 								<label htmlFor="genderqueer">Genderqueer</label>
 							</div>
-							<h3 className="questions">Sexual Orientation</h3>
-							<div id="sexualOrient">
+							<h3 className={classes.questions}>Sexual Orientation</h3>
+							<div id={classes.sexualOrient}>
 								<input
 									id="hetero"
 									type="radio"
@@ -162,7 +162,7 @@ const SignUp = (props) => {
 								/>
 								<label htmlFor="pan">Pansexual</label>
 							</div>
-							<h3 className="questions">Bio</h3>
+							<h3 className={classes.questions}>Bio</h3>
 							<textarea
 								value={props.bio}
 								name="bio"
@@ -171,31 +171,31 @@ const SignUp = (props) => {
 							<input 
 								type="button" 
 								name="previous" 
-								className="previous action-button" 
+								className={`${classes.previous} ${classes.action_button}`} 
 								value="Previous" 
 								onClick={props.previousStep}
 							/>
 							<input 
 								type="button" 
 								name="next" 
-								className="next action-button" 
+								className={`${classes.next} ${classes.action_button}`} 
 								value="Next"
 								onClick={props.nextStep}
 							/>
 							{/* <input 
 								type="button" 
 								name="next" 
-								className="skip" 
+								className={classes.skip} 
 								value="Skip"
 								onClick={props.nextStep}
 							/> */}
 						</fieldset>
 						<fieldset>
-							<h2 className="fs-title">What are you looking for?</h2>
-							<h3 className="fs-subtitle">This will improve our algorithm</h3>
-							<div className="step3">
-								<h3 className="questionsS3">Age Range</h3>
-								<h4 className="values">{props.range[0]} - {props.range[1]}</h4>
+							<h2 className={classes.fs_title}>What are you looking for?</h2>
+							<h3 className={classes.fs_subtitle}>This will improve our algorithm</h3>
+							<div className={classes.step3}>
+								<h3 className={classes.questionsS3}>Age Range</h3>
+								<h4 className={classes.values}>{props.range[0]} - {props.range[1]}</h4>
 								<Range
 									min={18}
 									max={100}
@@ -206,9 +206,9 @@ const SignUp = (props) => {
 									onChange={props.handleRange}
 								/>
 							</div>
-							<div className="step3">
-								<h3 className="questionsS3">Maximum Distance</h3>
-								<h4 className="values">{props.localisation}km</h4>
+							<div className={classes.step3}>
+								<h3 className={classes.questionsS3}>Maximum Distance</h3>
+								<h4 className={classes.values}>{props.localisation}km</h4>
 								<Slider
 									min={3}
 									max={160}
@@ -219,8 +219,8 @@ const SignUp = (props) => {
 								/>
 							</div>
 								<Tags
-									divclassname="step3"
-									h3classname="questionsS3"
+									divclassname={classes.step3}
+									h3classname={classes.questionsS3}
 									tags={props.tags}
 									handleDelete={props.handleDelete}
 									handleAddition={props.handleAddition}
@@ -228,14 +228,14 @@ const SignUp = (props) => {
 							<input 
 								type="button" 
 								name="previous" 
-								className="previous action-button" 
+								className={`${classes.previous} ${classes.action_button}`} 
 								value="Previous"
 								onClick={props.previousStep}
 							/>
 							<input 
 								type="submit" 
 								name="submit" 
-								className="submit action-button" 
+								className={`${classes.submit} ${classes.action_button}`} 
 								value="Submit" 
 								onClick={props.submit}
 							/>

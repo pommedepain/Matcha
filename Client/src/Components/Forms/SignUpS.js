@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 // import PropTypes from 'prop-types'
 
-import Form from './DSignUp';
-import './SignUp.css';
+import Form from './SignUpD';
+import classes from './SignUp.module.css';
 
 const axios = require('axios');
 
@@ -104,15 +104,17 @@ class SignUp extends Component {
 
 	nextStep = (props) => {
 		let current_fs, next_fs; //fieldsets
-		
+		let progressBar;
+
 		current_fs = props.target.parentElement;
 		next_fs = current_fs.nextElementSibling;
+		progressBar = current_fs.parentElement.childNodes[1].childNodes;
 		
 		// activate next step on progressbar
-		for (let i = 0; i < document.querySelectorAll('#progressbar li').length; i++)
-			if (document.querySelectorAll('#progressbar li')[i].className !== "active")
+		for (let i = 0; i < progressBar.length; i++)
+			if (progressBar[i].className.search(/active/i) === -1)
 			{
-				document.querySelectorAll('#progressbar li')[i].classList.add("active")
+				progressBar[i].classList.add(classes.active)
 				break;
 			}
 
@@ -126,14 +128,16 @@ class SignUp extends Component {
 
 	previousStep = (props) => {
 		let current_fs, previous_fs;
+		let progressBar;
 
 		current_fs = props.target.parentElement;
 		previous_fs = current_fs.previousElementSibling;
+		progressBar = current_fs.parentElement.childNodes[1].childNodes;
 
-		for (let i = (document.querySelectorAll('#progressbar li').length - 1); i > 0; i--)
-			if (document.querySelectorAll('#progressbar li')[i].className === "active")
+		for (let i = (progressBar.length - 1); i > 0; i--)
+			if (progressBar[i].className.search(/active/i) !== -1)
 			{
-				document.querySelectorAll('#progressbar li')[i].classList.remove("active")
+				progressBar[i].classList.remove(classes.active)
 				break;
 			}
 

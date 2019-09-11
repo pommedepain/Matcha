@@ -1,5 +1,5 @@
 import React from 'react'
-import './PasswdStrength.css'
+import classes from './PasswdStrength.module.css'
 
 class PasswdStrength extends React.Component {
 	state = {
@@ -13,9 +13,10 @@ class PasswdStrength extends React.Component {
 
 	render() {
 		return (
-			<div id="passwd-cont">
+			<div id={classes.passwd_cont}>
 				<input
-					className="passwd"
+					style={this.props.style || ''}
+					className={classes.passwd}
 					type={this.state.hidden ? "password" : "text"}
 					name={this.props.name} 
 					placeholder={this.props.placeholder}
@@ -23,11 +24,11 @@ class PasswdStrength extends React.Component {
 					onChange={this.props.strengthMeter}
 				/>
 				<span
-					className="passwdButton"
+					className={classes.passwdButton}
 					onClick={this.toggleShow.bind(this)}
 				>{this.state.hidden ? "Show" : "Hide"}</span>
 				<span
-					className="passwdStrength"
+					className={classes.passwdStrength}
 					data-score={this.props.score}
 				></span>
 			</div>

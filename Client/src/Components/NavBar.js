@@ -1,6 +1,6 @@
 import React from 'react'
 
-import './NavBar.css'
+import classes from './NavBar.module.css'
 import LogIn from './Forms/LogIn'
 
 const axios = require('axios');
@@ -67,13 +67,13 @@ class NavBar extends React.Component {
 	
 	render() {
 		return (
-			<div className="NavBar">
-				<h1 className="logo"><i className="fas fa-puzzle-piece" /> Matcha</h1>
-				<div className="log">
+			<div className={classes.NavBar}>
+				<h1 className={classes.logo}><i className="fas fa-puzzle-piece" /> Matcha</h1>
+				<div className={classes.log}>
 				{
 					!this.state.user ?
-					[<div className="not_logged" key={1}>
-						<button className="sidebar" onClick={this.togglePopup.bind(this)}>Log In</button>
+					[<div key={1}>
+						<button className={classes.sidebar} onClick={this.togglePopup.bind(this)}>Log In</button>
 						<LogIn
 							popup={this.togglePopup.bind(this)}
 							handleChange={this.handleChange.bind(this)}
@@ -83,9 +83,9 @@ class NavBar extends React.Component {
 						/>
 					</div>]
 					:
-					[<div className="logged" key={2}>
-						<button className="sidebar">Account</button>
-						<button className="sidebar">Log Out</button>
+					[<div key={2}>
+						<button className={classes.sidebar}>Account</button>
+						<button className={classes.sidebar}>Log Out</button>
 					</div>]
 				}
 				</div>

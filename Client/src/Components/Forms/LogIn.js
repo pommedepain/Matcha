@@ -1,18 +1,18 @@
 import React from 'react';
 
-import './LogIn.css'
+import classes from './LogIn.module.css'
 
 const LogIn = (props) => {
 	return (
 		<div>
 			{props.showPopup ?
-			<div className="popup">
-				<div className="popup_inner">
-					<form id="msform">
-						<button type="button" onClick={props.popup} className="close heavy rounded"></button>
+			<div className={classes.popup}>
+				<div className={classes.popup_inner}>
+					<form id={classes.msform}>
+						<button type="button" onClick={props.popup} className={`${classes.close} ${classes.heavy} ${classes.rounded}`}></button>
 						<fieldset>
-							<h2 className="fs-title">Log In</h2>
-							<h3 className="fs-subtitle">And see what you missed</h3>
+							<h2 className={classes.fs_title}>Log In</h2>
+							<h3 className={classes.fs_subtitle}>And see what you missed</h3>
 							<input 
 								type="text" 
 								name="username" 
@@ -28,13 +28,13 @@ const LogIn = (props) => {
 								onChange={props.handleChange}
 							/>
 							<span
-								className="passwdToggle"
+								className={classes.passwdToggle}
 								onClick={props.toggleShow}
 							>{props.hidden ? "Show" : "Hide"}</span>
 							<input 
 								type="submit" 
 								name="submit" 
-								className="submit action-button" 
+								className={`${classes.submit} ${classes.action_button}`} 
 								value="Submit" 
 								onClick={props.submit}
 							/>

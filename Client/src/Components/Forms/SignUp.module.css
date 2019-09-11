@@ -90,6 +90,7 @@
 		background: none;
 		border: none;
 		z-index:50;
+		cursor: pointer;
 	}
 	.close:target {
 		color: rgb(204, 76, 76);
@@ -106,6 +107,7 @@
 		overflow: hidden;
 		background: none;
 		border: none;
+		cursor: pointer;
 	}
 }
 .close:focus {
@@ -202,7 +204,7 @@
 	font-size: 13px;
 }
 /*buttons*/
-#msform .action-button {
+#msform .action_button {
 	width: 100px;
 	background: #27AE60;
 	font-weight: bold;
@@ -213,17 +215,17 @@
 	padding: 10px 5px;
 	margin: 10px 5px;
 }
-#msform .action-button:hover, #msform .action-button:focus {
+#msform .action_button:hover, #msform .action_button:focus {
 	box-shadow: 0 0 0 2px white, 0 0 0 3px #27AE60;
 }
 /*headings*/
-.fs-title {
+.fs_title {
 	font-size: 15px;
 	text-transform: uppercase;
 	color: #2C3E50;
 	margin-bottom: 10px;
 }
-.fs-subtitle {
+.fs_subtitle {
 	font-weight: normal;
 	font-size: 13px;
 	color: #666;
