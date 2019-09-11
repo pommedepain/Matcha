@@ -46,14 +46,18 @@ class NavBar extends React.Component {
 		console.log(this.state)
 		event.preventDefault()
 		const data = this.state
+		let token = null
 
-		axios.post('http://localhost:4000/API/users', {
+		axios.post('http://localhost:4000/API/auth', {
 			username: data.username,
 			password: data.password
         })
         .then((response) => {
 			console.log(response.data)
-          return (response.data.payload);
+			response.data.success ? 
+			token = response.data.payload
+			: token = null;
+        	return (response.data.payload);
         })
         .catch(error => {
 			console.log(error)

@@ -33,7 +33,7 @@ class Tags extends Component {
 			{ id: "arts", text: "Patron of the Arts" },
 		]
 	}
-
+	
 	// handleDelete = (i) => {
 	// 	const { tags } = this.state
 	// 	this.setState({

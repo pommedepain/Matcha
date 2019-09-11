@@ -1,10 +1,19 @@
 import React, { Component } from 'react';
+// import PropTypes from 'prop-types'
+
 import Form from './DSignUp';
 import './SignUp.css';
 
 const axios = require('axios');
 
 class SignUp extends Component {
+	// static propTypes = {
+	// 	username: PropTypes.string.isRequired,
+	// 	email: PropTypes.string.isRequired,
+	// 	password: PropTypes.string.isRequired,
+	// 	cPasswd: PropTypes.string.isRequired,
+	// }
+
 	state = {
 		showPopup: false,
 		style: {},
@@ -43,20 +52,20 @@ class SignUp extends Component {
 	}
 
 	handleChange = (event) => {
-		const {name, value, checked, type} = event.target
-		type === "checkbox" ?
-		this.setState({[name]: checked})
-		: 
+		const target = event.target;
+		const value = target.type === 'checkbox' ? target.checked : target.value;
+		const name = target.name;
+
 		this.setState({[name]: value})
 	}
 
-	handleSlider = (newValue) =>{
+	handleSlider = (newValue) => {
 		this.setState(
 			{localisation: newValue}
 		)
 	}
 
-	handleRange = (newValue) =>{
+	handleRange = (newValue) => {
 		this.setState(
 			{range: newValue}
 		)
@@ -99,7 +108,7 @@ class SignUp extends Component {
 		current_fs = props.target.parentElement;
 		next_fs = current_fs.nextElementSibling;
 		
-		// activate next step on progressbar using the index of next_fs
+		// activate next step on progressbar
 		for (let i = 0; i < document.querySelectorAll('#progressbar li').length; i++)
 			if (document.querySelectorAll('#progressbar li')[i].className !== "active")
 			{
@@ -174,7 +183,7 @@ class SignUp extends Component {
 				previousStep={this.previousStep.bind(this)}
 				handleRange={this.handleRange.bind(this)}
 				handleSlider={this.handleSlider.bind(this)}
-				handleAddition={this.handleChange.bind(this)}
+				handleAddition={this.handleAddition.bind(this)}
 				handleDelete={this.handleDelete.bind(this)}
 				submit={this.submit.bind(this)}
 				{...this.state}

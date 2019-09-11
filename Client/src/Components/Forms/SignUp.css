@@ -53,7 +53,6 @@
 	bottom: 0;  
 	margin: auto;
 	z-index: 2;
-	/* background-color: rgba(0,0,0, 0.5);  */
 }
 
 .popup_inner {
@@ -65,7 +64,6 @@
 	bottom: 25%;  
 	margin: auto;  
 	border-radius: 20px;  
-	/* background: white;   */
 	color:black;
 }
 
@@ -73,7 +71,6 @@
 .questions {
 	font-size: 0.7em;
 	position: relative;
-	/* text-align: left; */
 	margin-bottom: 2%;
 	margin-top: 4%;
 }
@@ -86,7 +83,6 @@
 	.close {
 		position: relative;
 		left: -45%;
-		/* top: -25%; */
 		display: inline-block;
 		width: 30px;
 		height: 30px;
@@ -104,7 +100,6 @@
 	.close {
 		position: relative;
 		left: -40%;
-		/* top: 5%; */
 		display: inline-block;
 		width: 40px;
 		height: 40px;
