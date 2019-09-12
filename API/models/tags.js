@@ -6,6 +6,7 @@ const _ = require('lodash');
 const neo4j = require('neo4j-driver').v1;
 const bcrypt = require('bcrypt');
 const Tagvalidator = require('./tagvalidator');
+
 const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
 const session = driver.session();
 
@@ -41,7 +42,7 @@ class Tag {
     return new Promise((resolve, reject) => {
       debug('Checkin for', this.tag.id, 'in database.');
       session.run(
-        'MATCH (n:tag) WHERE n.id=$id  RETURN n',
+        'MATCH (n:Tag) WHERE n.id=$id  RETURN n',
         { id: this.tag.id },
       )
         .then((result) => {
@@ -54,7 +55,7 @@ class Tag {
 
   gettags() {
     return new Promise((resolve, reject) => {
-      session.run('MATCH (n:tag) RETURN n.id')
+      session.run('MATCH (n:Tag) RETURN n.id')
         .then((result) => {
           if (result.records.length !== 0) {
             this.tags = [];
@@ -72,7 +73,7 @@ class Tag {
       debug('Getting tag info for :', this.tag);
       new Tagvalidator(this.getRequirements, this.tag).validate()
         .then(() => session.run(
-          'MATCH (n:tag) WHERE n.id=$id RETURN n',
+          'MATCH (n:Tag) WHERE n.id=$id RETURN n',
           { id: this.tag.id },
         ))
         .then((result) => {
@@ -103,7 +104,7 @@ class Tag {
   deleteNode() {
     return new Promise((resolve, reject) => {
       session.run(
-        'MATCH (n:tag) WHERE n.id=$id DELETE n RETURN n',
+        'MATCH (n:Tag) WHERE n.id=$id DELETE n RETURN n',
         { id: this.tag.id },
       )
         .then((result) => {
@@ -125,7 +126,7 @@ class Tag {
       changeReq = `${changeReq}}`;
       changeReq = changeReq.replace(',}', '}');
       session.run(
-        `MATCH (n:tag {id: $id}) SET n+= ${changeReq} RETURN n`,
+        `MATCH (n:Tag {id: $id}) SET n+= ${changeReq} RETURN n`,
         this.tag,
       )
         .then((result) => {
@@ -147,7 +148,7 @@ class Tag {
       newProperties.forEach((property) => { addReq = ` ${addReq}${property} : $${property},`; });
       addReq = `${addReq}}`;
       addReq = addReq.replace(',}', '}');
-      session.run(`CREATE (n:tag ${addReq}) RETURN n`, this.tag)
+      session.run(`CREATE (n:Tag ${addReq}) RETURN n`, this.tag)
         .then((result) => {
           session.close();
           if (result.records.length === 1) {

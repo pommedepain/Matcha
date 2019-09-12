@@ -1,5 +1,5 @@
 
-const debug = require('debug')('app:model_user');
+const debug = require('debug')('app:model_relationship');
 const config = require('config');
 const _ = require('lodash');
 const neo4j = require('neo4j-driver').v1;
@@ -9,19 +9,16 @@ const User = require('./users');
 const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
 const session = driver.session();
 
-class Relationships extends User {
+class Relationship {
 
-  constructor(relation) {
-    super();
-    if (relation.user_a && relation.user_b && relation.type) this.relation = relation;
-    else if (relation.type) this.relation = relation;
-    else return false;
+  constructor(data) {
+    this.data = data;
   }
 
-  addRelationShip() {
+  createRelationship() {
     return new Promise((resolve, reject) => {
-      debug(this.relation.user_a, this.relation.user_b, this.relation.type);
-      const query = `MATCH (a:User {username: '${this.relation.user_a}'}), (b:User {username: '${this.relation.user_b}'}) CREATE (a)-[r:${this.relation.type}]->(b) RETURN type(r)`;
+      const query = `MATCH (a:${this.data.node_a.type} {${this.data.node_a.id}: '${this.data.node_a.value}'}), (b:${this.data.node_b.type} {${this.data.node_b.id}: '${this.data.node_b.value}'}) CREATE (a)-[r:${this.data.relation}]->(b) RETURN type(r)`;
+      debug(query);
       session.run(query)
         .then((res) => {
           session.close();
@@ -36,4 +33,4 @@ class Relationships extends User {
   }
 }
 
-module.exports = Relationships;
+module.exports = Relationship;

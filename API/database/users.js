@@ -10,7 +10,7 @@ const session = driver.session();
 
 
 const requiredProperties = ['username', 'firstName', 'lastName', 'password', 'email', 'birthdate'];
-const optionalProperties = ['bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'tags', 'optional', 'isAdmin'];
+const optionalProperties = ['bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'tags', 'localisation', 'optional', 'isAdmin'];
 const users = [
   {
     username: 'Jean',
@@ -23,6 +23,7 @@ const users = [
     gender: 'male',
     ageMin: '19',
     ageMax: '31',
+    localisation: '42',
     sexOrient: 'hetero',
   },
   {
@@ -62,7 +63,7 @@ const users = [
 
 function populateUsers() {
   const promises = [];
-  debug('Populating DB...');
+  debug('Populating Users in DB...');
   users.forEach((user) => {
     const p = new User(_.pick(user, requiredProperties.concat(optionalProperties))).createUser();
     promises.push(p);

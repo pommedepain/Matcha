@@ -64,6 +64,7 @@ module.exports = {
     type: 'string',
     valid: ['Heterosexual', 'Homosexual', 'Bisexual', 'Pansexual'],
     invalid: ['other', 0, null, false],
+    public: true,
   },
   // tags: {
   //   type: 'array of objects',
@@ -71,6 +72,12 @@ module.exports = {
   //   invalid: [[0], [null], [false]],
   //   public: true,
   // },
+  localisation: {
+    type: 'numstring',
+    valid: ['5', '160'],
+    invalid: ['4', '161', 0, null, false],
+    public: true,
+  },
   optional: {
     type: 'string',
     valid: ['Pilip2', 'Jean', 'claude', 'user4test', '78945'],

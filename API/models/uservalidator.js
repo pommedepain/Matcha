@@ -17,21 +17,6 @@ class UserValidator {
       symbol: 1,
       requirementCount: 1,
     };
-    this.validTags = [
-      { id: 'cinema', text: 'Cinema Lover' },
-      { id: 'traveler', text: 'Traveler' },
-      { id: 'cat', text: 'Cat Person' },
-      { id: 'dog', text: 'Dog Person' },
-      { id: 'nature', text: 'Nature Lover' },
-      { id: 'family', text: 'Family-Oriented' },
-      { id: 'party', text: 'Party Animal' },
-      { id: 'book', text: 'Bookworm' },
-      { id: 'extrovert', text: 'Extrovert' },
-      { id: 'introvert', text: 'Introvert' },
-      { id: 'creative', text: 'Creative' },
-      { id: 'animal', text: 'Animal Lover' },
-      { id: 'arts', text: 'Patron of the Arts' },
-    ];
     if (
       this.data.username === 'undefined' || this.data.username === 0 || this.data.username === null
       || this.data.firstName === 'undefined' || this.data.firstName === 0 || this.data.firstName === null
@@ -81,6 +66,9 @@ class UserValidator {
 
       if (this.req.ageMax) sch.ageMax = Joi.number().integer().min(19).max(100).required();
       else sch.ageMax = Joi.number().integer().min(19).max(100);
+
+      if (this.req.localisation) sch.localisation = Joi.number().integer().min(5).max(160).required();
+      else sch.localisation = Joi.number().integer().min(5).max(160);
 
       if (this.req.sexOrient) sch.sexOrient = Joi.string().regex(/^(hetero|homo|bi|pan)$/).required();
       else sch.sexOrient = Joi.string().regex(/^(hetero|homo|bi|pan)$/);

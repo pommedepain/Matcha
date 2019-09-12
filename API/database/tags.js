@@ -27,7 +27,7 @@ const tags = [
 
 function populateTags() {
   const promises = [];
-  debug('Populating DB...');
+  debug('Populating Tags in DB...');
   tags.forEach((tag) => {
     const p = new Tags(_.pick(tag, requiredProperties)).createTag();
     promises.push(p);
