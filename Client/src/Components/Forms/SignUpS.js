@@ -5,6 +5,7 @@ import Form from './SignUpD';
 import classes from './SignUp.module.css';
 
 const axios = require('axios');
+const datas = require('../../Datas/tagSuggestions.json');
 
 class SignUp extends Component {
 	// static propTypes = {
@@ -16,6 +17,7 @@ class SignUp extends Component {
 
 	state = {
 		showPopup: false,
+		showAlert: false,
 		style: {},
 		username: "",
 		firstName: "", 
@@ -97,9 +99,22 @@ class SignUp extends Component {
 	}
 
 	handleAddition = (tag) => {
-		this.setState(
-			state => ({ tags: [...state.tags, tag] })
+		for (let i = 0; i < datas.suggestions.length; i++)
+		{
+			if (datas.suggestions[i].text === tag.text)
+			{
+				console.log(tag)
+				return (this.setState(
+					state => ({ tags: [...state.tags, tag] })
+				))
+			}
+		}
+		return (
+			this.setState(
+				{ showAlert: true }
+			)
 		)
+		// alert("Please choose a Tag amongst the suggestions");
 	}
 
 	nextStep = (props) => {

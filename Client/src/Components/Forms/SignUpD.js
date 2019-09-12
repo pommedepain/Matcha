@@ -5,6 +5,7 @@ import 'rc-slider/assets/index.css';
 import PasswdStrength from './utils/PasswdStrength'
 import Tags from './utils/Tags'
 import classes from './SignUp.module.css';
+import AlertBox from './utils/AlertBox'
 
 // const Slider = require('rc-slider');
 // const createSliderWithTooltip = Slider.createSliderWithTooltip;
@@ -21,6 +22,12 @@ const SignUp = (props) => {
 			<div className={classes.popup}>
 				<div className={classes.popup_inner}>
 					<form id={classes.msform}>
+						{props.showAlert ? 
+						<AlertBox 
+							message="Please choose a Tag amongst the suggestions"
+							button="Try Again"
+						/>
+						: null}
 						<button type="button" onClick={props.popup} className={`${classes.close} ${classes.heavy} ${classes.rounded}`}></button>
 						<ul id={classes.progressbar}>
 							<li className={classes.active}>Account Setup</li>
