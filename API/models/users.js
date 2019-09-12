@@ -117,13 +117,15 @@ class User extends Relationship {
 
   getUserInfo() {
     return new Promise((resolve, reject) => {
+      const session = driver.session();
       debug('Getting user info for :', this.user);
       new UserValidator(this.getRequirements, this.user).validate()
-        .then(() => {const session = driver.session();
+        .then(() => {
           session.run(
-          'MATCH (n:User) WHERE n.username=$username RETURN n',
-          { username: this.user.username },
-        )})
+            'MATCH (n:User) WHERE n.username=$username RETURN n',
+            { username: this.user.username },
+          );
+        })
         .then((result) => {
           session.close();
           if (result.records.length === 1) {

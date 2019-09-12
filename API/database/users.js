@@ -45,6 +45,9 @@ const users = [
     password: 'Test123*',
     email: 'pilip@gmail.com',
     birthdate: '1995-03-28',
+    tags: [
+      { id: 'cat' },
+    ],
   },
   {
     username: 'Claude',

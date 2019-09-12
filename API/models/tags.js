@@ -70,13 +70,15 @@ class Tag {
 
   getTagInfo() {
     return new Promise((resolve, reject) => {
+      const session = driver.session();
       debug('Getting tag info for :', this.tag);
       new Tagvalidator(this.getRequirements, this.tag).validate()
-        .then(() => {const session = driver.session();
-        session.run(
-          'MATCH (n:Tag) WHERE n.id=$id RETURN n',
-          { id: this.tag.id },
-        )})
+        .then(() => {
+          session.run(
+            'MATCH (n:Tag) WHERE n.id=$id RETURN n',
+            { id: this.tag.id },
+          );
+        })
         .then((result) => {
           session.close();
           if (result.records.length === 1) {

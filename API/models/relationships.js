@@ -13,18 +13,23 @@ class Relationship {
 
   constructor(data) {
     this.data = data;
+    this.properties = ['id', 'username'];
   }
 
   getRelationships() {
     return new Promise((resolve, reject) => {
-      const query = `MATCH (a)-[r:${this.data.relation}]->(b) return r`;
+      const query = `MATCH (a)-[r:${this.data.relation}]->(b) return (a)-[r]->(b)`;
       debug(query);
       const session = driver.session();
       session.run(query)
         .then((res) => {
           session.close();
-          debug(res.records[0]._fields);
-          resolve(res);
+          const result = [];
+          res.records.forEach((record) => {
+            result.push(_.pick(record._fields[0][0].start.properties, this.properties), record._fields[0][0].segments[0].relationship.type, _.pick(record._fields[0][0].end.properties, this.properties));
+          });
+          debug(result);
+          resolve(result);
         })
         .catch((err) => {
           debug(err);

@@ -18,18 +18,31 @@ router.use(express.urlencoded({ extended: true }));
 router.get('/type/:relation', handler(async (req, res) => {
   debug('Request to get Relationship information for :', req.params.id);
   return (new Relationship({ relation: req.params.relation }).getRelationships()
-    .then((relationship) => {
-      const result = _.pick(relationship, publicProperties);
-      return res.status(200).json({
+    .then(relationship => (
+      res.status(200).json({
         success: true,
-        payload: { value: 'read', result },
-      });
-    }));
+        payload: { value: 'read', relationship },
+      })
+    )));
 }));
 
-router.post('/node_a/:type.:id.:value/node_b/:type.:id.:value/:relation', [auth, admin], handler(async (req, res) => {
+router.post('/:type_a.:id_a.:value_a/:type_b.:id_b.:value_b/:relation', handler(async (req, res) => {
   debug('Request to add new Relationship :\n', _.pick(req.body, validProperties));
-  return (new Relationship(_.pick(req.body, validProperties)).createRelationship()
+  return (new Relationship(
+    {
+      node_a: {
+        type: req.params.type_a,
+        id: req.params.id_a,
+        value: req.params.value_a,
+      },
+      node_b: {
+        type: req.params.type_b,
+        id: req.params.id_b,
+        value: req.params.value_b,
+      },
+      relation: req.param.relation,
+    },
+  ).createRelationship()
     .then(relationship => (
       res.status(200).json({
         success: true,
