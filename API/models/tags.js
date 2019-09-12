@@ -8,44 +8,42 @@ const bcrypt = require('bcrypt');
 const Tagvalidator = require('./tagvalidator');
 
 const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
-const session = driver.session();
+
 
 class Tag {
 
   constructor(tag) {
-    if (tag && tag.id && tag.text) {
-      this.tag = tag;
-      this.allProperties = ['id', 'text'];
-      this.publicProperties = ['id', 'text'];
-
-      this.creationRequirements = {
-        id: true,
-        text: true,
-      };
-      this.getRequirements = {
-        id: true,
-        text: true,
-      };
-      this.updateRequirements = {
-        id: true,
-      };
-      this.deleteRequirements = {
-        id: true,
-      };
-      this.getRequirements = {
-        id: true,
-      };
-    } else return (new Error('invalid tag'));
+    this.tag = tag;
+    this.allProperties = ['id', 'text'];
+    this.publicProperties = ['id', 'text'];
+    this.creationRequirements = {
+      id: true,
+      text: true,
+    };
+    this.getRequirements = {
+      id: true,
+    };
+    this.updateRequirements = {
+      id: true,
+    };
+    this.deleteRequirements = {
+      id: true,
+    };
+    this.getRequirements = {
+      id: true,
+    };
   }
 
   redundancyCheck() {
     return new Promise((resolve, reject) => {
       debug('Checkin for', this.tag.id, 'in database.');
+      const session = driver.session();
       session.run(
         'MATCH (n:Tag) WHERE n.id=$id  RETURN n',
         { id: this.tag.id },
       )
         .then((result) => {
+          session.close();
           if (result.records.length === 0) { resolve(this.tag); }
           reject(new Error('tag exists'));
         })
@@ -53,10 +51,12 @@ class Tag {
     });
   }
 
-  gettags() {
+  getTags() {
     return new Promise((resolve, reject) => {
+      const session = driver.session();
       session.run('MATCH (n:Tag) RETURN n.id')
         .then((result) => {
+          session.close();
           if (result.records.length !== 0) {
             this.tags = [];
             result.records.forEach((record) => { this.tags.push(record._fields[0]); });
@@ -68,15 +68,17 @@ class Tag {
     });
   }
 
-  gettagInfo() {
+  getTagInfo() {
     return new Promise((resolve, reject) => {
       debug('Getting tag info for :', this.tag);
       new Tagvalidator(this.getRequirements, this.tag).validate()
-        .then(() => session.run(
+        .then(() => {const session = driver.session();
+        session.run(
           'MATCH (n:Tag) WHERE n.id=$id RETURN n',
           { id: this.tag.id },
-        ))
+        )})
         .then((result) => {
+          session.close();
           if (result.records.length === 1) {
             const tag = result.records[0]._fields[0].properties;
             debug('Data fetched :\n', tag);
@@ -89,6 +91,7 @@ class Tag {
 
   deleteRelationships() {
     return new Promise((resolve) => {
+      const session = driver.session();
       session.run(
         'MATCH p=(a)-[r]->(b) WHERE a.id=$id OR b.id=$id DELETE r',
         { id: this.tag.id },
@@ -103,6 +106,7 @@ class Tag {
 
   deleteNode() {
     return new Promise((resolve, reject) => {
+      const session = driver.session();
       session.run(
         'MATCH (n:Tag) WHERE n.id=$id DELETE n RETURN n',
         { id: this.tag.id },
@@ -118,15 +122,16 @@ class Tag {
     });
   }
 
-  changetagProperies(hash) {
+  changeTagProperies(hash) {
     return new Promise((resolve, reject) => {
       const newProperties = Object.keys(this.tag);
       let changeReq = '{';
       newProperties.forEach((property) => { changeReq = ` ${changeReq}${property} : $${property},`; });
       changeReq = `${changeReq}}`;
       changeReq = changeReq.replace(',}', '}');
+      const session = driver.session();
       session.run(
-        `MATCH (n:Tag {id: $id}) SET n+= ${changeReq} RETURN n`,
+        `MATCH (n:Tag) WHERE n.id=$id OR n.text=$text SET n+= ${changeReq} RETURN n`,
         this.tag,
       )
         .then((result) => {
@@ -148,6 +153,7 @@ class Tag {
       newProperties.forEach((property) => { addReq = ` ${addReq}${property} : $${property},`; });
       addReq = `${addReq}}`;
       addReq = addReq.replace(',}', '}');
+      const session = driver.session();
       session.run(`CREATE (n:Tag ${addReq}) RETURN n`, this.tag)
         .then((result) => {
           session.close();
@@ -167,7 +173,7 @@ class Tag {
       new Tagvalidator(this.creationRequirements, this.tag).validate()
         .then(() => this.redundancyCheck())
         .then(() => this.addTag())
-        .then(tag => resolve(_.pick(tag, this.publicProperties.concat(this.optionalProperties))))
+        .then(tag => resolve(_.pick(tag, this.allProperties)))
         .catch(err => reject(err))
     ));
   }
@@ -175,9 +181,8 @@ class Tag {
   updateTag() {
     return new Promise((resolve, reject) => (
       new Tagvalidator(this.updateRequirements, this.tag).validate()
-        .then(() => this.hashGenerator())
-        .then(hash => this.changetagProperies(hash))
-        .then(tag => resolve(_.pick(tag, this.publicProperties.concat(this.optionalProperties))))
+        .then(hash => this.changeTagProperies(hash))
+        .then(tag => resolve(_.pick(tag, this.allProperties)))
         .catch(err => reject(err))
     ));
   }

@@ -1,6 +1,5 @@
 const neo4j = require('neo4j-driver').v1;
 const debug = require('debug')('app:startup');
-const _ = require('lodash');
 const populateUsers = require('./users');
 const populateTags = require('./tags');
 const populateRelationships = require('./relationships');

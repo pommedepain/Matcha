@@ -1,13 +1,8 @@
 
-const neo4j = require('neo4j-driver').v1;
+
 const debug = require('debug')('app:startup');
 const _ = require('lodash');
 const User = require('../models/users');
-const RelationShips = require('../models/relationships');
-
-const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
-const session = driver.session();
-
 
 const requiredProperties = ['username', 'firstName', 'lastName', 'password', 'email', 'birthdate'];
 const optionalProperties = ['bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'tags', 'localisation', 'optional', 'isAdmin'];

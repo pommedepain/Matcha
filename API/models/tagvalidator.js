@@ -11,7 +11,7 @@ class TagValidator {
       this.data.id === 'undefined' || this.data.id === 0 || this.data.id === null
       || this.data.text === 'undefined' || this.data.text === 0 || this.data.text === null
     ) this.data = null;
-
+    debug(this.data.id);
   }
 
   validate() {

@@ -1,8 +1,7 @@
 const debug = require('debug')('app:test');
 const each = require('jest-each').default;
 const _ = require('lodash');
-const Validator = require('../models/validator');
-const userTemplate = require('./usertemplate');
+const UserValidator = require('../models/uservalidator');
 const validUserData = require('./validuserdata');
 const invalidUserData = require('./invaliduserdata');
 
@@ -46,7 +45,7 @@ each`
   ${validArray[3][0]} | ${validArray[3][1]} | ${validArray[3][2]}
   ${validArray[4][0]} | ${validArray[4][1]} | ${validArray[4][2]}
 `.test('Valid inputs: $property\n Requirements: $requirement\n Expected: $expected\n', async ({ property, requirement, expected }) => {
-    const promise = await new Validator(requirement, property).validate().catch(err => debug(err));
+    const promise = await new UserValidator(requirement, property).validate().catch(err => debug(err));
     return expect(promise.success).toBe(expected);
   });
 
@@ -93,6 +92,6 @@ each`
   ${invalidArray[38][0]} | ${invalidArray[38][1]} | ${invalidArray[38][2]}
   ${invalidArray[39][0]} | ${invalidArray[39][1]} | ${invalidArray[39][2]}
 `.test('Invalid inputs: $property\n Requirements: $requirement\n Expected: $expected\n', async ({ property, requirement, expected }) => {
-    const promise = await new Validator(requirement, property).validate().catch(err => debug(err));
+    const promise = await new UserValidator(requirement, property).validate().catch(err => debug(err));
     return expect(promise).toBe(expected);
   });
