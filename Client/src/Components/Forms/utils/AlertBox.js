@@ -12,8 +12,16 @@ const AlertBox = (props) => {
 				<div className={`${classes.mouth} ${classes.sad}`}></div>
 			</div>
 			<div className={`${classes.shadow} ${classes.move}`}></div>
-			<div className={classes.message}><h1 className={`${classes.alert} ${classes.h1}`}>Error!</h1><p className={classes.p}>{props.message}</p></div>
-			<button className={`${classes.button_box} ${classes.button}`}><h1 className={classes.red}>{props.button}</h1></button>
+			<div className={classes.message}>
+				<h1 className={`${classes.alert} ${classes.h1}`}>Error!</h1>
+				<p className={classes.p}>{props.message}</p>
+			</div>
+			<button 
+				className={`${classes.button_box} ${classes.button}`}
+				onClick={props.handleChange}
+			>
+				<h1 className={classes.red}>{props.button}</h1>
+			</button>
 		</div>
 	)
 }

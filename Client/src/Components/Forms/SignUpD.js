@@ -26,6 +26,7 @@ const SignUp = (props) => {
 						<AlertBox 
 							message="Please choose a Tag amongst the suggestions"
 							button="Try Again"
+							handleChange={props.handleChange}
 						/>
 						: null}
 						<button type="button" onClick={props.popup} className={`${classes.close} ${classes.heavy} ${classes.rounded}`}></button>
