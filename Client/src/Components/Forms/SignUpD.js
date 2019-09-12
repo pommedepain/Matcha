@@ -33,7 +33,7 @@ const SignUp = (props) => {
 							<input 
 								type="text" 
 								name="firstName" 
-								placeholder="Fist Name"
+								placeholder="First Name"
 								value={props.firstName}
 								onChange={props.handleChange}
 							/>

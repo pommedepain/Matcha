@@ -164,7 +164,8 @@ class SignUp extends Component {
             gender: data.gender,
             ageMin: data.range[0],
             ageMax: data.range[1],
-            sexOrient: data.sexOrient,
+			sexOrient: data.sexOrient,
+			localisation: data.localisation,
             tags: data.tags,
         })
         .then((response) => {
