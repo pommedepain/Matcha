@@ -23,6 +23,8 @@ const tags = [
   { id: 'creative', text: 'Creative' },
   { id: 'animal', text: 'Animal Lover' },
   { id: 'arts', text: 'Patron of the Arts' },
+  { id: 'athlete', text: 'Athlete' },
+  { id: 'geek', text: 'Geek' },
 ];
 
 function populateTags() {

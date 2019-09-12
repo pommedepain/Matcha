@@ -40,6 +40,19 @@ const relationships = [
     },
     relation: 'IS',
   },
+  {
+    node_a: {
+      type: 'User',
+      id: 'username',
+      value: 'Pilip',
+    },
+    node_b: {
+      type: 'Tag',
+      id: 'id',
+      value: 'dog',
+    },
+    relation: 'LOOK_FOR',
+  },
 ];
 
 // function populateRelationships() {

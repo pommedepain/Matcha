@@ -6,14 +6,16 @@ const _ = require('lodash');
 const neo4j = require('neo4j-driver').v1;
 const bcrypt = require('bcrypt');
 const UserValidator = require('./uservalidator');
+const Relationship = require('./relationships');
 const userTemplate = require('../tests/usertemplate');
 
 const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
 const session = driver.session();
 
-class User {
+class User extends Relationship {
 
   constructor(user) {
+    super();
     if (user && user.username) this.user = user;
     else if (user) {
       this.user = {};
@@ -162,7 +164,7 @@ class User {
   changeUserProperies(hash) {
     return new Promise((resolve, reject) => {
       if (hash) this.user.password = hash;
-      const newProperties = Object.keys(this.user);
+      const newProperties = Object.keys(_.pick(this.user, _.without(this.allProperties, 'tags')));
       let changeReq = '{';
       newProperties.forEach((property) => { changeReq = ` ${changeReq}${property} : $${property},`; });
       changeReq = `${changeReq}}`;
@@ -186,7 +188,7 @@ class User {
   addUser(hash) {
     return new Promise((resolve, reject) => {
       this.user.password = hash;
-      const newProperties = Object.keys(_.pick(this.user, this.allProperties));
+      const newProperties = Object.keys(_.pick(this.user, _.without(this.allProperties, 'tags')));
       let addReq = '{';
       newProperties.forEach((property) => { addReq = ` ${addReq}${property} : $${property},`; });
       addReq = `${addReq}}`;
@@ -205,6 +207,36 @@ class User {
     });
   }
 
+  addRelationships() {
+    const promises = [];
+    const relationships = [];
+    debug('Linking User with Tags ...');
+    if (this.user.tags) {
+      this.user.tags.forEach((tag) => {
+        debug(tag);
+        relationships.push({
+          node_a: {
+            type: 'User',
+            id: 'username',
+            value: `${this.user.username}`,
+          },
+          node_b: {
+            type: 'Tag',
+            id: 'id',
+            value: `${tag.id}`,
+          },
+          relation: 'LOOK_FOR',
+        });
+      });
+      relationships.forEach((relation) => {
+        debug('relation:', relation);
+        const p = new Relationship(relation).createRelationship();
+        promises.push(p);
+      });
+    }
+    return Promise.all(promises);
+  }
+
   generateAuthToken(user) {
     this.token = jwt.sign({ username: user.username, isAdmin: user.isAdmin }, config.get('jwtPrivateKey'));
     debug('Generating Auth token :', this.token);
@@ -217,6 +249,7 @@ class User {
         .then(() => this.redundancyCheck())
         .then(() => this.hashGenerator())
         .then(hash => this.addUser(hash))
+        .then(() => this.addRelationships())
         .then(user => resolve(_.pick(user, this.publicProperties.concat(this.optionalProperties))))
         .catch(err => reject(err))
     ));
