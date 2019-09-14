@@ -9,7 +9,7 @@ const UserValidator = require('./uservalidator');
 const Relationship = require('./relationships');
 const userTemplate = require('../tests/usertemplate');
 
-const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
+
 
 
 class User extends Relationship {
@@ -59,6 +59,7 @@ class User extends Relationship {
   redundancyCheck() {
     return new Promise((resolve, reject) => {
       debug('Checkin for', this.user.username, ', ', this.user.email, 'in database.');
+      const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
       const session = driver.session();
       session.run(
         'MATCH (n:User) WHERE n.username=$username OR n.email=$email RETURN n',
@@ -100,6 +101,7 @@ class User extends Relationship {
 
   getUsers() {
     return new Promise((resolve, reject) => {
+      const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
       const session = driver.session();
       session.run('MATCH (n:User) RETURN n.username')
         .then((result) => {
@@ -117,6 +119,7 @@ class User extends Relationship {
 
   getUserInfo() {
     return new Promise((resolve, reject) => {
+      const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
       const session = driver.session();
       debug('Getting user info for :', this.user);
       new UserValidator(this.getRequirements, this.user).validate()
@@ -124,15 +127,17 @@ class User extends Relationship {
           session.run(
             'MATCH (n:User) WHERE n.username=$username RETURN n',
             { username: this.user.username },
-          );
-        })
-        .then((result) => {
-          session.close();
-          if (result.records.length === 1) {
-            const user = result.records[0]._fields[0].properties;
-            debug('Data fetched :\n', user);
-            resolve(user);
-          } else reject(new Error('bad request'));
+          )
+            .then((result) => {
+              session.close();
+              debug(result);
+              if (result.records.length === 1) {
+                const user = result.records[0]._fields[0].properties;
+                debug('Data fetched :\n', user);
+                resolve(user);
+              } else reject(new Error('bad request'));
+            })
+            .catch((err) => { debug('An error occured while fetching user info :', err); });
         })
         .catch((err) => { debug('An error occured while fetching user info :', err); });
     });
@@ -140,6 +145,7 @@ class User extends Relationship {
 
   deleteRelationships() {
     return new Promise((resolve) => {
+      const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
       const session = driver.session();
       session.run(
         'MATCH p=(a)-[r]->(b) WHERE a.username=$username OR b.username=$username DELETE r',
@@ -155,6 +161,7 @@ class User extends Relationship {
 
   deleteNode() {
     return new Promise((resolve, reject) => {
+      const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
       const session = driver.session();
       session.run(
         'MATCH (n:User) WHERE n.username=$username DELETE n RETURN n',
@@ -179,6 +186,7 @@ class User extends Relationship {
       newProperties.forEach((property) => { changeReq = ` ${changeReq}${property} : $${property},`; });
       changeReq = `${changeReq}}`;
       changeReq = changeReq.replace(',}', '}');
+      const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
       const session = driver.session();
       session.run(
         `MATCH (n:User {username: $username}) SET n+= ${changeReq} RETURN n`,
@@ -204,6 +212,7 @@ class User extends Relationship {
       newProperties.forEach((property) => { addReq = ` ${addReq}${property} : $${property},`; });
       addReq = `${addReq}}`;
       addReq = addReq.replace(',}', '}');
+      const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
       const session = driver.session();
       session.run(`CREATE (n:User ${addReq}) RETURN n`, this.user)
         .then((result) => {
