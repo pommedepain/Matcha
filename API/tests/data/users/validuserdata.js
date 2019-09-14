@@ -10,6 +10,7 @@ for (let i = 0; i < userTemplate.username.valid.length; i += 1) {
     email: userTemplate.email.valid[i],
     birthdate: userTemplate.birthdate.valid[i],
     optional: userTemplate.optional.valid[i],
+    tags: userTemplate.tags.valid[0],
     isAdmin: userTemplate.isAdmin.valid[i % 2],
   });
 }

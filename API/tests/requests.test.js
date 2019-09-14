@@ -1,6 +1,6 @@
 const debug = require('debug')('app:reqtest');
 const each = require('jest-each').default;
-const Request = require('./requestsClass');
+const Request = require('./src/requestsClass');
 
 
 const adminUser = {
@@ -26,11 +26,12 @@ const validNewUser = {
   email: 'cludne@gmail.com',
   birthdate: '1905-20-03',
   optional: 'lalala',
+  tags: [{ id: 'athlete', text: 'something' }, { id: 'book', text: 'lala' }],
   isAdmin: 'true',
 };
 
 const invalidNewUser = {
-  username: 'Claudinete',
+  username: 'Claudifouete',
   email: 'cludne@gmail.com',
   birthyear: '1905',
   optional: 'lalala',
@@ -103,13 +104,13 @@ test('PUT request : /api/users/Jean, Admin user expect user updated', async () =
   return expect(res).toBeTruthy();
 });
 
-test('DEL request : /api/users/Claude, wrong user expect error 403:forbidden', async () => {
+test('DEL request : /api/users/Claudinete, wrong user expect error 403:forbidden', async () => {
   const data = await new Request('/api/auth', validNewUser).post().catch(err => debug(err));
   const res = await new Request('/api/users/Claudinete', data).delete().catch(err => debug(err));
   return expect(res).toBe(false);
 });
 
-test('DEL request : /api/users/Claude, Admin user expect user deleted', async () => {
+test('DEL request : /api/users/Claudinete, Admin user expect user deleted', async () => {
   const data = await new Request('/api/auth', adminUser).post().catch(err => debug(err));
   const res = await new Request('/api/users/Claudinete', data).delete().catch(err => debug(err));
   return expect(res).toBeTruthy();

@@ -68,7 +68,7 @@ module.exports = {
   },
   tags: {
     type: 'array of objects',
-    valid: [[{ id: 'athlete', text: 'something' }, { id: 'bookworm', text: 'lala' }]],
+    valid: [[{ id: 'athlete', text: 'something' }, { id: 'book', text: 'lala' }]],
     invalid: [[0], [null], [false]],
     public: true,
   },

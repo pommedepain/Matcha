@@ -6,16 +6,14 @@ const _ = require('lodash');
 const neo4j = require('neo4j-driver').v1;
 const bcrypt = require('bcrypt');
 const UserValidator = require('./uservalidator');
+const TagValidator = require('./tagvalidator');
 const Relationship = require('./relationships');
-const userTemplate = require('../tests/usertemplate');
+const userTemplate = require('../tests/data/users/usertemplate');
 
 
-
-
-class User extends Relationship {
+class User {
 
   constructor(user) {
-    super();
     if (user && user.username) this.user = user;
     else if (user) {
       this.user = {};
@@ -53,6 +51,10 @@ class User extends Relationship {
     };
     this.getRequirements = {
       username: true,
+    };
+    this.tagRequirements = {
+      id: true,
+      text: true,
     };
   }
 
@@ -132,6 +134,7 @@ class User extends Relationship {
               session.close();
               if (result.records.length === 1) {
                 const user = result.records[0]._fields[0].properties;
+
                 debug('Data fetched :\n', user);
                 resolve(user);
               } else reject(new Error('bad request'));
@@ -143,18 +146,29 @@ class User extends Relationship {
   }
 
   deleteRelationships() {
-    return new Promise((resolve) => {
-      const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
-      const session = driver.session();
-      session.run(
-        'MATCH p=(a)-[r]->(b) WHERE a.username=$username OR b.username=$username DELETE r',
-        { username: this.user.username },
-      )
-        .then(() => {
-          session.close();
-          resolve(true);
-        })
-        .catch((err) => { debug('An error occured during relationship deletion :', err); });
+    return new Promise((resolve, reject) => {
+      const node = {
+        node_a: {
+          type: 'User',
+          id: 'username',
+          value: `${this.user.username}`,
+        },
+      };
+      new Relationship(node).deleteThisNodeRelationships()
+        .then(() => resolve(true))
+        .catch(err => reject(err));
+    //   const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
+    //   const session = driver.session();
+    //   session.run(
+    //     'MATCH p=(a)-[r]->(b) WHERE a.username=$username OR b.username=$username DELETE r',
+    //     { username: this.user.username },
+    //   )
+    //     .then(() => {
+    //       session.close();
+    //       resolve(true);
+    //     })
+    //     .catch((err) => { debug('An error occured during relationship deletion :', err); });
+    // });
     });
   }
 
@@ -257,6 +271,19 @@ class User extends Relationship {
     return Promise.all(promises);
   }
 
+  validateTags() {
+    const promises = [];
+    debug('Validating Tags ...');
+    if (this.user.tags) {
+      this.user.tags.forEach((tag) => {
+        debug('tag:', tag);
+        const p = new TagValidator(this.tagRequirements, tag).validate();
+        promises.push(p);
+      });
+    }
+    return Promise.all(promises);
+  }
+
   generateAuthToken(user) {
     this.token = jwt.sign({ username: user.username, isAdmin: user.isAdmin }, config.get('jwtPrivateKey'));
     debug('Generating Auth token :', this.token);
@@ -269,6 +296,7 @@ class User extends Relationship {
         .then(() => this.redundancyCheck())
         .then(() => this.hashGenerator())
         .then(hash => this.addUser(hash))
+        .then(() => this.validateTags())
         .then(() => this.addRelationships())
         .then(user => resolve(_.pick(user, this.publicProperties.concat(this.optionalProperties))))
         .catch(err => reject(err))

@@ -49,8 +49,9 @@ class UserValidator {
       if (this.req.password) sch.password = new Complexity(this.passwordConf).required();
       else sch.password = new Complexity(this.passwordConf);
 
-      if (this.req.birthdate) sch.birthdate = Joi.string().regex(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/).required();
-      else sch.birthdate = Joi.string().regex(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/);
+      if (this.req.birthdate) {
+        sch.birthdate = Joi.string().regex(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/).required();
+      } else sch.birthdate = Joi.string().regex(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/);
 
       if (this.req.email) sch.email = Joi.string().email({ minDomainSegments: 2 }).required();
       else sch.email = Joi.string().email({ minDomainSegments: 2 });
@@ -67,8 +68,9 @@ class UserValidator {
       if (this.req.ageMax) sch.ageMax = Joi.number().integer().min(19).max(100).required();
       else sch.ageMax = Joi.number().integer().min(19).max(100);
 
-      if (this.req.localisation) sch.localisation = Joi.number().integer().min(5).max(160).required();
-      else sch.localisation = Joi.number().integer().min(5).max(160);
+      if (this.req.localisation) {
+        sch.localisation = Joi.number().integer().min(5).max(160).required();
+      } else sch.localisation = Joi.number().integer().min(5).max(160);
 
       if (this.req.sexOrient) sch.sexOrient = Joi.string().regex(/^(hetero|homo|bi|pan)$/).required();
       else sch.sexOrient = Joi.string().regex(/^(hetero|homo|bi|pan)$/);
