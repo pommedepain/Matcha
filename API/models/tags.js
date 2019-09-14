@@ -77,15 +77,16 @@ class Tag {
           session.run(
             'MATCH (n:Tag) WHERE n.id=$id RETURN n',
             { id: this.tag.id },
-          );
-        })
-        .then((result) => {
-          session.close();
-          if (result.records.length === 1) {
-            const tag = result.records[0]._fields[0].properties;
-            debug('Data fetched :\n', tag);
-            resolve(tag);
-          } else reject(new Error('bad request'));
+          )
+            .then((result) => {
+              session.close();
+              if (result.records.length === 1) {
+                const tag = result.records[0]._fields[0].properties;
+                debug('Data fetched :\n', tag);
+                resolve(tag);
+              } else reject(new Error('bad request'));
+            })
+            .catch((err) => { debug('An error occured while fetching tag info :', err); });
         })
         .catch((err) => { debug('An error occured while fetching tag info :', err); });
     });

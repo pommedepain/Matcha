@@ -24,7 +24,7 @@ module.exports = class Request {
 
   get() {
     return (
-      axios.get(`http://localhost:4000${this.route}`, { headers: { 'x-auth-token': this.data } })
+      axios.get(`http://localhost:4000${this.route}`, this.data)
         .then((response) => {
           debug('Success: ', response.data.payload);
           return (response.data.success);

@@ -54,7 +54,6 @@ class User {
     };
     this.tagRequirements = {
       id: true,
-      text: true,
     };
   }
 
