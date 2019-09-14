@@ -2,30 +2,18 @@ const debug = require('debug')('app:test');
 const each = require('jest-each').default;
 const _ = require('lodash');
 const UserValidator = require('../models/uservalidator');
+const incompleteUserData = require('./incompleteuserdata');
 const validUserData = require('./validuserdata');
 const invalidUserData = require('./invaliduserdata');
+const userTemplate = require('./usertemplate');
 
-const noRequirements = {
-  username: false,
-  firstname: false,
-  lastname: false,
-  password: false,
-  email: false,
-  birthyear: false,
-  optional: false,
-  isAdmin: false,
-};
+const noRequirements = {};
+const fullRequirements = {};
 
-const fullRequirements = {
-  username: true,
-  firstname: true,
-  lastname: true,
-  password: true,
-  email: true,
-  birthyear: true,
-  optional: true,
-  isAdmin: true,
-};
+Object.keys(userTemplate).forEach((property) => {
+  noRequirements[property] = false;
+  fullRequirements[property] = true;
+});
 
 const validArray = [];
 validUserData.forEach((user) => {
@@ -37,6 +25,11 @@ invalidUserData.forEach((user) => {
   invalidArray.push([user, noRequirements, undefined]);
 });
 
+const incompleteArray = [];
+incompleteUserData.forEach((user) => {
+  incompleteArray.push([user, fullRequirements, undefined]);
+});
+
 each`
   property    | requirement    | expected
   ${validArray[0][0]} | ${validArray[0][1]} | ${validArray[0][2]}
@@ -44,10 +37,36 @@ each`
   ${validArray[2][0]} | ${validArray[2][1]} | ${validArray[2][2]}
   ${validArray[3][0]} | ${validArray[3][1]} | ${validArray[3][2]}
   ${validArray[4][0]} | ${validArray[4][1]} | ${validArray[4][2]}
-`.test('Valid inputs: $property\n Requirements: $requirement\n Expected: $expected\n', async ({ property, requirement, expected }) => {
-    const promise = await new UserValidator(requirement, property).validate().catch(err => debug(err));
-    return expect(promise.success).toBe(expected);
-  });
+`.test('Valid inputs: $property\n Requirements: $requirement\n Expected: $expected\n',
+    async ({ property, requirement, expected }) => {
+      const promise = await new UserValidator(requirement, property).validate()
+        .catch(err => debug(err));
+      return expect(promise.success).toBe(expected);
+    });
+
+each`
+  property    | requirement    | expected
+  ${incompleteArray[0][0]} | ${incompleteArray[0][1]} | ${incompleteArray[0][2]}
+  ${incompleteArray[1][0]} | ${incompleteArray[1][1]} | ${incompleteArray[1][2]}
+  ${incompleteArray[2][0]} | ${incompleteArray[2][1]} | ${incompleteArray[2][2]}
+  ${incompleteArray[3][0]} | ${incompleteArray[3][1]} | ${incompleteArray[3][2]}
+  ${incompleteArray[4][0]} | ${incompleteArray[4][1]} | ${incompleteArray[4][2]}
+  ${incompleteArray[5][0]} | ${incompleteArray[5][1]} | ${incompleteArray[5][2]}
+  ${incompleteArray[6][0]} | ${incompleteArray[6][1]} | ${incompleteArray[6][2]}
+  ${incompleteArray[7][0]} | ${incompleteArray[7][1]} | ${incompleteArray[7][2]}
+  ${incompleteArray[8][0]} | ${incompleteArray[8][1]} | ${incompleteArray[8][2]}
+  ${incompleteArray[9][0]} | ${incompleteArray[9][1]} | ${incompleteArray[9][2]}
+  ${incompleteArray[10][0]} | ${incompleteArray[10][1]} | ${incompleteArray[10][2]}
+  ${incompleteArray[11][0]} | ${incompleteArray[11][1]} | ${incompleteArray[11][2]}
+  ${incompleteArray[12][0]} | ${incompleteArray[12][1]} | ${incompleteArray[12][2]}
+  ${incompleteArray[13][0]} | ${incompleteArray[13][1]} | ${incompleteArray[13][2]}
+  ${incompleteArray[14][0]} | ${incompleteArray[14][1]} | ${incompleteArray[14][2]}
+`.test('Incomplete inputs: $property\n Requirements: $requirement\n Expected: $expected\n',
+    async ({ property, requirement, expected }) => {
+      const promise = await new UserValidator(requirement, property).validate()
+        .catch(err => debug(err));
+      return expect(promise).toBe(expected);
+    });
 
 each`
   property    | requirement    | expected
@@ -91,7 +110,9 @@ each`
   ${invalidArray[37][0]} | ${invalidArray[37][1]} | ${invalidArray[37][2]}
   ${invalidArray[38][0]} | ${invalidArray[38][1]} | ${invalidArray[38][2]}
   ${invalidArray[39][0]} | ${invalidArray[39][1]} | ${invalidArray[39][2]}
-`.test('Invalid inputs: $property\n Requirements: $requirement\n Expected: $expected\n', async ({ property, requirement, expected }) => {
-    const promise = await new UserValidator(requirement, property).validate().catch(err => debug(err));
-    return expect(promise).toBe(expected);
-  });
+`.test('Invalid inputs: $property\n Requirements: $requirement\n Expected: $expected\n',
+    async ({ property, requirement, expected }) => {
+      const promise = await new UserValidator(requirement, property).validate()
+        .catch(err => debug(err));
+      return expect(promise).toBe(expected);
+    });

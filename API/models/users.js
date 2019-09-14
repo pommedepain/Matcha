@@ -130,7 +130,6 @@ class User extends Relationship {
           )
             .then((result) => {
               session.close();
-              debug(result);
               if (result.records.length === 1) {
                 const user = result.records[0]._fields[0].properties;
                 debug('Data fetched :\n', user);

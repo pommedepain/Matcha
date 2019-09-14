@@ -66,12 +66,12 @@ module.exports = {
     invalid: ['other', 0, null, false],
     public: true,
   },
-  // tags: {
-  //   type: 'array of objects',
-  //   valid: [[{ id: 'athlete', text: 'something' }, { id: 'bookworm', text: 'lala' }]],
-  //   invalid: [[0], [null], [false]],
-  //   public: true,
-  // },
+  tags: {
+    type: 'array of objects',
+    valid: [[{ id: 'athlete', text: 'something' }, { id: 'bookworm', text: 'lala' }]],
+    invalid: [[0], [null], [false]],
+    public: true,
+  },
   localisation: {
     type: 'numstring',
     valid: ['5', '160'],
