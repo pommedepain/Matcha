@@ -20,22 +20,22 @@ const updatedNewTag = {
 };
 
 test('GET request : /api/tags/, expect tag list, true', async () => {
-  const data = await new Request('/api/tags', null).get().catch(err => debug(err));
+  const data = await new Request('/api/tags', null, null).get().catch(err => debug(err));
   return expect(data).toBeTruthy();
 });
 
 test('GET request : /api/tags/cat, expect tag detail', async () => {
-  const data = await new Request('/api/tags/cat', null).get().catch(err => debug(err));
+  const data = await new Request('/api/tags/cat', null, null).get().catch(err => debug(err));
   return expect(data).toBeTruthy();
 });
 
 test('GET request : /api/tags/test, unexisting tag expect error 400', async () => {
-  const data = await new Request('/api/tags/test', null).get().catch(err => debug(err));
+  const data = await new Request('/api/tags/test', null, null).get().catch(err => debug(err));
   return expect(data).toBe(false);
 });
 
 test('POST request : /api/tags/, invalid auth expect 401 error', async () => {
-  const data = await new Request('/api/tags', validTags[0]).post().catch(err => debug(err));
+  const data = await new Request('/api/tags', validTags[0], null).post().catch(err => debug(err));
   return expect(data).toBe(false);
 });
 
@@ -60,7 +60,7 @@ test('PUT request : /api/tags/, valid user expect tag updated', async () => {
   const req = {};
   req.value = updatedNewTag;
   req.token = await new Request('/api/auth', adminUser).post().catch(err => debug(err));
-  const res = await new Request('/api/tags/test', req).put().catch(err => debug(err));
+  const res = await new Request('/api/tags/test', req, { headers: { 'x-auth-token': req.token } }).put().catch(err => debug(err));
   return expect(res).toBeTruthy();
 });
 
@@ -72,13 +72,13 @@ test('GET request : /api/tags/test, expect tag detail', async () => {
 test('DEL request : /api/tags/, invalid tag expect tag error 400', async () => {
   const req = {};
   req.token = await new Request('/api/auth', adminUser).post().catch(err => debug(err));
-  const res = await new Request('/api/tags/teste', req.token).delete().catch(err => debug(err));
+  const res = await new Request('/api/tags/teste', null, { headers: { 'x-auth-token': req.token } }).delete().catch(err => debug(err));
   return expect(res).toBe(false);
 });
 
 test('DEL request : /api/tags/, valid auth/ tag expect tag deleted', async () => {
   const req = {};
   req.token = await new Request('/api/auth', adminUser).post().catch(err => debug(err));
-  const res = await new Request('/api/tags/test', req.token).delete().catch(err => debug(err));
+  const res = await new Request('/api/tags/test', null, { headers: { 'x-auth-token': req.token } }).delete().catch(err => debug(err));
   return expect(res).toBeTruthy();
 });

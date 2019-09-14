@@ -25,7 +25,7 @@ module.exports = class Request {
 
   get() {
     return (
-      axios.get(`http://localhost:4000${this.route}`, this.data)
+      axios.get(`http://localhost:4000${this.route}`, this.data, this.header)
         .then((response) => {
           debug('Success: ', response.data.payload);
           return (response.data.success);
@@ -39,7 +39,7 @@ module.exports = class Request {
 
   put() {
     return (
-      axios.put(`http://localhost:4000${this.route}`, this.data.value, { headers: { 'x-auth-token': this.data.token } })
+      axios.put(`http://localhost:4000${this.route}`, this.data.value, this.header)
         .then((response) => {
           debug('Success: ', response.data.payload);
           return (response.data.success);
@@ -53,7 +53,7 @@ module.exports = class Request {
 
   delete() {
     return (
-      axios.delete(`http://localhost:4000${this.route}`, { headers: { 'x-auth-token': this.data } })
+      axios.delete(`http://localhost:4000${this.route}`, this.header)
         .then((response) => {
           debug('Success: ', response.data.payload);
           return (response.data.success);
