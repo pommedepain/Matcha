@@ -92,7 +92,7 @@ test('POST request : /api/users, invalid user expect error', async () => {
 
 test('PUT request : /api/users/Jean, valid user expect user updated', async () => {
   const req = {};
-  req.user = updatedUser;
+  req.value = updatedUser;
   req.token = await new Request('/api/auth', validUserAuth).post().catch(err => debug(err));
   const res = await new Request('/api/users/Jean', req).put().catch(err => debug(err));
   return expect(res).toBeTruthy();
@@ -110,7 +110,7 @@ test('POST request : /api/auth, expect valid jwt', async () => {
 
 test('PUT request : /api/users/Jean, valid user expect user updated', async () => {
   const req = {};
-  req.user = validUserAuth;
+  req.value = validUserAuth;
   req.token = await new Request('/api/auth', updatedUser).post().catch(err => debug(err));
   const res = await new Request('/api/users/Jean', req).put().catch(err => debug(err));
   return expect(res).toBeTruthy();
@@ -119,15 +119,16 @@ test('PUT request : /api/users/Jean, valid user expect user updated', async () =
 
 test('PUT request : /api/users/Jean, wrong user expect error 403:forbidden', async () => {
   const req = {};
-  req.user = updatedUser;
+  req.value = updatedUser;
   req.token = await new Request('/api/auth', validNewUser).post().catch(err => debug(err));
   const res = await new Request('/api/users/Jean', req).put().catch(err => debug(err));
   return expect(res).toBe(false);
 });
 
+
 test('PUT request : /api/users/Jean, Admin user expect user updated', async () => {
   const req = {};
-  req.user = validUserAuth;
+  req.value = validUserAuth;
   req.token = await new Request('/api/auth', adminUser).post().catch(err => debug(err));
   const res = await new Request('/api/users/Jean', req).put().catch(err => debug(err));
   return expect(res).toBeTruthy();

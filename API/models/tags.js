@@ -125,7 +125,7 @@ class Tag {
     });
   }
 
-  changeTagProperies(hash) {
+  changeTagProperies() {
     return new Promise((resolve, reject) => {
       const newProperties = Object.keys(this.tag);
       let changeReq = '{';
@@ -145,7 +145,7 @@ class Tag {
             resolve(node.properties);
           } else reject(new Error('Informations does not match existing tag'));
         })
-        .catch(err => debug('An error occured during tag information update :', err));
+        .catch(err => reject(err));
     });
   }
 
@@ -184,7 +184,7 @@ class Tag {
   updateTag() {
     return new Promise((resolve, reject) => (
       new Tagvalidator(this.updateRequirements, this.tag).validate()
-        .then(hash => this.changeTagProperies(hash))
+        .then(() => this.changeTagProperies())
         .then(tag => resolve(_.pick(tag, this.allProperties)))
         .catch(err => reject(err))
     ));

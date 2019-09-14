@@ -1,9 +1,22 @@
 const debug = require('debug')('app:reqtest');
 const Request = require('./src/requestsClass');
+const invalidTags = require('./data/tags/invalidtags');
+const validTags = require('./data/tags/validtags');
+const incompleteTags = require('./data/tags/incompletetags');
 
 const adminUser = {
   username: 'Camille',
   password: 'Test123*',
+};
+
+const validNewTag = {
+  id: 'test',
+  text: 'test',
+};
+
+const updatedNewTag = {
+  id: 'test',
+  text: 'test test test',
 };
 
 test('GET request : /api/tags/, expect tag list, true', async () => {
@@ -11,64 +24,61 @@ test('GET request : /api/tags/, expect tag list, true', async () => {
   return expect(data).toBeTruthy();
 });
 
-test('GET request : /api/tags/user, tag detail', async () => {
+test('GET request : /api/tags/cat, expect tag detail', async () => {
   const data = await new Request('/api/tags/cat', null).get().catch(err => debug(err));
   return expect(data).toBeTruthy();
 });
 
-// test('POST request : /api/auth, invalid user expect 400 error', async () => {
-//   const data = await new Request('/api/auth', invalidUserAuth).post().catch(err => debug(err));
-//   return expect(data).toBe(false);
-// });
+test('GET request : /api/tags/test, unexisting tag expect error 400', async () => {
+  const data = await new Request('/api/tags/test', null).get().catch(err => debug(err));
+  return expect(data).toBe(false);
+});
 
-// test('GET request : /api/tags/Jean, expect user info, true', async () => {
-//   const data = await new Request('/api/auth', validUserAuth).post().catch(err => debug(err));
-//   const res = await new Request('/api/tags/Jean', data).get().catch(err => debug(err));
-//   return expect(res).toBeTruthy();
-// });
+test('POST request : /api/tags/, invalid auth expect 401 error', async () => {
+  const data = await new Request('/api/tags', validTags[0]).post().catch(err => debug(err));
+  return expect(data).toBe(false);
+});
 
-// test('POST request : /api/tags, valid user expect user created', async () => {
-//   const data = await new Request('/api/tags/', validNewUser).post().catch(err => debug(err));
-//   return expect(data).toBeTruthy();
-// });
+test('POST request : /api/tags/, valid auth/ existing tag expect error 400', async () => {
+  const req = {};
+  const tag = validTags[0];
+  req.tag = tag;
+  req.token = await new Request('/api/auth', adminUser).post().catch(err => debug(err));
+  const res = await new Request('/api/tags/', req.tag, { headers: { 'x-auth-token': req.token } }).post().catch(err => debug(err));
+  return expect(res).toBe(false);
+});
 
-// test('POST request : /api/tags, invalid user expect error', async () => {
-//   const data = await new Request('/api/tags/', invalidNewUser).post().catch(err => debug(err));
-//   return expect(data).toBe(false);
-// });
+test('POST request : /api/tags/, valid auth/ tag expect tag created', async () => {
+  const req = {};
+  req.tag = validNewTag;
+  req.token = await new Request('/api/auth', adminUser).post().catch(err => debug(err));
+  const res = await new Request('/api/tags/', req.tag, { headers: { 'x-auth-token': req.token } }).post().catch(err => debug(err));
+  return expect(res).toBeTruthy();
+});
 
-// test('PUT request : /api/tags/Jean, valid user expect user updated', async () => {
-//   const req = {};
-//   req.user = updatedUser;
-//   req.token = await new Request('/api/auth', validUserAuth).post().catch(err => debug(err));
-//   const res = await new Request('/api/tags/Jean', req).put().catch(err => debug(err));
-//   return expect(res).toBeTruthy();
-// });
+test('PUT request : /api/tags/, valid user expect tag updated', async () => {
+  const req = {};
+  req.value = updatedNewTag;
+  req.token = await new Request('/api/auth', adminUser).post().catch(err => debug(err));
+  const res = await new Request('/api/tags/test', req).put().catch(err => debug(err));
+  return expect(res).toBeTruthy();
+});
 
-// test('PUT request : /api/tags/Jean, wrong user expect error 403:forbidden', async () => {
-//   const req = {};
-//   req.user = updatedUser;
-//   req.token = await new Request('/api/auth', validNewUser).post().catch(err => debug(err));
-//   const res = await new Request('/api/tags/Jean', req).put().catch(err => debug(err));
-//   return expect(res).toBe(false);
-// });
+test('GET request : /api/tags/test, expect tag detail', async () => {
+  const data = await new Request('/api/tags/test', null).get().catch(err => debug(err));
+  return expect(data).toBeTruthy();
+});
 
-// test('PUT request : /api/tags/Jean, Admin user expect user updated', async () => {
-//   const req = {};
-//   req.user = updatedUser;
-//   req.token = await new Request('/api/auth', adminUser).post().catch(err => debug(err));
-//   const res = await new Request('/api/tags/Jean', req).put().catch(err => debug(err));
-//   return expect(res).toBeTruthy();
-// });
+test('DEL request : /api/tags/, invalid tag expect tag error 400', async () => {
+  const req = {};
+  req.token = await new Request('/api/auth', adminUser).post().catch(err => debug(err));
+  const res = await new Request('/api/tags/teste', req.token).delete().catch(err => debug(err));
+  return expect(res).toBe(false);
+});
 
-// test('DEL request : /api/tags/Claudinete, wrong user expect error 403:forbidden', async () => {
-//   const data = await new Request('/api/auth', validNewUser).post().catch(err => debug(err));
-//   const res = await new Request('/api/tags/Claudinete', data).delete().catch(err => debug(err));
-//   return expect(res).toBe(false);
-// });
-
-// test('DEL request : /api/tags/Claudinete, Admin user expect user deleted', async () => {
-//   const data = await new Request('/api/auth', adminUser).post().catch(err => debug(err));
-//   const res = await new Request('/api/tags/Claudinete', data).delete().catch(err => debug(err));
-//   return expect(res).toBeTruthy();
-// });
+test('DEL request : /api/tags/, valid auth/ tag expect tag deleted', async () => {
+  const req = {};
+  req.token = await new Request('/api/auth', adminUser).post().catch(err => debug(err));
+  const res = await new Request('/api/tags/test', req.token).delete().catch(err => debug(err));
+  return expect(res).toBeTruthy();
+});
