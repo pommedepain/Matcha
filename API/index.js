@@ -1,15 +1,15 @@
 
 const config = require('config');
-const debug = require('debug')('app:debug');
+const debug = require('debug')('index');
 const express = require('express');
 const helmet = require('helmet');
 const morgan = require('morgan');
-const users = require('./routes/users');
-const tags = require('./routes/tags');
-const relationships = require('./routes/relationships');
-const auth = require('./routes/auth');
-const initdb = require('./database/initdb');
-const error = require('./middleware/error');
+const users = require('./src/routes/users');
+const tags = require('./src/routes/tags');
+const relationships = require('./src/routes/relationships');
+const auth = require('./src/routes/auth');
+const initdb = require('./src/init/initdb');
+const error = require('./src/middleware/error');
 
 const app = express();
 
