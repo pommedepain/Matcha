@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "DEBUG=tests:* && jest",
+    "test": "jest",
     "start": "sh scripts/apiProd.sh",
     "dev": "sh scripts/apiDev.sh"
   },

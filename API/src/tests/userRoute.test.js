@@ -1,6 +1,6 @@
 const debug = require('debug')('tests:user_route');
 
-const Request = require('./src/requestsClass');
+const Request = require('../util/requestsClass');
 
 
 const adminUser = {
