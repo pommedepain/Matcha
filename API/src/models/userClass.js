@@ -246,7 +246,6 @@ class User {
     debug('Linking User with Tags ...');
     if (this.user.tags) {
       this.user.tags.forEach((tag) => {
-        debug(tag);
         relationships.push({
           node_a: {
             type: 'User',
