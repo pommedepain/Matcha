@@ -7,7 +7,7 @@ const admin = require('../middleware/admin');
 const handler = require('../middleware/wrapper');
 
 const router = express.Router();
-const Tag = require('../models/tags');
+const Tag = require('../models/tagClass');
 
 const validProperties = ['id', 'text'];
 const publicProperties = ['id', 'text'];

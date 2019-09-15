@@ -6,7 +6,7 @@ const admin = require('../middleware/admin');
 const handler = require('../middleware/wrapper');
 
 const router = express.Router();
-const Relationship = require('../models/relationships');
+const Relationship = require('../models/relationshipsClass');
 
 const validProperties = ['node_a', 'node_b', 'relation'];
 const publicProperties = ['node_a', 'node_b', 'relation'];

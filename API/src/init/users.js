@@ -2,7 +2,7 @@
 
 const debug = require('debug')('init:users');
 const _ = require('lodash');
-const User = require('../models/users');
+const User = require('../models/userClass');
 
 const requiredProperties = ['username', 'firstName', 'lastName', 'password', 'email', 'birthdate'];
 const optionalProperties = ['bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'tags', 'localisation', 'optional', 'isAdmin'];

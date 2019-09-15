@@ -1,7 +1,7 @@
 
 const debug = require('debug')('init:tags');
 const _ = require('lodash');
-const Tags = require('../models/tags');
+const Tags = require('../models/tagClass');
 
 const requiredProperties = ['id', 'text'];
 

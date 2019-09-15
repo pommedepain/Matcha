@@ -8,7 +8,7 @@ const users = require('./src/routes/users');
 const tags = require('./src/routes/tags');
 const relationships = require('./src/routes/relationships');
 const auth = require('./src/routes/auth');
-const initdb = require('./src/init/initdb');
+const initdb = require('./src/init/initDb');
 const error = require('./src/middleware/error');
 
 const app = express();

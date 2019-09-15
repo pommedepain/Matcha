@@ -7,7 +7,7 @@ const neo4j = require('neo4j-driver').v1;
 const bcrypt = require('bcrypt');
 const UserValidator = require('../validation/users');
 const TagValidator = require('../validation/tags');
-const Relationship = require('./relationships');
+const Relationship = require('./relationshipsClass');
 const userTemplate = require('../util/userTemplate');
 
 

@@ -1,6 +1,6 @@
 
 const debug = require('debug')('init:relationships');
-const RelationShip = require('../models/relationships');
+const RelationShip = require('../models/relationshipsClass');
 
 const relationships = [
   {

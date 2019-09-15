@@ -1,6 +1,6 @@
 
 const Joi = require('@hapi/joi');
-const debug = require('debug')('validation:tag');
+const debug = require('debug')('validation:tags');
 
 class TagValidator {
 

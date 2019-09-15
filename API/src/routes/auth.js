@@ -2,7 +2,7 @@
 const debug = require('debug')('app:route_auth');
 const express = require('express');
 const _ = require('lodash');
-const User = require('../models/users');
+const User = require('../models/userClass');
 const handler = require('../middleware/wrapper');
 
 const router = express.Router();
