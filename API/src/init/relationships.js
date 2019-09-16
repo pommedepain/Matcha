@@ -7,12 +7,12 @@ const relationships = [
     node_a: {
       type: 'User',
       id: 'username',
-      value: 'Jean',
+      value: { username: 'Jean' },
     },
     node_b: {
       type: 'User',
       id: 'username',
-      value: 'Boby',
+      value: { username: 'Boby' },
     },
     relation: 'LIKES',
   },
@@ -20,12 +20,12 @@ const relationships = [
     node_a: {
       type: 'User',
       id: 'username',
-      value: 'Camille',
+      value: { username: 'Camille' },
     },
     node_b: {
       type: 'Tag',
       id: 'id',
-      value: 'cat',
+      value: { id: 'cat' },
     },
     relation: 'IS',
   },

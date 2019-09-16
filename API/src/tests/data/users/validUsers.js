@@ -2,17 +2,25 @@ const userTemplate = require('../../../util/userTemplate');
 
 const validUserData = [];
 for (let i = 0; i < userTemplate.username.valid.length; i += 1) {
-  validUserData.push({
-    username: userTemplate.username.valid[i],
-    firstName: userTemplate.firstName.valid[i],
-    lastName: userTemplate.lastName.valid[i],
-    password: userTemplate.password.valid[i],
-    email: userTemplate.email.valid[i],
-    birthdate: userTemplate.birthdate.valid[i],
-    optional: userTemplate.optional.valid[i],
-    tags: userTemplate.tags.valid[0],
-    isAdmin: userTemplate.isAdmin.valid[i % 2],
-  });
+  validUserData.push(
+    {
+      node_a: {
+        type: 'User',
+        id: 'username',
+        value: {
+          username: userTemplate.username.valid[i],
+          firstName: userTemplate.firstName.valid[i],
+          lastName: userTemplate.lastName.valid[i],
+          password: userTemplate.password.valid[i],
+          email: userTemplate.email.valid[i],
+          birthdate: userTemplate.birthdate.valid[i],
+          optional: userTemplate.optional.valid[i],
+          tags: userTemplate.tags.valid[0],
+          isAdmin: userTemplate.isAdmin.valid[i % 2],
+        },
+      },
+    },
+  );
 }
 
 module.exports = validUserData;

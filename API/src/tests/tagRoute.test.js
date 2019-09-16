@@ -5,18 +5,36 @@ const validTags = require('./data/tags/validTags');
 const incompleteTags = require('./data/tags/incompleteTags');
 
 const adminUser = {
-  username: 'Camille',
-  password: 'Test123*',
+  node_a: {
+    type: 'User',
+    id: 'username',
+    value: {
+      username: 'Camille',
+      password: 'Test123*',
+    },
+  },
 };
 
 const validNewTag = {
-  id: 'test',
-  text: 'test',
+  node_a: {
+    type: 'Tag',
+    id: 'id',
+    value: {
+      id: 'test',
+      text: 'test',
+    },
+  },
 };
 
 const updatedNewTag = {
-  id: 'test',
-  text: 'test test test',
+  node_a: {
+    type: 'Tag',
+    id: 'id',
+    value: {
+      id: 'test',
+      text: 'test test test',
+    },
+  },
 };
 
 test('GET request : /api/tags/, expect tag list, true', async () => {

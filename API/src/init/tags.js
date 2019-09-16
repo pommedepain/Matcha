@@ -1,7 +1,7 @@
 
 const debug = require('debug')('init:tags');
 const _ = require('lodash');
-const Tags = require('../models/tagClass');
+const Tag = require('../models/tagClass');
 
 const requiredProperties = ['id', 'text'];
 
@@ -27,7 +27,7 @@ function populateTags() {
   const promises = [];
   debug('Populating Tags in DB...');
   tags.forEach((tag) => {
-    const p = new Tags(_.pick(tag, requiredProperties)).createTag();
+    const p = new Tag(_.pick(tag, requiredProperties)).createTag();
     promises.push(p);
   });
   return Promise.all(promises);

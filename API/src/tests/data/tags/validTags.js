@@ -1,4 +1,5 @@
-module.exports = [
+
+const valid = [
   { id: 'cinema', text: 'Cinema Lover' },
   { id: 'traveler', text: 'Traveler' },
   { id: 'cat', text: 'Cat Person' },
@@ -13,3 +14,19 @@ module.exports = [
   { id: 'animal', text: 'Animal Lover' },
   { id: 'test', text: 'Tag testing' },
 ];
+
+const validTagData = [];
+valid.forEach((tag) => {
+  validTagData.push(
+    {
+      node_a: {
+        type: 'Tag',
+        id: 'id',
+        value: tag,
+      },
+    },
+  );
+});
+
+
+module.exports = validTagData;

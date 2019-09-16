@@ -7,19 +7,21 @@ const neo4j = require('neo4j-driver').v1;
 const bcrypt = require('bcrypt');
 const UserValidator = require('../validation/users');
 const TagValidator = require('../validation/tags');
-const Relationship = require('./relationshipsClass');
 const userTemplate = require('../util/userTemplate');
+const Node = require('./nodeClass');
 
 
-class User {
+class User extends Node {
 
-  constructor(user) {
-    if (user && user.username) this.user = user;
-    else if (user) {
-      this.user = {};
-      this.user.username = user;
-    }
-
+  constructor(data) {
+    const node = {
+      type: 'User',
+      id: 'username',
+      value: data,
+    };
+    super({ node_a: node });
+    this.data = { node_a: node };
+    this.user = this.data.node_a.value;
     this.allProperties = [];
     this.publicProperties = [];
     this.optionalProperties = [];
@@ -55,33 +57,21 @@ class User {
     this.tagRequirements = {
       id: true,
     };
-  }
-
-  redundancyCheck() {
-    return new Promise((resolve, reject) => {
-      debug('Checkin for', this.user.username, ', ', this.user.email, 'in database.');
-      const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
-      const session = driver.session();
-      session.run(
-        'MATCH (n:User) WHERE n.username=$username OR n.email=$email RETURN n',
-        { username: this.user.username, email: this.user.email },
-      )
-        .then((result) => {
-          session.close();
-          if (result.records.length === 0) { resolve(this.user); }
-          reject(new Error('User exists'));
-        })
-        .catch((err) => { debug('An error during redundancy check :', err); });
-    });
+    debug('User constructor called');
   }
 
   hashGenerator() {
+    debug('hash generator');
     return new Promise((resolve) => {
       if (this.user.password) {
         const data = this.user.password;
         bcrypt.genSalt(10)
           .then(salt => bcrypt.hash(data, salt))
-          .then(hash => resolve(hash))
+          .then((hash) => {
+            this.user.password = hash;
+            this.data.node_a.value.password = hash;
+            resolve();
+          })
           .catch(err => debug(err));
       } else resolve(null);
     });
@@ -100,169 +90,20 @@ class User {
     });
   }
 
-  getUsers() {
-    return new Promise((resolve, reject) => {
-      const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
-      const session = driver.session();
-      session.run('MATCH (n:User) RETURN n.username')
-        .then((result) => {
-          session.close();
-          if (result.records.length !== 0) {
-            this.users = [];
-            result.records.forEach((record) => { this.users.push(record._fields[0]); });
-            debug('Records :\n', this.users);
-            resolve(this.users);
-          } else reject(new Error('No users in database'));
-        })
-        .catch((err) => { debug('An error occured while fetching user list :', err); });
-    });
-  }
-
-  getUserInfo() {
-    return new Promise((resolve, reject) => {
-      const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
-      const session = driver.session();
-      debug('Getting user info for :', this.user);
-      new UserValidator(this.getRequirements, this.user).validate()
-        .then(() => {
-          session.run(
-            'MATCH (n:User) WHERE n.username=$username RETURN n',
-            { username: this.user.username },
-          )
-            .then((result) => {
-              session.close();
-              if (result.records.length === 1) {
-                const user = result.records[0]._fields[0].properties;
-
-                debug('Data fetched :\n', user);
-                resolve(user);
-              } else reject(new Error('bad request'));
-            })
-            .catch((err) => { debug('An error occured while fetching user info :', err); });
-        })
-        .catch((err) => { debug('An error occured while fetching user info :', err); });
-    });
-  }
-
-  deleteRelationships() {
-    return new Promise((resolve, reject) => {
-      const node = {
-        node_a: {
-          type: 'User',
-          id: 'username',
-          value: `${this.user.username}`,
-        },
-      };
-      new Relationship(node).deleteThisNodeRelationships()
-        .then(() => resolve(true))
-        .catch(err => reject(err));
-    //   const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
-    //   const session = driver.session();
-    //   session.run(
-    //     'MATCH p=(a)-[r]->(b) WHERE a.username=$username OR b.username=$username DELETE r',
-    //     { username: this.user.username },
-    //   )
-    //     .then(() => {
-    //       session.close();
-    //       resolve(true);
-    //     })
-    //     .catch((err) => { debug('An error occured during relationship deletion :', err); });
-    // });
-    });
-  }
-
-  deleteNode() {
-    return new Promise((resolve, reject) => {
-      const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
-      const session = driver.session();
-      session.run(
-        'MATCH (n:User) WHERE n.username=$username DELETE n RETURN n',
-        { username: this.user.username },
-      )
-        .then((result) => {
-          session.close();
-          if (result.records.length === 1) {
-            debug('Deleted user :', this.user.username);
-            resolve(this.user.username);
-          } else reject(new Error('User not found'));
-        })
-        .catch((err) => { debug('An error occured during node deletion :', err); });
-    });
-  }
-
-  changeUserProperies(hash) {
-    return new Promise((resolve, reject) => {
-      if (hash) this.user.password = hash;
-      const newProperties = Object.keys(_.pick(this.user, _.without(this.allProperties, 'tags')));
-      let changeReq = '{';
-      newProperties.forEach((property) => { changeReq = ` ${changeReq}${property} : $${property},`; });
-      changeReq = `${changeReq}}`;
-      changeReq = changeReq.replace(',}', '}');
-      const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
-      const session = driver.session();
-      session.run(
-        `MATCH (n:User {username: $username}) SET n+= ${changeReq} RETURN n`,
-        this.user,
-      )
-        .then((result) => {
-          session.close();
-          if (result.records.length === 1) {
-            const singleRecord = result.records[0];
-            const node = singleRecord.get(0);
-            resolve(node.properties);
-          } else reject(new Error('Informations does not match existing user'));
-        })
-        .catch(err => debug('An error occured during user information update :', err));
-    });
-  }
-
-  addUser(hash) {
-    return new Promise((resolve, reject) => {
-      this.user.password = hash;
-      const newProperties = Object.keys(_.pick(this.user, _.without(this.allProperties, 'tags')));
-      let addReq = '{';
-      newProperties.forEach((property) => { addReq = ` ${addReq}${property} : $${property},`; });
-      addReq = `${addReq}}`;
-      addReq = addReq.replace(',}', '}');
-      const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
-      const session = driver.session();
-      session.run(`CREATE (n:User ${addReq}) RETURN n`, this.user)
-        .then((result) => {
-          session.close();
-          if (result.records.length === 1) {
-            const singleRecord = result.records[0];
-            const node = singleRecord.get(0);
-            debug('User added to DB :\n', node.properties);
-            resolve(node.properties);
-          } else reject(new Error('An error occured'));
-        })
-        .catch(err => debug('An error occured while adding new user :', err));
-    });
-  }
-
   addRelationships() {
     const promises = [];
-    const relationships = [];
     debug('Linking User with Tags ...');
     if (this.user.tags) {
       this.user.tags.forEach((tag) => {
-        relationships.push({
-          node_a: {
-            type: 'User',
-            id: 'username',
-            value: `${this.user.username}`,
-          },
-          node_b: {
-            type: 'Tag',
-            id: 'id',
-            value: `${tag.id}`,
-          },
-          relation: 'LOOK_FOR',
-        });
-      });
-      relationships.forEach((relation) => {
-        debug('relation:', relation);
-        const p = new Relationship(relation).createRelationship();
+        this.data.node_b = {
+          type: 'Tag',
+          id: 'id',
+          value: tag,
+        };
+        this.data.relation = 'LOOK_FOR';
+        this.id_a = this.data.node_a.id;
+        this.id_b = this.data.node_b.id;
+        const p = this.createRelationship();
         promises.push(p);
       });
     }
@@ -288,12 +129,22 @@ class User {
     return this.token;
   }
 
+  getUserInfo() {
+    return new Promise((resolve, reject) => {
+      debug('Getting tag info for :', this.user.username);
+      new UserValidator(this.getRequirements, this.user).validate()
+        .then(() => this.getNodeInfo())
+        .then(tag => resolve(tag))
+        .catch(err => reject(err));
+    });
+  }
+
   createUser() {
     return new Promise((resolve, reject) => (
       new UserValidator(this.creationRequirements, this.user).validate()
         .then(() => this.redundancyCheck())
         .then(() => this.hashGenerator())
-        .then(hash => this.addUser(hash))
+        .then(() => this.createNode())
         .then(() => this.validateTags())
         .then(() => this.addRelationships())
         .then(user => resolve(_.pick(user, this.publicProperties.concat(this.optionalProperties))))
@@ -305,7 +156,7 @@ class User {
     return new Promise((resolve, reject) => (
       new UserValidator(this.updateRequirements, this.user).validate()
         .then(() => this.hashGenerator())
-        .then(hash => this.changeUserProperies(hash))
+        .then(() => this.updateNode())
         .then(user => resolve(_.pick(user, this.publicProperties.concat(this.optionalProperties))))
         .catch(err => reject(err))
     ));
@@ -314,7 +165,7 @@ class User {
   deleteUser() {
     return new Promise((resolve, reject) => (
       new UserValidator(this.deleteRequirements, this.user).validate()
-        .then(() => this.deleteRelationships())
+        .then(() => this.deleteThisNodeRelationships())
         .then(() => this.deleteNode())
         .then(user => resolve(user))
         .catch(err => reject(err))
