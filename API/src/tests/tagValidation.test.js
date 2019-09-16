@@ -44,7 +44,7 @@ each`
   ${validArray[9][0]} | ${validArray[9][1]} | ${validArray[9][2]}
 `.test('Valid inputs: $property\n Requirements: $requirement\n Expected: $expected\n',
     async ({ property, requirement, expected }) => {
-      const promise = await new TagValidator(requirement, property.node_a.value).validate()
+      const promise = await new TagValidator(requirement, property).validate()
         .catch(err => debug(err));
       return expect(promise.success).toBe(expected);
     });
@@ -55,7 +55,7 @@ each`
   ${incompleteArray[1][0]} | ${incompleteArray[1][1]} | ${incompleteArray[1][2]}
 `.test('Incomplete inputs: $property\n Requirements: $requirement\n Expected: $expected\n',
     async ({ property, requirement, expected }) => {
-      const promise = await new TagValidator(requirement, property.node_a.value).validate()
+      const promise = await new TagValidator(requirement, property).validate()
         .catch(err => debug(err));
       return expect(promise).toBe(expected);
     });
@@ -66,7 +66,7 @@ each`
   ${invalidArray[1][0]} | ${invalidArray[1][1]} | ${invalidArray[1][2]}
 `.test('Invalid inputs: $property\n Requirements: $requirement\n Expected: $expected\n',
     async ({ property, requirement, expected }) => {
-      const promise = await new TagValidator(requirement, property.node_a.value).validate()
+      const promise = await new TagValidator(requirement, property).validate()
         .catch(err => debug(err));
       return expect(promise).toBe(expected);
     });

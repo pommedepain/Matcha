@@ -42,19 +42,9 @@ class Tag extends Node {
 
   getTags() {
     return new Promise((resolve, reject) => {
-      const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
-      const session = driver.session();
-      session.run('MATCH (n:Tag) RETURN n.id')
-        .then((result) => {
-          session.close();
-          if (result.records.length !== 0) {
-            this.tags = [];
-            result.records.forEach((record) => { this.tags.push(record._fields[0]); });
-            debug('Records :\n', this.tags);
-            resolve(this.tags);
-          } else reject(new Error('No tag in database'));
-        })
-        .catch((err) => { debug('An error occured while fetching tag list :', err); });
+      this.getNodeList()
+        .then(list => resolve(list))
+        .catch(err => reject(err));
     });
   }
 

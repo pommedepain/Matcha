@@ -1,4 +1,4 @@
-const debug = require('debug')('app:test');
+const debug = require('debug')('tests:request');
 const axios = require('axios');
 
 module.exports = class Request {
@@ -7,6 +7,7 @@ module.exports = class Request {
     this.route = route;
     this.data = data;
     if (header) this.header = header;
+    debug('HERE', header);
   }
 
   post() {

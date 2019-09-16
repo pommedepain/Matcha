@@ -30,7 +30,7 @@ router.get('/', wrapper(async (req, res) => {
 
 router.get('/:username', [auth, identify], wrapper(async (req, res) => {
   debug('Request to get user information for :', req.params.username);
-  return (new User(req.params.username).getUserInfo()
+  return (new User({ username: req.params.username }).getUserInfo()
     .then((user) => {
       const result = _.pick(user, publicProperties);
       return res.status(200).json({
@@ -64,7 +64,7 @@ router.put('/:username', [auth, identify], wrapper(async (req, res) => {
 
 router.delete('/:username', [auth, admin], wrapper(async (req, res) => {
   debug('Request to delete :', req.params.username);
-  return (new User(req.params.username).deleteUser()
+  return (new User({ username: req.params.username }).deleteUser()
     .then(user => (
       res.status(200).json({
         success: true,

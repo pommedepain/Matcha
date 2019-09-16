@@ -22,6 +22,7 @@ class User extends Node {
     super({ node_a: node });
     this.data = { node_a: node };
     this.user = this.data.node_a.value;
+    debug(this.user);
     this.allProperties = [];
     this.publicProperties = [];
     this.optionalProperties = [];
@@ -78,6 +79,8 @@ class User extends Node {
   }
 
   matchPasswords(user) {
+    debug(user.password);
+    debug(this.user.password);
     return new Promise((resolve, reject) => {
       bcrypt.compare(this.user.password, user.password)
         .then((valid) => {
@@ -129,12 +132,20 @@ class User extends Node {
     return this.token;
   }
 
+  getUsers() {
+    return new Promise((resolve, reject) => {
+      this.getNodeList()
+        .then(list => resolve(list))
+        .catch(err => reject(err));
+    });
+  }
+
   getUserInfo() {
     return new Promise((resolve, reject) => {
-      debug('Getting tag info for :', this.user.username);
+      debug('Getting user info for :', this.user);
       new UserValidator(this.getRequirements, this.user).validate()
         .then(() => this.getNodeInfo())
-        .then(tag => resolve(tag))
+        .then(user => resolve(user))
         .catch(err => reject(err));
     });
   }

@@ -4,18 +4,4 @@ const incomplete = [
   {},
 ];
 
-const incompleteTagData = [];
-incomplete.forEach((tag) => {
-  incompleteTagData.push(
-    {
-      node_a: {
-        type: 'Tag',
-        id: 'id',
-        value: tag,
-      },
-    },
-  );
-});
-
-
-module.exports = incompleteTagData;
+module.exports = incomplete;

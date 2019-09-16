@@ -15,18 +15,4 @@ const valid = [
   { id: 'test', text: 'Tag testing' },
 ];
 
-const validTagData = [];
-valid.forEach((tag) => {
-  validTagData.push(
-    {
-      node_a: {
-        type: 'Tag',
-        id: 'id',
-        value: tag,
-      },
-    },
-  );
-});
-
-
-module.exports = validTagData;
+module.exports = valid;

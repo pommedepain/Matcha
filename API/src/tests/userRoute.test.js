@@ -4,80 +4,44 @@ const Request = require('../util/requestsClass');
 
 
 const adminUser = {
-  node_a: {
-    type: 'User',
-    id: 'username',
-    value: {
-      username: 'Camille',
-      password: 'Test123*',
-    },
-  },
+  username: 'Camille',
+  password: 'Test123*',
 };
 
 const validUserAuth = {
-  node_a: {
-    type: 'User',
-    id: 'username',
-    value: {
-      username: 'Jean',
-      password: 'Test123*',
-    },
-  },
+  username: 'Jean',
+  password: 'Test123*',
 };
 
 const invalidUserAuth = {
-  node_a: {
-    type: 'User',
-    id: 'username',
-    value: {
-      username: 'Jean',
-      password: 'Test12*',
-    },
-  },
+  username: 'Jeane',
+  password: 'Test12*',
 };
 
 const validNewUser = {
-  node_a: {
-    type: 'User',
-    id: 'username',
-    value: {
-      username: 'Claudinete',
-      firstName: 'camillle',
-      lastName: 'julien',
-      password: 'Test12345*',
-      email: 'cludne@gmail.com',
-      birthdate: '1905-20-03',
-      optional: 'lalala',
-      tags: [{ id: 'athlete', text: 'something' }, { id: 'book', text: 'lala' }],
-      isAdmin: 'true',
-    },
-  },
+  username: 'Claudinete',
+  firstName: 'camillle',
+  lastName: 'julien',
+  password: 'Test12345*',
+  email: 'cludne@gmail.com',
+  birthdate: '1905-20-03',
+  optional: 'lalala',
+  tags: [{ id: 'athlete', text: 'something' }, { id: 'book', text: 'lala' }],
+  isAdmin: 'true',
 };
 
 const invalidNewUser = {
-  node_a: {
-    type: 'User',
-    id: 'username',
-    value: {
-      username: 'Claudifouete',
-      email: 'cludne@gmail.com',
-      birthyear: '1905',
-      optional: 'lalala',
-      isAdmin: 'true',
-    },
-  },
+  username: 'Claudifouete',
+  email: 'cludne@gmail.com',
+  birthyear: '1905',
+  optional: 'lalala',
+  isAdmin: 'true',
 };
 
 const updatedUser = {
-  node_a: {
-    type: 'User',
-    id: 'username',
-    value: {
-      username: 'Jean',
-      password: 'Test1234*',
-      optional: 'truc2',
-    },
-  },
+  username: 'Jean',
+  password: 'Test123*',
+  optional: 'truc2',
 };
 
 test('GET request : /api/users/user, expect user list, true', async () => {
