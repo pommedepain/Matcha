@@ -69,7 +69,7 @@ class Node extends Relationship {
     return new Promise((resolve, reject) => {
       const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
       const session = driver.session();
-      debug('Getting user info for :', this.data.node_a.value[this.id_a]);
+      debug(`Getting ${this.data.node_a.type} info for :`, this.data.node_a.value[this.id_a]);
       const query = `MATCH (n:${this.data.node_a.type} {${this.data.node_a.id}:'${this.data.node_a.value[this.id_a]}'}) RETURN n`;
       session.run(query)
         .then((res) => {

@@ -9,9 +9,9 @@ class Relationship {
   constructor(data) {
     this.data = data;
     this.iDs = ['id', 'username'];
-    this.id_a = this.data.node_a.id;
+    if (this.data.node_a) this.id_a = this.data.node_a.id;
     if (this.data.node_b) this.id_b = this.data.node_b.id;
-    debug('Relationship constructor called');
+    debug('Relationship constructor called', this.data);
   }
 
   getRelationships() {
@@ -79,11 +79,12 @@ class Relationship {
       const query = `MATCH (a:${this.data.node_a.type} {${this.data.node_a.id}: '${this.data.node_a.value[this.id_a]}'}), (b:${this.data.node_b.type} {${this.data.node_b.id}: '${this.data.node_b.value[this.id_b]}'}) CREATE (a)-[r:${this.data.relation}]->(b) RETURN type(r)`;
       const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
       const session = driver.session();
+      debug(query);
       session.run(query)
         .then((res) => {
           session.close();
           debug(`${this.data.node_a.value[this.id_a]} ${res.records[0]._fields} ${this.data.node_b.value[this.id_b]} RELATION CREATED`);
-          resolve(res);
+          resolve(`${this.data.node_a.value[this.id_a]} ${res.records[0]._fields} ${this.data.node_b.value[this.id_b]} RELATION CREATED`);
         })
         .catch((err) => {
           debug(err);

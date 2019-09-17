@@ -22,7 +22,6 @@ class User extends Node {
     super({ node_a: node });
     this.data = { node_a: node };
     this.user = this.data.node_a.value;
-    debug(this.user);
     this.allProperties = [];
     this.publicProperties = [];
     this.optionalProperties = [];

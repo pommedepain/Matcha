@@ -17,7 +17,6 @@ class UserValidator {
       symbol: 1,
       requirementCount: 1,
     };
-    debug(this.data);
     if (
       this.data.username === 'undefined' || this.data.username === 0 || this.data.username === null
       || this.data.firstName === 'undefined' || this.data.firstName === 0 || this.data.firstName === null

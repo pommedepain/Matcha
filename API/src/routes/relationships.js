@@ -15,9 +15,9 @@ router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
 
-router.get('/type/:relation', handler(async (req, res) => {
-  debug('Request to get Relationship information for :', req.params.id);
-  return (new Relationship({ relation: req.params.relation }).getRelationships()
+router.get('/get/:type', handler(async (req, res) => {
+  debug('Request to get Relationship information for :', req.params.type);
+  return (new Relationship({ relation: req.params.type }).getRelationships()
     .then(relationship => (
       res.status(200).json({
         success: true,
@@ -26,23 +26,9 @@ router.get('/type/:relation', handler(async (req, res) => {
     )));
 }));
 
-router.post('/:type_a.:id_a.:value_a/:type_b.:id_b.:value_b/:relation', handler(async (req, res) => {
+router.post('/create', handler(async (req, res) => {
   debug('Request to add new Relationship :\n', _.pick(req.body, validProperties));
-  return (new Relationship(
-    {
-      node_a: {
-        type: req.params.type_a,
-        id: req.params.id_a,
-        value: req.params.value_a,
-      },
-      node_b: {
-        type: req.params.type_b,
-        id: req.params.id_b,
-        value: req.params.value_b,
-      },
-      relation: req.param.relation,
-    },
-  ).createRelationship()
+  return (new Relationship(req.body).createRelationship()
     .then(relationship => (
       res.status(200).json({
         success: true,
@@ -51,7 +37,7 @@ router.post('/:type_a.:id_a.:value_a/:type_b.:id_b.:value_b/:relation', handler(
     )));
 }));
 
-router.delete('/:relation/:node_a/:node_b/:relation', [auth, admin], handler(async (req, res) => {
+router.delete('/delete/:node_a/:node_b/:relation', [auth, admin], handler(async (req, res) => {
   debug('Request to delete :', req.params.id);
   return (new Relationship({ id: req.params.id }).deleteRelationship()
     .then(relationship => (
