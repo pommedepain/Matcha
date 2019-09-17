@@ -16,13 +16,13 @@ class User extends Node {
 
   constructor(data) {
     const node = {
-      type: 'User',
+      label: 'User',
       id: 'username',
-      value: data,
+      properties: data,
     };
     super({ node_a: node });
     this.data = { node_a: node };
-    this.user = this.data.node_a.value;
+    this.user = this.data.node_a.properties;
     this.allProperties = [];
     this.publicProperties = [];
     this.optionalProperties = [];
@@ -70,7 +70,7 @@ class User extends Node {
           .then(salt => bcrypt.hash(data, salt))
           .then((hash) => {
             this.user.password = hash;
-            this.data.node_a.value.password = hash;
+            this.data.node_a.properties.password = hash;
             resolve();
           })
           .catch(err => debug(err));
@@ -95,6 +95,7 @@ class User extends Node {
 
   addRelationships() {
     const promises = [];
+    const date = new Date();
     debug('Linking User with Tags ...');
     if (this.user.tags) {
       debug(this.user.tags);
@@ -102,11 +103,14 @@ class User extends Node {
         const data = {
           node_a: this.data.node_a,
           node_b: {
-            type: 'Tag',
+            label: 'Tag',
             id: 'id',
-            value: tag,
+            properties: tag,
           },
-          relation: 'LOOK_FOR',
+          relation: {
+            label: 'LOOK_FOR',
+            properties: { creationDate: date.toISOString() },
+          },
         };
         const p = new Relationship(data).createRelationship();
         promises.push(p);

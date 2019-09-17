@@ -12,14 +12,15 @@ const Node = require('./nodeClass');
 class Tag extends Node {
 
   constructor(data) {
+
     const node = {
-      type: 'Tag',
+      label: 'Tag',
       id: 'id',
-      value: data,
+      properties: data,
     };
     super({ node_a: node });
     this.data = { node_a: node };
-    this.tag = this.data.node_a.value;
+    this.tag = this.data.node_a.properties;
     this.allProperties = ['id', 'text'];
     this.publicProperties = ['id', 'text'];
     this.creationRequirements = {
@@ -38,6 +39,7 @@ class Tag extends Node {
     this.getRequirements = {
       id: true,
     };
+    debug('tag constructor called:');
   }
 
   getTags() {

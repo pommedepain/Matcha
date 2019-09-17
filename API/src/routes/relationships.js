@@ -48,9 +48,42 @@ router.post('/toggle', handler(async (req, res) => {
     )));
 }));
 
-router.delete('/delete/:node_a/:node_b/:relation', [auth, admin], handler(async (req, res) => {
-  debug('Request to delete :', req.params.id);
-  return (new Relationship({ id: req.params.id }).deleteRelationship()
+router.delete('/delete/relation', [auth, admin], handler(async (req, res) => {
+  debug('Request to delete :', req.body.relation);
+  return (new Relationship(req.body).deleteRelationship()
+    .then(relationship => (
+      res.status(200).json({
+        success: true,
+        payload: { value: 'delete', relationship },
+      })
+    )));
+}));
+
+router.delete('/delete/node/', [auth, admin], handler(async (req, res) => {
+  debug('Request to delete :', req.body.node_a);
+  return (new Relationship(req.body).deleteThisNodeRelationships()
+    .then(relationship => (
+      res.status(200).json({
+        success: true,
+        payload: { value: 'delete', relationship },
+      })
+    )));
+}));
+
+router.delete('/delete/type', [auth, admin], handler(async (req, res) => {
+  debug('Request to delete :', req.body.node_a);
+  return (new Relationship(req.body).deleteThisTypeofRelationship()
+    .then(relationship => (
+      res.status(200).json({
+        success: true,
+        payload: { value: 'delete', relationship },
+      })
+    )));
+}));
+
+router.delete('/delete/node/type', [auth, admin], handler(async (req, res) => {
+  debug('Request to delete :', req.body.node_a);
+  return (new Relationship(req.body).deleteThisNodeTypeofRelationship()
     .then(relationship => (
       res.status(200).json({
         success: true,

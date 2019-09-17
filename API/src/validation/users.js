@@ -2,12 +2,13 @@
 const Joi = require('@hapi/joi');
 const Complexity = require('joi-password-complexity');
 const debug = require('debug')('validation:user');
+const _ = require('lodash');
 
 class UserValidator {
 
   constructor(requirements, data) {
     this.req = requirements;
-    this.data = data;
+    this.data = _.omit(data, 'creationDate');
     this.passwordConf = {
       min: 7,
       max: 150,
@@ -31,7 +32,7 @@ class UserValidator {
       || this.data.sexOrient === 'undefined' || this.data.sexOrient === 0 || this.data.sexOrient === null
       || this.data.isAdmin === 'undefined' || this.data.isAdmin === 0 || this.data.isAdmin === null
     ) this.data = null;
-    debug('Validating user data...');
+    debug('Validating user data...', this.data);
   }
 
   validate() {

@@ -2,32 +2,40 @@
 const debug = require('debug')('init:relationships');
 const RelationShip = require('../models/relationshipsClass');
 
+const date = new Date();
+
 const relationships = [
   {
     node_a: {
-      type: 'User',
+      label: 'User',
       id: 'username',
-      value: { username: 'Jean' },
+      properties: { username: 'Jean' },
     },
     node_b: {
-      type: 'User',
+      label: 'User',
       id: 'username',
-      value: { username: 'Boby' },
+      properties: { username: 'Boby' },
     },
-    relation: 'LIKES',
+    relation: {
+      label: 'LIKES',
+      properties: { creationDate: date.toISOString() },
+    },
   },
   {
     node_a: {
-      type: 'User',
+      label: 'User',
       id: 'username',
-      value: { username: 'Camille' },
+      properties: { username: 'Camille' },
     },
     node_b: {
-      type: 'Tag',
+      label: 'Tag',
       id: 'id',
-      value: { id: 'cat' },
+      properties: { id: 'cat' },
     },
-    relation: 'IS',
+    relation: {
+      label: 'IS',
+      properties: { creationDate: date.toISOString() },
+    },
   },
 ];
 
