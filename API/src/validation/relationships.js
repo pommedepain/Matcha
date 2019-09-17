@@ -11,7 +11,7 @@ class RelationshipValidator {
     if (
       this.data.relation === 'undefined' || this.data.relation === 0 || this.data.relation === null
     ) this.data = null;
-    debug('Validating relationship data...', this.data);
+    debug('Validating relationship data...');
   }
 
   validateNodea() {

@@ -15,9 +15,20 @@ router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
 
-router.get('/get/:type', handler(async (req, res) => {
+router.get('/type/:type', handler(async (req, res) => {
   debug('Request to get Relationship information for :', req.params.type);
-  return (new Relationship({ relation: req.params.type }).getRelationships()
+  return (new Relationship({ relation: { label: req.params.type } }).getRelationships()
+    .then(relationship => (
+      res.status(200).json({
+        success: true,
+        payload: { value: 'read', relationship },
+      })
+    )));
+}));
+
+router.get('/mutual', handler(async (req, res) => {
+  debug('Request to get Relationship information for :', req.body);
+  return (new Relationship(req.body).getNodeMutualRelationships()
     .then(relationship => (
       res.status(200).json({
         success: true,

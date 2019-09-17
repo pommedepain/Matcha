@@ -32,7 +32,7 @@ class UserValidator {
       || this.data.sexOrient === 'undefined' || this.data.sexOrient === 0 || this.data.sexOrient === null
       || this.data.isAdmin === 'undefined' || this.data.isAdmin === 0 || this.data.isAdmin === null
     ) this.data = null;
-    debug('Validating user data...', this.data);
+    debug('Validating user data...');
   }
 
   validate() {

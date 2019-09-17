@@ -12,7 +12,7 @@ class Relationship {
     this.iDs = ['id', 'username'];
     if (this.data.node_a) this.id_a = this.data.node_a.id;
     if (this.data.node_b) this.id_b = this.data.node_b.id;
-    debug('Relationship constructor called', this.data);
+    debug('Relationship constructor called');
   }
 
   wrapper(method, requirements) {
@@ -63,7 +63,7 @@ class Relationship {
       relation: false,
     };
     const method = () => (new Promise((resolve, reject) => {
-      const query = `MATCH (a)-[r]->(b) WHERE a.${this.data.node_a.id}=${this.data.node_a.properties[this.id_a]} OR b.${this.data.node_a.id}=${this.data.node_a.properties[this.id_a]} return [r]->(b)`;
+      const query = `MATCH (a)-[r]->(b) WHERE a.${this.data.node_a.id}='${this.data.node_a.properties[this.id_a]}' OR b.${this.data.node_a.id}='${this.data.node_a.properties[this.id_a]}' return [r]->(b)`;
       const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
       const session = driver.session();
       session.run(query)
@@ -80,6 +80,29 @@ class Relationship {
     return (this.wrapper(method, requirements));
   }
 
+  getNodeMutualRelationships() {
+    const requirements = {
+      node_a: true,
+      relation: true,
+    };
+    const method = () => (new Promise((resolve, reject) => {
+      const query = `MATCH (a)-[r:${this.data.relation.label}]-(b) WHERE a.${this.data.node_a.id}='${this.data.node_a.properties[this.id_a]}' return (a)-[r]-(b)`;
+      const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
+      const session = driver.session();
+      session.run(query)
+        .then((res) => {
+          session.close();
+          debug(res.records.length);
+          resolve(res.records[0]._fields);
+        })
+        .catch((err) => {
+          debug(err);
+          reject(err);
+        });
+    }));
+    return (this.wrapper(method, requirements));
+  }
+
   getNodetypeofRelationships() {
     const requirements = {
       node_a: false,
@@ -87,7 +110,7 @@ class Relationship {
       relation: true,
     };
     const method = () => (new Promise((resolve, reject) => {
-      const query = `MATCH (a)-[r:${this.data.relation.label}]->(b) WHERE a.${this.data.node_a.id}=${this.data.node_a.properties[this.id_a]} OR b.${this.data.node_a.id}=${this.data.node_a.properties[this.id_a]} return r`;
+      const query = `MATCH (a)-[r:${this.data.relation.label}]->(b) WHERE a.${this.data.node_a.id}='${this.data.node_a.properties[this.id_a]}' OR b.${this.data.node_a.id}=${this.data.node_a.properties[this.id_a]} return r`;
       const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
       const session = driver.session();
       session.run(query)
