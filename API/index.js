@@ -2,6 +2,7 @@
 const config = require('config');
 const debug = require('debug')('index');
 const express = require('express');
+const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const users = require('./src/routes/users');
@@ -21,6 +22,7 @@ if (!config.get('jwtPrivateKey')) {
 app.use(helmet());
 app.use(express.static('public'));
 app.use(morgan('tiny'));
+app.use(cors());
 
 app.use('/api/users', users);
 app.use('/api/tags', tags);

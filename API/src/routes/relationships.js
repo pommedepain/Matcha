@@ -37,6 +37,17 @@ router.post('/create', handler(async (req, res) => {
     )));
 }));
 
+router.post('/toggle', handler(async (req, res) => {
+  debug('Request to add new Relationship :\n', _.pick(req.body, validProperties));
+  return (new Relationship(req.body).toggleRelationship()
+    .then(relationship => (
+      res.status(200).json({
+        success: true,
+        payload: { value: 'toggle', relationship },
+      })
+    )));
+}));
+
 router.delete('/delete/:node_a/:node_b/:relation', [auth, admin], handler(async (req, res) => {
   debug('Request to delete :', req.params.id);
   return (new Relationship({ id: req.params.id }).deleteRelationship()
