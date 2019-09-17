@@ -3,6 +3,7 @@ const debug = require('debug')('models:relationships');
 const config = require('config');
 const _ = require('lodash');
 const neo4j = require('neo4j-driver').v1;
+const RelationshipValidator = require('../validation/relationships');
 
 class Relationship {
 
@@ -11,17 +12,25 @@ class Relationship {
     this.iDs = ['id', 'username'];
     if (this.data.node_a) this.id_a = this.data.node_a.id;
     if (this.data.node_b) this.id_b = this.data.node_b.id;
+    debug('Relationship constructor called');
+  }
 
-    this.creationRequirements = {
-      node_a: true,
-      node_b: true,
-      relation: true,
-    };
-    debug('Relationship constructor called', this.data);
+  wrapper(method, requirements) {
+    return new Promise((resolve, reject) => {
+      new RelationshipValidator(requirements, this.data).validate()
+        .then(() => method())
+        .then(res => resolve(res))
+        .catch(err => reject(err));
+    });
   }
 
   getRelationships() {
-    return new Promise((resolve, reject) => {
+    const requirements = {
+      node_a: false,
+      node_b: false,
+      relation: true,
+    };
+    const method = () => (new Promise((resolve, reject) => {
       const query = `MATCH (a)-[r:${this.data.relation}]->(b) return (a)-[r]->(b)`;
       const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
       const session = driver.session();
@@ -43,11 +52,17 @@ class Relationship {
           debug(err);
           reject(err);
         });
-    });
+    }));
+    return (this.wrapper(method, requirements));
   }
 
   getNodeRelationships() {
-    return new Promise((resolve, reject) => {
+    const requirements = {
+      node_a: true,
+      node_b: false,
+      relation: false,
+    };
+    const method = () => (new Promise((resolve, reject) => {
       const query = `MATCH (a)-[r]->(b) WHERE a.${this.data.node_a.id}=${this.data.node_a.value[this.id_a]} OR b.${this.data.node_a.id}=${this.data.node_a.value[this.id_a]} return [r]->(b)`;
       const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
       const session = driver.session();
@@ -61,11 +76,17 @@ class Relationship {
           debug(err);
           reject(err);
         });
-    });
+    }));
+    return (this.wrapper(method, requirements));
   }
 
   getNodeTypeofRelationships() {
-    return new Promise((resolve, reject) => {
+    const requirements = {
+      node_a: false,
+      node_b: false,
+      relation: true,
+    };
+    const method = () => (new Promise((resolve, reject) => {
       const query = `MATCH (a)-[r:${this.data.relation}]->(b) WHERE a.${this.data.node_a.id}=${this.data.node_a.value[this.id_a]} OR b.${this.data.node_a.id}=${this.data.node_a.value[this.id_a]} return r`;
       const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
       const session = driver.session();
@@ -79,11 +100,17 @@ class Relationship {
           debug(err);
           reject(err);
         });
-    });
+    }));
+    return (this.wrapper(method, requirements));
   }
 
   toggleRelationship() {
-    return new Promise((resolve, reject) => {
+    const requirements = {
+      node_a: true,
+      node_b: true,
+      relation: true,
+    };
+    const method = () => (new Promise((resolve, reject) => {
       const query = `MATCH (a:${this.data.node_a.type} {${this.data.node_a.id}: '${this.data.node_a.value[this.id_a]}'})-[r:${this.data.relation}]->(b:${this.data.node_b.type} {${this.data.node_b.id}: '${this.data.node_b.value[this.id_b]}'}) RETURN (a)-[r]->(b)`;
       const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
       const session = driver.session();
@@ -101,11 +128,17 @@ class Relationship {
           debug(err);
           reject(err);
         });
-    });
+    }));
+    return (this.wrapper(method, requirements));
   }
 
   createRelationship() {
-    return new Promise((resolve, reject) => {
+    const requirements = {
+      node_a: true,
+      node_b: true,
+      relation: true,
+    };
+    const method = () => (new Promise((resolve, reject) => {
       const query = `MATCH (a:${this.data.node_a.type} {${this.data.node_a.id}: '${this.data.node_a.value[this.id_a]}'}), (b:${this.data.node_b.type} {${this.data.node_b.id}: '${this.data.node_b.value[this.id_b]}'}) CREATE (a)-[r:${this.data.relation}]->(b) RETURN type(r)`;
       const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
       const session = driver.session();
@@ -122,11 +155,17 @@ class Relationship {
           debug(err);
           reject(err);
         });
-    });
+    }));
+    return (this.wrapper(method, requirements));
   }
 
   deleteRelationship() {
-    return new Promise((resolve, reject) => {
+    const requirements = {
+      node_a: true,
+      node_b: true,
+      relation: true,
+    };
+    const method = () => (new Promise((resolve, reject) => {
       const query = `MATCH (a:${this.data.node_a.type} {${this.data.node_a.id}: '${this.data.node_a.value[this.id_a]}'})-[r:${this.data.relation}]->(b:${this.data.node_b.type} {${this.data.node_b.id}: '${this.data.node_b.value[this.id_b]}'}) DELETE r return type(r)`;
       const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
       const session = driver.session();
@@ -142,31 +181,37 @@ class Relationship {
           debug(err);
           reject(err);
         });
-    });
+    }));
+    return (this.wrapper(method, requirements));
   }
 
   deleteThisNodeRelationships() {
-    return new Promise((resolve, reject) => {
+    const requirements = {
+      node_a: true,
+    };
+    const method = () => (new Promise((resolve, reject) => {
       const query = `MATCH (a)-[r]->(b) WHERE a.${this.data.node_a.id}='${this.data.node_a.value[this.id_a]}' OR b.${this.data.node_a.id}='${this.data.node_a.value[this.id_a]}' DELETE r return type(r)`;
       const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
       const session = driver.session();
       session.run(query)
         .then((res) => {
           session.close();
-          if (res.records.length !== 0) {
-            debug('Relationships destroyed for :', this.data.node_a.value[this.id_a]);
-            resolve(true);
-          } else reject(new Error('An error occured during relationship destruction'));
+          debug('Relationships destroyed for :', this.data.node_a.value[this.id_a]);
+          resolve(true);
         })
         .catch((err) => {
           debug(err);
           reject(err);
         });
-    });
+    }));
+    return (this.wrapper(method, requirements));
   }
 
   deleteThisTypeofRelationship() {
-    return new Promise((resolve, reject) => {
+    const requirements = {
+      relation: true,
+    };
+    const method = () => (new Promise((resolve, reject) => {
       const query = `MATCH (a)-[r:${this.data.relation}]->(b) DELETE r RETURN type(r)`;
       const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
       const session = driver.session();
@@ -182,7 +227,8 @@ class Relationship {
           debug(err);
           reject(err);
         });
-    });
+    }));
+    return (this.wrapper(method, requirements));
   }
 }
 

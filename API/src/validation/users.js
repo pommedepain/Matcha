@@ -10,7 +10,7 @@ class UserValidator {
     this.data = data;
     this.passwordConf = {
       min: 7,
-      max: 20,
+      max: 150,
       lowerCase: 1,
       upperCase: 1,
       numeric: 1,
