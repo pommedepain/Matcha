@@ -208,7 +208,7 @@ const SignUp = (props) => {
 									min={18}
 									max={100}
 									defaultValue={[18, 25]}
-									value={props.range}
+									// value={props.range}
 									count={1}
 									pushable={true}
 									onChange={props.handleRange}
@@ -221,7 +221,7 @@ const SignUp = (props) => {
 									min={3}
 									max={160}
 									defaultValue={5}
-									value={props.localisation}
+									// value={props.localisation}
 									count={1}
 									onChange={props.handleSlider}
 								/>
