@@ -9,6 +9,7 @@ const UserValidator = require('../validation/users');
 const TagValidator = require('../validation/tags');
 const userTemplate = require('../util/userTemplate');
 const Node = require('./nodeClass');
+const Relationship = require('./relationshipsClass');
 
 
 class User extends Node {
@@ -96,16 +97,18 @@ class User extends Node {
     const promises = [];
     debug('Linking User with Tags ...');
     if (this.user.tags) {
+      debug(this.user.tags);
       this.user.tags.forEach((tag) => {
-        this.data.node_b = {
-          type: 'Tag',
-          id: 'id',
-          value: tag,
+        const data = {
+          node_a: this.data.node_a,
+          node_b: {
+            type: 'Tag',
+            id: 'id',
+            value: tag,
+          },
+          relation: 'LOOK_FOR',
         };
-        this.data.relation = 'LOOK_FOR';
-        this.id_a = this.data.node_a.id;
-        this.id_b = this.data.node_b.id;
-        const p = this.createRelationship();
+        const p = new Relationship(data).createRelationship();
         promises.push(p);
       });
     }
