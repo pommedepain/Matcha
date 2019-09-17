@@ -157,7 +157,8 @@ class User extends Node {
         .then(() => this.createNode())
         .then(() => this.validateTags())
         .then(() => this.addRelationships())
-        .then(() => resolve(_.pick(this.user, this.publicProperties.concat(this.optionalProperties))))
+        .then(() => resolve(_.pick(this.user,
+          this.publicProperties.concat(this.optionalProperties))))
         .catch(err => reject(err))
     ));
   }
