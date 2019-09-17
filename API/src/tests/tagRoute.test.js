@@ -79,6 +79,6 @@ test('DEL request : /api/tags/, invalid tag expect tag error 400', async () => {
 test('DEL request : /api/tags/, valid auth/ tag expect tag deleted', async () => {
   const req = {};
   req.token = await new Request('/api/auth', adminUser).post().catch(err => debug(err));
-  const res = await new Request('/api/tags/test', null, { headers: { 'x-auth-token': req.token } }).delete().catch(err => debug(err));
+  const res = await new Request('/api/tags/test', { headers: { 'x-auth-token': req.token } }, { headers: { 'x-auth-token': req.token } }).delete().catch(err => debug(err));
   return expect(res).toBeTruthy();
 });

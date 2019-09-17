@@ -12,7 +12,6 @@ class RelationshipValidator {
       this.data.relation === 'undefined' || this.data.relation === 0 || this.data.relation === null
     ) this.data = null;
     debug('Validating relationship data...');
-    // debug(this.data);
   }
 
   validateNodea() {
@@ -20,7 +19,7 @@ class RelationshipValidator {
       if (this.req.node_a && this.data.node_a.type === 'User') {
         resolve(new UserValidator({ username: true }, this.data.node_a.value).validate());
       } else if (this.req.node_a && this.data.node_a.type === 'Tag') {
-        resolve(new TagValidator({ id: true }, this.data.noda_a.value).validate());
+        resolve(new TagValidator({ id: true }, this.data.node_a.value).validate());
       } else resolve(true);
     });
   }
