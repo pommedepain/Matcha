@@ -16,7 +16,8 @@
 	display: block;
 	background-color: white;
 	font-family: 'ComfortaaBold', cursive;
-	font-size: 0.7em;
+	font-size: 0.6em;
+	border: 1px solid rgb(116, 209, 234);	
 	border-radius: 15px;
 	margin-bottom: 5px;
 	margin-top: 2%;

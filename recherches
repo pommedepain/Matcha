@@ -42,3 +42,4 @@ Template quizz & jeux:
 	- Divs pour cliquer sur les différentes possibilités + 
 	manière de choisir son "adversaire" + pop-ups des différentes pages 
 	(mode jeux visible uniquement sur mobile):https://www.quizup.com/topics/harry-potter-mov
+	- npm i dayjs => plugin fromNow permet de formatter string de type "décconnecté depuis 2 minutes"

@@ -1,18 +1,21 @@
 import React from 'react'
 
 import classes from './NavBar.module.css'
-import LogIn from './Forms/LogIn'
+// import LogIn from './Forms/LogIn/LogInD'
+// import cx from 'classnames'
 
-const axios = require('axios');
+// const axios = require('axios');
 
 class NavBar extends React.Component {
 	state = {
-		style: '',
-		showPopup: false,
-		hidden: true,
-		user: false,
-		username: "",
-		password: ""
+		// style: '',
+		// showPopup: false,
+		// hidden: true,
+		// user: false,
+		// username: "pomme",
+		// password: "philou",
+		// loading: false,
+		errors: {}
 	}
 
 	handleChange = (event) => {
@@ -20,61 +23,71 @@ class NavBar extends React.Component {
 		this.setState({[name]: value})
 	}
 
-	togglePopup = () => {
-		if (this.state.showPopup)
-		{
-			this.setState({
-				showPopup: !this.state.showPopup
-			})
-			document.getElementById("display_page").style.filter = ''
-		}
-		else
-		{
-			this.setState({
-				showPopup: !this.state.showPopup
-			})
-			document.getElementById("display_page").style.filter = 'blur(3px)'
-		}
-	}
+	// togglePopup = () => {
+	// 	if (this.state.showPopup)
+	// 	{
+	// 		this.setState({
+	// 			showPopup: !this.state.showPopup
+	// 		})
+	// 		document.getElementById("display_page").style.filter = ''
+	// 	}
+	// 	else
+	// 	{
+	// 		this.setState({
+	// 			showPopup: !this.state.showPopup
+	// 		})
+	// 		document.getElementById("display_page").style.filter = 'blur(3px)'
+	// 	}
+	// }
 
-	toggleShow = (event) => {
-		event.preventDefault()
-		this.setState({ hidden: !this.state.hidden })
-	}
+	// toggleShow = (event) => {
+	// 	event.preventDefault()
+	// 	this.setState({ hidden: !this.state.hidden })
+	// }
 
-	submit = (event) => {
-		console.log(this.state)
-		event.preventDefault()
-		const data = this.state
+	// submit = (event) => {
+	// 	console.log(this.state)
+	// 	event.preventDefault()
+	// 	this.setState({
+	// 		loading: true
+	// 	})
+	// 	const datas = {
+	// 		username: this.state.username,
+	// 		password: this.state.password
+	// 	}
 
-		axios.post('http://localhost:4000/API/auth', {
-			username: data.username,
-			password: data.password
-        })
-        .then((response) => {
-			let token = null
-			console.log(response.data)
-			response.data.success ? 
-			token = response.data.payload
-			: token = null;
-			console.log(token)
-        	return (response.data.payload);
-        })
-        .catch(error => {
-			console.log(error)
-          return (false);
-        })
-	}
+	// 	axios
+	// 		.post('http://localhost:4000/API/auth', datas)
+	// 		.then(response => {
+	// 			let token = null
+	// 			this.setState({ loading: false })
+	// 			console.log(response.datas)
+	// 			response.datas.success ? 
+	// 			token = response.datas.payload
+	// 			: token = null;
+	// 			console.log(token)
+	// 			return (token);
+	// 		})
+	// 		.catch(error => {
+	// 			this.setState({
+	// 				errors: error.response,
+	// 				loading: false
+	// 			})
+	// 			console.log(error)
+	// 			return (false);
+	// 		})
+	// }
 	
 	render() {
 		return (
 			<div className={classes.NavBar}>
 				<h1 className={classes.logo}><i className="fas fa-puzzle-piece" /> Matcha</h1>
-				<div className={classes.log}>
+				<Login />
+				{/* <div className={classes.log}>
 				{
 					!this.state.user ?
 					[<div key={1}>
-						<button className={classes.sidebar} onClick={this.togglePopup.bind(this)}>Log In</button>
+						<button className={cx(classes.sidebar, "btn-sm")} onClick={this.togglePopup.bind(this)}>Log In</button>
 						<LogIn
 							popup={this.togglePopup.bind(this)}
 							handleChange={this.handleChange.bind(this)}
@@ -89,7 +102,7 @@ class NavBar extends React.Component {
 						<button className={classes.sidebar}>Log Out</button>
 					</div>]
 				}
-				</div>
+				</div> */}
 			</div>
 		)
 	}

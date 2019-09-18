@@ -52,8 +52,26 @@
 	margin-bottom: 0;
 }
 
-@media only screen and (max-device-width: 1450px) {
+@media only screen and (max-device-width: 375px) {
 	.passwdButton {
+		box-sizing: content-box;
+		position: absolute;
+		/* width: 8%; */
+		left: 75%;
+		bottom: 30%;
+		background: #727272;
+		color: white;
+		padding: 4px 8px;
+		border-radius: 4px;
+		font-weight: 700;
+		font-size: .4em;
+		cursor: pointer;
+	}
+}
+
+@media only screen and (min-device-width: 380px) and (max-device-width: 1450px) {
+	.passwdButton {
+		box-sizing: content-box;
 		position: absolute;
 		width: 8%;
 		left: 85%;
@@ -70,6 +88,7 @@
 
 @media only screen and (min-device-width: 1500px) {
 	.passwdButton {
+		box-sizing: content-box;
 		position: absolute;
 		width: 8%;
 		left: 85%;

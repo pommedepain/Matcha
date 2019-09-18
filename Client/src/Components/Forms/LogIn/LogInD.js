@@ -1,6 +1,8 @@
 import React from 'react';
+import cx from 'classnames';
 
-import classes from './LogIn.module.css'
+import classes from './LogIn.module.css';
+import Input from '../../Utils/Input/Input'
 
 const LogIn = (props) => {
 	return (
@@ -9,23 +11,27 @@ const LogIn = (props) => {
 			<div className={classes.popup}>
 				<div className={classes.popup_inner}>
 					<form id={classes.msform}>
-						<button type="button" onClick={props.popup} className={`${classes.close} ${classes.heavy} ${classes.rounded}`}></button>
+						<button type="button" onClick={props.popup} className={cx(classes.close, classes.heavy, classes.rounded)}></button>
 						<fieldset>
 							<h2 className={classes.fs_title}>Log In</h2>
 							<h3 className={classes.fs_subtitle}>And see what you missed</h3>
-							<input 
+							<Input
 								type="text" 
+								inputtype="input"
 								name="username" 
 								placeholder="Pseudo"
 								value={props.username}
 								onChange={props.handleChange}
+								required
 							/>
-							<input 
+							<Input
 								type={props.hidden ? "password" : "text"}
+								inputtype="input"
 								name="password" 
 								placeholder="Password"
 								value={props.password}
 								onChange={props.handleChange}
+								required
 							/>
 							<span
 								className={classes.passwdToggle}
@@ -34,7 +40,7 @@ const LogIn = (props) => {
 							<input 
 								type="submit" 
 								name="submit" 
-								className={`${classes.submit} ${classes.action_button}`} 
+								className={cx(classes.submit, classes.action_button)} 
 								value="Submit" 
 								onClick={props.submit}
 							/>
