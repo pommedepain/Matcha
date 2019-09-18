@@ -28,7 +28,7 @@ router.get('/', wrapper(async (req, res) => {
   );
 }));
 
-router.get('/:username', [auth, identify], wrapper(async (req, res) => {
+router.get('/:username', wrapper(async (req, res) => {
   debug('Request to get user information for :', req.params.username);
   return (new User({ username: req.params.username }).getUserInfo()
     .then((user) => {

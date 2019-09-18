@@ -52,7 +52,7 @@ class Node extends Relationship {
     return new Promise((resolve, reject) => {
       const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
       const session = driver.session();
-      session.run(`MATCH (n:${this.data.node_a.label}) RETURN n.${this.data.node_a.id}`)
+      session.run(`MATCH (n:${this.data.node_a.label}) RETURN n.${this.data.node_a.id} LIMIT 100`)
         .then((res) => {
           session.close();
           if (res.records.length !== 0) {
@@ -75,7 +75,7 @@ class Node extends Relationship {
       session.run(query)
         .then((res) => {
           session.close();
-          if (res.records.length === 1) {
+          if (res.records.length !== 0) {
             const result = res.records[0]._fields[0].properties;
             debug('Data fetched :\n', result);
             resolve(result);

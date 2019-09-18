@@ -32,28 +32,28 @@ class UserValidator {
       || this.data.sexOrient === 'undefined' || this.data.sexOrient === 0 || this.data.sexOrient === null
       || this.data.isAdmin === 'undefined' || this.data.isAdmin === 0 || this.data.isAdmin === null
     ) this.data = null;
-    debug('Validating user data...');
+    debug('Validating user data...', this.data.username);
   }
 
   validate() {
     return new Promise((resolve, reject) => {
       const sch = {};
 
-      if (this.req.username) sch.username = Joi.string().alphanum().min(4).max(30).required();
-      else sch.username = Joi.string().alphanum().min(4).max(30);
+      if (this.req.username) sch.username = Joi.string().regex(/^[a-zA-Z -ééèàç]{3,30}$/i).required();
+      else sch.username = Joi.string().regex(/^[a-zA-Z -ééèàç]{3,30}$/i);
 
-      if (this.req.firstName) sch.firstName = Joi.string().regex(/^[a-zA-Z]{3,30}$/).required();
-      else sch.firstName = Joi.string().regex(/^[a-zA-Z]{3,30}$/);
+      if (this.req.firstName) sch.firstName = Joi.string().regex(/^[a-zA-Z -ééèàç]{3,30}$/i).required();
+      else sch.firstName = Joi.string().regex(/^[a-zA-Z -ééèàç]{3,30}$/i);
 
-      if (this.req.lastName) sch.lastName = Joi.string().regex(/^[a-zA-Z]{3,30}$/).required();
-      else sch.lastName = Joi.string().regex(/^[a-zA-Z]{3,30}$/);
+      if (this.req.lastName) sch.lastName = Joi.string().regex(/^[a-zA-Z -ééèàç]{3,30}$/i).required();
+      else sch.lastName = Joi.string().regex(/^[a-zA-Z -ééèàç]{3,30}$/i);
 
       if (this.req.password) sch.password = new Complexity(this.passwordConf).required();
       else sch.password = new Complexity(this.passwordConf);
 
       if (this.req.birthdate) {
-        sch.birthdate = Joi.string().regex(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/).required();
-      } else sch.birthdate = Joi.string().regex(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/);
+        sch.birthdate = Joi.string().regex(/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/).required();
+      } else sch.birthdate = Joi.string().regex(/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/);
 
       if (this.req.email) sch.email = Joi.string().email({ minDomainSegments: 2 }).required();
       else sch.email = Joi.string().email({ minDomainSegments: 2 });
