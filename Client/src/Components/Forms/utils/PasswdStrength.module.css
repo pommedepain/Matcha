@@ -1,8 +1,19 @@
-#passwd_cont {
-	position: relative;
-	display: flex;
-	flex-direction: column;
-	margin-bottom: 10px;
+@media only screen and (max-device-width: 1450px) {
+	#passwd_cont {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		margin-bottom: 1%;
+	}
+}
+
+@media only screen and (min-device-width: 1500px) {
+	#passwd_cont {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		margin-bottom: 10px;
+	}
 }
 
 .passwdStrength {
@@ -41,16 +52,34 @@
 	margin-bottom: 0;
 }
 
-.passwdButton {
-	position: absolute;
-	width: 8%;
-	left: 85%;
-	bottom: 45%;
-	background: #727272;
-  	color: white;
-  	padding: 4px 8px;
-  	border-radius: 4px;
-  	font-weight: 700;
-	font-size: .4em;
-	cursor: pointer;
+@media only screen and (max-device-width: 1450px) {
+	.passwdButton {
+		position: absolute;
+		width: 8%;
+		left: 85%;
+		bottom: 30%;
+		background: #727272;
+		color: white;
+		padding: 4px 8px;
+		border-radius: 4px;
+		font-weight: 700;
+		font-size: .4em;
+		cursor: pointer;
+	}
+}
+
+@media only screen and (min-device-width: 1500px) {
+	.passwdButton {
+		position: absolute;
+		width: 8%;
+		left: 85%;
+		bottom: 45%;
+		background: #727272;
+	  	color: white;
+	  	padding: 4px 8px;
+	  	border-radius: 4px;
+	  	font-weight: 700;
+		font-size: .4em;
+		cursor: pointer;
+	}
 }
