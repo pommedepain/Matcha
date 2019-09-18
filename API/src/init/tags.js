@@ -24,13 +24,18 @@ const tags = [
 ];
 
 function populateTags() {
-  const promises = [];
-  debug('Populating Tags in DB...');
-  tags.forEach((tag) => {
-    const p = new Tag(_.pick(tag, requiredProperties)).createTag();
-    promises.push(p);
+  return new Promise((resolve, reject) => {
+    const promises = [];
+    debug('Populating Tags in DB...');
+    tags.forEach((tag) => {
+      const p = new Tag(_.pick(tag, requiredProperties)).createTag();
+      promises.push(p);
+    });
+    Promise.all(promises)
+      .then(resolve())
+      .catch(err => reject(err));
   });
-  return Promise.all(promises);
+
 }
 
 module.exports = populateTags;

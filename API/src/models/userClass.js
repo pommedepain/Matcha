@@ -94,42 +94,50 @@ class User extends Node {
   }
 
   addRelationships() {
-    const promises = [];
-    const date = new Date();
-    debug('Linking User with Tags ...');
-    if (this.user.tags) {
-      debug(this.user.tags);
-      this.user.tags.forEach((tag) => {
-        const data = {
-          node_a: this.data.node_a,
-          node_b: {
-            label: 'Tag',
-            id: 'id',
-            properties: tag,
-          },
-          relation: {
-            label: 'LOOK_FOR',
-            properties: { creationDate: date.toISOString() },
-          },
-        };
-        const p = new Relationship(data).createRelationship();
-        promises.push(p);
-      });
-    }
-    return Promise.all(promises);
+    return new Promise((resolve, reject) => {
+      const promises = [];
+      const date = new Date();
+      debug('Linking User with Tags ...');
+      if (this.user.tags) {
+        debug(this.user.tags);
+        this.user.tags.forEach((tag) => {
+          const data = {
+            node_a: this.data.node_a,
+            node_b: {
+              label: 'Tag',
+              id: 'id',
+              properties: tag,
+            },
+            relation: {
+              label: 'LOOK_FOR',
+              properties: { creationDate: date.toISOString() },
+            },
+          };
+          const p = new Relationship(data).createRelationship();
+          promises.push(p);
+        });
+      }
+      Promise.all(promises)
+        .then(resolve())
+        .catch(err => reject(err));
+    });
   }
 
   validateTags() {
-    const promises = [];
-    debug('Validating Tags ...');
-    if (this.user.tags) {
-      this.user.tags.forEach((tag) => {
-        debug('tag:', tag);
-        const p = new TagValidator(this.tagRequirements, tag).validate();
-        promises.push(p);
-      });
-    }
-    return Promise.all(promises);
+    return new Promise((resolve, reject) => {
+      const promises = [];
+      debug('Validating Tags ...');
+      if (this.user.tags) {
+        this.user.tags.forEach((tag) => {
+          debug('tag:', tag);
+          const p = new TagValidator(this.tagRequirements, tag).validate();
+          promises.push(p);
+        });
+      }
+      Promise.all(promises)
+        .then(resolve())
+        .catch(err => reject(err));
+    });
   }
 
   generateAuthToken(user) {
