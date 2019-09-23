@@ -5,6 +5,13 @@ import classes from './LogIn.module.css';
 import Input from '../../Utils/Input/Input'
 
 const LogIn = (props) => {
+let formElementsArray = [];
+for (let key in props.orderForm) {
+	formElementsArray.push({
+		id: key,
+		config: props.orderForm[key]
+	});
+}
 	return (
 		<div>
 			{props.showPopup ?
@@ -16,27 +23,25 @@ const LogIn = (props) => {
 							<h2 className={classes.fs_title}>Log In</h2>
 							<h3 className={classes.fs_subtitle}>And see what you missed</h3>
 							<Input
-								type="text" 
-								inputtype="input"
-								name="username" 
-								placeholder="Pseudo"
-								value={props.username}
-								onChange={props.handleChange}
-								required
+								key={formElementsArray[0].id}
+								elementType={formElementsArray[0].config.elementType}
+								elementConfig={formElementsArray[0].config.elementConfig}
+								value={formElementsArray[0].config.value}
+								inputChangedHandler={(event) => props.inputChangedHandler(event, formElementsArray[0].id)}
 							/>
-							<Input
-								type={props.hidden ? "password" : "text"}
-								inputtype="input"
-								name="password" 
-								placeholder="Password"
-								value={props.password}
-								onChange={props.handleChange}
-								required
-							/>
-							<span
-								className={classes.passwdToggle}
-								onClick={props.toggleShow}
-							>{props.hidden ? "Show" : "Hide"}</span>
+							<div className={classes.passwdCont}>
+								<Input
+									key={formElementsArray[1].id}
+									elementType={formElementsArray[1].config.elementType}
+									elementConfig={formElementsArray[1].config.elementConfig}
+									value={formElementsArray[1].config.value}
+									inputChangedHandler={(event) => props.inputChangedHandler(event, formElementsArray[1].id)}
+								/>
+								<span
+									className={classes.passwdToggle}
+									onClick={props.toggleShow}
+								>{props.hidden ? "Show" : "Hide"}</span>
+							</div>
 							<input 
 								type="submit" 
 								name="submit" 

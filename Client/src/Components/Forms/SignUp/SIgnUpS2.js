@@ -36,7 +36,25 @@ class SignUp extends Component {
 		tags: [
 			{ id: "athlete", text: "Athlete" },
 			{ id: "geek", text: "Geek" }
-		]
+		],
+		orderForm : {
+			firstName: this.initInput.bind('input', 'text', "First Name", ""),
+            lastName: this.initInput.bind('input', 'text', "Last Name", ""),
+			username: this.initInput.bind('input', 'text', "Username", ""),
+			email: this.initInput.bind('input', 'text', "E-Mail", "")
+		}
+	}
+
+	initInput = (element, type, placeholder, value) => {
+		let arrayElem = {
+			elementType: element,
+			elementConfig: {
+				type: type,
+				placeholder: placeholder
+			},
+			value: value
+		};
+		return (arrayElem);
 	}
 
 	togglePopup = () => {

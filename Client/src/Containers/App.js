@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import NavBar from '../Components/NavBar'
-import Main from '../Components/Forms/SignUpS'
+import Main from '../Components/Forms/SignUp/SignUpS'
 import Footer from './Footer'
 
 class App extends Component {

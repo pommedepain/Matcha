@@ -12,6 +12,13 @@ import AlertBox from '../../Utils/AlertBox/AlertBox'
 // const Range = createSliderWithTooltip(Slider.Range);
 
 const SignUp = (props) => {
+	let formElementsArray = [];
+	for (let key in props.orderForm) {
+		formElementsArray.push({
+			id: key,
+			config: props.orderForm[key]
+		});
+	}
 	return (
 		<div>
 			<div className={classes.display_page} id="display_page" style={props.style}>
@@ -38,34 +45,13 @@ const SignUp = (props) => {
 						<fieldset>
 							<h2 className={classes.fs_title}>Create your account</h2>
 							<h3 className={classes.fs_subtitle}>This is step 1</h3>
-							<input 
-								type="text" 
-								name="firstName" 
-								placeholder="First Name"
-								value={props.firstName}
-								onChange={props.handleChange}
-							/>
-							<input 
-								type="text" 
-								name="lastName" 
-								placeholder="Last Name"
-								value={props.lastName}
-								onChange={props.handleChange}
-							/>
-							<input 
-								type="text" 
-								name="username" 
-								placeholder="Username"
-								value={props.username}
-								onChange={props.handleChange}
-							/>
-							<input
-								type="text" 
-								name="email" 
-								placeholder="Email"
-								value={props.email}
-								onChange={props.handleChange}
-							/>
+							{formElementsArray.map(formElement => (
+								<Input
+									key={formElement.id} 
+									elementType={formElement.config.elementType}
+									elementConfig={formElement.config.elementConfig}
+									value={formElement.config.value} />
+							))}
 							<PasswdStrength 
 								name="password"
 								style={{marginBottom: '0'}}

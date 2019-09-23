@@ -1,7 +1,7 @@
 import React from 'react'
 
 import classes from './NavBar.module.css'
-// import LogIn from './Forms/LogIn/LogInD'
+import Login from './Forms/LogIn/LoginS'
 // import cx from 'classnames'
 
 // const axios = require('axios');
