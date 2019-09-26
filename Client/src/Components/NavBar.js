@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 import classes from './NavBar.module.css'
 import Login from './Forms/LogIn/LoginS'
@@ -16,7 +17,13 @@ class NavBar extends React.Component {
 	render() {
 		return (
 			<div className={classes.NavBar}>
-				<a href="/"><h1 className={classes.logo}><i className="fas fa-puzzle-piece" /> Matcha</h1></a>
+				<Link to="/">
+					<li className={classes.logo}>
+						<h1>
+							<i className="fas fa-puzzle-piece" /> Matcha
+						</h1>
+					</li>
+				</Link>
 				<Login />
 			</div>
 		)

@@ -77,9 +77,10 @@
 			"validation": {
 				"regex": "^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$"
 			},
-			"valid": false,
+			"valid": true,
 			"touched": false,
-			"errorMessage": ""
+			"errorMessage": "",
+			"title": "Birthdate"
 		},
 		"gender": {
 			"elementType": "radio",
@@ -95,18 +96,19 @@
 			"validation": {
 				"regex": "^(male|female|genderqueer)$"
 			},
-			"valid": false,
+			"valid": true,
 			"touched": false,
-			"errorMessage": ""
+			"errorMessage": "",
+			"title": "Gender"
 		},
 		"sexualOrient": {
 			"elementType": "radio",
 			"elementConfig": {
 				"options": [
-					{ "value": "hetero", "displayValue": "Heterosexual" },
-					{ "value": "homo", "displayValue": "Homosexual" },
-					{ "value": "bi", "displayValue": "Bisexual" },
-					{ "value": "pan", "displayValue": "Pansexual" }
+					{ "value": "hetero", "displayValue": "Heterosexual", "id": "hetero" },
+					{ "value": "homo", "displayValue": "Homosexual", "id": "homo" },
+					{ "value": "bi", "displayValue": "Bisexual", "id": "bi" },
+					{ "value": "pan", "displayValue": "Pansexual", "id": "pan" }
 				],
 				"type": "radio"
 			},
@@ -114,9 +116,10 @@
 			"validation": {
 				"regex": "^(hetero|homo|bi|pan)$"
 			},
-			"valid": false,
+			"valid": true,
 			"touched": false,
-			"errorMessage": ""
+			"errorMessage": "",
+			"title": "Sexual Orientation"
 		},
 		"bio": {
 			"elementType": "input",
@@ -130,9 +133,10 @@
 				"maxLength": 255,
 				"regex": "^[%5Cw 0-9]{1,255}$"
 			},
-			"valid": false,
+			"valid": true,
 			"touched": false,
-			"errorMessage": ""
+			"errorMessage": "",
+			"title": "Bio"
 		}
 	}
 }

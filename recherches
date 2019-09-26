@@ -19,6 +19,8 @@ Couleurs thématiques:
 	- Bleu: https://www.pantone.com/color-finder/Blue-0821-C
 	- Jaune: https://www.pantone.com/color-finder/910-C
 	- Vert: https://www.pantone.com/color-finder/909-C
+	- Rouge foncé: https://www.pantone.com/color-finder/186-C
+	- Rouge clair: https://www.pantone.com/color-finder/4058-C
 	- Palette chromatique: https://www.pantone.com/color-finder#/pick?pantoneBook=pantonePastelsNeonsCoatedM2
 
 Template site: 
@@ -42,4 +44,3 @@ Template quizz & jeux:
 	- Divs pour cliquer sur les différentes possibilités + 
 	manière de choisir son "adversaire" + pop-ups des différentes pages 
 	(mode jeux visible uniquement sur mobile):https://www.quizup.com/topics/harry-potter-mov
-	- npm i dayjs => plugin fromNow permet de formatter string de type "décconnecté depuis 2 minutes"

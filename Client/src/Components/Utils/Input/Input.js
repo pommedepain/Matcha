@@ -6,33 +6,47 @@ const input = (props) => {
 	let inputElement = null;
 	const inputClasses = [classes.inputElement];
 	let validationError = null;
+	let nameclass = [];
 
 	if (props.invalid && props.shouldValidate && props.touched) {
 		inputClasses.push(classes.Invalid);
 		validationError = <p className={classes.ValidationError}>{props.errorMessage}</p>
 	}
 
+	if (typeof props.className != "undefined") {
+		if (props.className === "gender") {
+			nameclass.push(classes.gender);
+		}
+		else if (props.className === "sexualOrient") {
+			nameclass.push(classes.sexualOrient);
+		}
+	}
+
 	switch (props.elementType) {
 		case ( 'input' ) :
+			// console.log(props)
 			inputElement = <input 
 				className={inputClasses.join(' ')} 
 				{...props.elementConfig}
 				value={props.value}
-				onChange={props.inputChangedHandler} />;
+				onChange={props.changed} />;
 			break;
 		case ( 'radio' ) :
+			// console.log(props)
 			inputElement = 
-			<div className={inputClasses.join(' ')}>
+			<div className={nameclass}>
 				{props.elementConfig.options.map(option => (
-				<div>
+				// console.log(option),
+				<div key={option.id}>
 					<input
-						key={option.value}
+						type={props.elementConfig.type}
+						className={`${inputClasses.join(' ')} ${classes.radio}`}
 						id={option.id}
 						value={option.value}
-						checked={props.value}
-						onChange={props.inputChangedHandler} 
+						checked={props.checked === option.value}
+						onChange={props.changed} 
 					/>
-					<label htmlFor={option.id}>{option.displayValue}</label>
+					<label htmlFor={option.id} className={classes.label}>{option.displayValue}</label>
 				</div>
 				))}
 			</div>;
@@ -42,7 +56,7 @@ const input = (props) => {
 				className={inputClasses.join(' ')} 
 				{...props.elementConfig}
 				value={props.value}
-				onChange={props.inputChangedHandler} />;
+				onChange={props.changed} />;
 			break;
 		case ( 'select' ):
 			/* Dans le SmartComponent, le contenu de "state.elementConfig:" 
@@ -51,7 +65,7 @@ const input = (props) => {
 				<select 
 					className={inputClasses.join(' ')}
 					value={props.value}
-					onChange={props.inputChangedHandler} >
+					onChange={props.changed} >
 					{props.elementConfig.options.map(option => (
 						<option key={option.value} value={option.value} >
 							{option.displayValue}
@@ -65,7 +79,7 @@ const input = (props) => {
 				className={inputClasses.join(' ')} 
 				{...props.elementConfig}
 				value={props.value}
-				onChange={props.inputChangedHandler} />;
+				onChange={props.changed} />;
 	}
 
 	return (

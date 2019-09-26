@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import Slider, { Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
@@ -61,7 +62,7 @@ const SignUp = (props) => {
                 			        invalid={!formElement.config.valid}
                 			        shouldValidate={formElement.config.validation}
                 			        touched={formElement.config.touched}
-									inputChangedHandler={(event) => props.inputChangedHandler(event, formElement.id)}
+									changed={(event) => props.inputChangedHandler(event, formElement.id)}
 								/>
                 			))}
 							{/* <input 
@@ -120,8 +121,12 @@ const SignUp = (props) => {
 							<h2 className={classes.fs_title}>Tell us more about yourself</h2>
 							<h3 className={classes.fs_subtitle}>Who are you ?</h3>
 							{formElementsArray2.map(formElement => (
-								// console.log(formElement.id),
-                			    <Input 
+								<div key={formElement.id}>
+								{formElement.id ?
+								<h3 className={classes.questions}>{formElement.config.title}</h3>
+								: null}
+                			    <Input
+									className={formElement.id}
                 			        key={formElement.id}
                 			        elementType={formElement.config.elementType}
                 			        elementConfig={formElement.config.elementConfig}
@@ -130,7 +135,9 @@ const SignUp = (props) => {
                 			        shouldValidate={formElement.config.validation}
                 			        touched={formElement.config.touched}
 									changed={(event) => props.inputChangedHandler(event, formElement.id)}
+									checked={props.orderForm2[formElement.id].value}
 								/>
+								</div>
                 			))}
 							{/* <h3 className={classes.questions}>Birthdate</h3>
 							<input

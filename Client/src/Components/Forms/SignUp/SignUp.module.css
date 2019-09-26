@@ -223,17 +223,17 @@
 /*inputs*/
 
 @media only screen and (max-device-width: 1450px) {
-#msform input, #msform textarea {
-	padding: 15px;
-	border: 1px solid #ccc;
-	border-radius: 3px;
-	margin-bottom: 2%;
-	width: 100%;
-	box-sizing: border-box;
-	font-family: montserrat;
-	color: #2C3E50;
-	font-size: 0.5em;
-}
+	#msform input, #msform textarea {
+		padding: 15px;
+		border: 1px solid #ccc;
+		border-radius: 3px;
+		margin-bottom: 2%;
+		width: 100%;
+		box-sizing: border-box;
+		font-family: montserrat;
+		color: #2C3E50;
+		font-size: 0.5em;
+	}
 }
 
 @media only screen and (min-device-width: 1500px) {
@@ -374,7 +374,7 @@
 	flex-direction: row;
 	justify-content: center;
 }
-#sexualOrient {
+.sexualOrient {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;

@@ -7,6 +7,7 @@ import Input from '../../Utils/Input/Input'
 const LogIn = (props) => {
 	let formElementsArray = [];
 
+	// eslint-disable-next-line no-unused-vars
 	for (let key in props.orderForm) {
 		formElementsArray.push({
 			id: key,
@@ -29,7 +30,7 @@ const LogIn = (props) => {
 								elementType={formElementsArray[0].config.elementType}
 								elementConfig={formElementsArray[0].config.elementConfig}
 								value={formElementsArray[0].config.value}
-								inputChangedHandler={(event) => props.inputChangedHandler(event, formElementsArray[0].id)}
+								changed={(event) => props.inputChangedHandler(event, formElementsArray[0].id)}
 								invalid={!formElementsArray[0].config.valid}
 								shouldValidate={formElementsArray[0].config.validation}
 								touched={formElementsArray[0].config.touched}
@@ -41,7 +42,7 @@ const LogIn = (props) => {
 									elementType={formElementsArray[1].config.elementType}
 									elementConfig={formElementsArray[1].config.elementConfig}
 									value={formElementsArray[1].config.value}
-									inputChangedHandler={(event) => props.inputChangedHandler(event, formElementsArray[1].id)}
+									changed={(event) => props.inputChangedHandler(event, formElementsArray[1].id)}
 									invalid={!formElementsArray[1].config.valid}
 									shouldValidate={formElementsArray[1].config.validation}
 									touched={formElementsArray[1].config.touched}

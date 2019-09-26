@@ -59,8 +59,9 @@ class SignUp extends Component {
 	}
 
 	inputChangedHandler = (event, inputIdentifier) => {
-		console.log(event.target.value);
-		console.log(inputIdentifier);
+		// console.log("value: " + event.target.value);
+		// console.log("type: " + event.target.type)
+		// console.log("input: " + inputIdentifier);
 		let updatedOrderForm = {};
 		const trueOrderForm = inputIdentifier === "birthdate" || inputIdentifier === "gender" || inputIdentifier === "sexualOrient" || inputIdentifier === "bio" ? "orderForm2" : "orderForm1";
 
@@ -77,11 +78,12 @@ class SignUp extends Component {
 		updatedOrderForm[inputIdentifier] = updatedFormElement;
 
 		let formIsValid = true;
+		// eslint-disable-next-line no-unused-vars
 		for (let inputIdentifier in updatedOrderForm) {
 			formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
 		}
-		console.log(trueOrderForm);
-		console.log(updatedFormElement);
+		// console.log("orderForm: " + trueOrderForm);
+		// console.log(updatedFormElement);
 		trueOrderForm === "orderForm2" ?
 		this.setState({ orderForm2: updatedOrderForm, formIsValid: formIsValid })
 		: this.setState({ orderForm1: updatedOrderForm, formIsValid: formIsValid });
@@ -227,9 +229,11 @@ class SignUp extends Component {
 			localisation: this.state.localisation,
             tags: this.state.tags
 		};
+		// eslint-disable-next-line no-unused-vars
 		for (let formElementIdentifier in this.state.orderForm1) {
 			formDatas[formElementIdentifier] = this.state.orderForm1[formElementIdentifier].value;
 		}
+		// eslint-disable-next-line no-unused-vars
 		for (let formElementIdentifier in this.state.orderForm2) {
 			formDatas[formElementIdentifier] = this.state.orderForm2[formElementIdentifier].value;
 		}

@@ -1,11 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './Containers/App';
 import registerServiceWorker from './registerServiceWorker';
 
+import classes from './index.module.css';
+import App from './Containers/App';
+
 ReactDOM.render(
-  <App />,
+<div className={classes.conteneur}>
+  <App />
+</div>,
   document.getElementById('root')
 );
 
