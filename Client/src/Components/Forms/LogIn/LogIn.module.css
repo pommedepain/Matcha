@@ -177,6 +177,7 @@
 }
 /*inputs*/
 #msform input, #msform textarea {
+	outline: none;
 	padding: 15px;
 	border: 1px solid #ccc;
 	border-radius: 3px;
@@ -202,6 +203,11 @@
 #msform .action_button:hover, #msform .action_button:focus {
 	box-shadow: 0 0 0 2px white, 0 0 0 3px #27AE60;
 }
+#msform .action_button:disabled {
+	color: #ccc;
+	cursor: not-allowed;
+}
+
 /*headings*/
 .fs_title {
 	font-size: 15px;

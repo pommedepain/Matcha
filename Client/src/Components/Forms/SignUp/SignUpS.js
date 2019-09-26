@@ -1,42 +1,90 @@
 import React, { Component } from 'react';
-// import PropTypes from 'prop-types'
 
 import Form from './SignUpD';
 import classes from './SignUp.module.css';
 
 const axios = require('axios');
-const datas = require('../../../Datas/tagSuggestions.json');
+const TagDatas = require('../../../Datas/tagSuggestions.json');
+const formDatas = require('../../../Datas/signUpForm.json');
 
 class SignUp extends Component {
-	// static propTypes = {
-	// 	username: PropTypes.string.isRequired,
-	// 	email: PropTypes.string.isRequired,
-	// 	password: PropTypes.string.isRequired,
-	// 	cPasswd: PropTypes.string.isRequired,
-	// }
-
 	state = {
 		showPopup: false,
 		showAlert: false,
 		style: {},
-		username: "",
-		firstName: "", 
-		lastName: "",
-		birthdate: "",
-		email: "",
+		loading: false,
+		formIsValid: false,
+		orderForm1: formDatas.orderForm1,
+		orderForm2: formDatas.orderForm2,
+		// username: "",
+		// firstName: "", 
+		// lastName: "",
+		// birthdate: "",
+		// email: "",
 		password: "",
 		cPasswd: "",
 		score: "",
 		score2: "",
-		gender: "",
-		sexOrient: "",
-		bio: "",
+		// gender: "",
+		// sexOrient: "",
+		// bio: "",
 		range: [18, 25],
 		localisation: 5,
 		tags: [
 			{ id: "athlete", text: "Athlete" },
 			{ id: "geek", text: "Geek" }
 		]
+	}
+
+	checkValidity(value, rules) {
+		let isValid = true;
+
+		if (!rules) {
+			return (true);
+		}
+		if (rules.required) {
+			isValid = (value.trim() !== "") && isValid;
+		}
+		if (rules.minLength) {
+			isValid = (value.length >= rules.minLength) && isValid;
+		}
+		if (rules.maxLength) {
+			isValid = (value.length <= rules.maxLength) && isValid;
+		}
+		if (rules.regex) {
+			let regex = RegExp(unescape(rules.regex), 'g')
+			isValid = regex.test(value) && isValid;
+		}
+		return (isValid);
+	}
+
+	inputChangedHandler = (event, inputIdentifier) => {
+		console.log(event.target.value);
+		console.log(inputIdentifier);
+		let updatedOrderForm = {};
+		const trueOrderForm = inputIdentifier === "birthdate" || inputIdentifier === "gender" || inputIdentifier === "sexualOrient" || inputIdentifier === "bio" ? "orderForm2" : "orderForm1";
+
+		trueOrderForm === "orderForm2" ?
+		updatedOrderForm = { ...this.state.orderForm2 }
+		: updatedOrderForm = { ...this.state.orderForm1 };
+
+		const updatedFormElement = {
+			...updatedOrderForm[inputIdentifier]
+		};
+		updatedFormElement.value = event.target.value;
+		updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
+		updatedFormElement.touched = true;
+		updatedOrderForm[inputIdentifier] = updatedFormElement;
+
+		let formIsValid = true;
+		for (let inputIdentifier in updatedOrderForm) {
+			formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
+		}
+		console.log(trueOrderForm);
+		console.log(updatedFormElement);
+		trueOrderForm === "orderForm2" ?
+		this.setState({ orderForm2: updatedOrderForm, formIsValid: formIsValid })
+		: this.setState({ orderForm1: updatedOrderForm, formIsValid: formIsValid });
 	}
 
 	togglePopup = () => {
@@ -106,9 +154,9 @@ class SignUp extends Component {
 	}
 
 	handleAddition = (tag) => {
-		for (let i = 0; i < datas.suggestions.length; i++)
+		for (let i = 0; i < TagDatas.suggestions.length; i++)
 		{
-			if (datas.suggestions[i].text === tag.text)
+			if (TagDatas.suggestions[i].text === tag.text)
 			{
 				console.log(tag)
 				return (this.setState(
@@ -170,38 +218,44 @@ class SignUp extends Component {
 	}
 
 	submit = (event) => {
-		console.log(this.state)
-		event.preventDefault()
-		const data = this.state
+		event.preventDefault();
+		this.setState({ loading: true });
+		const formDatas = {
+			password: this.state.password,
+			ageMin: this.state.range[0],
+			ageMax: this.state.range[1],
+			localisation: this.state.localisation,
+            tags: this.state.tags
+		};
+		for (let formElementIdentifier in this.state.orderForm1) {
+			formDatas[formElementIdentifier] = this.state.orderForm1[formElementIdentifier].value;
+		}
+		for (let formElementIdentifier in this.state.orderForm2) {
+			formDatas[formElementIdentifier] = this.state.orderForm2[formElementIdentifier].value;
+		}
+		console.log(formDatas);
 
-		axios.post('http://localhost:4000/API/users', {
-            firstName: data.firstName,
-            lastName: data.lastName,
-            username: data.username,
-            password: data.password,
-            birthdate: data.birthdate,
-            email: data.email,
-            bio: data.bio,
-            gender: data.gender,
-            ageMin: data.range[0],
-            ageMax: data.range[1],
-			sexOrient: data.sexOrient,
-			localisation: data.localisation,
-            tags: data.tags,
-        })
-        .then((response) => {
-			console.log(response.data)
-          return (response.data.payload);
-        })
-        .catch(error => {
-			console.log(error)
-          return (false);
-        })
+		axios
+			.post('http://localhost:4000/API/users', formDatas)
+			.then(response => {
+				this.setState({ loading: false })
+				console.log(response.data.succes)
+				return (response.data);
+			})
+			.catch(error => {
+				this.setState({
+					errors: error.response,
+					loading: false
+				})
+				console.log(error)
+				return (false);
+			})
 	}
 	
 	render () {
 		return (
 			<Form 
+				inputChangedHandler={this.inputChangedHandler.bind(this)}
 				popup={this.togglePopup.bind(this)}
 				handleChange={this.handleChange.bind(this)}
 				passwordStrength={this.passwordStrength.bind(this)}

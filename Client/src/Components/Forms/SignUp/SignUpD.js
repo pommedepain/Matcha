@@ -2,16 +2,29 @@ import React from 'react';
 import Slider, { Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
 
-import PasswdStrength from '../../Utils/PasswdStrength/PasswdStrength'
-import Tags from '../../Utils/Tags/Tags'
+import PasswdStrength from '../../Utils/PasswdStrength/PasswdStrength';
+import Tags from '../../Utils/Tags/Tags';
 import classes from './SignUp.module.css';
-import AlertBox from '../../Utils/AlertBox/AlertBox'
-
-// const Slider = require('rc-slider');
-// const createSliderWithTooltip = Slider.createSliderWithTooltip;
-// const Range = createSliderWithTooltip(Slider.Range);
+import AlertBox from '../../Utils/AlertBox/AlertBox';
+import Input from '../../Utils/Input/Input';
 
 const SignUp = (props) => {
+	let formElementsArray1 = [];
+	let formElementsArray2 = [];
+
+	for (let key in props.orderForm1) {
+		formElementsArray1.push({
+			id: key,
+			config: props.orderForm1[key]
+		});
+	}
+	for (let key in props.orderForm2) {
+		formElementsArray2.push({
+			id: key,
+			config: props.orderForm2[key]
+		});
+	}
+
 	return (
 		<div>
 			<div className={classes.display_page} id="display_page" style={props.style}>
@@ -38,7 +51,20 @@ const SignUp = (props) => {
 						<fieldset>
 							<h2 className={classes.fs_title}>Create your account</h2>
 							<h3 className={classes.fs_subtitle}>This is step 1</h3>
-							<input 
+							{formElementsArray1.map(formElement => (
+								// console.log(formElement.id),
+                			    <Input 
+                			        key={formElement.id}
+                			        elementType={formElement.config.elementType}
+                			        elementConfig={formElement.config.elementConfig}
+                			        value={formElement.config.value}
+                			        invalid={!formElement.config.valid}
+                			        shouldValidate={formElement.config.validation}
+                			        touched={formElement.config.touched}
+									inputChangedHandler={(event) => props.inputChangedHandler(event, formElement.id)}
+								/>
+                			))}
+							{/* <input 
 								type="text" 
 								name="firstName" 
 								placeholder="First Name"
@@ -65,7 +91,7 @@ const SignUp = (props) => {
 								placeholder="Email"
 								value={props.email}
 								onChange={props.handleChange}
-							/>
+							/> */}
 							<PasswdStrength 
 								name="password"
 								style={{marginBottom: '0'}}
@@ -87,13 +113,26 @@ const SignUp = (props) => {
 								name="next" 
 								className={`${classes.next} ${classes.action_button}`} 
 								value="Next" 
-								onClick={props.nextStep} 
+								onClick={props.nextStep}
 							/>
 						</fieldset>
 						<fieldset>
 							<h2 className={classes.fs_title}>Tell us more about yourself</h2>
 							<h3 className={classes.fs_subtitle}>Who are you ?</h3>
-							<h3 className={classes.questions}>Birthdate</h3>
+							{formElementsArray2.map(formElement => (
+								// console.log(formElement.id),
+                			    <Input 
+                			        key={formElement.id}
+                			        elementType={formElement.config.elementType}
+                			        elementConfig={formElement.config.elementConfig}
+                			        value={formElement.config.value}
+                			        invalid={!formElement.config.valid}
+                			        shouldValidate={formElement.config.validation}
+                			        touched={formElement.config.touched}
+									changed={(event) => props.inputChangedHandler(event, formElement.id)}
+								/>
+                			))}
+							{/* <h3 className={classes.questions}>Birthdate</h3>
 							<input
 								type="date"
 								id={classes.birthdate}
@@ -175,7 +214,7 @@ const SignUp = (props) => {
 								value={props.bio}
 								name="bio"
 								onChange={props.handleChange}
-							></textarea>
+							></textarea> */}
 							<input 
 								type="button" 
 								name="previous" 
@@ -190,13 +229,6 @@ const SignUp = (props) => {
 								value="Next"
 								onClick={props.nextStep}
 							/>
-							{/* <input 
-								type="button" 
-								name="next" 
-								className={classes.skip} 
-								value="Skip"
-								onClick={props.nextStep}
-							/> */}
 						</fieldset>
 						<fieldset>
 							<h2 className={classes.fs_title}>What are you looking for?</h2>
@@ -246,6 +278,7 @@ const SignUp = (props) => {
 								className={`${classes.submit} ${classes.action_button}`} 
 								value="Submit" 
 								onClick={props.submit}
+								disabled={!props.formIsValid}
 							/>
 						</fieldset>
 					</form>

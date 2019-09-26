@@ -5,13 +5,15 @@ import classes from './LogIn.module.css';
 import Input from '../../Utils/Input/Input'
 
 const LogIn = (props) => {
-let formElementsArray = [];
-for (let key in props.orderForm) {
-	formElementsArray.push({
-		id: key,
-		config: props.orderForm[key]
-	});
-}
+	let formElementsArray = [];
+
+	for (let key in props.orderForm) {
+		formElementsArray.push({
+			id: key,
+			config: props.orderForm[key]
+		});
+	}
+
 	return (
 		<div>
 			{props.showPopup ?
@@ -28,6 +30,10 @@ for (let key in props.orderForm) {
 								elementConfig={formElementsArray[0].config.elementConfig}
 								value={formElementsArray[0].config.value}
 								inputChangedHandler={(event) => props.inputChangedHandler(event, formElementsArray[0].id)}
+								invalid={!formElementsArray[0].config.valid}
+								shouldValidate={formElementsArray[0].config.validation}
+								touched={formElementsArray[0].config.touched}
+								errorMessage="Must be at least 3 characters long and contain only letters."
 							/>
 							<div className={classes.passwdCont}>
 								<Input
@@ -36,10 +42,14 @@ for (let key in props.orderForm) {
 									elementConfig={formElementsArray[1].config.elementConfig}
 									value={formElementsArray[1].config.value}
 									inputChangedHandler={(event) => props.inputChangedHandler(event, formElementsArray[1].id)}
+									invalid={!formElementsArray[1].config.valid}
+									shouldValidate={formElementsArray[1].config.validation}
+									touched={formElementsArray[1].config.touched}
+									errorMessage="Must be at least 7 characters long and contain 1 lowercase, 1 uppercase, 1 number and 1 special character."
 								/>
 								<span
 									className={classes.passwdToggle}
-									onClick={props.toggleShow}
+									onClick={(event) => props.toggleShow(event, formElementsArray[1].id)}
 								>{props.hidden ? "Show" : "Hide"}</span>
 							</div>
 							<input 
@@ -48,6 +58,7 @@ for (let key in props.orderForm) {
 								className={cx(classes.submit, classes.action_button)} 
 								value="Submit" 
 								onClick={props.submit}
+								disabled={!props.formIsValid}
 							/>
 						</fieldset>
 					</form>

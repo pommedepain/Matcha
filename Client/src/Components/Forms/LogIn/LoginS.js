@@ -4,45 +4,17 @@ import cx from 'classnames'
 import classes from './LogIn.module.css';
 import LoginDumb from './LogInD'
 const axios = require('axios');
+const datas = require('../../../Datas/loginForm.json');
 
 class Login extends Component {
 	state = {
-		orderForm: {
-			username: {
-				elementType: 'input',
-				elementConfig: {
-					type: 'text',
-					placeholder: "Your username"
-				},
-				value: ""
-			},
-			password: {
-				elementType: 'input',
-				elementConfig: {
-					type: "password",
-					placeholder: "Your password"
-				},
-				value: ""
-			}
-		},
+		orderForm: datas.orderForm,
+		formIsValid: false,
 		style: '',
 		showPopup: false,
 		hidden: true,
 		user: false, 
 		loading: false
-	}
-
-	initializeState = () => {
-		this.setState({
-			password: {
-				elementType: 'input',
-				elementConfig: {
-					type: this.hidden ? "password" : "text",
-					placeholder: "Your password"
-				},
-				value: ""
-			}
-		})
 	}
 
 	// initInput = (element, type, placeholder, value) => {
@@ -57,6 +29,28 @@ class Login extends Component {
 	// 	return (arrayElem);
 	// }
 
+	checkValidity(value, rules) {
+		let isValid = true;
+
+		if (!rules) {
+			return (true);
+		}
+		if (rules.required) {
+			isValid = (value.trim() !== "") && isValid;
+		}
+		if (rules.minLength) {
+			isValid = (value.length >= rules.minLength) && isValid;
+		}
+		if (rules.maxLength) {
+			isValid = (value.length <= rules.maxLength) && isValid;
+		}
+		if (rules.regex) {
+			let regex = RegExp(unescape(rules.regex), 'g')
+			isValid = regex.test(value) && isValid;
+		}
+		return (isValid);
+	}
+
 	inputChangedHandler = (event, inputIdentifier) => {
 		const updatedOrderForm = {
 			...this.state.orderForm
@@ -65,8 +59,15 @@ class Login extends Component {
 			...updatedOrderForm[inputIdentifier]
 		};
 		updatedFormElement.value = event.target.value;
+		updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
+		updatedFormElement.touched = true;
 		updatedOrderForm[inputIdentifier] = updatedFormElement;
-		this.setState({ orderForm: updatedOrderForm });
+
+		let formIsValid = true;
+		for (let inputIdentifier in updatedOrderForm) {
+			formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
+		}
+		this.setState({ orderForm: updatedOrderForm, formIsValid: formIsValid });
 	}
 
 	handleChange = (event) => {
@@ -91,49 +92,42 @@ class Login extends Component {
 		}
 	}
 
-	toggleShow = (event) => {
+	toggleShow = (event, inputIdentifier) => {
 		event.preventDefault()
-		console.log(this.state.orderForm.password.elementConfig.type)
 		const newType = this.state.orderForm.password.elementConfig.type === 'password' ? 'text' : 'password';
-		const changeState = new Promise((resolve, reject) => {
-			resolve(this.setState({ 
-				hidden: !this.state.hidden,
-				orderForm: {
-					password: {
-						elementConfig: {
-							type: newType
-						}
-					}
-				}
-			}))
-
-			reject(console.log("ERREUR"))
+		const updatedOrderForm = {
+			...this.state.orderForm
+		};
+		const updatedFormElement = {
+			...updatedOrderForm[inputIdentifier]
+		};
+		const updatedConfigElement = {
+			...updatedFormElement["elementConfig"]
+		}
+		updatedConfigElement.type = newType;
+		updatedOrderForm[inputIdentifier]["elementConfig"] = updatedConfigElement;
+		this.setState({ 
+			hidden: !this.state.hidden,
+			orderForm: updatedOrderForm
 		});
-			
-		changeState
-			.then(ret => console.log(ret))
-			.catch(err => console.log(err))
 	}
 
 	submit = (event) => {
-		console.log(this.state)
-		event.preventDefault()
-		this.setState({
-			loading: true
-		})
-		const datas = {
-			username: this.state.username,
-			password: this.state.password
+		event.preventDefault();
+		this.setState({ loading: true });
+		const formDatas = {};
+		for (let formElementIdentifier in this.state.orderForm) {
+			formDatas[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
 		}
 
 		axios
-			.post('http://localhost:4000/API/auth', datas)
+			.post('http://localhost:4000/API/auth', formDatas)
 			.then(response => {
 				let token = null
 				this.setState({ loading: false })
-				console.log(response.datas)
-				response.datas.success ? 
-				token = response.datas.payload
+				console.log(response.data.succes)
+				response.data.success ? 
+				token = response.data.payload
 				: token = null;
 				console.log(token)
 				return (token);
@@ -149,7 +143,6 @@ class Login extends Component {
 	}
 
 	render () {
-		this.initializeState.bind(this);
 		return (
 			<div className={classes.log}>
 				{

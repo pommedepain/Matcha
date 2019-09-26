@@ -369,7 +369,7 @@
 #birthdate::-webkit-inner-spin-button { 
 	display: none; 
 }
-.genderGroup {
+.gender {
 	display: flex;
 	flex-direction: row;
 	justify-content: center;

@@ -22,6 +22,18 @@
 }
 
 .InputElement:focus {
-	outline: none;
 	background-color: #ccc;
+}
+
+.Invalid {
+	border: 1px solid red;
+	background-color: rgb(253, 135, 135);
+}
+
+.ValidationError {
+	color: red;
+	opacity: 0.7;
+	margin: 0;
+	font-size: 0.4em;
+	text-align: left;
 }

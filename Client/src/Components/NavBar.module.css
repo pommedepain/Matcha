@@ -20,3 +20,8 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
+a, a:hover {
+  text-decoration: none;
+  color: black;
+}

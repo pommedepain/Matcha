@@ -4,28 +4,52 @@ import classes from './Input.module.css'
 
 const input = (props) => {
 	let inputElement = null;
+	const inputClasses = [classes.inputElement];
+	let validationError = null;
+
+	if (props.invalid && props.shouldValidate && props.touched) {
+		inputClasses.push(classes.Invalid);
+		validationError = <p className={classes.ValidationError}>{props.errorMessage}</p>
+	}
 
 	switch (props.elementType) {
-		case ( 'input') :
+		case ( 'input' ) :
 			inputElement = <input 
-				className={classes.inputElement} 
+				className={inputClasses.join(' ')} 
 				{...props.elementConfig}
 				value={props.value}
 				onChange={props.inputChangedHandler} />;
 			break;
+		case ( 'radio' ) :
+			inputElement = 
+			<div className={inputClasses.join(' ')}>
+				{props.elementConfig.options.map(option => (
+				<div>
+					<input
+						key={option.value}
+						id={option.id}
+						value={option.value}
+						checked={props.value}
+						onChange={props.inputChangedHandler} 
+					/>
+					<label htmlFor={option.id}>{option.displayValue}</label>
+				</div>
+				))}
+			</div>;
+			break;
 		case ( 'textarea' ):
 			inputElement = <textarea 
-				className={classes.inputElement} 
+				className={inputClasses.join(' ')} 
 				{...props.elementConfig}
 				value={props.value}
 				onChange={props.inputChangedHandler} />;
 			break;
 		case ( 'select' ):
 			/* Dans le SmartComponent, le contenu de "state.elementConfig:" 
-			devra être remplacé par "options: [{value: '', displayValue:''}]" */
+			devra être remplacé par "options: [ {value: '', displayValue:''}, ... ]" */
 			inputElement = (
 				<select 
-					className={classes.inputElement}
+					className={inputClasses.join(' ')}
 					value={props.value}
 					onChange={props.inputChangedHandler} >
 					{props.elementConfig.options.map(option => (
@@ -38,7 +62,7 @@ const input = (props) => {
 			break;
 		default:
 			inputElement = <input 
-				className={classes.inputElement} 
+				className={inputClasses.join(' ')} 
 				{...props.elementConfig}
 				value={props.value}
 				onChange={props.inputChangedHandler} />;
@@ -49,6 +73,7 @@ const input = (props) => {
 			{props.label ?
 			<label className={classes.label}>{props.label}</label>
 			: null }
+			{validationError}
 			{inputElement}
 		</div>
 	)
