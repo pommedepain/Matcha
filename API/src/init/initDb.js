@@ -4,6 +4,7 @@ const _ = require('lodash');
 const populateUsers = require('./users');
 const populateTags = require('./tags');
 const populateRelationships = require('./relationships');
+const RelationShip = require('../models/relationshipsClass');
 
 const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
 const session = driver.session();
@@ -20,11 +21,12 @@ function resetDb() {
 }
 
 function populateDb() {
-  return new Promise(async (resolve, reject) => {
+  return new Promise((resolve, reject) => {
     resetDb()
       .then(() => populateTags())
       .then(() => populateUsers())
       .then(() => populateRelationships())
+      .then(() => new RelationShip().deleteDuplicates())
       .then(() => resolve(true))
       .catch(err => reject(err));
   });

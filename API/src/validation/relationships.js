@@ -8,8 +8,7 @@ class RelationshipValidator {
   constructor(requirements, data) {
     this.req = requirements;
     this.data = data;
-    if (
-      this.data.relation === 'undefined' || this.data.relation === 0 || this.data.relation === null
+    if (this.data && (this.data.relation === 'undefined' || this.data.relation === 0 || this.data.relation === null)
     ) this.data = null;
     debug('Validating relationship data...');
   }
@@ -56,12 +55,14 @@ class RelationshipValidator {
 
   validate() {
     return new Promise((resolve, reject) => {
-      this.validateNodea()
-        .then(() => this.validateNodea())
-        .then(() => this.validateNodeb())
-        .then(() => this.validateRelationship())
-        .then(res => resolve(res))
-        .catch(err => reject(err));
+      if (this.data) {
+        this.validateNodea()
+          .then(() => this.validateNodea())
+          .then(() => this.validateNodeb())
+          .then(() => this.validateRelationship())
+          .then(res => resolve(res))
+          .catch(err => reject(err));
+      } else resolve(true);
     });
   }
 

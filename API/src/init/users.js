@@ -9,7 +9,7 @@ const User = require('../models/userClass');
 const props = ['gender', 'email', 'password'];
 const requiredProperties = ['username', 'firstName', 'lastName', 'password', 'email', 'birthdate'];
 const optionalProperties = ['bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'tags', 'localisation', 'optional', 'isAdmin'];
-const amount = 5;
+const amount = 25;
 
 function rand(min, max) { // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -89,7 +89,7 @@ function getUsers() {
 }
 
 function populateUsers() {
-  getUsers()
+  return (getUsers()
     .then(users => randomTags(users))
     .then((users) => {
       const promises = [];
@@ -100,7 +100,8 @@ function populateUsers() {
         promises.push(p);
       });
       return Promise.all(promises);
-    });
+    })
+  );
 }
 
 module.exports = populateUsers;

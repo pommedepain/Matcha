@@ -103,4 +103,15 @@ router.delete('/delete/node/type', [auth, admin], handler(async (req, res) => {
     )));
 }));
 
+router.delete('/delete/duplicates', handler(async (req, res) => {
+  debug('Request to delete duplicates');
+  return (new Relationship(req.body).deleteDuplicates()
+    .then(relationship => (
+      res.status(200).json({
+        success: true,
+        payload: { value: 'delete', relationship },
+      })
+    )));
+}));
+
 module.exports = router;
