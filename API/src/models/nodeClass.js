@@ -28,17 +28,18 @@ class Node extends Relationship {
 
     this.id_a = this.data.node_a.id;
     debug('Node constructor called');
+    this.driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
   }
 
   redundancyCheck() {
     return new Promise((resolve, reject) => {
-      const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
-      const session = driver.session();
+      const session = this.driver.session();
       const query1 = `MATCH (n:${this.data.node_a.label}) WHERE n.${this.unique[this.data.node_a.label][0]}='${this.data.node_a.properties[this.unique[this.data.node_a.label][0]]}' OR `;
       const query2 = this.unique[this.data.node_a.label][1] ? `n.${this.unique[this.data.node_a.label][1]}='${this.data.node_a.properties[this.unique[this.data.node_a.label][1]]}' RETURN n` : 'false RETURN n';
       const query = query1 + query2;
       session.run(query)
         .then((result) => {
+          // debug(result);
           session.close();
           if (result.records.length === 0) {
             resolve(this.data.node_a);
@@ -50,8 +51,7 @@ class Node extends Relationship {
 
   getNodeList() {
     return new Promise((resolve, reject) => {
-      const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
-      const session = driver.session();
+      const session = this.driver.session();
       session.run(`MATCH (n:${this.data.node_a.label}) RETURN n.${this.data.node_a.id} LIMIT 100`)
         .then((res) => {
           session.close();
@@ -68,8 +68,7 @@ class Node extends Relationship {
 
   getNodeInfo() {
     return new Promise((resolve, reject) => {
-      const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
-      const session = driver.session();
+      const session = this.driver.session();
       debug(`Getting ${this.data.node_a.label} info for :`, this.data.node_a.properties[this.id_a]);
       const query = `MATCH (n:${this.data.node_a.label} {${this.data.node_a.id}:'${this.data.node_a.properties[this.id_a]}'}) RETURN n`;
       session.run(query)
@@ -89,8 +88,8 @@ class Node extends Relationship {
   updateNode() {
     return new Promise((resolve, reject) => {
       const props = _.omit(this.data.node_a.properties, 'tags');
-      const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
-      const session = driver.session();
+      
+      const session = this.driver.session();
       session.run(
         `MATCH (n:${this.data.node_a.label} {${this.data.node_a.id}:'${this.data.node_a.properties[this.id_a]}'}) SET n+=$props RETURN n`,
         { props },
@@ -113,8 +112,8 @@ class Node extends Relationship {
       const date = new Date().toISOString();
       this.data.node_a.properties.creationDate = date;
       const props = _.omit(this.data.node_a.properties, 'tags');
-      const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
-      const session = driver.session();
+      
+      const session = this.driver.session();
       session.run(`CREATE (n:${this.data.node_a.label} $props) RETURN n`, { props })
         .then((result) => {
           session.close();
@@ -131,8 +130,8 @@ class Node extends Relationship {
 
   deleteNode() {
     return new Promise((resolve, reject) => {
-      const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
-      const session = driver.session();
+      
+      const session = this.driver.session();
       const query = `MATCH (n:${this.data.node_a.label} {${this.data.node_a.id}:'${this.data.node_a.properties[this.id_a]}'}) DELETE n RETURN n`;
       session.run(query)
         .then((result) => {

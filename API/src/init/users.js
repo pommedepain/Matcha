@@ -8,8 +8,8 @@ const User = require('../models/userClass');
 
 const props = ['gender', 'email', 'password'];
 const requiredProperties = ['username', 'firstName', 'lastName', 'password', 'email', 'birthdate'];
-const optionalProperties = ['bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'tags', 'localisation', 'optional', 'isAdmin'];
-const amount = 25;
+const optionalProperties = ['bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'tags', 'photo', 'localisation', 'optional', 'isAdmin'];
+const amount = 100;
 
 function rand(min, max) { // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -56,10 +56,15 @@ function userParser(user) {
       newUser.username = user.name;
       newUser.lastName = user.surname;
       newUser.firstName = user.name;
+      newUser.photo = user.photo;
       const date = new Date(user.birthday.raw * 1000);
       const birthdate = `${date.getFullYear()}-${date.getMonth()}-${date.getDay()}`;
       newUser.birthdate = birthdate;
-      newUser.sexOrient = 'hetero';
+      const sexOrient = rand(1, 5);
+      if (sexOrient === 1 || sexOrient === 5) newUser.sexOrient = 'hetero';
+      else if (sexOrient === 2) newUser.sexOrient = 'homo';
+      else if (sexOrient === 3) newUser.sexOrient = 'bi';
+      else if (sexOrient === 4) newUser.sexOrient = 'pan';
       newUser.ageMin = rand(18, 99);
       newUser.ageMax = rand(newUser.ageMin, 100);
       newUser.tags = [];
@@ -95,6 +100,7 @@ function populateUsers() {
       const promises = [];
       debug('Populating Users in DB...');
       users.forEach((user) => {
+        // debug(user);
         const p = new User(_.pick(user, requiredProperties.concat(optionalProperties))).createUser()
           .catch(err => debug(err));
         promises.push(p);

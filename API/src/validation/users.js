@@ -29,6 +29,7 @@ class UserValidator {
       || this.data.gender === 'undefined' || this.data.gender === 0 || this.data.gender === null
       || this.data.ageMin === 'undefined' || this.data.ageMin === 0 || this.data.ageMin === null
       || this.data.ageMax === 'undefined' || this.data.ageMax === 0 || this.data.ageMax === null
+      || this.data.photo === 'undefined' || this.data.photo === 0 || this.data.photo === null
       || this.data.sexOrient === 'undefined' || this.data.sexOrient === 0 || this.data.sexOrient === null
       || this.data.isAdmin === 'undefined' || this.data.isAdmin === 0 || this.data.isAdmin === null
     ) this.data = null;
@@ -39,17 +40,17 @@ class UserValidator {
     return new Promise((resolve, reject) => {
       const sch = {};
 
-      if (this.req.username) sch.username = Joi.string().regex(/^[a-zA-Z -ééèàç]{3,30}$/i).required();
-      else sch.username = Joi.string().regex(/^[a-zA-Z -ééèàç]{3,30}$/i);
+      if (this.req.username) sch.username = Joi.string().regex(/^[a-zA-Z-àæéèêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ]{2,18}$/i).required();
+      else sch.username = Joi.string().regex(/^[a-zA-Z-àæéèêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ]{2,18}$/i);
 
-      if (this.req.firstName) sch.firstName = Joi.string().regex(/^[a-zA-Z -ééèàç]{3,30}$/i).required();
-      else sch.firstName = Joi.string().regex(/^[a-zA-Z -ééèàç]{3,30}$/i);
+      if (this.req.firstName) sch.firstName = Joi.string().regex(/^[a-zA-Z-àæéèêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ]{2,18}$/i).required();
+      else sch.firstName = Joi.string().regex(/^[a-zA-Z-àæéèêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ]{2,18}$/i);
 
-      if (this.req.lastName) sch.lastName = Joi.string().regex(/^[a-zA-Z -ééèàç]{3,30}$/i).required();
-      else sch.lastName = Joi.string().regex(/^[a-zA-Z -ééèàç]{3,30}$/i);
+      if (this.req.lastName) sch.lastName = Joi.string().regex(/^[a-zA-Z-àæéèêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ]{2,18}$/i).required();
+      else sch.lastName = Joi.string().regex(/^[a-zA-Z-àæéèêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ]{2,18}$/i);
 
-      if (this.req.password) sch.password = new Complexity(this.passwordConf).required();
-      else sch.password = new Complexity(this.passwordConf);
+      if (this.req.password) sch.password = Joi.string().regex(/^[^`\\<>]{7,150}$/i).required();
+      else sch.password = Joi.string().regex(/^[^`\\<>]{7,150}$/i);
 
       if (this.req.birthdate) {
         sch.birthdate = Joi.string().regex(/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/).required();
@@ -58,8 +59,8 @@ class UserValidator {
       if (this.req.email) sch.email = Joi.string().email({ minDomainSegments: 2 }).required();
       else sch.email = Joi.string().email({ minDomainSegments: 2 });
 
-      if (this.req.bio) sch.bio = Joi.string().regex(/^[\w 0-9]{1,255}$/).required();
-      else sch.bio = Joi.string().regex(/^[\w 0-9]{1,255}$/);
+      if (this.req.bio) sch.bio = Joi.string().regex(/^[\w 0-9_-àæéèêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ,.;:?!&%/]{1,255}$/).required();
+      else sch.bio = Joi.string().regex(/^[\w 0-9_-àæéèêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ,.;:?!&%/]{1,255}$/);
 
       if (this.req.gender) sch.gender = Joi.string().regex(/^(male|female|genderqueer)$/).required();
       else sch.gender = Joi.string().regex(/^(male|female|genderqueer)$/);
@@ -82,6 +83,9 @@ class UserValidator {
 
       if (this.req.optional) sch.optional = Joi.string().alphanum().min(3).max(30).required();
       else sch.optional = Joi.string().alphanum().min(3).max(30);
+      
+      if (this.req.photo) sch.photo = Joi.string().regex(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/).required();
+      else sch.photo = Joi.string().regex(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/);
 
       if (this.req.isAdmin) sch.isAdmin = Joi.string().regex(/^(true|false)$/).required();
       else sch.isAdmin = Joi.string().regex(/^(true|false)$/);

@@ -91,6 +91,13 @@ module.exports = {
     public: true,
     unique: false,
   },
+  photo: {
+    type: 'string',
+    valid: ['https://uinames.com/api/photos/male/1.jpg', 'https://uinames.com/api/photos/female/1.jpg'],
+    invalid: ['4', '161', 0, null, false],
+    public: true,
+    unique: false,
+  },
   optional: {
     type: 'string',
     valid: ['Pilip2', 'Jean', 'claude', 'user4test', '78945'],
