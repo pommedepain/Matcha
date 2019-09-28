@@ -71,6 +71,25 @@ class SignUp extends Component {
 		}
 		if (rules.minLength) {
 			isValid = (value.length >= rules.minLength) && isValid;
+			if (isValid && rules.db) {
+				console.log(value)
+				axios.get(`http://localhost:4000/API/users/${value}`)
+					.then(response => { 
+						isValid = (response.data.payload.result.error ? true : false) && isValid
+						
+						// if (response.data.payload.result.error) {
+						// 	console.log(response.data.payload)
+						// 	isValid = true && isValid;
+						// }
+						// else {
+						// 	isValid = false;
+						// 	console.log("else: " + isValid);
+						// }
+					})
+					.catch(err => { 
+						console.log(err);
+					})
+			}
 		}
 		if (rules.maxLength) {
 			isValid = (value.length <= rules.maxLength) && isValid;
@@ -96,6 +115,7 @@ class SignUp extends Component {
 		};
 		updatedFormElement.value = event.target.value;
 		updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
+		console.log(updatedFormElement.valid);
 		updatedFormElement.touched = true;
 		updatedOrderForm[inputIdentifier] = updatedFormElement;
 

@@ -45,7 +45,8 @@
 				"required": true, 
 				"minLength": 3,
 				"maxLength": 30,
-				"regex": "^[a-zA-Z0-9_]{3,30}$"
+				"regex": "^[a-zA-Z0-9_]{3,30}$",
+				"db": true
 			},
 			"valid": false,
 			"touched": false,
