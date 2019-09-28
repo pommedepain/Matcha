@@ -174,7 +174,7 @@ class Relationship {
           if (res.records.length === 1) {
             debug(`${this.data.node_a.properties[this.id_a]} ${res.records[0]._fields} ${this.data.node_b.properties[this.id_b]} RELATION CREATED`);
             resolve(`${this.data.node_a.properties[this.id_a]} ${res.records[0]._fields} ${this.data.node_b.properties[this.id_b]} RELATION CREATED`);
-          } else {debug(res.records); reject(new Error('Erro during relationship creation'))};
+          } else { debug(res.records); reject(new Error('Error during relationship creation')); }
         })
         .catch((err) => {
           debug(err);

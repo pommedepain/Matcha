@@ -7,7 +7,6 @@ const populateRelationships = require('./relationships');
 
 const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
 const session = driver.session();
-const props = ['gender', 'email', 'password'];
 
 
 function resetDb() {
@@ -25,7 +24,7 @@ function populateDb() {
     resetDb()
       .then(() => populateTags())
       .then(() => populateUsers())
-      // .then(() => populateRelationships())
+      .then(() => populateRelationships())
       .then(() => resolve(true))
       .catch(err => reject(err));
   });
