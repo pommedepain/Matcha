@@ -16,24 +16,48 @@ class SignUp extends Component {
 		formIsValid: false,
 		orderForm1: formDatas.orderForm1,
 		orderForm2: formDatas.orderForm2,
-		// username: "",
-		// firstName: "", 
-		// lastName: "",
-		// birthdate: "",
-		// email: "",
-		password: "",
-		cPasswd: "",
-		score: "",
-		score2: "",
-		// gender: "",
-		// sexOrient: "",
-		// bio: "",
 		range: [18, 25],
 		localisation: 5,
 		tags: [
 			{ id: "athlete", text: "Athlete" },
 			{ id: "geek", text: "Geek" }
-		]
+		],
+		password: {
+			elementType: "input",
+			elementConfig: {
+				type: "password",
+				placeholder: "Choose a password"
+			},
+			value: "",
+			validation: {
+				required: true, 
+				minLength: 7,
+				maxLength: 150,
+				regex: "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#%5C$%%5C^&%5C*])(?=.{7,150})"
+			},
+			valid: false,
+			touched: false,
+			score: "",
+			errorMessage: "Must have at least: 1 uppercase, 1 lowercase, 1 number, 1 special character and be 7 characters long"
+		},
+		cPasswd: {
+			elementType: "input",
+			elementConfig: {
+				type: "password",
+				placeholder: "Confirm password"
+			},
+			value: "",
+			validation: {
+				required: true, 
+				minLength: 7,
+				maxLength: 150,
+				regex: "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#%5C$%%5C^&%5C*])(?=.{7,150})"
+			},
+			valid: false,
+			touched: false,
+			score: "",
+			errorMessage: "Your entry doesn't match its sibling"
+		}
 	}
 
 	checkValidity(value, rules) {
@@ -54,14 +78,12 @@ class SignUp extends Component {
 		if (rules.regex) {
 			let regex = RegExp(unescape(rules.regex), 'g')
 			isValid = regex.test(value) && isValid;
+			// console.log(isValid);
 		}
 		return (isValid);
 	}
 
 	inputChangedHandler = (event, inputIdentifier) => {
-		// console.log("value: " + event.target.value);
-		// console.log("type: " + event.target.type)
-		// console.log("input: " + inputIdentifier);
 		let updatedOrderForm = {};
 		const trueOrderForm = inputIdentifier === "birthdate" || inputIdentifier === "gender" || inputIdentifier === "sexualOrient" || inputIdentifier === "bio" ? "orderForm2" : "orderForm1";
 
@@ -82,8 +104,6 @@ class SignUp extends Component {
 		for (let inputIdentifier in updatedOrderForm) {
 			formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
 		}
-		// console.log("orderForm: " + trueOrderForm);
-		// console.log(updatedFormElement);
 		trueOrderForm === "orderForm2" ?
 		this.setState({ orderForm2: updatedOrderForm, formIsValid: formIsValid })
 		: this.setState({ orderForm1: updatedOrderForm, formIsValid: formIsValid });
@@ -131,21 +151,29 @@ class SignUp extends Component {
 	}
 
 	passwordStrength = (event) => {
-		const name = event.target.name
-		const score = (name === "password" ? "score" : "score2")
+		const name = event.target.name;
 		var zxcvbn = require('zxcvbn');
-		event.preventDefault()
-		let value = zxcvbn(event.target.value)
+		event.preventDefault();
+		let value = zxcvbn(event.target.value);
+		const updatedElem = {
+			...this.state[name]
+		};
+		updatedElem.value = event.target.value;
+		if (name === "password") {
+			updatedElem.valid = this.checkValidity(updatedElem.value, updatedElem.validation);
+		}
+		else if (name === "cPasswd") {
+			if (event.target.value === this.state.password.value)
+				updatedElem.valid = true;
+			else
+				updatedElem.valid = false;
+		}
+		updatedElem.touched = true;
 		event.target.value === "" ?
-			this.setState({ 
-				[score]: null,
-				[name]: null
-			})
+		updatedElem.score = null
 		:
-			this.setState({ 
-				[score]: value.score,
-				[name]: event.target.value
-			})
+		updatedElem.score = value.score;
+		this.setState({ [name]: updatedElem });
 	}
 
 	handleDelete = (i) => {

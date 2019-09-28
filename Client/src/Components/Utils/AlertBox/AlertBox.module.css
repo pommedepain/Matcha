@@ -1,24 +1,5 @@
 @import url("https://fonts.googleapis.com/css?family=Lato:400,700");
-/* html {
-  display: grid;
-  min-height: 100%;
-}
 
-body {
-  display: grid;
-  overflow: hidden;
-  font-family: "Lato", sans-serif;
-  text-transform: uppercase;
-  text-align: center;
-}
-
-#container {
-  position: relative;
-  margin: auto;
-  overflow: hidden;
-  width: 700px;
-  height: 250px;
-}*/
 
 .h1 {
   font-size: 0.9em;
@@ -33,7 +14,8 @@ body {
 .red {
   color: #e96075;
   font-family: 'ComfortaaLight', cursive;
-  font-size: 1.5em;
+  font-size: 1em;
+  padding-top: 10px;
 }
 
 .alert {

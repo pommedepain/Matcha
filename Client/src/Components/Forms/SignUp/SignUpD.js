@@ -26,6 +26,7 @@ const SignUp = (props) => {
 		});
 	}
 
+	// console.log(props);
 	return (
 		<div>
 			<div className={classes.display_page} id="display_page" style={props.style}>
@@ -53,7 +54,7 @@ const SignUp = (props) => {
 							<h2 className={classes.fs_title}>Create your account</h2>
 							<h3 className={classes.fs_subtitle}>This is step 1</h3>
 							{formElementsArray1.map(formElement => (
-								// console.log(formElement.id),
+								// console.log(formElement),
                 			    <Input 
                 			        key={formElement.id}
                 			        elementType={formElement.config.elementType}
@@ -61,53 +62,33 @@ const SignUp = (props) => {
                 			        value={formElement.config.value}
                 			        invalid={!formElement.config.valid}
                 			        shouldValidate={formElement.config.validation}
-                			        touched={formElement.config.touched}
+									touched={formElement.config.touched}
+									errorMessage={formElement.config.errorMessage}
 									changed={(event) => props.inputChangedHandler(event, formElement.id)}
 								/>
                 			))}
-							{/* <input 
-								type="text" 
-								name="firstName" 
-								placeholder="First Name"
-								value={props.firstName}
-								onChange={props.handleChange}
-							/>
-							<input 
-								type="text" 
-								name="lastName" 
-								placeholder="Last Name"
-								value={props.lastName}
-								onChange={props.handleChange}
-							/>
-							<input 
-								type="text" 
-								name="username" 
-								placeholder="Username"
-								value={props.username}
-								onChange={props.handleChange}
-							/>
-							<input
-								type="text" 
-								name="email" 
-								placeholder="Email"
-								value={props.email}
-								onChange={props.handleChange}
-							/> */}
-							<PasswdStrength 
+							<PasswdStrength
 								name="password"
 								style={{marginBottom: '0'}}
-								placeholder="Password"
 								password={props.password}
-								score={props.score} 
+								score={props.password.score} 
 								strengthMeter={props.passwordStrength}
+								invalid={!props.password.valid}
+                			    validation={props.password.validation}
+								touched={props.password.touched}
+								errorMessage={props.password.errorMessage}
+								
 							/>
 							<PasswdStrength 
 								name="cPasswd"
 								style={{marginBottom: '0'}}
-								placeholder="Confirm Password"
 								password={props.cPasswd} 
-								score={props.score2} 
+								score={props.cPasswd.score} 
 								strengthMeter={props.passwordStrength}
+								invalid={!props.cPasswd.valid}
+                			    validation={props.cPasswd.validation}
+								touched={props.cPasswd.touched}
+								errorMessage={props.cPasswd.errorMessage}
 							/>
 							<input 
 								type="button" 
@@ -133,95 +114,13 @@ const SignUp = (props) => {
                 			        value={formElement.config.value}
                 			        invalid={!formElement.config.valid}
                 			        shouldValidate={formElement.config.validation}
-                			        touched={formElement.config.touched}
+									touched={formElement.config.touched}
+									errorMessage={formElement.config.errorMessage}
 									changed={(event) => props.inputChangedHandler(event, formElement.id)}
 									checked={props.orderForm2[formElement.id].value}
 								/>
 								</div>
                 			))}
-							{/* <h3 className={classes.questions}>Birthdate</h3>
-							<input
-								type="date"
-								id={classes.birthdate}
-								value={props.birthdate}
-								name="birthdate"
-								onChange={props.handleChange}
-							/>
-							<h3 className={classes.questions}>Gender</h3>
-							<div className={classes.genderGroup}>
-								<input
-									id="male"
-									type="radio"
-									value="male"
-									name="gender"
-									checked={props.gender === "male"}
-									onChange={props.handleChange}
-								/>
-								<label htmlFor="male">Male</label>
-								<input
-									id="female"
-									type="radio"
-									value="female"
-									name="gender"
-									checked={props.gender === "female"}
-									onChange={props.handleChange}
-								/>
-								<label htmlFor="female">Female</label>
-								<input
-									id="genderqueer"
-									type="radio"
-									value="genderqueer"
-									name="gender"
-									checked={props.gender === "genderqueer"}
-									onChange={props.handleChange}
-								/>
-								<label htmlFor="genderqueer">Genderqueer</label>
-							</div>
-							<h3 className={classes.questions}>Sexual Orientation</h3>
-							<div id={classes.sexualOrient}>
-								<input
-									id="hetero"
-									type="radio"
-									value="hetero"
-									name="sexOrient"
-									checked={props.sexOrient === "hetero"}
-									onChange={props.handleChange}
-								/>
-								<label htmlFor="hetero">Heterosexual</label>
-								<input
-									id="homo"
-									type="radio"
-									value="homo"
-									name="sexOrient"
-									checked={props.sexOrient === "homo"}
-									onChange={props.handleChange}
-								/>
-								<label htmlFor="homo">Homosexual</label>
-								<input
-									id="bi"
-									type="radio"
-									value="bi"
-									name="sexOrient"
-									checked={props.sexOrient === "bi"}
-									onChange={props.handleChange}
-								/>
-								<label htmlFor="bi">Bisexual</label>
-								<input
-									id="pan"
-									type="radio"
-									value="pan"
-									name="sexOrient"
-									checked={props.sexOrient === "pan"}
-									onChange={props.handleChange}
-								/>
-								<label htmlFor="pan">Pansexual</label>
-							</div>
-							<h3 className={classes.questions}>Bio</h3>
-							<textarea
-								value={props.bio}
-								name="bio"
-								onChange={props.handleChange}
-							></textarea> */}
 							<input 
 								type="button" 
 								name="previous" 

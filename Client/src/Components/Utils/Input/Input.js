@@ -8,7 +8,9 @@ const input = (props) => {
 	let validationError = null;
 	let nameclass = [];
 
+	// console.log(props)
 	if (props.invalid && props.shouldValidate && props.touched) {
+		// console.log(props);
 		inputClasses.push(classes.Invalid);
 		validationError = <p className={classes.ValidationError}>{props.errorMessage}</p>
 	}
@@ -25,7 +27,9 @@ const input = (props) => {
 	switch (props.elementType) {
 		case ( 'input' ) :
 			// console.log(props)
-			inputElement = <input 
+			inputElement = <input
+				name={props.name}
+				style={props.style}
 				className={inputClasses.join(' ')} 
 				{...props.elementConfig}
 				value={props.value}

@@ -1,5 +1,7 @@
-import React from 'react'
-import classes from './PasswdStrength.module.css'
+import React from 'react';
+
+import Input from '../Input/Input';
+import classes from './PasswdStrength.module.css';
 
 class PasswdStrength extends React.Component {
 	state = {
@@ -12,16 +14,23 @@ class PasswdStrength extends React.Component {
 	}
 
 	render() {
+		// console.log(this.props);
+		this.props.password.elementConfig.type = this.state.hidden ? "password" : "text";
+
 		return (
 			<div id={classes.passwd_cont}>
-				<input
+				<Input
 					style={this.props.style || ''}
-					className={classes.passwd}
-					type={this.state.hidden ? "password" : "text"}
-					name={this.props.name} 
-					placeholder={this.props.placeholder}
-					value={this.props.password || ''}
-					onChange={this.props.strengthMeter}
+					// className={classes.passwd}
+					elementType={this.props.password.elementType}
+					elementConfig={this.props.password.elementConfig}
+					name={this.props.name}
+					value={this.props.password.value || ''}
+					changed={this.props.strengthMeter}
+					invalid={this.props.invalid}
+					shouldValidate={this.props.validation}
+					touched={this.props.touched}
+					errorMessage={this.props.errorMessage}
 				/>
 				<span
 					className={classes.passwdButton}

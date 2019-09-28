@@ -9,13 +9,13 @@
 			"value": "",
 			"validation": {
 				"required": true, 
-				"minLength": 3,
-				"maxLength": 30,
-				"regex": "^[a-zA-Z -ééèàç]{3,30}$"
+				"minLength": 2,
+				"maxLength": 18,
+				"regex": "^[a-zA-Z-àæéèêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ]{2,18}$"
 			},
 			"valid": false,
 			"touched": false,
-			"errorMessage": ""
+			"errorMessage": "Must be at least 2 characters long"
 		},
 		"lastName": {
 			"elementType": "input",
@@ -26,13 +26,13 @@
 			"value": "",
 			"validation": {
 				"required": true, 
-				"minLength": 3,
-				"maxLength": 30,
-				"regex": "^[a-zA-Z -ééèàç]{3,30}$"
+				"minLength": 2,
+				"maxLength": 18,
+				"regex": "^[a-zA-Z-àæéèêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ]{2,18}$"
 			},
 			"valid": false,
 			"touched": false,
-			"errorMessage": ""
+			"errorMessage": "Must be at least 2 characters long"
 		},
 		"username": {
 			"elementType": "input",
@@ -45,11 +45,11 @@
 				"required": true, 
 				"minLength": 3,
 				"maxLength": 30,
-				"regex": "^[a-zA-Z -ééèàç]{3,30}$"
+				"regex": "^[a-zA-Z0-9_]{3,30}$"
 			},
 			"valid": false,
 			"touched": false,
-			"errorMessage": ""
+			"errorMessage": "Must be at least 3 characters long and contain only alphanumeric characters or underscore"
 		},
 		"email": {
 			"elementType": "input",
@@ -64,7 +64,7 @@
 			},
 			"valid": false,
 			"touched": false,
-			"errorMessage": ""
+			"errorMessage": "Must be a valid e-mail adress"
 		}
 	},
 	"orderForm2": {
@@ -131,11 +131,11 @@
 			"validation": {
 				"minLength": 1,
 				"maxLength": 255,
-				"regex": "^[%5Cw 0-9]{1,255}$"
+				"regex": "^[%5Cw 0-9_-àæéèêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ,.;:?!&%/]{1,255}$"
 			},
 			"valid": true,
 			"touched": false,
-			"errorMessage": "",
+			"errorMessage": "You used invalid characters...",
 			"title": "Bio"
 		}
 	}
