@@ -1,6 +1,7 @@
 neo4j start &&
-sleep 5 &&
+sleep 10 &&
 export matcha_jwtPrivateKey=aSecureKey
+# DEBUG=models:relationships,index nodemon index.js
 DEBUG=init:*,middleware:*,models:*,routes:*,validation:*,tests:*,index nodemon index.js
 # DEBUG=index,init:* nodemon index.js
 

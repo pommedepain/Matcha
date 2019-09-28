@@ -163,7 +163,7 @@ class Relationship {
     };
     const method = () => (new Promise((resolve, reject) => {
       debug(this.data.relation.properties);
-      const query = `MATCH (a:${this.data.node_a.label} {${this.data.node_a.id}: '${this.data.node_a.properties[this.id_a]}'}), (b:${this.data.node_b.label} {${this.data.node_b.id}: '${this.data.node_b.properties[this.id_b]}'}) CREATE (a)-[r:${this.data.relation.label} $props]->(b) RETURN (a)-[r]->(b)`;
+      const query = `MATCH (a:${this.data.node_a.label} {${this.data.node_a.id}: '${this.data.node_a.properties[this.id_a]}'}), (b:${this.data.node_b.label} {${this.data.node_b.id}: '${this.data.node_b.properties[this.id_b]}'}) CREATE UNIQUE  (a)-[r:${this.data.relation.label} $props]->(b) RETURN (a)-[r]->(b)`;
       const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
       const session = driver.session();
       const props = this.data.relation.properties;
@@ -174,7 +174,7 @@ class Relationship {
           if (res.records.length === 1) {
             debug(`${this.data.node_a.properties[this.id_a]} ${res.records[0]._fields} ${this.data.node_b.properties[this.id_b]} RELATION CREATED`);
             resolve(`${this.data.node_a.properties[this.id_a]} ${res.records[0]._fields} ${this.data.node_b.properties[this.id_b]} RELATION CREATED`);
-          } else { debug(res.records); reject(new Error('Error during relationship creation')); }
+          } else { resolve('already exsists'); }
         })
         .catch((err) => {
           debug(err);

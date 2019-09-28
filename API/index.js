@@ -33,7 +33,7 @@ app.use(error);
 
 initdb()
   .then(() => {
-    const port = process.env.PORT || 4000;
+    const port = 4000;
     app.listen(port, () => debug(`Listening on port ${port}...`));
   })
   .catch(err => debug(err));
