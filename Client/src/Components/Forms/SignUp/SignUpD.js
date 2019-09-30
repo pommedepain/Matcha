@@ -54,7 +54,7 @@ const SignUp = (props) => {
 							<h2 className={classes.fs_title}>Create your account</h2>
 							<h3 className={classes.fs_subtitle}>This is step 1</h3>
 							{formElementsArray1.map(formElement => (
-								// console.log(formElement),
+								console.log(formElement),
                 			    <Input 
                 			        key={formElement.id}
                 			        elementType={formElement.config.elementType}

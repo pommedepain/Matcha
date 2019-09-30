@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 import classes from './NavBar.module.css'
-import Login from './Forms/LogIn/LoginS'
+import Login from '../Forms/LogIn/LoginS'
 
 class NavBar extends React.Component {
 	state = {
