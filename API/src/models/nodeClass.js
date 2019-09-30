@@ -60,7 +60,7 @@ class Node extends Relationship {
             res.records.forEach((record) => { this.result.push(record._fields[0]); });
             debug('Records :\n', this.result);
             resolve(this.result);
-          } else reject(new Error('No users in database'));
+          } else resolve(`No ${this.data.node_a.label} in database`);
         })
         .catch((err) => { debug('An error occured while fetching user list :', err); });
     });
@@ -78,7 +78,7 @@ class Node extends Relationship {
             const result = res.records[0]._fields[0].properties;
             debug('Data fetched :\n', result);
             resolve(result);
-          } else reject(new Error('user doesnt exists'));
+          } else resolve(`${this.data.node_a.label} doesnt exists`);
         })
         .catch((err) => { debug('An error occured while fetching user info :', err); });
 
@@ -88,7 +88,6 @@ class Node extends Relationship {
   updateNode() {
     return new Promise((resolve, reject) => {
       const props = _.omit(this.data.node_a.properties, 'tags');
-      
       const session = this.driver.session();
       session.run(
         `MATCH (n:${this.data.node_a.label} {${this.data.node_a.id}:'${this.data.node_a.properties[this.id_a]}'}) SET n+=$props RETURN n`,
@@ -112,7 +111,6 @@ class Node extends Relationship {
       const date = new Date().toISOString();
       this.data.node_a.properties.creationDate = date;
       const props = _.omit(this.data.node_a.properties, 'tags');
-      
       const session = this.driver.session();
       session.run(`CREATE (n:${this.data.node_a.label} $props) RETURN n`, { props })
         .then((result) => {
@@ -130,7 +128,6 @@ class Node extends Relationship {
 
   deleteNode() {
     return new Promise((resolve, reject) => {
-      
       const session = this.driver.session();
       const query = `MATCH (n:${this.data.node_a.label} {${this.data.node_a.id}:'${this.data.node_a.properties[this.id_a]}'}) DELETE n RETURN n`;
       session.run(query)
@@ -139,7 +136,7 @@ class Node extends Relationship {
           if (result.records.length === 1) {
             debug('Deleted Node :', this.data.node_a.properties[this.id_a]);
             resolve(this.data.node_a.properties[this.id_a]);
-          } else reject(new Error('Node not found'));
+          } else resolve('No such Node');
         })
         .catch((err) => { debug('An error occured during node deletion :', err); });
     });

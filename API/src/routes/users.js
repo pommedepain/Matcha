@@ -28,7 +28,7 @@ router.get('/:value', wrapper(async (req, res) => {
   );
 }));
 
-router.get('/:username', wrapper(async (req, res) => {
+router.get('/infos/:username', wrapper(async (req, res) => {
   debug('Request to get user information for :', req.params.username);
   return (new User({ username: req.params.username }).getUserInfo()
     .then((user) => {
@@ -44,7 +44,7 @@ router.get('/matches/:username', wrapper(async (req, res) => {
   debug('Request to get user matches :', req.params.username);
   return (new User({ username: req.params.username }).getMatches()
     .then((list) => {
-      debug(list)
+      debug(list);
       return res.status(200).json({
         success: true,
         payload: { value: 'read', list },

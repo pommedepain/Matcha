@@ -25,17 +25,17 @@ const tags = [
 
 function populateTags() {
   return new Promise((resolve, reject) => {
-    const promises = [];
-    debug('Populating Tags in DB...');
-    tags.forEach((tag) => {
-      const p = new Tag(_.pick(tag, requiredProperties)).createTag();
-      promises.push(p);
-    });
+    const promises = tags.map(tag => (
+      new Promise((res, rej) => {
+        new Tag(_.pick(tag, requiredProperties)).createTag()
+          .then(res())
+          .catch(err => rej(err));
+      })
+    ));
     Promise.all(promises)
       .then(resolve())
       .catch(err => reject(err));
   });
-
 }
 
 module.exports = populateTags;

@@ -44,7 +44,7 @@ class Tag extends Node {
 
   getTags() {
     return new Promise((resolve, reject) => {
-      this.getNodeList()
+      this.getNodeList('id')
         .then(list => resolve(list))
         .catch(err => reject(err));
     });

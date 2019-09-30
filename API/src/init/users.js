@@ -94,21 +94,23 @@ function getUsers() {
 }
 
 function populateUsers() {
-  return (getUsers()
-    .then(users => randomTags(users))
-    .then((users) => {
-      const promises = [];
-      debug('Populating Users in DB...');
-      users.forEach((user) => {
-        // debug(user);
-        new User(_.pick(user, requiredProperties.concat(optionalProperties))).createUser()
-          .then(pr => promises.push(pr))
-          .catch(err => debug(err));
-        // promises.push(p);
-      });
-      return Promise.all(promises);
-    })
-  );
+  return new Promise((resolve, reject) => {
+    getUsers()
+      .then(users => randomTags(users))
+      .then((users) => {
+        const promises = users.map(user => (
+          new Promise((res, rej) => {
+            new User(_.pick(user, requiredProperties.concat(optionalProperties))).createUser()
+              .then(res())
+              .catch(err => rej(err));
+          })
+        ));
+        Promise.all(promises)
+          .then(resolve())
+          .catch(err => reject(err));
+      })
+      .catch(err => reject(err));
+  });
 }
 
 module.exports = populateUsers;

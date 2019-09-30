@@ -26,8 +26,7 @@ function populateDb() {
       .then(() => populateTags())
       .then(() => populateUsers())
       .then(() => populateRelationships())
-      .then(() => new RelationShip().deleteDuplicates())
-      .then(() => resolve(true))
+      .then(() => resolve())
       .catch(err => reject(err));
   });
 }

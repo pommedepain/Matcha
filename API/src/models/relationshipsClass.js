@@ -40,13 +40,14 @@ class Relationship {
           if (res.records.length !== 0) {
             const result = [];
             res.records.forEach((record) => {
-              result.push(_.pick(record._fields[0][0].start.properties, this.iDs),
-                record._fields[0][0].segments[0].relationship.label,
-                _.pick(record._fields[0][0].end.properties, this.iDs));
+              const node_a = _.pick(record._fields[0][0].start.properties, this.iDs);
+              const rel = this.data.relation.label;
+              const node_b = _.pick(record._fields[0][0].end.properties, this.iDs);
+              result.push({ node_a, rel, node_b });
             });
             debug(result);
             resolve(result);
-          } else reject(new Error('No such relation yet'));
+          } else resolve('No such relation yet');
         })
         .catch((err) => {
           debug(err);
@@ -63,7 +64,7 @@ class Relationship {
       relation: false,
     };
     const method = () => (new Promise((resolve, reject) => {
-      const query = `MATCH (a)-[r]->(b) WHERE a.${this.data.node_a.id}='${this.data.node_a.properties[this.id_a]}' OR b.${this.data.node_a.id}='${this.data.node_a.properties[this.id_a]}' return [r]->(b)`;
+      const query = `MATCH (a:${this.data.node_a.label} {${this.data.node_a.id}: '${this.data.node_a.properties[this.id_a]}'})-[r]->(b) return [r]->(b)`;
       const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
       const session = driver.session();
       session.run(query)
@@ -115,7 +116,7 @@ class Relationship {
       relation: true,
     };
     const method = () => (new Promise((resolve, reject) => {
-      const query = `MATCH (a)-[r:${this.data.relation.label}]->(b) WHERE a.${this.data.node_a.id}='${this.data.node_a.properties[this.id_a]}' OR b.${this.data.node_a.id}=${this.data.node_a.properties[this.id_a]} return r`;
+      const query = `MATCH (a:${this.data.node_a.label} {${this.data.node_a.id}: '${this.data.node_a.properties[this.id_a]}'})-[r:${this.data.relation.label}]->(b) return r`;
       const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
       const session = driver.session();
       session.run(query)
@@ -176,10 +177,8 @@ class Relationship {
       session.run(query, { props })
         .then((res) => {
           session.close();
-          if (res.records.length !== 0) {
-            debug(`${this.data.node_a.properties[this.id_a]} ${this.data.relation.label} ${this.data.node_b.properties[this.id_b]} RELATION CREATED`);
-            resolve(`${this.data.node_a.properties[this.id_a]} ${this.data.relation.label} ${this.data.node_b.properties[this.id_b]} RELATION CREATED`);
-          } else { resolve('already exsists'); }
+          debug(`${this.data.node_a.properties[this.id_a]} ${this.data.relation.label} ${this.data.node_b.properties[this.id_b]} RELATION CREATED`);
+          resolve(`${this.data.node_a.properties[this.id_a]} ${this.data.relation.label} ${this.data.node_b.properties[this.id_b]} RELATION CREATED`);
         })
         .catch((err) => {
           debug(err);
@@ -205,7 +204,7 @@ class Relationship {
           if (res.records.length !== 0) {
             debug(`${this.data.node_a.properties[this.id_a]} ${this.data.relation.label} ${this.data.node_b.properties[this.id_b]} RELATION DESTROYED`);
             resolve(`${this.data.node_a.properties[this.id_a]} ${this.data.relation.label} ${this.data.node_b.properties[this.id_b]} RELATION DESTROYED`);
-          } else reject(new Error('An error occured during relationship destruction'));
+          } else resolve('No such relationship');
         })
         .catch((err) => {
           debug(err);
@@ -227,7 +226,7 @@ class Relationship {
         .then((res) => {
           session.close();
           debug('Relationships destroyed for :', this.data.node_a.properties[this.id_a]);
-          resolve(true);
+          resolve(`Relationships destroyed for : ${this.data.node_a.properties[this.id_a]}`);
         })
         .catch((err) => {
           debug(err);
@@ -250,8 +249,8 @@ class Relationship {
           session.close();
           if (res.records.length !== 0) {
             debug(res.records[0]._fields);
-            resolve(true);
-          } else reject(new Error('An error occured during relationship destruction'));
+            resolve(`${this.data.relation.label} DESTROYED`);
+          } else resolve('No such relationship');
         })
         .catch((err) => {
           debug(err);
@@ -274,7 +273,7 @@ class Relationship {
         .then((res) => {
           session.close();
           debug('Relationships destroyed for :', this.data.node_a.properties[this.id_a]);
-          resolve(true);
+          resolve(`${this.data.relation.label} Relations destroyed for ${this.data.node_a.properties[this.id_a]}`);
         })
         .catch((err) => {
           debug(err);
@@ -290,7 +289,7 @@ class Relationship {
       relation: false,
     };
     const method = () => (new Promise((resolve, reject) => {
-      const query =  `match (s)-[r]->(e)
+      const query = `match (s)-[r]->(e)
       with s,e,type(r) as typ, tail(collect(r)) as coll 
       foreach(x in coll | delete x)`;
       const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
@@ -299,7 +298,7 @@ class Relationship {
         .then((res) => {
           session.close();
           debug('Relationships duplicates destroyed');
-          resolve(true);
+          resolve('Relationships duplicates destroyed');
         })
         .catch((err) => {
           debug(err);
