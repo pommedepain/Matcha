@@ -49,10 +49,10 @@ class Node extends Relationship {
     });
   }
 
-  getNodeList() {
+  getNodeList(value) {
     return new Promise((resolve, reject) => {
       const session = this.driver.session();
-      session.run(`MATCH (n:${this.data.node_a.label}) RETURN n.${this.data.node_a.id} LIMIT 1000`)
+      session.run(`MATCH (n:${this.data.node_a.label}) RETURN n.${value} LIMIT 1000`)
         .then((res) => {
           session.close();
           if (res.records.length !== 0) {

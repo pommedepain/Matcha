@@ -146,9 +146,9 @@ class User extends Node {
     return this.token;
   }
 
-  getUsers() {
+  getInfos(value) {
     return new Promise((resolve, reject) => {
-      this.getNodeList()
+      this.getNodeList(value)
         .then(list => resolve(list))
         .catch(err => reject(err));
     });

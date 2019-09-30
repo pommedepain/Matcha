@@ -16,9 +16,9 @@ router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
 
-router.get('/', wrapper(async (req, res) => {
+router.get('/:value', wrapper(async (req, res) => {
   debug('Requesting user list...');
-  return (new User().getUsers()
+  return (new User().getInfos(req.params.value)
     .then(users => (
       res.status(200).json({
         success: true,
