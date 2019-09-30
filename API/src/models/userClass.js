@@ -95,48 +95,51 @@ class User extends Node {
 
   addRelationships() {
     return new Promise((resolve, reject) => {
-      const promises = [];
       const date = new Date();
       debug('Linking User with Tags ...');
       if (this.user.tags) {
         debug(this.user.tags);
-        this.user.tags.forEach((tag) => {
-          const data = {
-            node_a: this.data.node_a,
-            node_b: {
-              label: 'Tag',
-              id: 'id',
-              properties: tag,
-            },
-            relation: {
-              label: 'LOOK_FOR',
-              properties: { creationDate: date.toISOString() },
-            },
-          };
-          const p = new Relationship(data).createRelationship();
-          promises.push(p);
-        });
-      }
-      Promise.all(promises)
-        .then(resolve())
-        .catch(err => reject(err));
+        const promises = this.user.tags.map(tag => (
+          new Promise((res, rej) => {
+            const data = {
+              node_a: this.data.node_a,
+              node_b: {
+                label: 'Tag',
+                id: 'id',
+                properties: tag,
+              },
+              relation: {
+                label: 'LOOK_FOR',
+                properties: { creationDate: date.toISOString() },
+              },
+            };
+            new Relationship(data).createRelationship()
+              .then(res())
+              .catch(err => rej(err));
+          })
+        ));
+        Promise.all(promises)
+          .then(resolve())
+          .catch(err => reject(err));
+      } else resolve();
     });
   }
 
   validateTags() {
     return new Promise((resolve, reject) => {
-      const promises = [];
       debug('Validating Tags ...');
       if (this.user.tags) {
-        this.user.tags.forEach((tag) => {
-          debug('tag:', tag);
-          const p = new TagValidator(this.tagRequirements, tag).validate();
-          promises.push(p);
-        });
+        const promises = this.user.tags.map(tag => (
+          new Promise((res, rej) => {
+            new TagValidator(this.tagRequirements, tag).validate()
+              .then(res())
+              .catch(err => rej(err));
+          })
+        ));
+        Promise.all(promises)
+          .then(resolve())
+          .catch(err => reject(err));
       }
-      Promise.all(promises)
-        .then(resolve())
-        .catch(err => reject(err));
     });
   }
 

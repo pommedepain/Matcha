@@ -50,7 +50,7 @@ function populateRelationships() {
     ));
     Promise.all(promises)
       .then(resolve())
-      .catcg(err => reject(err));
+      .catch(err => reject(err));
   });
 }
 
