@@ -154,6 +154,17 @@ class User extends Node {
     });
   }
 
+  getMatches() {
+    return new Promise((resolve, reject) => {
+      this.data.relation = {
+        label: 'LIKES',
+      };
+      this.getNodeMutualRelationships()
+        .then(list => resolve(list))
+        .catch(err => reject(err));
+    });
+  }
+
   getUserInfo() {
     return new Promise((resolve, reject) => {
       debug('Getting user info for :', this.user);

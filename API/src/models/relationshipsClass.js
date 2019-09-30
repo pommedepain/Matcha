@@ -86,14 +86,19 @@ class Relationship {
       relation: true,
     };
     const method = () => (new Promise((resolve, reject) => {
-      const query = `MATCH (a)-[r:${this.data.relation.label}]-(b) WHERE a.${this.data.node_a.id}='${this.data.node_a.properties[this.id_a]}' return (a)-[r]-(b)`;
+      const query = `MATCH (a)-[r:${this.data.relation.label}]-(b) WHERE a.${this.data.node_a.id}='${this.data.node_a.properties[this.id_a]}' return b.${this.data.node_a.id}`;
       const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
       const session = driver.session();
       session.run(query)
         .then((res) => {
+          const list = [];
           session.close();
-          debug(res.records.length);
-          resolve(res.records[0]._fields);
+          debug(res.records);
+          res.records.forEach((record) => {
+            list.push(record._fields[0]);
+          });
+          debug(_.uniq(list));
+          resolve(_.uniq(list));
         })
         .catch((err) => {
           debug(err);
@@ -134,14 +139,14 @@ class Relationship {
       relation: true,
     };
     const method = () => (new Promise((resolve, reject) => {
-      const query = `MATCH (a:${this.data.node_a.label} {${this.data.node_a.id}: '${this.data.node_a.properties[this.id_a]}'})-[r:${this.data.relation.label}]->(b:${this.data.node_b.label} {${this.data.node_b.id}: '${this.data.node_b.properties[this.id_b]}'}) RETURN (a)-[r]->(b)`;
+      const query = `MATCH (a:${this.data.node_a.label} {${this.data.node_a.id}: '${this.data.node_a.properties[this.id_a]}'})-[r:${this.data.relation.label}]->(b:${this.data.node_b.label} {${this.data.node_b.id}: '${this.data.node_b.properties[this.id_b]}'}) RETURN (a)-[r:${this.data.relation.label}]->(b)`;
       const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
       const session = driver.session();
       debug(query);
       session.run(query)
         .then((res) => {
           session.close();
-          // debug(res.records);
+          debug(res.records);
           if (res.records.length === 0) {
             debug('RELATION FOUND');
             resolve(this.createRelationship());
@@ -163,7 +168,7 @@ class Relationship {
     };
     const method = () => (new Promise((resolve, reject) => {
       debug(this.data.relation.properties);
-      const query = `MATCH (a:${this.data.node_a.label} {${this.data.node_a.id}: '${this.data.node_a.properties[this.id_a]}'}), (b:${this.data.node_b.label} {${this.data.node_b.id}: '${this.data.node_b.properties[this.id_b]}'}) CREATE (a)-[r:${this.data.relation.label} $props]->(b) RETURN (a)-[r]->(b)`;
+      const query = `MATCH (a:${this.data.node_a.label} {${this.data.node_a.id}: '${this.data.node_a.properties[this.id_a]}'}), (b:${this.data.node_b.label} {${this.data.node_b.id}: '${this.data.node_b.properties[this.id_b]}'}) CREATE (a)-[r:${this.data.relation.label} $props]->(b) RETURN (a)-[r:${this.data.relation.label}]->(b)`;
       const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
       const session = driver.session();
       const props = this.data.relation.properties;
@@ -171,9 +176,9 @@ class Relationship {
       session.run(query, { props })
         .then((res) => {
           session.close();
-          if (res.records.length === 1) {
-            debug(`${this.data.node_a.properties[this.id_a]} ${res.records[0]._fields} ${this.data.node_b.properties[this.id_b]} RELATION CREATED`);
-            resolve(`${this.data.node_a.properties[this.id_a]} ${res.records[0]._fields} ${this.data.node_b.properties[this.id_b]} RELATION CREATED`);
+          if (res.records.length !== 0) {
+            debug(`${this.data.node_a.properties[this.id_a]} ${this.data.relation.label} ${this.data.node_b.properties[this.id_b]} RELATION CREATED`);
+            resolve(`${this.data.node_a.properties[this.id_a]} ${this.data.relation.label} ${this.data.node_b.properties[this.id_b]} RELATION CREATED`);
           } else { resolve('already exsists'); }
         })
         .catch((err) => {
@@ -197,9 +202,9 @@ class Relationship {
       session.run(query)
         .then((res) => {
           session.close();
-          if (res.records.length === 1) {
-            debug(`${this.data.node_a.properties[this.id_a]} ${res.records[0]._fields} ${this.data.node_b.properties[this.id_b]} RELATION DESTROYED`);
-            resolve(`${this.data.node_a.properties[this.id_a]} ${res.records[0]._fields} ${this.data.node_b.properties[this.id_b]} RELATION DESTROYED`);
+          if (res.records.length !== 0) {
+            debug(`${this.data.node_a.properties[this.id_a]} ${this.data.relation.label} ${this.data.node_b.properties[this.id_b]} RELATION DESTROYED`);
+            resolve(`${this.data.node_a.properties[this.id_a]} ${this.data.relation.label} ${this.data.node_b.properties[this.id_b]} RELATION DESTROYED`);
           } else reject(new Error('An error occured during relationship destruction'));
         })
         .catch((err) => {
