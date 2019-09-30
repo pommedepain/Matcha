@@ -101,9 +101,10 @@ function populateUsers() {
       debug('Populating Users in DB...');
       users.forEach((user) => {
         // debug(user);
-        const p = new User(_.pick(user, requiredProperties.concat(optionalProperties))).createUser()
+        new User(_.pick(user, requiredProperties.concat(optionalProperties))).createUser()
+          .then(pr => promises.push(pr))
           .catch(err => debug(err));
-        promises.push(p);
+        // promises.push(p);
       });
       return Promise.all(promises);
     })

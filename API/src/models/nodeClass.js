@@ -78,7 +78,7 @@ class Node extends Relationship {
             const result = res.records[0]._fields[0].properties;
             debug('Data fetched :\n', result);
             resolve(result);
-          } else resolve({ error: true, value: 'user doesnt exists' });
+          } else reject(new Error('user doesnt exists'));
         })
         .catch((err) => { debug('An error occured while fetching user info :', err); });
 
