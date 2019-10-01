@@ -40,14 +40,14 @@ class UserValidator {
     return new Promise((resolve, reject) => {
       const sch = {};
 
-      if (this.req.username) sch.username = Joi.string().regex(/^[a-zA-Z-àæéèêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ]{2,18}$/i).required();
-      else sch.username = Joi.string().regex(/^[a-zA-Z-àæéèêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ]{2,18}$/i);
+      if (this.req.username) sch.username = Joi.string().regex(/^[a-zA-Z-àæéëèêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ]{2,18}$/i).required();
+      else sch.username = Joi.string().regex(/^[a-zA-Z-àæéëèêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ]{2,18}$/i);
 
-      if (this.req.firstName) sch.firstName = Joi.string().regex(/^[a-zA-Z-àæéèêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ]{2,18}$/i).required();
-      else sch.firstName = Joi.string().regex(/^[a-zA-Z-àæéèêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ]{2,18}$/i);
+      if (this.req.firstName) sch.firstName = Joi.string().regex(/^[a-zA-Z-àæéëèêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ]{2,18}$/i).required();
+      else sch.firstName = Joi.string().regex(/^[a-zA-Z-àæéëèêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ]{2,18}$/i);
 
-      if (this.req.lastName) sch.lastName = Joi.string().regex(/^[a-zA-Z-àæéèêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ]{2,18}$/i).required();
-      else sch.lastName = Joi.string().regex(/^[a-zA-Z-àæéèêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ]{2,18}$/i);
+      if (this.req.lastName) sch.lastName = Joi.string().regex(/^[a-zA-Z-àæéëèêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ]{2,18}$/i).required();
+      else sch.lastName = Joi.string().regex(/^[a-zA-Z-àæéëèêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ]{2,18}$/i);
 
       if (this.req.password) sch.password = Joi.string().regex(/^[^`\\<>]{7,150}$/i).required();
       else sch.password = Joi.string().regex(/^[^`\\<>]{7,150}$/i);
@@ -59,8 +59,8 @@ class UserValidator {
       if (this.req.email) sch.email = Joi.string().email({ minDomainSegments: 2 }).required();
       else sch.email = Joi.string().email({ minDomainSegments: 2 });
 
-      if (this.req.bio) sch.bio = Joi.string().regex(/^[\w 0-9_-àæéèêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ,.;:?!&%/]{1,255}$/).required();
-      else sch.bio = Joi.string().regex(/^[\w 0-9_-àæéèêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ,.;:?!&%/]{1,255}$/);
+      if (this.req.bio) sch.bio = Joi.string().regex(/^[\w 0-9_-àæéèëêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ,.;:?!&%/]{1,255}$/).required();
+      else sch.bio = Joi.string().regex(/^[\w 0-9_-àæéèëêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ,.;:?!&%/]{1,255}$/);
 
       if (this.req.gender) sch.gender = Joi.string().regex(/^(male|female|genderqueer)$/).required();
       else sch.gender = Joi.string().regex(/^(male|female|genderqueer)$/);
@@ -83,9 +83,12 @@ class UserValidator {
 
       if (this.req.optional) sch.optional = Joi.string().alphanum().min(3).max(30).required();
       else sch.optional = Joi.string().alphanum().min(3).max(30);
-      
-      if (this.req.photo) sch.photo = Joi.string().regex(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/).required();
-      else sch.photo = Joi.string().regex(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/);
+
+      if (this.req.photo) {
+        sch.photo = Joi.string()
+          .regex(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-\._~:/?#[\]@!$&'()*+,;=.]+$/)
+          .required();
+      } else sch.photo = Joi.string().regex(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/);
 
       if (this.req.isAdmin) sch.isAdmin = Joi.string().regex(/^(true|false)$/).required();
       else sch.isAdmin = Joi.string().regex(/^(true|false)$/);
