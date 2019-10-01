@@ -14,7 +14,6 @@ class PasswdStrength extends React.Component {
 	}
 
 	render() {
-		// console.log(this.props);
 		this.props.password.elementConfig.type = this.state.hidden ? "password" : "text";
 
 		return (

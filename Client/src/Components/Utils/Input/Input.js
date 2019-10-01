@@ -5,14 +5,23 @@ import classes from './Input.module.css'
 const input = (props) => {
 	let inputElement = null;
 	const inputClasses = [classes.inputElement];
-	let validationError = null;
+	let validationError = [];
 	let nameclass = [];
 
 	// console.log(props)
 	if (props.invalid && props.shouldValidate && props.touched) {
-		// console.log(props.errorMessage);
 		inputClasses.push(classes.Invalid);
-		validationError = <p className={classes.ValidationError}>{props.errorMessage}</p>
+		// console.log(props.errorMessage)
+		// console.log(props.errorMessage.length)
+		if (Array.isArray(props.errorMessage) === true) {
+			for (let i = 0; i < props.errorMessage.length; i++) {
+				validationError.push(<p className={classes.ValidationError} key={i}>{props.errorMessage[i]}</p>);
+			}
+			// console.log(validationError);
+		}
+		else {
+			validationError = <p className={classes.ValidationError}>{props.errorMessage}</p>;
+		}
 	}
 
 	if (typeof props.className != "undefined") {
@@ -26,7 +35,7 @@ const input = (props) => {
 
 	switch (props.elementType) {
 		case ( 'input' ) :
-			// console.log(props)
+			// console.log(props.elementConfig)
 			inputElement = <input
 				name={props.name}
 				style={props.style}

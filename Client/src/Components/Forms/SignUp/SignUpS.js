@@ -23,59 +23,73 @@ class SignUp extends Component {
 			{ id: "geek", text: "Geek" }
 		],
 		password: formDatas.password,
-		cPasswd: formDatas.cPasswd
+		cPasswd: formDatas.cPasswd,
+		users: []
 	}
 
-	updateErrorMessage = (inputIdentifier, newMessage) => {
-		let updatedOrderForm = {};
-		console.log(inputIdentifier);
+	checkValidity2(value, rules, inputIdentifier) {
+		let isValid = true;
+		let errorMessages = [];
 
-		if (inputIdentifier !== "password") {
-			const trueOrderForm = (inputIdentifier === "birthdate" || inputIdentifier === "gender" || inputIdentifier === "sexualOrient" || inputIdentifier === "bio" ? "orderForm2" : "orderForm1");
-
-			updatedOrderForm = (trueOrderForm === "orderForm2" ?
-			{ ...this.state.orderForm2 }
-			: { ...this.state.orderForm1 });
-
-			const updatedFormElement = {
-				...updatedOrderForm[inputIdentifier]
-			};
-			updatedFormElement.errorMessage = newMessage;
-			updatedOrderForm[inputIdentifier] = updatedFormElement;
-			console.log(updatedOrderForm);
-			trueOrderForm === "orderForm1" ?
-			this.setState({ orderForm1: updatedOrderForm }) :
-			this.setState({ orderForm2: updatedOrderForm });
-		}
-		else {
-			updatedOrderForm = {...this.state.password};
-			updatedOrderForm.errorMessage = newMessage;
-			console.log(updatedOrderForm);
-			// this.setState({ password: updatedOrderForm });
-		}
+			if (!rules) {
+				return (true);
+			}
+			if (rules.required) {
+				isValid = (value.trim() !== "") && isValid;
+				if (inputIdentifier !== undefined && value.trim() === "")
+				{	
+					errorMessages.push("This field is required");
+					return (errorMessages);
+				}
+			}
+			if (!rules.required) {
+				if ((value.trim() === "")) {
+					// console.log("not required");
+					return (true);
+				}
+			}
+			if (rules.minLength) {
+				isValid = (value.length >= rules.minLength) && isValid;
+				if (inputIdentifier !== undefined && (value.length < rules.minLength))
+				{	
+					errorMessages.push("This field requires at least " + rules.minLength + " characters");
+					return (errorMessages);
+				}
+			}
+			if (rules.maxLength) {
+				isValid = (value.length <= rules.maxLength) && isValid;
+				if (inputIdentifier !== undefined && (value.length > rules.maxLength))
+				{	
+					errorMessages.push("This field must not exceed " + rules.maxLength + " characters");
+					return (errorMessages);
+				}
+			}
+			if (rules.regex) {
+				isValid = RegExp(unescape(rules.regex), 'g').test(value) && isValid;
+				if (!isValid)
+				{
+					errorMessages.push(rules.rule);
+					return (errorMessages);
+				}
+			}
+		return (isValid);
 	}
 
-	checkUsername = (username) => {
-		return new Promise (function (resolve, reject) {
-			axios.get(`http://localhost:4000/API/users/`)
-				.then(response => {
-					if (response.data.payload.users.indexOf(username) === -1) {
-						console.log("username available")
-						resolve(true);
-					}
-					else {
-						reject(new Error("Username already exists"));
-					}
-				})
-				.catch(err => { 
-					console.log(err);
-				})
-		})
+	getUsers = () => {
+		axios.get(`http://localhost:4000/API/users/username`)
+			.then(response => {
+				// console.log(response.data.payload.users);
+				this.setState({ users: response.data.payload.users });
+			})
+			.catch(err => { 
+				console.log(err);
+			})
 	}
 
-	checkValidity(value, rules, checkUsername, inputIdentifier, updateErrorMessage) {
+	checkValidity(value, rules, inputIdentifier, state) {
 		return new Promise (function (resolve, reject) {
 			let isValid = true;
+			let errorMessages = [];
 
 			if (!rules) {
 				resolve(true);
@@ -83,32 +97,54 @@ class SignUp extends Component {
 			if (rules.required) {
 				isValid = (value.trim() !== "") && isValid;
 				if (inputIdentifier !== undefined && value.trim() === "")
-					updateErrorMessage(inputIdentifier, "hola");
+				{	
+					errorMessages.push("This field is required");
+					reject(errorMessages);
+				}
+			}
+			if (!rules.required) {
+				if ((value.trim() === "")) {
+					// console.log("not required");
+					resolve(true);
+				}
 			}
 			if (rules.minLength) {
 				isValid = (value.length >= rules.minLength) && isValid;
+				if (inputIdentifier !== undefined && (value.length < rules.minLength))
+				{	
+					errorMessages.push("This field requires at least " + rules.minLength + " characters");
+					reject(errorMessages);
+				}
 			}
 			if (rules.maxLength) {
 				isValid = (value.length <= rules.maxLength) && isValid;
+				if (inputIdentifier !== undefined && (value.length > rules.maxLength))
+				{	
+					errorMessages.push("This field must not exceed " + rules.maxLength + " characters");
+					reject(errorMessages);
+				}
 			}
 			if (rules.regex) {
-				let regex = RegExp(unescape(rules.regex), 'g')
-				isValid = regex.test(value) && isValid;
+				isValid = RegExp(unescape(rules.regex), 'g').test(value) && isValid;
+				if (inputIdentifier !== undefined && (RegExp(unescape(rules.regex), 'g').test(value) === false))
+				{	
+					// console.log(RegExp(unescape(rules.regex), 'g').test(value))
+					errorMessages.push(rules.rule);
+					reject(errorMessages);
+				}
 			}
 			if(!rules.db) {
 				resolve(isValid);
 			}
 			if (rules.db) {
-				console.log(isValid);
-				checkUsername(value)
-				.then((response) => {
-					isValid = response && isValid;
+				if (state.users.includes(value) === false) {
+					isValid = true && isValid;
 					resolve(isValid);
-				})
-				.catch((e) => {
-					// console.log(e);
-					reject(e);
-				});
+				}
+				else if (state.users.includes(value) === true) {
+					errorMessages.push("Username already taken");
+					reject(errorMessages);
+				}
 			}
 		});
 	}
@@ -117,45 +153,66 @@ class SignUp extends Component {
 		let updatedOrderForm = {};
 		const trueOrderForm = inputIdentifier === "birthdate" || inputIdentifier === "gender" || inputIdentifier === "sexualOrient" || inputIdentifier === "bio" ? "orderForm2" : "orderForm1";
 
-		updatedOrderForm = (trueOrderForm === "orderForm2" ?
-		{ ...this.state.orderForm2 }
-		: { ...this.state.orderForm1 });
+		trueOrderForm === "orderForm2" ?
+		updatedOrderForm = { ...this.state.orderForm2 }
+		: updatedOrderForm = { ...this.state.orderForm1 };
 
 		const updatedFormElement = {
 			...updatedOrderForm[inputIdentifier]
 		};
 		updatedFormElement.value = event.target.value;
-		this.checkValidity(updatedFormElement.value, updatedFormElement.validation, this.checkUsername, inputIdentifier, this.updateErrorMessage)
-			.then((response) => {
-				// console.log(response);
-				updatedFormElement.valid = response;
-				updatedFormElement.touched = true;
-				updatedOrderForm[inputIdentifier] = updatedFormElement;
+		if (inputIdentifier !== "birthdate") {
+			this.checkValidity(updatedFormElement.value, updatedFormElement.validation, inputIdentifier, this.state)
+				.then((response) => {
+					updatedFormElement.valid = response;
+					updatedFormElement.touched = true;
+					updatedOrderForm[inputIdentifier] = updatedFormElement;
 
-				let formIsValid = true;
-				// eslint-disable-next-line no-unused-vars
-				for (let inputIdentifier in updatedOrderForm) {
-					formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
-				}
-				trueOrderForm === "orderForm2" ?
-				this.setState({ orderForm2: updatedOrderForm, formIsValid: formIsValid })
-				: this.setState({ orderForm1: updatedOrderForm, formIsValid: formIsValid });
-			})
-			.catch((e) => {
+					let formIsValid = true;
+					// eslint-disable-next-line no-unused-vars
+					for (let inputIdentifier in updatedOrderForm) {
+						formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
+					}
+					trueOrderForm === "orderForm2" ?
+					this.setState({ orderForm2: updatedOrderForm, formIsValid: formIsValid })
+					: this.setState({ orderForm1: updatedOrderForm, formIsValid: formIsValid });
+				})
+				.catch((e) => {
+					updatedFormElement.valid = false;
+					// console.log(e);
+					updatedFormElement.touched = true;
+					updatedFormElement.errorMessage = e;
+					updatedOrderForm[inputIdentifier] = updatedFormElement;
+
+					let formIsValid = true;
+					// eslint-disable-next-line no-unused-vars
+					for (let inputIdentifier in updatedOrderForm) {
+						formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
+					}
+					trueOrderForm === "orderForm2" ?
+					this.setState({ orderForm2: updatedOrderForm, formIsValid: formIsValid })
+					: this.setState({ orderForm1: updatedOrderForm, formIsValid: formIsValid });
+				})
+		}
+		else {
+			const ret = this.checkValidity2(updatedFormElement.value, updatedFormElement.validation);
+			if (typeof ret === "boolean") {
+				updatedFormElement.valid = ret;
+			}
+			else {
 				updatedFormElement.valid = false;
-				console.log(e.message);
-				updatedFormElement.touched = true;
-				updatedOrderForm[inputIdentifier] = updatedFormElement;
+				updatedFormElement.errorMessage = ret;
+			}
+			updatedFormElement.touched = true;
+			updatedOrderForm[inputIdentifier] = updatedFormElement;
 
-				let formIsValid = true;
-				// eslint-disable-next-line no-unused-vars
-				for (let inputIdentifier in updatedOrderForm) {
-					formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
-				}
-				trueOrderForm === "orderForm2" ?
-				this.setState({ orderForm2: updatedOrderForm, formIsValid: formIsValid })
-				: this.setState({ orderForm1: updatedOrderForm, formIsValid: formIsValid });
-			})
+			let formIsValid = true;
+			// eslint-disable-next-line no-unused-vars
+			for (let inputIdentifier in updatedOrderForm) {
+				formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
+			}
+			this.setState({ orderForm2: updatedOrderForm, formIsValid: formIsValid });
+		}
 	}
 
 	togglePopup = () => {
@@ -170,6 +227,7 @@ class SignUp extends Component {
 				filter: 'blur(3px)'
 			}
 		});
+		this.getUsers();
 	}
 
 	handleChange = (event) => {
@@ -209,30 +267,28 @@ class SignUp extends Component {
 		};
 		updatedElem.value = event.target.value;
 		if (name === "password") {
-			// console.log(updatedElem.value);
-			// console.log(updatedElem.validation);
-			updatedElem.valid = this.checkValidity(updatedElem.value, updatedElem.validation, this.checkUsername, name, this.updateErrorMessage);
-			this.checkValidity(updatedElem.value, updatedElem.validation, this.checkUsername)
-			.then((response) => {
-				// console.log(response);
-				updatedElem.valid = response;
-				updatedElem.touched = true;
-				updatedElem.value === "" ?
-				updatedElem.score = null
-				:
-				updatedElem.score = value.score;
-				this.setState({ [name]: updatedElem });
-			})
-			.catch((e) => {
-				console.log(e);
-				updatedElem.valid = false;
-				updatedElem.touched = true;
-				updatedElem.value === "" ?
-				updatedElem.score = null
-				:
-				updatedElem.score = value.score;
-				this.setState({ [name]: updatedElem });
-			})
+			this.checkValidity(updatedElem.value, updatedElem.validation, name, this.state)
+				.then((response) => {
+					// console.log(response);
+					updatedElem.valid = response;
+					updatedElem.touched = true;
+					updatedElem.value === "" ?
+					updatedElem.score = null
+					:
+					updatedElem.score = value.score;
+					this.setState({ [name]: updatedElem });
+				})
+				.catch((e) => {
+					console.log(e);
+					updatedElem.valid = false;
+					updatedElem.touched = true;
+					updatedElem.errorMessage = e;
+					updatedElem.value === "" ?
+					updatedElem.score = null
+					:
+					updatedElem.score = value.score;
+					this.setState({ [name]: updatedElem });
+				})
 		}
 		else if (name === "cPasswd") {
 			if (event.target.value === this.state.password.value)
