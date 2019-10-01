@@ -33,6 +33,7 @@ function populateTags() {
       })
     ));
     Promise.all(promises)
+      .then(debug('All tags created'))
       .then(resolve())
       .catch(err => reject(err));
   });

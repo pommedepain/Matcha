@@ -49,6 +49,7 @@ function populateRelationships() {
       })
     ));
     Promise.all(promises)
+      .then(debug('All relationships created'))
       .then(resolve())
       .catch(err => reject(err));
   });

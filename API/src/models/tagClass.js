@@ -88,6 +88,20 @@ class Tag extends Node {
         .catch(err => reject(err))
     ));
   }
+
+  deleteTagDuplicates() {
+    return new Promise((resolve, reject) => {
+      this.data = {
+        node_a: {
+          label: 'Tag',
+          id: 'id',
+        },
+      };
+      this.deleteNodeDuplicates()
+        .then(res => resolve(res))
+        .catch(err => reject(err));
+    });
+  }
 }
 
 module.exports = Tag;

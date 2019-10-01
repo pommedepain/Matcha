@@ -12,6 +12,7 @@ class Relationship {
     this.iDs = ['id', 'username'];
     if (this.data && this.data.node_a) this.id_a = this.data.node_a.id;
     if (this.data && this.data.node_b) this.id_b = this.data.node_b.id;
+    this.driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
     debug('Relationship constructor called');
   }
 
@@ -32,8 +33,7 @@ class Relationship {
     };
     const method = () => (new Promise((resolve, reject) => {
       const query = `MATCH (a)-[r:${this.data.relation.label}]->(b) return (a)-[r]->(b)`;
-      const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
-      const session = driver.session();
+      const session = this.driver.session();
       session.run(query)
         .then((res) => {
           session.close();
@@ -64,9 +64,9 @@ class Relationship {
       relation: false,
     };
     const method = () => (new Promise((resolve, reject) => {
-      const query = `MATCH (a:${this.data.node_a.label} {${this.data.node_a.id}: '${this.data.node_a.properties[this.id_a]}'})-[r]->(b) return [r]->(b)`;
-      const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
-      const session = driver.session();
+      const query = `MATCH (a:${this.data.node_a.label} {${this.data.node_a.id}: '${this.data.node_a.properties[this.id_a]}'})-[r]->(b)
+                    return [r]->(b)`;
+      const session = this.driver.session();
       session.run(query)
         .then((res) => {
           session.close();
@@ -87,9 +87,10 @@ class Relationship {
       relation: true,
     };
     const method = () => (new Promise((resolve, reject) => {
-      const query = `MATCH (a)-[r:${this.data.relation.label}]-(b) WHERE a.${this.data.node_a.id}='${this.data.node_a.properties[this.id_a]}' return b.${this.data.node_a.id}`;
-      const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
-      const session = driver.session();
+      const query = `MATCH (a)-[r:${this.data.relation.label}]-(b)
+                    WHERE a.${this.data.node_a.id}='${this.data.node_a.properties[this.id_a]}'
+                    return b.${this.data.node_a.id}`;
+      const session = this.driver.session();
       session.run(query)
         .then((res) => {
           const list = [];
@@ -116,9 +117,9 @@ class Relationship {
       relation: true,
     };
     const method = () => (new Promise((resolve, reject) => {
-      const query = `MATCH (a:${this.data.node_a.label} {${this.data.node_a.id}: '${this.data.node_a.properties[this.id_a]}'})-[r:${this.data.relation.label}]->(b) return r`;
-      const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
-      const session = driver.session();
+      const query = `MATCH (a:${this.data.node_a.label} {${this.data.node_a.id}: '${this.data.node_a.properties[this.id_a]}'})-[r:${this.data.relation.label}]->(b)
+                    return r`;
+      const session = this.driver.session();
       session.run(query)
         .then((res) => {
           session.close();
@@ -140,9 +141,9 @@ class Relationship {
       relation: true,
     };
     const method = () => (new Promise((resolve, reject) => {
-      const query = `MATCH (a:${this.data.node_a.label} {${this.data.node_a.id}: '${this.data.node_a.properties[this.id_a]}'})-[r:${this.data.relation.label}]->(b:${this.data.node_b.label} {${this.data.node_b.id}: '${this.data.node_b.properties[this.id_b]}'}) RETURN (a)-[r:${this.data.relation.label}]->(b)`;
-      const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
-      const session = driver.session();
+      const query = `MATCH (a:${this.data.node_a.label} {${this.data.node_a.id}: '${this.data.node_a.properties[this.id_a]}'})-[r:${this.data.relation.label}]->(b:${this.data.node_b.label} {${this.data.node_b.id}: '${this.data.node_b.properties[this.id_b]}'})
+                    RETURN (a)-[r:${this.data.relation.label}]->(b)`;
+      const session = this.driver.session();
       debug(query);
       session.run(query)
         .then((res) => {
@@ -169,9 +170,10 @@ class Relationship {
     };
     const method = () => (new Promise((resolve, reject) => {
       debug(this.data.relation.properties);
-      const query = `MATCH (a:${this.data.node_a.label} {${this.data.node_a.id}: '${this.data.node_a.properties[this.id_a]}'}), (b:${this.data.node_b.label} {${this.data.node_b.id}: '${this.data.node_b.properties[this.id_b]}'}) CREATE (a)-[r:${this.data.relation.label} $props]->(b) RETURN (a)-[r:${this.data.relation.label}]->(b)`;
-      const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
-      const session = driver.session();
+      const query = `MATCH (a:${this.data.node_a.label} {${this.data.node_a.id}: '${this.data.node_a.properties[this.id_a]}'}), (b:${this.data.node_b.label} {${this.data.node_b.id}: '${this.data.node_b.properties[this.id_b]}'})
+                    CREATE (a)-[r:${this.data.relation.label} $props]->(b)
+                    RETURN (a)-[r:${this.data.relation.label}]->(b)`;
+      const session = this.driver.session();
       const props = this.data.relation.properties;
       debug(query);
       session.run(query, { props })
@@ -195,9 +197,10 @@ class Relationship {
       relation: true,
     };
     const method = () => (new Promise((resolve, reject) => {
-      const query = `MATCH (a:${this.data.node_a.label} {${this.data.node_a.id}: '${this.data.node_a.properties[this.id_a]}'})-[r:${this.data.relation.label}]->(b:${this.data.node_b.label} {${this.data.node_b.id}: '${this.data.node_b.properties[this.id_b]}'}) DELETE r return type(r)`;
-      const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
-      const session = driver.session();
+      const query = `MATCH (a:${this.data.node_a.label} {${this.data.node_a.id}: '${this.data.node_a.properties[this.id_a]}'})-[r:${this.data.relation.label}]->(b:${this.data.node_b.label} {${this.data.node_b.id}: '${this.data.node_b.properties[this.id_b]}'})
+                    DELETE r 
+                    return type(r)`;
+      const session = this.driver.session();
       session.run(query)
         .then((res) => {
           session.close();
@@ -219,9 +222,12 @@ class Relationship {
       node_a: true,
     };
     const method = () => (new Promise((resolve, reject) => {
-      const query = `MATCH (a)-[r]->(b) WHERE a.${this.data.node_a.id}='${this.data.node_a.properties[this.id_a]}' OR b.${this.data.node_a.id}='${this.data.node_a.properties[this.id_a]}' DELETE r return type(r)`;
-      const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
-      const session = driver.session();
+      const query = `MATCH (a)-[r]->(b)
+                    WHERE a.${this.data.node_a.id}='${this.data.node_a.properties[this.id_a]}'
+                    OR b.${this.data.node_a.id}='${this.data.node_a.properties[this.id_a]}'
+                    DELETE r 
+                    return type(r)`;
+      const session = this.driver.session();
       session.run(query)
         .then((res) => {
           session.close();
@@ -241,9 +247,10 @@ class Relationship {
       relation: true,
     };
     const method = () => (new Promise((resolve, reject) => {
-      const query = `MATCH (a)-[r:${this.data.relation.label}]->(b) DELETE r RETURN type(r)`;
-      const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
-      const session = driver.session();
+      const query = `MATCH (a)-[r:${this.data.relation.label}]->(b)
+                    DELETE r
+                    RETURN type(r)`;
+      const session = this.driver.session();
       session.run(query)
         .then((res) => {
           session.close();
@@ -266,9 +273,12 @@ class Relationship {
       relation: true,
     };
     const method = () => (new Promise((resolve, reject) => {
-      const query = `MATCH (a)-[r:${this.data.relation.label}]->(b) WHERE a.${this.data.node_a.id}='${this.data.node_a.properties[this.id_a]}' OR b.${this.data.node_a.id}='${this.data.node_a.properties[this.id_a]}' DELETE r return type(r)`;
-      const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
-      const session = driver.session();
+      const query = `MATCH (a)-[r:${this.data.relation.label}]->(b)
+                    WHERE a.${this.data.node_a.id}='${this.data.node_a.properties[this.id_a]}'
+                    OR b.${this.data.node_a.id}='${this.data.node_a.properties[this.id_a]}'
+                    DELETE r
+                    return type(r)`;
+      const session = this.driver.session();
       session.run(query)
         .then((res) => {
           session.close();
@@ -283,22 +293,21 @@ class Relationship {
     return (this.wrapper(method, requirements));
   }
 
-  deleteDuplicates() {
+  deleteRelationshipsDuplicates(labela, reltype, labelb) {
     const requirements = {
       node_a: false,
       relation: false,
     };
     const method = () => (new Promise((resolve, reject) => {
-      const query = `match (s)-[r]->(e)
-      with s,e,type(r) as typ, tail(collect(r)) as coll 
-      foreach(x in coll | delete x)`;
-      const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
-      const session = driver.session();
+      const query = `MATCH (n:${labela})-[r:${reltype}]->(m:${labelb})
+      WITH n, m, collect(r)[1..] as rels
+      FOREACH (r in rels | DELETE r)`;
+      const session = this.driver.session();
       session.run(query)
         .then((res) => {
           session.close();
-          debug('Relationships duplicates destroyed');
-          resolve('Relationships duplicates destroyed');
+          // debug(res);
+          resolve(res);
         })
         .catch((err) => {
           debug(err);

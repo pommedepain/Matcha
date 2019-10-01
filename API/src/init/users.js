@@ -9,7 +9,7 @@ const User = require('../models/userClass');
 const props = ['gender', 'email', 'password'];
 const requiredProperties = ['username', 'firstName', 'lastName', 'password', 'email', 'birthdate'];
 const optionalProperties = ['bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'tags', 'photo', 'localisation', 'optional', 'isAdmin'];
-const amount = 10;
+const amount = 100;
 
 function rand(min, max) { // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -106,6 +106,7 @@ function populateUsers() {
           })
         ));
         Promise.all(promises)
+          .then(debug('All Users created'))
           .then(resolve())
           .catch(err => reject(err));
       })

@@ -85,4 +85,15 @@ router.delete('/:username', [auth, admin], wrapper(async (req, res) => {
     )));
 }));
 
+router.delete('/delete/duplicates', wrapper(async (req, res) => {
+  debug('Request to delete duplicates:', req.params.username);
+  return (new User().deleteUserDuplicates()
+    .then(user => (
+      res.status(200).json({
+        success: true,
+        payload: { value: 'delete', user },
+      })
+    )));
+}));
+
 module.exports = router;

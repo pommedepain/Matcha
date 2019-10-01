@@ -222,6 +222,20 @@ class User extends Node {
         .catch(err => reject(err))
     ));
   }
+
+  deleteUserDuplicates() {
+    return new Promise((resolve, reject) => {
+      this.data = {
+        node_a: {
+          label: 'User',
+          id: 'username',
+        },
+      };
+      this.deleteNodeDuplicates()
+        .then(res => resolve(res))
+        .catch(err => reject(err));
+    });
+  }
 }
 
 module.exports = User;

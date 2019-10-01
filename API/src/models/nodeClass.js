@@ -26,7 +26,7 @@ class Node extends Relationship {
       if (tagTemplate[property].unique === true) this.unique.Tag.push(property);
     });
 
-    this.id_a = this.data.node_a.id;
+    if (this.data && this.data.node_a) this.id_a = this.data.node_a.id;
     debug('Node constructor called');
     this.driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
   }
@@ -118,8 +118,8 @@ class Node extends Relationship {
           if (result.records.length === 1) {
             const singleRecord = result.records[0];
             const node = singleRecord.get(0);
-            debug(`${this.data.node_a.label} added to DB : ${this.data.node_a.properties[this.id_a]}`);
-            resolve(node.properties);
+            // debug(`${this.data.node_a.label} added to DB : ${this.data.node_a.properties[this.id_a]}`);
+            resolve(debug(`${this.data.node_a.label} added to DB : ${this.data.node_a.properties[this.id_a]}`));
           } else reject(new Error('An error occured'));
         })
         .catch(err => debug(`An error occured while adding new ${this.data.node_a.label} :`, err));
@@ -139,6 +139,36 @@ class Node extends Relationship {
           } else resolve('No such Node');
         })
         .catch((err) => { debug('An error occured during node deletion :', err); });
+    });
+  }
+
+  deleteNodeDuplicates() {
+    return new Promise((resolve, reject) => {
+      const query1 = `MATCH (g:${this.data.node_a.label}) 
+      WITH g.${this.data.node_a.id} as id, collect(g) AS nodes 
+      WHERE size(nodes) >  1
+      UNWIND tail(nodes) as tails
+      MATCH (tails)-[r]-()
+      DELETE r`;
+      const query2 = `MATCH (g:${this.data.node_a.label}) 
+      WITH g.${this.data.node_a.id} as id, collect(g) AS nodes 
+      WHERE size(nodes) >  1
+      FOREACH (g in tail(nodes) | DELETE g)`;
+      let session = this.driver.session();
+      session.run(query1)
+        .then(() => {
+          session.close();
+        })
+        .then(() => {
+          session = this.driver.session();
+          session.run(query2)
+            .then(res => resolve(res))
+            .catch(err => reject(err));
+        })
+        .catch((err) => {
+          debug(err);
+          reject(err);
+        });
     });
   }
 }
