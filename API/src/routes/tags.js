@@ -74,7 +74,7 @@ router.delete('/:id', [auth, admin], wrapper(async (req, res) => {
 }));
 
 router.delete('/delete/duplicates', wrapper(async (req, res) => {
-  debug('Request to delete duplicates:', req.params.username);
+  debug('Request to delete duplicates');
   return (new Tag().deleteTagsDuplicates()
     .then(result => (
       res.status(200).json({

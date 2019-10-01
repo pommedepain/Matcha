@@ -86,9 +86,9 @@ class UserValidator {
 
       if (this.req.photo) {
         sch.photo = Joi.string()
-          .regex(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-\._~:/?#[\]@!$&'()*+,;=.]+$/)
+          .regex(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/)
           .required();
-      } else sch.photo = Joi.string().regex(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/);
+      } else sch.photo = Joi.string().regex(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/);
 
       if (this.req.isAdmin) sch.isAdmin = Joi.string().regex(/^(true|false)$/).required();
       else sch.isAdmin = Joi.string().regex(/^(true|false)$/);
