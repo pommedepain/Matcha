@@ -9,7 +9,7 @@ const User = require('../models/userClass');
 const props = ['gender', 'email', 'password'];
 const requiredProperties = ['username', 'firstName', 'lastName', 'password', 'email', 'birthdate'];
 const optionalProperties = ['bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'tags', 'photo', 'localisation', 'optional', 'isAdmin'];
-const amount = 100;
+const amount = 2;
 
 function rand(min, max) { // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -86,12 +86,17 @@ function getUsers() {
           promises.push(p);
         });
         Promise.all(promises)
-          .then(resolve(users))
+          .then(() => resolve(users))
           .catch(err => reject(err));
       })
       .catch(err => debug(err));
   });
 }
+
+// function populateUsers() {
+//   return Promise.all(relationships.map(relation => new RelationShip(relation).createRelationship())
+//     .then(debug('All relationships created')));
+// }
 
 function populateUsers() {
   return new Promise((resolve, reject) => {
@@ -101,13 +106,13 @@ function populateUsers() {
         const promises = users.map(user => (
           new Promise((res, rej) => {
             new User(_.pick(user, requiredProperties.concat(optionalProperties))).createUser()
-              .then(res())
+              .then(() => res())
               .catch(err => rej(err));
           })
         ));
         Promise.all(promises)
           .then(debug('All Users created'))
-          .then(resolve())
+          .then(() => resolve())
           .catch(err => reject(err));
       })
       .catch(err => reject(err));

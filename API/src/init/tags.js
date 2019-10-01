@@ -28,13 +28,13 @@ function populateTags() {
     const promises = tags.map(tag => (
       new Promise((res, rej) => {
         new Tag(_.pick(tag, requiredProperties)).createTag()
-          .then(res())
+          .then(() => res())
           .catch(err => rej(err));
       })
     ));
     Promise.all(promises)
-      .then(debug('All tags created'))
-      .then(resolve())
+      .then(debug('All Tags created'))
+      .then(() => resolve())
       .catch(err => reject(err));
   });
 }

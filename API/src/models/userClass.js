@@ -114,12 +114,12 @@ class User extends Node {
               },
             };
             new Relationship(data).createRelationship()
-              .then(res())
+              .then(() => res())
               .catch(err => rej(err));
           })
         ));
         Promise.all(promises)
-          .then(resolve())
+          .then(() => resolve())
           .catch(err => reject(err));
       } else resolve();
     });
@@ -132,21 +132,23 @@ class User extends Node {
         const promises = this.user.tags.map(tag => (
           new Promise((res, rej) => {
             new TagValidator(this.tagRequirements, tag).validate()
-              .then(res())
+              .then(() => res())
               .catch(err => rej(err));
           })
         ));
         Promise.all(promises)
-          .then(resolve())
+          .then(() => resolve())
           .catch(err => reject(err));
       }
     });
   }
 
   generateAuthToken(user) {
-    this.token = jwt.sign({ username: user.username, isAdmin: user.isAdmin }, config.get('jwtPrivateKey'));
-    debug('Generating Auth token :', this.token);
-    return this.token;
+    return new Promise((resolve, reject) => {
+      this.token = jwt.sign({ username: user.username, isAdmin: user.isAdmin }, config.get('jwtPrivateKey'));
+      debug('Generating Auth token :', this.token);
+      resolve(this.token);
+    });
   }
 
   getInfos(value) {
@@ -223,7 +225,7 @@ class User extends Node {
     ));
   }
 
-  deleteUserDuplicates() {
+  deleteUsersDuplicates() {
     return new Promise((resolve, reject) => {
       this.data = {
         node_a: {

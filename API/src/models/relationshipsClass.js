@@ -175,7 +175,7 @@ class Relationship {
                     RETURN (a)-[r:${this.data.relation.label}]->(b)`;
       const session = this.driver.session();
       const props = this.data.relation.properties;
-      debug(query);
+      // debug(query);
       session.run(query, { props })
         .then((res) => {
           session.close();

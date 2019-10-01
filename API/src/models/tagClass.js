@@ -89,7 +89,7 @@ class Tag extends Node {
     ));
   }
 
-  deleteTagDuplicates() {
+  deleteTagsDuplicates() {
     return new Promise((resolve, reject) => {
       this.data = {
         node_a: {
