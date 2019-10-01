@@ -3,7 +3,7 @@ const _ = require('lodash');
 const express = require('express');
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
-const handler = require('../middleware/wrapper');
+const wrapper = require('../middleware/wrapper');
 
 const router = express.Router();
 const Relationship = require('../models/relationshipsClass');
@@ -15,7 +15,7 @@ router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
 
-router.get('/type/:type', handler(async (req, res) => {
+router.get('/type/:type', wrapper(async (req, res) => {
   debug('Request to get Relationship information for :', req.params.type);
   return (new Relationship({ relation: { label: req.params.type } }).getRelationships()
     .then(relationship => (
@@ -26,7 +26,7 @@ router.get('/type/:type', handler(async (req, res) => {
     )));
 }));
 
-router.get('/mutual', handler(async (req, res) => {
+router.get('/mutual', wrapper(async (req, res) => {
   debug('Request to get Relationship information for :', req.body);
   return (new Relationship(req.body).getNodeMutualRelationships()
     .then(relationship => (
@@ -37,7 +37,7 @@ router.get('/mutual', handler(async (req, res) => {
     )));
 }));
 
-router.post('/create', handler(async (req, res) => {
+router.post('/create', wrapper(async (req, res) => {
   debug('Request to add new Relationship :\n', _.pick(req.body, validProperties));
   return (new Relationship(req.body).createRelationship()
     .then(relationship => (
@@ -48,7 +48,7 @@ router.post('/create', handler(async (req, res) => {
     )));
 }));
 
-router.post('/toggle', handler(async (req, res) => {
+router.post('/toggle', wrapper(async (req, res) => {
   debug('Request to add new Relationship :\n', _.pick(req.body, validProperties));
   return (new Relationship(req.body).toggleRelationship()
     .then(relationship => (
@@ -59,7 +59,7 @@ router.post('/toggle', handler(async (req, res) => {
     )));
 }));
 
-router.delete('/delete/relation', [auth, admin], handler(async (req, res) => {
+router.delete('/delete/relation', [auth, admin], wrapper(async (req, res) => {
   debug('Request to delete :', req.body.relation);
   return (new Relationship(req.body).deleteRelationship()
     .then(relationship => (
@@ -70,7 +70,7 @@ router.delete('/delete/relation', [auth, admin], handler(async (req, res) => {
     )));
 }));
 
-router.delete('/delete/node/', [auth, admin], handler(async (req, res) => {
+router.delete('/delete/node/', [auth, admin], wrapper(async (req, res) => {
   debug('Request to delete :', req.body.node_a);
   return (new Relationship(req.body).deleteThisNodeRelationships()
     .then(relationship => (
@@ -81,7 +81,7 @@ router.delete('/delete/node/', [auth, admin], handler(async (req, res) => {
     )));
 }));
 
-router.delete('/delete/type', [auth, admin], handler(async (req, res) => {
+router.delete('/delete/type', [auth, admin], wrapper(async (req, res) => {
   debug('Request to delete :', req.body.node_a);
   return (new Relationship(req.body).deleteThisTypeofRelationship()
     .then(relationship => (
@@ -92,7 +92,7 @@ router.delete('/delete/type', [auth, admin], handler(async (req, res) => {
     )));
 }));
 
-router.delete('/delete/node/type', [auth, admin], handler(async (req, res) => {
+router.delete('/delete/node/type', [auth, admin], wrapper(async (req, res) => {
   debug('Request to delete :', req.body.node_a);
   return (new Relationship(req.body).deleteThisNodeTypeofRelationship()
     .then(relationship => (
@@ -103,7 +103,7 @@ router.delete('/delete/node/type', [auth, admin], handler(async (req, res) => {
     )));
 }));
 
-router.delete('/delete/duplicates', handler(async (req, res) => {
+router.delete('/delete/duplicates', wrapper(async (req, res) => {
   debug('Request to delete duplicates');
   return (new Relationship(req.body).deleteRelationshipsDuplicates('User', 'LOOK_FOR', 'Tag')
     .then(relationship => (

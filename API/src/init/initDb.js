@@ -46,12 +46,12 @@ function seed() {
         new User().deleteUserDuplicates()
           .catch(err => debug(err));
         debug('All User duplicates destroyed');
-      }, 5000))
+      }, 6000))
       .then(() => setTimeout(() => {
         new Tag().deleteTagDuplicates()
           .catch(err => debug(err));
         debug('All Tag duplicates destroyed');
-      }, 5000))
+      }, 7000))
       .then(() => resolve())
       .catch(err => reject(err));
   });
