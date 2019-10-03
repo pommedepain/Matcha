@@ -16,9 +16,9 @@ router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
 
-router.get('/', wrapper(async (req, res) => {
+router.get('/:value', wrapper(async (req, res) => {
   debug('Requesting Tag list...');
-  return (new Tag().getTags()
+  return (new Tag().getList(req.params.value)
     .then(tags => (
       res.status(200).json({
         success: true,

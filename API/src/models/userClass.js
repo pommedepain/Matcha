@@ -126,7 +126,7 @@ class User extends Node {
 
   validateTags() {
     return new Promise((resolve, reject) => {
-      debug('Validating Tags ...', this.data.node_a.properties.tags);
+      debug('Validating Tags ...');
       if (this.data.node_a.properties.tags) {
         const promises = this.data.node_a.properties.tags.map(tag => (
           new Promise((res, rej) => {
@@ -155,7 +155,7 @@ class User extends Node {
     });
   }
 
-  getInfos(value) {
+  getList(value) {
     return new Promise((resolve, reject) => {
       this.getNodeList(value)
         .then(list => resolve(list))

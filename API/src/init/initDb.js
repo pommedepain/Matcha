@@ -37,6 +37,8 @@ function seed() {
   return (
     populateDb()
       .then(() => new RelationShip().deleteRelationshipsDuplicates('User', 'LOOK_FOR', 'Tag'))
+      .then(() => new RelationShip().deleteRelationshipsDuplicates('User', 'IS', 'Tag'))
+      .then(() => new RelationShip().deleteRelationshipsDuplicates('User', 'LIKES', 'User'))
       .then(() => new Tag().deleteTagsDuplicates('User', 'LOOK_FOR', 'Tag'))
       .then(() => new User().deleteUsersDuplicates('User', 'LOOK_FOR', 'Tag'))
   );

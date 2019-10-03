@@ -42,9 +42,9 @@ class Tag extends Node {
     debug('tag constructor called:');
   }
 
-  getTags() {
+  getList(value) {
     return new Promise((resolve, reject) => {
-      this.getNodeList('id')
+      this.getNodeList(value)
         .then(list => resolve(list))
         .catch(err => reject(err));
     });
