@@ -127,9 +127,9 @@ class User extends Node {
 
   validateTags() {
     return new Promise((resolve, reject) => {
-      debug('Validating Tags ...');
-      if (this.user.tags) {
-        const promises = this.user.tags.map(tag => (
+      debug('Validating Tags ...', this.data.node_a.properties.tags);
+      if (this.data.node_a.properties.tags) {
+        const promises = this.data.node_a.properties.tags.map(tag => (
           new Promise((res, rej) => {
             new TagValidator(this.tagRequirements, tag).validate()
               .then(() => res())
@@ -137,9 +137,10 @@ class User extends Node {
           })
         ));
         Promise.all(promises)
+          .then(debug('All tags checked'))
           .then(() => resolve())
           .catch(err => reject(err));
-      }
+      } else resolve();
     });
   }
 
