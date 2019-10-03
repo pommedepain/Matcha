@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import Form from './SignUpD';
 import classes from './SignUp.module.css';
+// import AlertBox from '../../Utils/AlertBox/AlertBox';
 
 const axios = require('axios');
 const TagDatas = require('../../../Datas/tagSuggestions.json');
@@ -17,14 +18,19 @@ class SignUp extends Component {
 		orderForm1: formDatas.orderForm1,
 		orderForm2: formDatas.orderForm2,
 		range: [18, 25],
+		rangeTouched: false,
 		localisation: 5,
+		sliderTouched: false,
 		tags: [
 			{ id: "athlete", text: "Athlete" },
 			{ id: "geek", text: "Geek" }
 		],
+		touched: false,
 		password: formDatas.password,
 		cPasswd: formDatas.cPasswd,
-		users: []
+		users: [],
+		erros: [],
+		retSubmit: null
 	}
 
 	checkValidity2(value, rules, inputIdentifier) {
@@ -230,31 +236,38 @@ class SignUp extends Component {
 		this.getUsers();
 	}
 
-	handleChange = (event) => {
-		const target = event.target;
+	handleChangeTags = (event) => {
 		if (event.type === 'click')
 		{
 			event.preventDefault();
-			this.setState({showAlert: !this.state.showAlert})
+			this.setState({
+				showAlert: !this.state.showAlert
+			})
 		}
-		else
+	}
+
+	handleChange = (event) => {
+		if (event.type === 'click')
 		{
-			const value = target.type === 'checkbox' ? target.checked : target.value;
-			const name = target.name;
-			this.setState({[name]: value})
+			event.preventDefault();
+			this.setState({
+				retSubmit: null
+			})
 		}
 	}
 
 	handleSlider = (newValue) => {
-		this.setState(
-			{localisation: newValue}
-		)
+		this.setState({
+			localisation: newValue,
+			sliderTouched: true
+		})
 	}
 
 	handleRange = (newValue) => {
-		this.setState(
-			{range: newValue}
-		)
+		this.setState({
+			range: newValue,
+			rangeTouched: true
+		})
 	}
 
 	passwordStrength = (event) => {
@@ -279,7 +292,7 @@ class SignUp extends Component {
 					this.setState({ [name]: updatedElem });
 				})
 				.catch((e) => {
-					console.log(e);
+					// console.log(e);
 					updatedElem.valid = false;
 					updatedElem.touched = true;
 					updatedElem.errorMessage = e;
@@ -308,6 +321,7 @@ class SignUp extends Component {
 	handleDelete = (i) => {
 		const { tags } = this.state
 		this.setState({
+			touched: true,
 			tags: tags.filter((tag, index) => index !== i),
 		})
 	}
@@ -317,10 +331,11 @@ class SignUp extends Component {
 		{
 			if (TagDatas.suggestions[i].text === tag.text)
 			{
-				console.log(tag)
 				return (this.setState(
-					state => ({ tags: [...state.tags, tag] })
-				))
+					state => ({ 
+						tags: [...state.tags, tag],
+						touched: true })
+				));
 			}
 		}
 		return (
@@ -379,37 +394,67 @@ class SignUp extends Component {
 	submit = (event) => {
 		event.preventDefault();
 		this.setState({ loading: true });
-		const formDatas = {
-			password: this.state.password,
-			ageMin: this.state.range[0],
-			ageMax: this.state.range[1],
-			localisation: this.state.localisation,
-            tags: this.state.tags
+		let submitDatas = {
+			password: this.state.password.value 
 		};
+
+		if (this.state.touched === true) {
+			submitDatas["tags"] = this.state.tags;
+		}
+		if (this.state.sliderTouched === true) {
+			submitDatas["localisation"] = this.state.localisation;
+		}
+		if (this.state.rangeTouched === true) {
+			submitDatas["ageMin"] = this.state.range[0];
+			submitDatas["ageMax"] = this.state.range[1];
+		}
+		if (this.state.orderForm2.birthdate.touched === true) {
+			submitDatas["birthdate"] = this.state.orderForm2.birthdate.value;
+		}
+		if (this.state.orderForm2.gender.touched === true && this.state.orderForm2.gender.value.trim() !== "") {
+			submitDatas["gender"] = this.state.orderForm2.gender.value;
+		}
+		if (this.state.orderForm2.sexualOrient.touched === true && this.state.orderForm2.sexualOrient.value.trim() !== "") {
+			submitDatas["sexualOrient"] = this.state.orderForm2.sexualOrient.value;
+		}
+		if (this.state.orderForm2.bio.touched === true && this.state.orderForm2.bio.value.trim() !== "") {
+			submitDatas["bio"] = this.state.orderForm2.bio.value;
+		}
+		
 		// eslint-disable-next-line no-unused-vars
 		for (let formElementIdentifier in this.state.orderForm1) {
-			formDatas[formElementIdentifier] = this.state.orderForm1[formElementIdentifier].value;
+				submitDatas[formElementIdentifier] = this.state.orderForm1[formElementIdentifier].value;
 		}
-		// eslint-disable-next-line no-unused-vars
-		for (let formElementIdentifier in this.state.orderForm2) {
-			formDatas[formElementIdentifier] = this.state.orderForm2[formElementIdentifier].value;
-		}
-		console.log(formDatas);
+		console.log(submitDatas);
 
 		axios
-			.post('http://localhost:4000/API/users', formDatas)
+			.post('http://localhost:4000/API/users', submitDatas)
 			.then(response => {
 				this.setState({ loading: false })
-				console.log(response.data.succes)
-				return (response.data);
+				console.log(response.data.success)
+				if (response.data.success) {
+					this.setState({
+						retSubmit: {
+							message:"Your account have been successfully created !",
+							button:"Log In",
+							color: "green"
+						}
+					});
+				}
 			})
 			.catch(error => {
 				this.setState({
-					errors: error.response,
+					errors: error.response.data.payload,
 					loading: false
 				})
-				console.log(error)
-				return (false);
+				console.log(error.response.data.payload)
+				this.setState({
+					retSubmit: {
+						message: error.response.data.payload,
+						button:"Try Again",
+						color: "red"
+					}
+				});
 			})
 	}
 	
@@ -419,6 +464,7 @@ class SignUp extends Component {
 				inputChangedHandler={this.inputChangedHandler.bind(this)}
 				popup={this.togglePopup.bind(this)}
 				handleChange={this.handleChange.bind(this)}
+				handleChangeTags={this.handleChangeTags.bind(this)}
 				passwordStrength={this.passwordStrength.bind(this)}
 				nextStep={this.nextStep.bind(this)}
 				previousStep={this.previousStep.bind(this)}

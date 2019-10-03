@@ -137,7 +137,7 @@
 			"validation": {
 				"minLength": 1,
 				"maxLength": 255,
-				"regex": "^[%5Cw 0-9_-àæéèêëçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ,.;:?!&%/]{1,255}$",
+				"regex": "^[%5Cw 0-9_-àæéèêëçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ,.;:?!'\"&%/]{1,255}$",
 				"rule": "You used invalid characters..."
 			},
 			"valid": true,

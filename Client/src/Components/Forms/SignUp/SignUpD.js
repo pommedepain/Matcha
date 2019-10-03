@@ -41,7 +41,16 @@ const SignUp = (props) => {
 						<AlertBox 
 							message="Please choose a Tag amongst the suggestions"
 							button="Try Again"
+							color="green"
+							handleChange={props.handleChangeTags}
+						/>
+						: null}
+						{props.retSubmit ?
+						<AlertBox
+							message={props.retSubmit.message}
+							button={props.retSubmit.button}
 							handleChange={props.handleChange}
+							color={props.retSubmit.color}
 						/>
 						: null}
 						<button type="button" onClick={props.popup} className={`${classes.close} ${classes.heavy} ${classes.rounded}`}></button>
