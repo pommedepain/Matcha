@@ -19,7 +19,7 @@ module.exports = class Request {
         })
         .catch((error) => {
           debug('Failure:', error.message);
-          return (false);
+          return (error.response.data);
         })
     );
   }
