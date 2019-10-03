@@ -110,6 +110,34 @@ class Relationship {
     return (this.wrapper(method, requirements));
   }
 
+  getMutualRelationships(type) {
+    const requirements = {
+      node_a: false,
+      relation: false,
+    };
+    const method = () => (new Promise((resolve, reject) => {
+      const query = `MATCH (a)-[r:${type}]-(b)
+                    return (a),(b)`;
+      const session = this.driver.session();
+      session.run(query)
+        .then((res) => {
+          const list = [];
+          session.close();
+          debug(res.records);
+          res.records.forEach((record) => {
+            list.push(record._fields[0]);
+          });
+          debug(_.uniq(list));
+          resolve(_.uniq(list));
+        })
+        .catch((err) => {
+          debug(err);
+          reject(err);
+        });
+    }));
+    return (this.wrapper(method, requirements));
+  }
+
   getNodetypeofRelationships() {
     const requirements = {
       node_a: false,
