@@ -78,7 +78,7 @@ class Node extends Relationship {
             const result = res.records[0]._fields[0].properties;
             debug('Data fetched :\n', result);
             resolve(result);
-          } else resolve(`${this.data.node_a.label} doesnt exists`);
+          } else resolve(`${this.data.node_a.label} does not exist`);
         })
         .catch(err => reject(err));
 
@@ -100,7 +100,7 @@ class Node extends Relationship {
             const node = singleRecord.get(0);
             debug(`Updated ${this.data.node_a.label}: ${this.data.node_a.properties[this.id_a]}`);
             resolve(node.properties);
-          } else resolve(`Informations does not match existing ${this.data.node_a.label}`);
+          } else reject(new Error(`Informations does not match existing ${this.data.node_a.label}`));
         })
         .catch(err => reject(err));
     });
@@ -119,9 +119,9 @@ class Node extends Relationship {
             const singleRecord = result.records[0];
             const node = singleRecord.get(0);
             resolve(debug(`${this.data.node_a.label} added to DB : ${this.data.node_a.properties[this.id_a]}`));
-          } else reject(new Error('An error occured'));
+          } else reject(new Error(`${this.data.node_a.label} could not be created`));
         })
-        .catch(err => debug(`An error occured while adding new ${this.data.node_a.label} :`, err));
+        .catch(err => reject(err));
     });
   }
 
@@ -135,9 +135,9 @@ class Node extends Relationship {
           if (result.records.length === 1) {
             debug('Deleted Node :', this.data.node_a.properties[this.id_a]);
             resolve(this.data.node_a.properties[this.id_a]);
-          } else resolve('No such Node');
+          } else reject(new Error(`No such ${this.data.node_a.label}`));
         })
-        .catch((err) => { debug('An error occured during node deletion :', err); });
+        .catch(err => reject(err));
     });
   }
 
@@ -161,6 +161,7 @@ class Node extends Relationship {
         .then(() => {
           session = this.driver.session();
           session.run(query2)
+            .then(() => debug(`${this.data.node_a.label} nodes duplicates destroyed`))
             .then(res => resolve(res))
             .catch(err => reject(err));
         })

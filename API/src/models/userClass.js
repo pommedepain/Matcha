@@ -39,7 +39,6 @@ class User extends Node {
       lastName: true,
       password: true,
       email: true,
-      birthdate: true,
       isAdmin: false,
     };
     this.authRequirements = {
@@ -137,7 +136,6 @@ class User extends Node {
           })
         ));
         Promise.all(promises)
-          .then(debug('All tags checked'))
           .then(() => resolve())
           .catch(err => reject(err));
       } else resolve();

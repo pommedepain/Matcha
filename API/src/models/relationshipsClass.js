@@ -306,7 +306,7 @@ class Relationship {
       session.run(query)
         .then((res) => {
           session.close();
-          debug(`${labela} type of relationships`);
+          debug(`${reltype} relationships duplicates destroyed`);
           resolve(res);
         })
         .catch((err) => {
