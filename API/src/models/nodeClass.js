@@ -43,7 +43,7 @@ class Node extends Relationship {
           session.close();
           if (result.records.length === 0) {
             resolve(this.data.node_a);
-          } else resolve('Node exists');
+          } else reject(new Error('Node exists'));
         })
         .catch(err => reject(err));
     });

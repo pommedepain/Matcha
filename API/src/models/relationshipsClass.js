@@ -40,10 +40,10 @@ class Relationship {
           if (res.records.length !== 0) {
             const result = [];
             res.records.forEach((record) => {
-              const nodea = _.pick(record._fields[0][0].start.properties, this.iDs);
-              const rel = this.data.relation.label;
-              const nodeb = _.pick(record._fields[0][0].end.properties, this.iDs);
-              result.push({ nodea, rel, nodeb });
+              const node_a = _.pick(record._fields[0][0].start.properties, this.iDs);
+              const relation = this.data.relation.label;
+              const node_b = _.pick(record._fields[0][0].end.properties, this.iDs);
+              result.push({ node_a, relation, node_b });
             });
             debug(result);
             resolve(result);
@@ -306,7 +306,7 @@ class Relationship {
       session.run(query)
         .then((res) => {
           session.close();
-          // debug(res);
+          debug(`${labela} type of relationships`);
           resolve(res);
         })
         .catch((err) => {
