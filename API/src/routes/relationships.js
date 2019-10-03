@@ -37,6 +37,17 @@ router.get('/mutual', wrapper(async (req, res) => {
     )));
 }));
 
+router.get('/matches', wrapper(async (req, res) => {
+  debug('Request to get matches');
+  return (new Relationship(req.body).getMutualRelationships('LIKES')
+    .then(relationship => (
+      res.status(200).json({
+        success: true,
+        payload: { value: 'read', relationship },
+      })
+    )));
+}));
+
 router.post('/create', wrapper(async (req, res) => {
   debug('Request to add new Relationship :\n', _.pick(req.body, validProperties));
   return (new Relationship(req.body).createRelationship()

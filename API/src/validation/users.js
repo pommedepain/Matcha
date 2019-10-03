@@ -40,8 +40,8 @@ class UserValidator {
     return new Promise((resolve, reject) => {
       const sch = {};
 
-      if (this.req.username) sch.username = Joi.string().regex(/^[a-zA-Z-àæéëèêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ]{2,18}$/i).required();
-      else sch.username = Joi.string().regex(/^[a-zA-Z-àæéëèêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ]{2,18}$/i);
+      if (this.req.username) sch.username = Joi.string().regex(/^[a-zA-Z-àæéëèêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ0-9]{2,18}$/i).required();
+      else sch.username = Joi.string().regex(/^[a-zA-Z-àæéëèêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ0-9]{2,18}$/i);
 
       if (this.req.firstName) sch.firstName = Joi.string().regex(/^[a-zA-Z-àæéëèêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ]{2,18}$/i).required();
       else sch.firstName = Joi.string().regex(/^[a-zA-Z-àæéëèêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ]{2,18}$/i);

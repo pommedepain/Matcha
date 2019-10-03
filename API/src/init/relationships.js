@@ -12,7 +12,7 @@ function rand(min, max) { // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-async function randomRelations(type) {
+async function randomRelations() {
   const users = await new User().getList('username');
   const tags = await new Tag().getList('id');
   return new Promise((resolve, reject) => {
@@ -21,6 +21,7 @@ async function randomRelations(type) {
       new Promise((res) => {
         for (let i = 0; i < chaosCounter; i += 1) {
           const tag = tags[rand(0, tags.length - 1)];
+          const target = users[rand(0, users.length - 1)];
           relations.push(
             {
               node_a: {
@@ -34,29 +35,11 @@ async function randomRelations(type) {
                 properties: { id: tag },
               },
               relation: {
-                label: type,
+                label: 'IS',
                 properties: { creationDate: date.toISOString() },
               },
             },
           );
-          res();
-        }
-      })
-    ));
-    Promise.all(promises)
-      .then(() => resolve(relations))
-      .catch(err => reject(err));
-  });
-}
-
-async function randomLikes(type) {
-  const users = await new User().getList('username');
-  return new Promise((resolve, reject) => {
-    const relations = [];
-    const promises = users.map(user => (
-      new Promise((res) => {
-        for (let i = 0; i < chaosCounter; i += 1) {
-          const target = users[rand(0, users.length - 1)];
           if (target !== user) {
             relations.push(
               {
@@ -87,8 +70,7 @@ async function randomLikes(type) {
   });
 }
 
-
-function populateTypedRelationships(type) {
+function populateRelationships(type) {
   return (
     randomRelations(type).then(relations => (
       new Promise((resolve, reject) => {
@@ -105,35 +87,6 @@ function populateTypedRelationships(type) {
           .catch(err => reject(err));
       })
     ))
-  );
-}
-
-function populateLikes() {
-  return (
-    randomLikes().then(relations => (
-      new Promise((resolve, reject) => {
-        const promises = relations.map(relation => (
-          new Promise((res, rej) => {
-            new RelationShip(relation).createRelationship()
-              .then(() => res())
-              .catch(err => res(err));
-          })
-        ));
-        Promise.all(promises)
-          .then(debug('All relationships created'))
-          .then(() => resolve())
-          .catch(err => reject(err));
-      })
-    ))
-  );
-}
-
-function populateRelationships() {
-  return (
-    populateTypedRelationships('IS')
-      .then(() => populateTypedRelationships('LOOK_FOR'))
-      .then(() => populateLikes())
-      .catch(err => debug(err))
   );
 }
 

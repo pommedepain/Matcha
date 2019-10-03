@@ -9,7 +9,7 @@ const User = require('../models/userClass');
 const props = ['gender', 'email', 'password'];
 const requiredProperties = ['username', 'firstName', 'lastName', 'password', 'email', 'birthdate'];
 const optionalProperties = ['bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'tags', 'photo', 'localisation', 'optional', 'isAdmin'];
-const amount = 10;
+const amount = 50;
 
 function rand(min, max) { // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -64,9 +64,10 @@ function userParser(user) {
   return new Promise((resolve, reject) => {
     if (user !== undefined) {
       const newUser = _.pick(user, props);
-      newUser.username = user.name;
+      newUser.username = `${user.name.toLowerCase()}${rand(1, 99)}`;
       newUser.lastName = user.surname;
       newUser.firstName = user.name;
+      newUser.password = 'Test123456*';
       newUser.photo = user.photo;
       const date = new Date(user.birthday.raw * 1000);
       const birthdate = `${date.getFullYear()}-${date.getMonth()}-${date.getDay()}`;
