@@ -145,7 +145,12 @@ class User extends Node {
 
   generateAuthToken(user) {
     return new Promise((resolve, reject) => {
-      this.token = jwt.sign({ username: user.username, isAdmin: user.isAdmin }, config.get('jwtPrivateKey'));
+      this.token = jwt.sign(_.omit(user, 'password'), config.get('jwtPrivateKey'));
+      this.token = jwt.sign({
+        exp: Math.floor(Date.now() / 1000) + (60 * 60),
+        data: _.omit(user, 'password'),
+      }, config.get('jwtPrivateKey'));
+
       debug('Generating Auth token :', this.token);
       resolve(this.token);
     });

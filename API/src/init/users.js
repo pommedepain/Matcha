@@ -15,6 +15,17 @@ function rand(min, max) { // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
+const admin = {
+  username: 'Camille',
+  firstName: 'Camille',
+  lastName: 'Julien',
+  password: 'Test12345*',
+  email: 'camille@gmail.com',
+  birthdate: '1992-27-03',
+  tags: [{ id: 'athlete', text: 'something' }, { id: 'book', text: 'lala' }],
+  isAdmin: 'true',
+};
+
 const tags = [
   { id: 'cinema', text: 'Cinema Lover' },
   { id: 'traveler', text: 'Traveler' },
@@ -85,6 +96,7 @@ function getUsers() {
             .catch(err => debug(err));
           promises.push(p);
         });
+        users.push(admin);
         Promise.all(promises)
           .then(() => resolve(users))
           .catch(err => reject(err));

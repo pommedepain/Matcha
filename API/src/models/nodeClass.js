@@ -43,9 +43,9 @@ class Node extends Relationship {
           session.close();
           if (result.records.length === 0) {
             resolve(this.data.node_a);
-          } else reject(new Error('Node exists'));
+          } else resolve('Node exists');
         })
-        .catch((err) => { debug('An error during redundancy check :', err); });
+        .catch(err => reject(err));
     });
   }
 
@@ -62,7 +62,7 @@ class Node extends Relationship {
             resolve(this.result);
           } else resolve(`No ${this.data.node_a.label} in database`);
         })
-        .catch((err) => { debug('An error occured while fetching user list :', err); });
+        .catch(err => reject(err));
     });
   }
 
@@ -80,7 +80,7 @@ class Node extends Relationship {
             resolve(result);
           } else resolve(`${this.data.node_a.label} doesnt exists`);
         })
-        .catch((err) => { debug('An error occured while fetching user info :', err); });
+        .catch(err => reject(err));
 
     });
   }
@@ -100,9 +100,9 @@ class Node extends Relationship {
             const node = singleRecord.get(0);
             debug(`Updated ${this.data.node_a.label}: ${this.data.node_a.properties[this.id_a]}`);
             resolve(node.properties);
-          } else reject(new Error(`Informations does not match existing ${this.data.node_a.label}`));
+          } else resolve(`Informations does not match existing ${this.data.node_a.label}`);
         })
-        .catch(err => debug(`An error occured during ${this.data.node_a.label} information update :`, err));
+        .catch(err => reject(err));
     });
   }
 
