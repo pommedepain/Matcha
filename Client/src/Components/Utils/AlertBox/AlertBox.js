@@ -50,6 +50,7 @@ class AlertBox extends Component {
 								event.preventDefault();
 								this.context.toggleLogInPopup();
 								this.props.handleChange(event, "go to log in");
+								document.getElementById("display_page").style.filter = ''
 							}} >
 							<h1 className={classes.green}>YEAY!</h1>
 						</button>

@@ -2,7 +2,8 @@ import React from 'react';
 import cx from 'classnames';
 
 import classes from './LogIn.module.css';
-import Input from '../../Utils/Input/Input'
+import Input from '../../Utils/Input/Input';
+import AlertBox from '../../Utils/AlertBox/AlertBox';
 
 const LogIn = (props) => {
 	let formElementsArray = [];
@@ -21,6 +22,15 @@ const LogIn = (props) => {
 			<div className={classes.popup}>
 				<div className={classes.popup_inner}>
 					<form id={classes.msform}>
+						{props.alertDesign ?
+						<AlertBox
+							message={props.alertDesign.message}
+							button={props.alertDesign.button}
+							handleChange={props.handleChange}
+							color={props.alertDesign.color}
+							function={props.alertDesign.function}
+						/>
+						: null}
 						<button type="button" onClick={props.popup} className={cx(classes.close, classes.heavy, classes.rounded)}></button>
 						<fieldset>
 							<h2 className={classes.fs_title}>Log In</h2>

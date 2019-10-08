@@ -15,7 +15,8 @@ class Login extends Component {
 		style: '',
 		showPopup: false,
 		hidden: true,
-		loading: false
+		loading: false,
+		alertDesign: null
 	}
 
 	static contextType = UserContext;
@@ -63,7 +64,15 @@ class Login extends Component {
 
 	handleChange = (event) => {
 		const {name, value} = event.target
-		this.setState({[name]: value})
+		if (event.type === "click") {
+			event.preventDefault();
+			this.setState({
+				alertDesign: null
+			});
+		}
+		else {
+			this.setState({[name]: value});
+		}
 	}
 
 	togglePopup = () => {
@@ -101,8 +110,12 @@ class Login extends Component {
 
 	submit = (event) => {
 		const { toggleUser } = this.context;
+		console.log(event.target)
 		event.preventDefault();
-		this.setState({ loading: true });
+		this.setState({ 
+			loading: true,
+			formIsValid: false
+		});
 		const formDatas = {};
 		for (let formElementIdentifier in this.state.orderForm) {
 			formDatas[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
@@ -111,17 +124,32 @@ class Login extends Component {
 		axios
 			.post('http://localhost:4000/API/auth', formDatas)
 			.then(response => {
-				this.setState({ loading: false })
+				this.setState({ 
+					loading: false,
+					formIsValid: true
+				});
 				if (response.data.success) {
-					this.context.toggleUser(response.data.payload);
-					this.togglePopup();
+					toggleUser(response.data.payload);
+					this.setState({
+						alertDesign: {
+							message:"You are now logged in !",
+							button:"OK",
+							color: "green",
+							// function: true
+						}
+					});
 				}
 			})
 			.catch(error => {
-				this.setState({
-					errors: error.response,
-					loading: false
-				})
+				this.setState({ 
+					loading: false,
+					formIsValid: true,
+					alertDesign: {
+						message: "Error.",
+						button:"Try Again",
+						color: "red"
+					}
+				});
 				console.log(error)
 				return (false);
 			})
@@ -133,7 +161,7 @@ class Login extends Component {
 		return (
 			<div className={classes.log}>
 				{
-					!isLoggedIn ?
+					isLoggedIn === false ?
 					[<div key={1}>
 						<button 
 							className={cx(classes.sidebar, "btn-sm")} 

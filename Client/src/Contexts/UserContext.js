@@ -5,12 +5,32 @@ export const UserContext = createContext();
 const UserContextProvider = (props) => {
 	const [JWT, setJWT] = useState(() => {
 		const localData = localStorage.getItem('JWT');
-		return (localData !== undefined ? JSON.parse(localData) : {data: {}, exp: 0, iat: 0, id: 1});
+		const token = JSON.parse(localData);
+		if (token.data.firstName) {
+			let dateNow = new Date();
+			// console.log(dateNow.getTime() / 1000);
+			// console.log(token.exp);
+			const isLogged = localStorage.getItem('isLoggedIn');
+			console.log(isLogged);
+			if (token.exp < (dateNow.getTime() / 1000)) {
+				return ({data: {}, exp: 0, iat: 0 })
+			}
+			else {
+				return (token);
+			}
+		}
+		else {
+			return ({data: {}, exp: 0, iat: 0 });
+		}
 	});
+
 	const [isLoggedIn, setLog] = useState(() => {
-		const localLoggedIn = localStorage.getItem('JWT');
-		return (localLoggedIn === undefined ? false : true);
+		const localDatas = localStorage.getItem('JWT');
+		const token = JSON.parse(localDatas);
+		// console.log(token.data);
+		return (token.data.firstName ? true : false);
 	});
+
 	const [logInPopup, setLogInPopup] = useState(false);
 
 	const parseJwt = (token) => {
@@ -26,7 +46,13 @@ const UserContextProvider = (props) => {
 	const toggleUser = (datas) => {
 		let token = parseJwt(datas);
 		setJWT({ data: token.data, exp: token.exp, iat: token.iat });
-		setLog(!isLoggedIn);
+		// console.log(token);
+		if (token === undefined) {
+			setLog(false);
+		}
+		else {
+			setLog(true);
+		}
 	}
 
 	const toggleLogInPopup = () => {
@@ -35,6 +61,12 @@ const UserContextProvider = (props) => {
 
 	useEffect(() => {
 		localStorage.setItem('JWT', JSON.stringify(JWT))
+		if (JWT.data.firstName) {
+			setLog(true);
+		}
+		else {
+			setLog(false);
+		}
 	}, [JWT]);
 
 	useEffect(() => {
