@@ -34,7 +34,6 @@ const validNewUser = {
   birthdate: '1905-20-03',
   optional: 'lalala',
   tags: [{ id: 'athlete', text: 'something' }, { id: 'book', text: 'lala' }],
-  isAdmin: 'true',
 };
 
 const invalidNewUser = {
@@ -46,16 +45,38 @@ const invalidNewUser = {
 };
 
 const updatedUser = {
-  username: 'Jean',
-  password: 'Test123*',
-  optional: 'truc2',
+  username: 'Claudinete',
+  firstName: 'camille',
+  lastName: 'julien',
+  password: 'Test12345*',
+  email: 'cludne@gmail.com',
+  birthdate: '1905-20-03',
+  optional: 'lalala2',
 };
 
 test('POST request : /api/users, valid user expect user created', async () => {
-  const data = await new Request('/api/users/', adminUser, null).post().catch(err => debug(err));
-  console.log(data);
+  const data = await new Request('/api/users/', validNewUser, null).post().catch(err => debug(err));
   return expect(data).toBeTruthy();
 });
+
+// test('POST request : /api/auth, expect valid jwt', async () => {
+//   const data = await new Request('/api/auth', validNewUser, null).post().catch(err => debug(err));
+//   return expect(data).toMatch(/^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/);
+// });
+
+test('PUT request : /api/users/Claudinete, valid user expect user updated', async () => {
+  const req = {};
+  req.value = updatedUser;
+  const token = await new Request('/api/auth', validNewUser).post().catch(err => debug(err));
+  const res = await new Request('/api/users/Claudinete', req, { headers: { 'x-auth-token': token } }).put().catch(err => debug(err));
+  return expect(res).toBeTruthy();
+});
+
+// test('POST request : /api/users, valid user expect user created', async () => {
+//   const data = await new Request('/api/users/', adminUser, null).post().catch(err => debug(err));
+//   console.log(data);
+//   return expect(data).toBeTruthy();
+// });
 
 // test('GET request : /api/users/user, expect user list, true', async () => {
 //   const data = await new Request('/api/users', null, null).get().catch(err => debug(err));

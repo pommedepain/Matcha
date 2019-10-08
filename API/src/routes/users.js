@@ -53,8 +53,8 @@ router.get('/matches/:username', wrapper(async (req, res) => {
 }));
 
 router.post('/', wrapper(async (req, res) => {
-  debug('Request to add new user :\n', _.pick(req.body, validProperties));
-  return (new User(_.pick(req.body, validProperties)).createUser()
+  debug('Request to add new user :\n', req.body);
+  return (new User(req.body).createUser()
     .then(user => (
       res.status(200).json({
         success: true,
