@@ -1,8 +1,8 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React from 'react';
+import { Link } from 'react-router-dom';
 
-import classes from './NavBar.module.css'
-import Login from '../Forms/LogIn/LoginS'
+import classes from './NavBar.module.css';
+import Login from '../Forms/LogIn/LoginS';
 
 class NavBar extends React.Component {
 	state = {
@@ -17,7 +17,7 @@ class NavBar extends React.Component {
 	render() {
 		return (
 			<div className={classes.NavBar}>
-				<Link to="/">
+				<Link to="/home">
 					<li className={classes.logo}>
 						<h1>
 							<i className="fas fa-puzzle-piece" /> Matcha

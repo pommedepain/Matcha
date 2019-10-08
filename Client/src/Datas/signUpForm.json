@@ -29,7 +29,7 @@
 				"required": true, 
 				"minLength": 2,
 				"maxLength": 18,
-				"regex": "^[a-zA-Z-àæéèêëçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ]{2,18}$",
+				"regex": "^[a-zA-Z-àæéèêëçàùûîï ÀÆÉÈÊÇÀÛÙÜÎÏ]{2,18}$",
 				"rule": "Must not contain anything else than alphabetical characters"
 			},
 			"valid": false,
@@ -65,7 +65,8 @@
 			"validation": {
 				"required": true,
 				"regex": "^[^%5CW][a-zA-Z0-9_]+(%5C.[a-zA-Z0-9_]+)*%5C@[a-zA-Z0-9_]+(%5C.[a-zA-Z0-9_]+)*%5C.[a-zA-Z]{2,4}$",
-				"rule": "Must be a valid e-mail adress"
+				"rule": "Must be a valid e-mail adress",
+				"checkEmail": true
 			},
 			"valid": false,
 			"touched": false,

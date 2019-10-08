@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import Form from './SignUpD';
 import classes from './SignUp.module.css';
-// import AlertBox from '../../Utils/AlertBox/AlertBox';
+import { UserContext } from '../../../Contexts/UserContext';
 
 const axios = require('axios');
 const TagDatas = require('../../../Datas/tagSuggestions.json');
@@ -29,9 +29,12 @@ class SignUp extends Component {
 		password: formDatas.password,
 		cPasswd: formDatas.cPasswd,
 		users: [],
+		emails: [],
 		erros: [],
 		retSubmit: null
 	}
+
+	static contextType = UserContext;
 
 	checkValidity2(value, rules, inputIdentifier) {
 		let isValid = true;
@@ -92,6 +95,17 @@ class SignUp extends Component {
 			})
 	}
 
+	getEmails = () => {
+		axios.get(`http://localhost:4000/API/users/email`)
+			.then(response => {
+				// console.log(response.data.payload.users);
+				this.setState({ emails: response.data.payload.users });
+			})
+			.catch(err => { 
+				console.log(err);
+			})
+	}
+
 	checkValidity(value, rules, inputIdentifier, state) {
 		return new Promise (function (resolve, reject) {
 			let isValid = true;
@@ -100,7 +114,7 @@ class SignUp extends Component {
 			if (!rules) {
 				resolve(true);
 			}
-			if (rules.required) {
+			if (rules.required === true) {
 				isValid = (value.trim() !== "") && isValid;
 				if (inputIdentifier !== undefined && value.trim() === "")
 				{	
@@ -110,7 +124,6 @@ class SignUp extends Component {
 			}
 			if (!rules.required) {
 				if ((value.trim() === "")) {
-					// console.log("not required");
 					resolve(true);
 				}
 			}
@@ -134,15 +147,25 @@ class SignUp extends Component {
 				isValid = RegExp(unescape(rules.regex), 'g').test(value) && isValid;
 				if (inputIdentifier !== undefined && (RegExp(unescape(rules.regex), 'g').test(value) === false))
 				{	
-					// console.log(RegExp(unescape(rules.regex), 'g').test(value))
 					errorMessages.push(rules.rule);
 					reject(errorMessages);
 				}
 			}
-			if(!rules.db) {
+			if(!rules.db && !rules.checkEmail) {
 				resolve(isValid);
 			}
-			if (rules.db) {
+			if (rules.checkEmail === true) {
+				if (state.emails.includes(value) === false) {
+					isValid = true && isValid;
+					resolve(isValid);
+				}
+				else if (state.emails.includes(value) === true) {
+					isValid = false;
+					errorMessages.push("This e-mail adress is already being used");
+					reject(errorMessages);
+				}
+			}
+			if (rules.db === true) {
 				if (state.users.includes(value) === false) {
 					isValid = true && isValid;
 					resolve(isValid);
@@ -170,6 +193,7 @@ class SignUp extends Component {
 		if (inputIdentifier !== "birthdate") {
 			this.checkValidity(updatedFormElement.value, updatedFormElement.validation, inputIdentifier, this.state)
 				.then((response) => {
+					// console.log(response);
 					updatedFormElement.valid = response;
 					updatedFormElement.touched = true;
 					updatedOrderForm[inputIdentifier] = updatedFormElement;
@@ -234,6 +258,7 @@ class SignUp extends Component {
 			}
 		});
 		this.getUsers();
+		this.getEmails();
 	}
 
 	handleChangeTags = (event) => {
@@ -246,13 +271,16 @@ class SignUp extends Component {
 		}
 	}
 
-	handleChange = (event) => {
+	handleChange = (event, message) => {
 		if (event.type === 'click')
 		{
 			event.preventDefault();
 			this.setState({
 				retSubmit: null
 			})
+			if (message === "go to log in"){
+				this.setState({ showPopup: !this.state.showPopup })
+			}
 		}
 	}
 
@@ -437,7 +465,8 @@ class SignUp extends Component {
 						retSubmit: {
 							message:"Your account have been successfully created !",
 							button:"Log In",
-							color: "green"
+							color: "green",
+							function: true
 						}
 					});
 				}

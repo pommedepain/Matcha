@@ -1,9 +1,10 @@
 /* eslint-disable no-unused-vars */
-import React, { Component } from 'react'
-import cx from 'classnames'
+import React, { Component, useEffect } from 'react';
+import cx from 'classnames';
 
+import { UserContext } from '../../../Contexts/UserContext';
 import classes from './LogIn.module.css';
-import LoginDumb from './LogInD'
+import LoginDumb from './LogInD';
 const axios = require('axios');
 const datas = require('../../../Datas/loginForm.json');
 
@@ -14,21 +15,10 @@ class Login extends Component {
 		style: '',
 		showPopup: false,
 		hidden: true,
-		user: false, 
 		loading: false
 	}
 
-	// initInput = (element, type, placeholder, value) => {
-	// 	let arrayElem = {
-	// 		elementType: element,
-	// 		elementConfig: {
-	// 			type: type,
-	// 			placeholder: placeholder
-	// 		},
-	// 		value: value
-	// 	};
-	// 	return (arrayElem);
-	// }
+	static contextType = UserContext;
 
 	checkValidity(value, rules) {
 		let isValid = true;
@@ -77,18 +67,14 @@ class Login extends Component {
 	}
 
 	togglePopup = () => {
-		if (this.state.showPopup)
+		if (this.context.logInPopup)
 		{
-			this.setState({
-				showPopup: !this.state.showPopup
-			})
+			this.context.toggleLogInPopup();
 			document.getElementById("display_page").style.filter = ''
 		}
 		else
 		{
-			this.setState({
-				showPopup: !this.state.showPopup
-			})
+			this.context.toggleLogInPopup();
 			document.getElementById("display_page").style.filter = 'blur(3px)'
 		}
 	}
@@ -114,6 +100,7 @@ class Login extends Component {
 	}
 
 	submit = (event) => {
+		const { toggleUser } = this.context;
 		event.preventDefault();
 		this.setState({ loading: true });
 		const formDatas = {};
@@ -124,14 +111,15 @@ class Login extends Component {
 		axios
 			.post('http://localhost:4000/API/auth', formDatas)
 			.then(response => {
-				let token = null
 				this.setState({ loading: false })
-				console.log(response.data.succes)
-				response.data.success ? 
-				token = response.data.payload
-				: token = null;
-				console.log(token)
-				return (token);
+				if (response.data.success) {
+					useEffect(() => {
+						console.log(this.context);
+						this.context.toggleUser(formDatas.username, response.data.payload);
+						this.togglePopup();
+						localStorage.setItem('username', this.context.username);
+					}, this.context.username);
+				}
 			})
 			.catch(error => {
 				this.setState({
@@ -144,12 +132,17 @@ class Login extends Component {
 	}
 
 	render () {
+		const { isLoggedIn, username } = this.context;
 		return (
 			<div className={classes.log}>
 				{
-					!this.state.user ?
+					!isLoggedIn ?
 					[<div key={1}>
-						<button className={cx(classes.sidebar, "btn-sm")} onClick={this.togglePopup.bind(this)}>Log In</button>
+						<button 
+							className={cx(classes.sidebar, "btn-sm")} 
+							onClick={this.togglePopup.bind(this)}>
+							Log In
+						</button>
 						<LoginDumb
 							popup={this.togglePopup.bind(this)}
 							handleChange={this.handleChange.bind(this)}
@@ -157,12 +150,16 @@ class Login extends Component {
 							toggleShow={this.toggleShow.bind(this)}
 							inputChangedHandler={this.inputChangedHandler.bind(this)}
 							{...this.state}
+							{...this.context}
 						/>
 					</div>]
 					:
 					[<div key={2}>
-						<button className={classes.sidebar}>Account</button>
-						<button className={classes.sidebar}>Log Out</button>
+						<h4 className={classes.username}>Welcome back {username} !</h4>
+						<div className={classes.buttons}>
+							<button className={cx(classes.sidebarLogged, "btn-sm")} >Account</button>
+							<button className={cx(classes.sidebarLogged, "btn-sm")} >Log Out</button>
+						</div>
 					</div>]
 				}
 			</div>

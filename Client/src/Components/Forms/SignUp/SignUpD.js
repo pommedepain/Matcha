@@ -51,6 +51,8 @@ const SignUp = (props) => {
 							button={props.retSubmit.button}
 							handleChange={props.handleChange}
 							color={props.retSubmit.color}
+							function={props.retSubmit.function}
+							// handleChangeTags={props.handleChangeTags}
 						/>
 						: null}
 						<button type="button" onClick={props.popup} className={`${classes.close} ${classes.heavy} ${classes.rounded}`}></button>

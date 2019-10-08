@@ -17,7 +17,7 @@ const LogIn = (props) => {
 
 	return (
 		<div>
-			{props.showPopup ?
+			{props.logInPopup ?
 			<div className={classes.popup}>
 				<div className={classes.popup_inner}>
 					<form id={classes.msform}>
