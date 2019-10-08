@@ -27,7 +27,7 @@ const admin = {
 };
 
 const admin2 = {
-  username: 'Philoutre',
+  username: 'philoutre',
   firstName: 'Philoutre',
   lastName: 'Philoutre',
   password: 'Test12*',
