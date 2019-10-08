@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { Component, useEffect } from 'react';
+import React, { Component } from 'react';
 import cx from 'classnames';
 
 import { UserContext } from '../../../Contexts/UserContext';
@@ -113,12 +113,8 @@ class Login extends Component {
 			.then(response => {
 				this.setState({ loading: false })
 				if (response.data.success) {
-					useEffect(() => {
-						console.log(this.context);
-						this.context.toggleUser(formDatas.username, response.data.payload);
-						this.togglePopup();
-						localStorage.setItem('username', this.context.username);
-					}, this.context.username);
+					this.context.toggleUser(response.data.payload);
+					this.togglePopup();
 				}
 			})
 			.catch(error => {
@@ -132,7 +128,8 @@ class Login extends Component {
 	}
 
 	render () {
-		const { isLoggedIn, username } = this.context;
+		// console.log(this.context);
+		const { isLoggedIn, JWT } = this.context;
 		return (
 			<div className={classes.log}>
 				{
@@ -155,7 +152,7 @@ class Login extends Component {
 					</div>]
 					:
 					[<div key={2}>
-						<h4 className={classes.username}>Welcome back {username} !</h4>
+						<h4 className={classes.username}>Welcome back {JWT.data.username} !</h4>
 						<div className={classes.buttons}>
 							<button className={cx(classes.sidebarLogged, "btn-sm")} >Account</button>
 							<button className={cx(classes.sidebarLogged, "btn-sm")} >Log Out</button>
