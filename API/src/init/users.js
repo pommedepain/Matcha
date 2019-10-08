@@ -26,6 +26,17 @@ const admin = {
   isAdmin: 'true',
 };
 
+const admin2 = {
+  username: 'philoutre',
+  firstName: 'Philoutre',
+  lastName: 'Philoutre',
+  password: 'Test12*',
+  email: 'Philoutre@gmail.com',
+  birthdate: '1996-02-14',
+  tags: [{ id: 'athlete', text: 'something' }, { id: 'book', text: 'lala' }],
+  isAdmin: 'true',
+};
+
 const tags = [
   { id: 'cinema', text: 'Cinema Lover' },
   { id: 'traveler', text: 'Traveler' },
@@ -98,6 +109,7 @@ function getUsers() {
           promises.push(p);
         });
         users.push(admin);
+        users.push(admin2);
         Promise.all(promises)
           .then(() => resolve(users))
           .catch(err => reject(err));
