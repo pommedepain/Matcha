@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 
 const debug = require('debug')('models:relationships');
 const config = require('config');
@@ -110,14 +111,15 @@ class Relationship {
     return (this.wrapper(method, requirements));
   }
 
-  getMutualRelationships(type) {
+  getMatches(type) {
     const requirements = {
       node_a: false,
       relation: false,
     };
     const method = () => (new Promise((resolve, reject) => {
-      const query = `MATCH (a)-[r:${type}]-(b)
-                    return (a),(b)`;
+      const query = `MATCH (a)-[r:${type}]->(b),(a)<-[p:${type}]-(b)
+                    WITH a, collect(b) as targets
+                    RETURN (a),(targets)`;
       const session = this.driver.session();
       session.run(query)
         .then((res) => {
@@ -125,9 +127,9 @@ class Relationship {
           session.close();
           debug(res.records);
           res.records.forEach((record) => {
-            list.push(record._fields[0]);
+            list.push({ user: record._fields[0], matches: record._fields[1] });
           });
-          debug(_.uniq(list));
+          // debug(_.uniq(list));
           resolve(_.uniq(list));
         })
         .catch((err) => {
