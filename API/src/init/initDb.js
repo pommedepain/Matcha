@@ -4,6 +4,7 @@ const _ = require('lodash');
 const populateUsers = require('./users');
 const populateTags = require('./tags');
 const populateRelationships = require('./relationships');
+// const populateOrientations = require('./orientations');
 const RelationShip = require('../models/relationshipsClass');
 const User = require('../models/userClass');
 const Tag = require('../models/tagClass');
@@ -28,6 +29,7 @@ function populateDb() {
       .then(() => populateTags())
       .then(() => populateUsers())
       .then(() => populateRelationships())
+      // .then(() => populateOrientations())
       .then(() => resolve())
       .catch(err => reject(err));
   });
