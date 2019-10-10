@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 const debug = require('debug')('models:node');
 const config = require('config');
 const _ = require('lodash');
@@ -85,9 +86,16 @@ class Node extends Relationship {
     });
   }
 
-  updateNode() {
+  updateNode(newData) {
     return new Promise((resolve, reject) => {
-      const props = _.omit(this.data.node_a.properties, 'tags');
+      this.props = _.omit(this.data.node_a.properties, 'tags');
+
+      debug(newData);
+      Object.keys(newData).forEach((key) => {
+        this.props[key] = newData[key];
+      });
+      debug(this.props);
+      const props = this.props;
       const session = this.driver.session();
       session.run(
         `MATCH (n:${this.data.node_a.label} {${this.data.node_a.id}:'${this.data.node_a.properties[this.id_a]}'}) SET n+=$props RETURN n`,

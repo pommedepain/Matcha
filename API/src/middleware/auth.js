@@ -12,9 +12,10 @@ module.exports = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, config.get('jwtPrivateKey'));
     req.user = decoded.data;
-    debug('Valid token decoded : ', decoded);
-    return (new User(decoded.username).generateAuthToken()
-      .then((result) => { req.token = result; return (next()); }));
+    // debug('Valid token decoded : ', decoded);
+    // return (new User(decoded.username).generateAuthToken()
+    //   .then((result) => { req.token = result; return (next()); }));
+    return (next());
   } catch (ex) {
     debug('Invalid token');
     return (res.status(400).send('Invalid Token.'));
