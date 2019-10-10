@@ -2,7 +2,7 @@
 const debug = require('debug')('init:relationships');
 const RelationShip = require('../models/relationshipsClass');
 const User = require('../models/userClass');
-const Tag = require('../models/TagClass');
+const Tag = require('../models/tagClass');
 
 
 const date = new Date();
@@ -11,6 +11,7 @@ const chaosCounter = 2;
 function rand(min, max) { // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
+
 
 async function randomRelations() {
   const users = await new User().getList('username');

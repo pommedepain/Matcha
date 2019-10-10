@@ -64,12 +64,13 @@ router.post('/', wrapper(async (req, res) => {
 }));
 
 router.put('/:username', [auth, identify], wrapper(async (req, res) => {
-  debug('Request to update :\n', _.pick(req.body, validProperties));
-  return (new User(_.pick(req.body, validProperties)).updateUser()
+  debug('Request to update :\n', _.pick(req.user, validProperties));
+  return (new User(_.pick(req.user, validProperties)).updateUser()
     .then(user => (
       res.status(200).json({
         success: true,
         payload: { value: 'update', user },
+        token: req.token,
       })
     )));
 }));

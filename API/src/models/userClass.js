@@ -146,7 +146,7 @@ class User extends Node {
     return new Promise((resolve, reject) => {
       this.token = jwt.sign(_.omit(user, 'password'), config.get('jwtPrivateKey'));
       this.token = jwt.sign({
-        exp: Math.floor(Date.now() / 1000) + (30 * 1), // 30s
+        exp: Math.floor(Date.now() / 1000) + (3600), // 30s
         data: _.omit(user, 'password'),
       }, config.get('jwtPrivateKey'));
 
