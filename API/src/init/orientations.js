@@ -4,7 +4,7 @@ const _ = require('lodash');
 const Orientation = require('../models/orientationClass');
 
 const requiredProperties = ['gender', 'type'];
-const genders = ['male', 'female'];
+const genders = ['m', 'f'];
 const types = ['hetero', 'homo', 'bi', 'pan'];
 
 function populateOrientations() {

@@ -5,12 +5,12 @@ const orientationRelationships = [
     node_a: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'male_hetero' },
+      properties: { id: 'm_hetero' },
     },
     node_b: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'female_hetero' },
+      properties: { id: 'f_hetero' },
     },
     relation: {
       label: 'LOOK_FOR',
@@ -21,12 +21,12 @@ const orientationRelationships = [
     node_a: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'male_hetero' },
+      properties: { id: 'm_hetero' },
     },
     node_b: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'female_bi' },
+      properties: { id: 'f_bi' },
     },
     relation: {
       label: 'LOOK_FOR',
@@ -37,12 +37,12 @@ const orientationRelationships = [
     node_a: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'male_homo' },
+      properties: { id: 'm_homo' },
     },
     node_b: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'male_homo' },
+      properties: { id: 'm_homo' },
     },
     relation: {
       label: 'LOOK_FOR',
@@ -53,12 +53,12 @@ const orientationRelationships = [
     node_a: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'male_homo' },
+      properties: { id: 'm_homo' },
     },
     node_b: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'male_bi' },
+      properties: { id: 'm_bi' },
     },
     relation: {
       label: 'LOOK_FOR',
@@ -69,12 +69,12 @@ const orientationRelationships = [
     node_a: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'male_bi' },
+      properties: { id: 'm_bi' },
     },
     node_b: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'female_bi' },
+      properties: { id: 'f_bi' },
     },
     relation: {
       label: 'LOOK_FOR',
@@ -85,12 +85,12 @@ const orientationRelationships = [
     node_a: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'male_bi' },
+      properties: { id: 'm_bi' },
     },
     node_b: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'male_bi' },
+      properties: { id: 'm_bi' },
     },
     relation: {
       label: 'LOOK_FOR',
@@ -101,12 +101,12 @@ const orientationRelationships = [
     node_a: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'male_bi' },
+      properties: { id: 'm_bi' },
     },
     node_b: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'female_hetero' },
+      properties: { id: 'f_hetero' },
     },
     relation: {
       label: 'LOOK_FOR',
@@ -117,12 +117,12 @@ const orientationRelationships = [
     node_a: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'female_bi' },
+      properties: { id: 'f_bi' },
     },
     node_b: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'female_bi' },
+      properties: { id: 'f_bi' },
     },
     relation: {
       label: 'LOOK_FOR',
@@ -133,12 +133,12 @@ const orientationRelationships = [
     node_a: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'female_bi' },
+      properties: { id: 'f_bi' },
     },
     node_b: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'female_homo' },
+      properties: { id: 'f_homo' },
     },
     relation: {
       label: 'LOOK_FOR',
@@ -149,12 +149,12 @@ const orientationRelationships = [
     node_a: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'female_homo' },
+      properties: { id: 'f_homo' },
     },
     node_b: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'female_homo' },
+      properties: { id: 'f_homo' },
     },
     relation: {
       label: 'LOOK_FOR',
@@ -165,12 +165,12 @@ const orientationRelationships = [
     node_a: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'male_pan' },
+      properties: { id: 'm_pan' },
     },
     node_b: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'female_pan' },
+      properties: { id: 'f_pan' },
     },
     relation: {
       label: 'LOOK_FOR',
@@ -181,12 +181,12 @@ const orientationRelationships = [
     node_a: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'male_pan' },
+      properties: { id: 'm_pan' },
     },
     node_b: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'female_hetero' },
+      properties: { id: 'f_hetero' },
     },
     relation: {
       label: 'LOOK_FOR',
@@ -197,12 +197,12 @@ const orientationRelationships = [
     node_a: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'male_pan' },
+      properties: { id: 'm_pan' },
     },
     node_b: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'male_homo' },
+      properties: { id: 'm_homo' },
     },
     relation: {
       label: 'LOOK_FOR',
@@ -213,12 +213,12 @@ const orientationRelationships = [
     node_a: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'male_pan' },
+      properties: { id: 'm_pan' },
     },
     node_b: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'male_bi' },
+      properties: { id: 'm_bi' },
     },
     relation: {
       label: 'LOOK_FOR',
@@ -229,12 +229,12 @@ const orientationRelationships = [
     node_a: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'male_pan' },
+      properties: { id: 'm_pan' },
     },
     node_b: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'female_bi' },
+      properties: { id: 'f_bi' },
     },
     relation: {
       label: 'LOOK_FOR',
@@ -245,12 +245,12 @@ const orientationRelationships = [
     node_a: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'female_pan' },
+      properties: { id: 'f_pan' },
     },
     node_b: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'female_homo' },
+      properties: { id: 'f_homo' },
     },
     relation: {
       label: 'LOOK_FOR',
@@ -261,12 +261,12 @@ const orientationRelationships = [
     node_a: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'female_pan' },
+      properties: { id: 'f_pan' },
     },
     node_b: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'female_bi' },
+      properties: { id: 'f_bi' },
     },
     relation: {
       label: 'LOOK_FOR',
@@ -277,12 +277,12 @@ const orientationRelationships = [
     node_a: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'female_pan' },
+      properties: { id: 'f_pan' },
     },
     node_b: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'male_bi' },
+      properties: { id: 'm_bi' },
     },
     relation: {
       label: 'LOOK_FOR',
@@ -293,12 +293,12 @@ const orientationRelationships = [
     node_a: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'female_pan' },
+      properties: { id: 'f_pan' },
     },
     node_b: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'male_hetero' },
+      properties: { id: 'm_hetero' },
     },
     relation: {
       label: 'LOOK_FOR',
@@ -309,12 +309,12 @@ const orientationRelationships = [
     node_a: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'female_pan' },
+      properties: { id: 'f_pan' },
     },
     node_b: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'female_pan' },
+      properties: { id: 'f_pan' },
     },
     relation: {
       label: 'LOOK_FOR',
@@ -325,12 +325,12 @@ const orientationRelationships = [
     node_a: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'male_pan' },
+      properties: { id: 'm_pan' },
     },
     node_b: {
       label: 'Orientation',
       id: 'id',
-      properties: { id: 'male_pan' },
+      properties: { id: 'm_pan' },
     },
     relation: {
       label: 'LOOK_FOR',
