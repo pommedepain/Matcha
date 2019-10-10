@@ -15,7 +15,7 @@ const LogIn = (props) => {
 			config: props.orderForm[key]
 		});
 	}
-
+	// console.log(props.alertDesign);
 	return (
 		<div>
 			{props.logInPopup ?
@@ -29,6 +29,8 @@ const LogIn = (props) => {
 							handleChange={props.handleChange}
 							color={props.alertDesign.color}
 							function={props.alertDesign.function}
+							logIn={true}
+							toggleUser={props.toggleUser}
 						/>
 						: null}
 						<button type="button" onClick={props.popup} className={cx(classes.close, classes.heavy, classes.rounded)}></button>

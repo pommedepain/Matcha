@@ -16,7 +16,8 @@ class Login extends Component {
 		showPopup: false,
 		hidden: true,
 		loading: false,
-		alertDesign: null
+		alertDesign: null,
+		payload: null
 	}
 
 	static contextType = UserContext;
@@ -62,13 +63,23 @@ class Login extends Component {
 		this.setState({ orderForm: updatedOrderForm, formIsValid: formIsValid });
 	}
 
-	handleChange = (event) => {
+	handleChange = (event, message) => {
 		const {name, value} = event.target
 		if (event.type === "click") {
 			event.preventDefault();
-			this.setState({
-				alertDesign: null
-			});
+			if (message === "confirm user"){
+				console.log(this.state)
+				this.context.toggleUser(this.state.payload);
+				this.setState({
+					payload: null,
+					alertDesign: null
+				})
+			}
+			else {
+				this.setState({
+					alertDesign: null
+				});	
+			}
 		}
 		else {
 			this.setState({[name]: value});
@@ -109,9 +120,9 @@ class Login extends Component {
 	}
 
 	submit = (event) => {
-		const { toggleUser } = this.context;
-		console.log(event.target)
 		event.preventDefault();
+		const { toggleUser } = this.context;
+		// console.log(event.target)
 		this.setState({ 
 			loading: true,
 			formIsValid: false
@@ -129,14 +140,15 @@ class Login extends Component {
 					formIsValid: true
 				});
 				if (response.data.success) {
-					toggleUser(response.data.payload);
 					this.setState({
 						alertDesign: {
-							message:"You are now logged in !",
+							message:"You are now successfully logged in !",
 							button:"OK",
 							color: "green",
-							// function: true
-						}
+							function: true,
+							logIn: true
+						},
+						payload: response.data.payload
 					});
 				}
 			})
@@ -153,6 +165,10 @@ class Login extends Component {
 				console.log(error)
 				return (false);
 			})
+	}
+
+	toggleUser = () => {
+		console.log("working");
 	}
 
 	render () {
@@ -174,6 +190,7 @@ class Login extends Component {
 							submit={this.submit.bind(this)}
 							toggleShow={this.toggleShow.bind(this)}
 							inputChangedHandler={this.inputChangedHandler.bind(this)}
+							toggleUser={this.toggleUser.bind(this)}
 							{...this.state}
 							{...this.context}
 						/>

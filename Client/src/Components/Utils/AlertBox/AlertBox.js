@@ -7,6 +7,7 @@ class AlertBox extends Component {
 	static contextType = UserContext;
 
 	render() {
+		console.log(this.props);
 		return (
 			this.props.color === "red" ?
 			<div id={classes.error_box}>
@@ -49,7 +50,9 @@ class AlertBox extends Component {
 							onClick={(event) => {
 								event.preventDefault();
 								this.context.toggleLogInPopup();
-								this.props.handleChange(event, "go to log in");
+								this.props.logIn ?
+								this.props.handleChange(event, "confirm user")
+								: this.props.handleChange(event, "go to log in");
 								document.getElementById("display_page").style.filter = ''
 							}} >
 							<h1 className={classes.green}>YEAY!</h1>

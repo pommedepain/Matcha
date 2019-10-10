@@ -6,12 +6,11 @@ const UserContextProvider = (props) => {
 	const [JWT, setJWT] = useState(() => {
 		const localData = localStorage.getItem('JWT');
 		const token = JSON.parse(localData);
-		if (token.data.firstName) {
+		// console.log(token)
+		if (token !== null && token.data.firstName) {
 			let dateNow = new Date();
-			// console.log(dateNow.getTime() / 1000);
-			// console.log(token.exp);
-			const isLogged = localStorage.getItem('isLoggedIn');
-			console.log(isLogged);
+			console.log(dateNow.getTime() / 1000);
+			console.log(token.exp);
 			if (token.exp < (dateNow.getTime() / 1000)) {
 				return ({data: {}, exp: 0, iat: 0 })
 			}
@@ -27,8 +26,13 @@ const UserContextProvider = (props) => {
 	const [isLoggedIn, setLog] = useState(() => {
 		const localDatas = localStorage.getItem('JWT');
 		const token = JSON.parse(localDatas);
-		// console.log(token.data);
-		return (token.data.firstName ? true : false);
+		// console.log(token);
+		if (token !== null) {
+			return (token.data.firstName ? true : false);
+		}
+		else {
+			return (false);
+		}
 	});
 
 	const [logInPopup, setLogInPopup] = useState(false);
