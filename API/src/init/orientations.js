@@ -10,20 +10,19 @@ const types = ['hetero', 'homo', 'bi', 'pan'];
 function populateOrientations() {
   return new Promise((resolve, reject) => {
     const promises = genders.map(gender => (
-      types.forEach((type) => {
-        new Promise{ gender, type }
-      }))
-
+      types.forEach(type => (
+        new Promise((res, rej) => (
+          new Orientation({ id: `${gender}_${type}` }).createOrientation()
+            .then(() => res())
+            .catch(err => rej(err))
+        ))
+      ))
+    ));
+    Promise.all(promises)
+      .then(debug('All Orientations created'))
+      .then(() => resolve())
+      .catch(err => reject(err));
   });
 }
 
-
-async function populateOrientation() {
-  const orientations = await getOrientations();
-  return new Promise((resolve, reject) => {
-    debug(orientations);
-    resolve();
-  });
-}
-
-module.exports = populateOrientation;
+module.exports = populateOrientations;

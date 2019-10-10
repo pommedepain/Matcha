@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 
 const debug = require('debug')('models:users');
 const config = require('config');
@@ -14,7 +15,7 @@ const Relationship = require('./relationshipsClass');
 
 class User extends Node {
 
-  constructor(data) {
+  constructor(data, newData) {
     const node = {
       label: 'User',
       id: 'username',
@@ -22,6 +23,7 @@ class User extends Node {
     };
     super({ node_a: node });
     this.data = { node_a: node };
+    this.newData = newData;
     this.user = this.data.node_a.properties;
     this.allProperties = [];
     this.publicProperties = [];
@@ -146,7 +148,7 @@ class User extends Node {
     return new Promise((resolve, reject) => {
       this.token = jwt.sign(_.omit(user, 'password'), config.get('jwtPrivateKey'));
       this.token = jwt.sign({
-        exp: Math.floor(Date.now() / 1000) + (30 * 1), // 30s
+        exp: Math.floor(Date.now() / 1000) + (3600), // 30s
         data: _.omit(user, 'password'),
       }, config.get('jwtPrivateKey'));
 
@@ -202,8 +204,9 @@ class User extends Node {
     return new Promise((resolve, reject) => (
       new UserValidator(this.updateRequirements, this.user).validate()
         .then(() => this.hashGenerator())
-        .then(() => this.updateNode())
-        .then(user => resolve(_.pick(user, this.publicProperties.concat(this.optionalProperties))))
+        .then(() => this.updateNode(this.newData))
+        .then((user) => { this.updatedUser = user; return (this.generateAuthToken(user)); })
+        .then((token) => { this.updatedUser.token = token; resolve(_.omit(this.updatedUser, 'password')); })
         .catch(err => reject(err))
     ));
   }

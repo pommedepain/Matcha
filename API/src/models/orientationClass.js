@@ -9,11 +9,12 @@ class Orientation extends Node {
   constructor(data) {
     const node = {
       label: 'Orientation',
-      id: `${data.gender}_${data.type}`,
+      id: 'id',
       properties: data,
     };
     super({ node_a: node });
-    this.data = data;
+    this.data = { node_a: node };
+    debug('Orientation constructor called');
   }
 
   createOrientation() {
