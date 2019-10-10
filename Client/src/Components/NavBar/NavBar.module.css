@@ -39,3 +39,38 @@ a, a:hover {
   text-decoration: none;
   color: black;
 }
+
+.username {
+	display: flex;
+	font-family: 'ComfortaaLight', cursive;
+	font-size: 0.4em;
+	margin-top: 5%;
+}
+
+.buttons {
+	display: flex;
+	flex-direction: column;
+}
+
+.sidebarLogged {
+	display: flex;
+	width: 80%;
+	align-self: center;
+	font-family: 'ComfortaaBold', cursive;
+	border: 1px solid rgb(116, 209, 234);	
+	border-radius: 15px;
+	margin-bottom: 5px;
+	color: rgb(116, 209, 234);
+	padding-left: 11%;
+	/* padding: 5px 15px 5px 24px; */
+	cursor: pointer;
+}
+
+.sidebarLogged:focus {
+	outline: 0;
+}
+
+.sidebarLogged:hover {
+	background-color: rgb(116, 209, 234);
+	color: white;
+}

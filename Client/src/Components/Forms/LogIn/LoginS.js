@@ -5,6 +5,7 @@ import cx from 'classnames';
 import { UserContext } from '../../../Contexts/UserContext';
 import classes from './LogIn.module.css';
 import LoginDumb from './LogInD';
+import Account from '../Account/AccountS';
 const axios = require('axios');
 const datas = require('../../../Datas/loginForm.json');
 
@@ -68,7 +69,7 @@ class Login extends Component {
 		if (event.type === "click") {
 			event.preventDefault();
 			if (message === "confirm user"){
-				console.log(this.state)
+				// console.log(this.state)
 				this.context.toggleUser(this.state.payload);
 				this.setState({
 					payload: null,
@@ -176,34 +177,23 @@ class Login extends Component {
 		const { isLoggedIn, JWT } = this.context;
 		return (
 			<div className={classes.log}>
-				{
-					isLoggedIn === false ?
-					[<div key={1}>
-						<button 
-							className={cx(classes.sidebar, "btn-sm")} 
-							onClick={this.togglePopup.bind(this)}>
-							Log In
-						</button>
-						<LoginDumb
-							popup={this.togglePopup.bind(this)}
-							handleChange={this.handleChange.bind(this)}
-							submit={this.submit.bind(this)}
-							toggleShow={this.toggleShow.bind(this)}
-							inputChangedHandler={this.inputChangedHandler.bind(this)}
-							toggleUser={this.toggleUser.bind(this)}
-							{...this.state}
-							{...this.context}
-						/>
-					</div>]
-					:
-					[<div key={2}>
-						<h4 className={classes.username}>Welcome back {JWT.data.username} !</h4>
-						<div className={classes.buttons}>
-							<button className={cx(classes.sidebarLogged, "btn-sm")} >Account</button>
-							<button className={cx(classes.sidebarLogged, "btn-sm")} >Log Out</button>
-						</div>
-					</div>]
-				}
+				<div key={1}>
+					<button 
+						className={cx(classes.sidebar, "btn-sm")} 
+						onClick={this.togglePopup.bind(this)}>
+						Log In
+					</button>
+					<LoginDumb
+						popup={this.togglePopup.bind(this)}
+						handleChange={this.handleChange.bind(this)}
+						submit={this.submit.bind(this)}
+						toggleShow={this.toggleShow.bind(this)}
+						inputChangedHandler={this.inputChangedHandler.bind(this)}
+						toggleUser={this.toggleUser.bind(this)}
+						{...this.state}
+						{...this.context}
+					/>
+				</div>
 			</div>
 		)
 	}

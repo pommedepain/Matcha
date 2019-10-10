@@ -1,0 +1,159 @@
+.main {
+	display: flex;
+	background-color: rgb(116, 209, 234);
+	height: 100vh;
+	text-align: center;
+	color: black;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+#msform {
+	width: 100%;
+	max-width: 500px;
+	margin: 0 auto;
+	text-align: center;
+	position: relative;
+}
+#msform fieldset {
+	background: white;
+	border: 0 none;
+	border-radius: 3px;
+	box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
+	padding: 20px 30px;
+	box-sizing: border-box;
+	width: 80%;
+	margin: 0 10%;
+	
+	/*stacking fieldsets above each other*/
+	position: relative;
+}
+/*inputs*/
+#msform input, #msform textarea {
+	outline: none;
+	padding: 15px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	margin-bottom: 10px;
+	width: 100%;
+	box-sizing: border-box;
+	font-family: montserrat;
+	color: #2C3E50;
+	font-size: 13px;
+}
+/*buttons*/
+#msform .action_button {
+	width: 100px;
+	background: #27AE60;
+	font-weight: bold;
+	color: white;
+	border: 0 none;
+	border-radius: 1px;
+	cursor: pointer;
+	padding: 10px 5px;
+	margin: 10px 5px;
+}
+#msform .action_button:hover, #msform .action_button:focus {
+	box-shadow: 0 0 0 2px white, 0 0 0 3px #27AE60;
+}
+#msform .action_button:disabled {
+	color: #ccc;
+	cursor: not-allowed;
+}
+
+/*headings*/
+.fs_title {
+	font-size: 15px;
+	text-transform: uppercase;
+	color: #2C3E50;
+	margin-bottom: 10px;
+}
+.fs_subtitle {
+	font-weight: normal;
+	font-size: 13px;
+	color: #666;
+	margin-bottom: 20px;
+}
+
+
+
+
+
+
+/* .questions {
+	font-size: 0.7em;
+	position: relative;
+	margin-bottom: 2%;
+	margin-top: 4%;
+} */
+
+/*
+	SPECIFIC STYLES
+*/
+/* #birthdate::-webkit-inner-spin-button { 
+	display: none; 
+}
+.gender {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+}
+.sexualOrient {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+} */
+
+/* Radio buttons custom */
+/* input[type="radio"] {
+	position: absolute;
+	opacity: 0;
+	z-index: -2;
+}
+label {
+	position: relative;
+	font-size: 0.4em;
+	margin-right: 1em;
+	padding-left: 2em;
+	padding-right: 0.5em;
+	line-height: 2;
+	cursor: pointer;
+	padding-top: 0.15em;
+	margin-bottom: 1%;
+	z-index: 1000;
+}
+label:before {
+	box-sizing: border-box;
+	content: " ";
+	position: absolute;
+	top: 0.2em;
+	left: 5%;
+	display: block;
+	width: 1.4em;
+	height: 1.4em;
+	border: 1px solid black;
+	border-radius: .25em; */
+	/* z-index: -1; */
+/* }  
+input[type="radio"] + label::before {
+	border-radius: 1em;
+}
+input[type="radio"]:checked + label {
+	padding-left: 1.5em;
+	padding-right: 1em;
+	color: white;
+}
+input[type="radio"]:checked + label:before {
+	top: 0;
+	width: 100%;
+	height: 2vh;
+	background: #27AE60;
+	border: 1px solid #27AE60;
+	z-index: -1;
+}   */
+/* Transition */
+/* label,
+label::before {
+	transition: .25s all ease;
+} */

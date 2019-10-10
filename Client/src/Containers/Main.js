@@ -1,11 +1,19 @@
 import React, { Component } from 'react';
 
 import SignUp from '../Components/Forms/SignUp/SignUpS';
+import Home from '../Components/Home/HomeS';
+import { UserContext } from '../Contexts/UserContext';
 
 class Main extends Component {
+	static contextType = UserContext;
+
 	render() {
+		const isLoggedIn = this.context.isLoggedIn;
+
 		return (
-			<SignUp />
+			isLoggedIn === true ?
+			<Home />
+			: <SignUp />
 		)
 	}
 }

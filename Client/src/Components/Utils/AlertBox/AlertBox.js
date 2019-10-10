@@ -7,7 +7,7 @@ class AlertBox extends Component {
 	static contextType = UserContext;
 
 	render() {
-		console.log(this.props);
+		// console.log(this.props);
 		return (
 			this.props.color === "red" ?
 			<div id={classes.error_box}>

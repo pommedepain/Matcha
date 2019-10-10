@@ -9,8 +9,8 @@ const UserContextProvider = (props) => {
 		// console.log(token)
 		if (token !== null && token.data.firstName) {
 			let dateNow = new Date();
-			console.log(dateNow.getTime() / 1000);
-			console.log(token.exp);
+			// console.log(dateNow.getTime() / 1000);
+			// console.log(token.exp);
 			if (token.exp < (dateNow.getTime() / 1000)) {
 				return ({data: {}, exp: 0, iat: 0 })
 			}
@@ -38,13 +38,17 @@ const UserContextProvider = (props) => {
 	const [logInPopup, setLogInPopup] = useState(false);
 
 	const parseJwt = (token) => {
-		let base64Url = token.split('.')[1];
-		let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-		let jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-			return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-		}).join(''));
-		
-		return (JSON.parse(jsonPayload));
+		if (token !== null) {
+			let base64Url = token.split('.')[1];
+			let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+			let jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+				return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+			}).join(''));
+			return (JSON.parse(jsonPayload));
+		}
+		else {
+			return ({data: {}, exp: 0, iat: 0 });
+		}
 	};
 
 	const toggleUser = (datas) => {
