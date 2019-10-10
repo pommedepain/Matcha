@@ -27,9 +27,9 @@ function populateDb() {
   return new Promise((resolve, reject) => {
     resetDb()
       .then(() => populateTags())
+      .then(() => populateOrientations())
       .then(() => populateUsers())
       .then(() => populateRelationships())
-      .then(() => populateOrientations())
       .then(() => resolve())
       .catch(err => reject(err));
   });

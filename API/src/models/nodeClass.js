@@ -89,12 +89,9 @@ class Node extends Relationship {
   updateNode(newData) {
     return new Promise((resolve, reject) => {
       this.props = _.omit(this.data.node_a.properties, 'tags');
-
-      debug(newData);
       Object.keys(newData).forEach((key) => {
         this.props[key] = newData[key];
       });
-      debug(this.props);
       const props = this.props;
       const session = this.driver.session();
       session.run(

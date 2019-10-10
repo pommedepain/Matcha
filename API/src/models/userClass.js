@@ -15,7 +15,7 @@ const Relationship = require('./relationshipsClass');
 
 class User extends Node {
 
-  constructor(data, newData) {
+  constructor(data) {
     const node = {
       label: 'User',
       id: 'username',
@@ -23,7 +23,6 @@ class User extends Node {
     };
     super({ node_a: node });
     this.data = { node_a: node };
-    this.newData = newData;
     this.user = this.data.node_a.properties;
     this.allProperties = [];
     this.publicProperties = [];
@@ -200,11 +199,11 @@ class User extends Node {
     ));
   }
 
-  updateUser() {
+  updateUser(newData) {
     return new Promise((resolve, reject) => (
       new UserValidator(this.updateRequirements, this.user).validate()
         .then(() => this.hashGenerator())
-        .then(() => this.updateNode(this.newData))
+        .then(() => this.updateNode(newData))
         .then((user) => { this.updatedUser = user; return (this.generateAuthToken(user)); })
         .then((token) => { this.updatedUser.token = token; resolve(_.omit(this.updatedUser, 'password')); })
         .catch(err => reject(err))

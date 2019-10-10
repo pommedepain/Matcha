@@ -51,16 +51,16 @@ router.post('/', [auth, admin], wrapper(async (req, res) => {
     )));
 }));
 
-router.put('/:id', [auth, admin], wrapper(async (req, res) => {
-  debug('Request to update :\n', _.pick(req.body, validProperties));
-  return (new Tag(_.pick(req.body, validProperties)).updateTag()
-    .then(tag => (
-      res.status(200).json({
-        success: true,
-        payload: { value: 'update', tag },
-      })
-    )));
-}));
+// router.put('/:id', [auth, admin], wrapper(async (req, res) => {
+//   debug('Request to update :\n', _.pick(req.body, validProperties));
+//   return (new Tag(_.pick(req.body, validProperties)).updateTag()
+//     .then(tag => (
+//       res.status(200).json({
+//         success: true,
+//         payload: { value: 'update', tag },
+//       })
+//     )));
+// }));
 
 router.delete('/:id', [auth, admin], wrapper(async (req, res) => {
   debug('Request to delete :', req.params.id);

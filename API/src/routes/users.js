@@ -65,7 +65,7 @@ router.post('/', wrapper(async (req, res) => {
 
 router.put('/:username', [auth, identify], wrapper(async (req, res) => {
   debug('Request to update :\n', _.pick(req.user, validProperties));
-  return (new User(_.pick(req.user, validProperties), req.body).updateUser()
+  return (new User(_.pick(req.user, validProperties)).updateUser(req.body)
     .then(user => (
       res.status(200).json({
         success: true,
