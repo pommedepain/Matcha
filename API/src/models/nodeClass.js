@@ -90,9 +90,11 @@ class Node extends Relationship {
     return new Promise((resolve, reject) => {
       this.props = _.omit(this.data.node_a.properties, 'tags');
       Object.keys(newData).forEach((key) => {
-        this.props[key] = newData[key];
+        if (newData[key]) this.props[key] = newData[key];
       });
+      debug(newData);
       const props = this.props;
+      debug(props)
       const session = this.driver.session();
       session.run(
         `MATCH (n:${this.data.node_a.label} {${this.data.node_a.id}:'${this.data.node_a.properties[this.id_a]}'}) SET n+=$props RETURN n`,

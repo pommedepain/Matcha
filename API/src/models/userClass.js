@@ -278,8 +278,8 @@ class User extends Node {
   updateUser(newData) {
     return new Promise((resolve, reject) => (
       new UserValidator(this.updateRequirements, this.user).validate()
-        .then(() => this.hashGenerator())
-        .then(() => this.updateNode(newData))
+        .then(() => { if (newData.password) { this.user.password = newData.password }; return this.hashGenerator(); })
+        .then((pass) => { this.newData = newData; this.newData.password = pass; return this.updateNode(this.newData) })
         .then((user) => { this.updatedUser = user; return (this.generateAuthToken(user)); })
         .then((token) => { this.updatedUser.token = token; resolve(_.omit(this.updatedUser, 'password')); })
         .catch(err => reject(err))
