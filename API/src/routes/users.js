@@ -9,8 +9,8 @@ const wrapper = require('../middleware/wrapper');
 const router = express.Router();
 const User = require('../models/userClass');
 
-const validProperties = ['username', 'firstName', 'lastName', 'password', 'email', 'birthdate', 'bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'localisation', 'tags', 'optional'];
-const publicProperties = ['username', 'firstName', 'lastName', 'password', 'email', 'birthdate', 'bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'localisation', 'tags', 'optional', 'error', 'value'];
+const validProperties = ['username', 'firstName', 'lastName', 'password', 'email', 'birthdate', 'bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'localisation', 'photo', 'tags', 'optional'];
+const publicProperties = ['username', 'firstName', 'lastName', 'password', 'email', 'birthdate', 'bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'localisation', 'tags', 'photo', 'optional', 'error', 'value'];
 
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
@@ -56,10 +56,10 @@ router.get('/:username/commonTags', wrapper(async (req, res) => {
 router.get('/:username/:relation', wrapper(async (req, res) => {
   debug('Requesting relation list...');
   return (new User({ username: req.params.username }).getRelations(req.params.relation)
-    .then(users => (
+    .then(content => (
       res.status(200).json({
         success: true,
-        payload: { value: 'read', users },
+        payload: { value: 'read', content },
       })
     ))
   );
