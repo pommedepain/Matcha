@@ -120,15 +120,36 @@ class User extends Node {
     });
   }
 
+  getCommonTags() {
+    return new Promise((resolve, reject) => {
+      const session = this.driver.session();
+      const query = `MATCH (a:User { username: '${this.data.node_a.properties.username}'})-[r:LOOK_FOR]->(c:Tag)<-[l:IS]-(b:User),(a)-[m:COMPATIBLE]-(b)
+                    WITH a,b, collect(c.id) as common
+                    RETURN (b.username),common`;
+      session.run(query)
+        .then((res) => {
+          this.result = [];
+          if (res.records.length !== 0) {
+            res.records.forEach((record) => {
+              this.result.push({ username: record._fields[0] , commonTags: record._fields[1] });
+            });
+          }
+          debug(this.result);
+          resolve(this.result);
+        })
+        .catch(err => reject(err));
+    });
+  }
+
   addCompatibilities() {
     return new Promise((resolve, reject) => {
       if (this.data.node_a.properties.sexOrient) {
         let session = this.driver.session();
-      const query = `Match z=(a:User { username: '${this.data.node_a.properties.username}'})-[p:IS]->(c:Orientation)-[q:LOOK_FOR]-(d:Orientation)<-[r:IS]-(b:User)
+        const query = `MATCH z=(a:User { username: '${this.data.node_a.properties.username}'})-[p:IS]->(c:Orientation)-[q:LOOK_FOR]-(d:Orientation)<-[r:IS]-(b:User)
                     CREATE (a)-[t:COMPATIBLE]->(b)`;
-      session.run(query)
-        .then(() => { session.close(); debug(`User compatibilities created for ${this.data.node_a.properties.username}`); resolve()})
-        .catch(err => reject(err));   
+        session.run(query)
+          .then(() => { session.close(); debug(`User compatibilities created for ${this.data.node_a.properties.username}`); resolve()})
+          .catch(err => reject(err));   
       } else resolve();            
     });
   }
@@ -210,6 +231,19 @@ class User extends Node {
         label: 'LIKES',
       };
       this.getNodeMutualRelationships()
+        .then(list => resolve(list))
+        .catch(err => reject(err));
+    });
+  }
+
+
+
+  getRelations(relation) {
+    return new Promise((resolve, reject) => {
+      this.data.relation = {
+        label: relation,
+      };
+      this.getNodetypeofRelationships()
         .then(list => resolve(list))
         .catch(err => reject(err));
     });

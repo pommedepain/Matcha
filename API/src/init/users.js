@@ -9,16 +9,18 @@ const User = require('../models/userClass');
 const props = ['gender', 'email', 'password'];
 const requiredProperties = ['username', 'firstName', 'lastName', 'password', 'email', 'birthdate'];
 const optionalProperties = ['bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'tags', 'photo', 'localisation', 'optional', 'isAdmin'];
-const amount = 10;
+const amount = 20;
 
 function rand(min, max) { // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
 const admin = {
-  username: 'Camille',
+  username: 'camille',
   firstName: 'Camille',
   lastName: 'Julien',
+  gender: 'male',
+  sexOrient: 'hetero',
   password: 'Test12345*',
   email: 'camille@gmail.com',
   birthdate: '1992-27-03',
@@ -31,6 +33,8 @@ const admin2 = {
   firstName: 'Philoutre',
   lastName: 'Philoutre',
   password: 'Test12*',
+  gender: 'female',
+  sexOrient: 'hetero',
   email: 'Philoutre@gmail.com',
   birthdate: '1996-02-14',
   tags: [{ id: 'athlete', text: 'something' }, { id: 'book', text: 'lala' }],
