@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import cx from 'classnames';
 
-import classes from './Account.module.css';
 import AccountDumb from './AccountD';
 import { UserContext } from '../../../Contexts/UserContext';
 
@@ -9,26 +7,52 @@ const formDatas = require('../../../Datas/accountForm.json');
 const axios = require('axios');
 
 class Account extends Component {
-	state = {
-		orderForm: formDatas.orderForm,
-		emails: null,
-		formIsValid: false,
-		range: [18, 25],
-		rangeTouched: false,
-		localisation: 5,
-		sliderTouched: false,
-		tags: [
-			{ id: "athlete", text: "Athlete" },
-			{ id: "geek", text: "Geek" }
-		],
-		touched: false,
-		password: formDatas.password,
-		cPasswd: formDatas.cPasswd,
-		erros: [],
-		retSubmit: null
+	constructor(props) {
+		super(props);
+		// console.log(props);
+		this.state = {
+			orderForm: formDatas.orderForm,
+			emails: null,
+			formIsValid: false,
+			password: formDatas.password,
+			cPasswd: formDatas.cPasswd,
+			erros: [],
+			alertDesign: null,
+			payload: null
+		}
+		this.getEmails();
+		this.getUsers();
 	}
 
 	static contextType = UserContext;
+
+	componentDidMount() {
+		this.getUserInfos();
+	}
+
+	getUserInfos = () => {
+		const userDatas = this.context.JWT.data;
+
+		// eslint-disable-next-line no-unused-vars
+		for (let key in this.state.orderForm) {
+			let elem = this.state.orderForm[key];
+			elem.value = userDatas[key]
+			this.setState({
+				[key]: elem
+			});
+		}
+	}
+
+	getUsers = () => {
+		axios.get(`http://localhost:4000/API/users/username`)
+			.then(response => {
+				// console.log(response.data.payload.users);
+				this.setState({ users: response.data.payload.users });
+			})
+			.catch(err => { 
+				console.log(err);
+			})
+	}
 
 	getEmails = () => {
 		axios.get(`http://localhost:4000/API/users/email`)
@@ -41,7 +65,7 @@ class Account extends Component {
 			})
 	}
 
-	checkValidity(value, rules, inputIdentifier, state) {
+	checkValidity(value, rules, inputIdentifier, state, context) {
 		return new Promise (function (resolve, reject) {
 			let isValid = true;
 			let errorMessages = [];
@@ -94,6 +118,10 @@ class Account extends Component {
 					isValid = true && isValid;
 					resolve(isValid);
 				}
+				else if (state.emails.includes(value) === true && context[inputIdentifier] === value) {
+					isValid = true && isValid;
+					resolve(isValid);
+				}
 				else if (state.emails.includes(value) === true) {
 					isValid = false;
 					errorMessages.push("This e-mail adress is already being used");
@@ -102,6 +130,10 @@ class Account extends Component {
 			}
 			if (rules.db === true) {
 				if (state.users.includes(value) === false) {
+					isValid = true && isValid;
+					resolve(isValid);
+				}
+				else if (state.users.includes(value) === true && context[inputIdentifier] === value) {
 					isValid = true && isValid;
 					resolve(isValid);
 				}
@@ -122,28 +154,32 @@ class Account extends Component {
 
 		updatedFormElement.value = event.target.value;
 		
-		// if (inputIdentifier !== "birthdate") {
-			this.checkValidity(updatedFormElement.value, updatedFormElement.validation, inputIdentifier, this.state)
+		// if (updatedFormElement.value !== this.context.JWT.data[inputIdentifier]) {
+			this.checkValidity(updatedFormElement.value, updatedFormElement.validation, inputIdentifier, this.state, this.context.JWT.data)
 				.then((response) => {
-					// console.log(response);
+					console.log(response);
 					updatedFormElement.valid = response;
-					updatedFormElement.touched = true;
+					if (response && updatedFormElement.value !== this.context.JWT.data[inputIdentifier]) {
+						updatedFormElement.touched = true;
+					}
+					else if (response && updatedFormElement.value === this.context.JWT.data[inputIdentifier]) {
+						updatedFormElement.touched = false;
+					}
 					updatedOrderForm[inputIdentifier] = updatedFormElement;
-
 					let formIsValid = true;
 					// eslint-disable-next-line no-unused-vars
 					for (let inputIdentifier in updatedOrderForm) {
 						formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
+						console.log(inputIdentifier + " : " + formIsValid);
 					}
 					this.setState({ orderForm: updatedOrderForm, formIsValid: formIsValid });
 				})
 				.catch((e) => {
 					updatedFormElement.valid = false;
-					// console.log(e);
+					console.log(e);
 					updatedFormElement.touched = true;
 					updatedFormElement.errorMessage = e;
 					updatedOrderForm[inputIdentifier] = updatedFormElement;
-
 					let formIsValid = true;
 					// eslint-disable-next-line no-unused-vars
 					for (let inputIdentifier in updatedOrderForm) {
@@ -152,33 +188,141 @@ class Account extends Component {
 					this.setState({ orderForm: updatedOrderForm, formIsValid: formIsValid });
 				})
 		// }
-		// else {
-		// 	const ret = this.checkValidity2(updatedFormElement.value, updatedFormElement.validation);
-		// 	if (typeof ret === "boolean") {
-		// 		updatedFormElement.valid = ret;
-		// 	}
-		// 	else {
-		// 		updatedFormElement.valid = false;
-		// 		updatedFormElement.errorMessage = ret;
-		// 	}
-		// 	updatedFormElement.touched = true;
-		// 	updatedOrderForm[inputIdentifier] = updatedFormElement;
+	}
 
-		// 	let formIsValid = true;
-		// 	// eslint-disable-next-line no-unused-vars
-		// 	for (let inputIdentifier in updatedOrderForm) {
-		// 		formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
-		// 	}
-		// 	this.setState({ orderForm2: updatedOrderForm, formIsValid: formIsValid });
-		// }
+	handleChange = (event, message) => {
+		if (event.type === 'click')
+		{
+			event.preventDefault();
+			if (message === "confirm user"){
+				// console.log(this.state)
+				this.context.toggleUser(this.state.payload);
+				this.setState({
+					payload: null,
+					alertDesign: null
+				})
+			}
+			else {
+				this.setState({
+					alertDesign: null
+				});	
+			}
+		}
+	}
+
+	passwordStrength = (event) => {
+		const name = event.target.name;
+		var zxcvbn = require('zxcvbn');
+		event.preventDefault();
+		let value = zxcvbn(event.target.value);
+		const updatedElem = {
+			...this.state[name]
+		};
+		updatedElem.value = event.target.value;
+		if (name === "password") {
+			this.checkValidity(updatedElem.value, updatedElem.validation, name, this.state, this.context.JWT.data)
+				.then((response) => {
+					console.log(response);
+					updatedElem.valid = response;
+					updatedElem.touched = true;
+					updatedElem.value === "" ?
+					updatedElem.score = null
+					:
+					updatedElem.score = value.score;
+					this.setState({ [name]: updatedElem });
+				})
+				.catch((e) => {
+					console.log(e);
+					updatedElem.valid = false;
+					updatedElem.touched = true;
+					updatedElem.errorMessage = e;
+					updatedElem.value === "" ?
+					updatedElem.score = null
+					:
+					updatedElem.score = value.score;
+					this.setState({ [name]: updatedElem });
+				})
+		}
+		else if (name === "cPasswd") {
+			if (event.target.value === this.state.password.value)
+				updatedElem.valid = true;
+			else
+				updatedElem.valid = false;
+		}
+		updatedElem.touched = true;
+		event.target.value === "" ?
+		updatedElem.score = null
+		:
+		updatedElem.score = value.score;
+		this.setState({ [name]: updatedElem, formIsValid: updatedElem.valid });
+	}
+
+	submit = (e) => {
+		e.preventDefault();
+		let submitDatas = {};
+		let context =  this.context.JWT.data;
+		const token = this.context.JWT.token;
+		// console.log(token);
+
+		// eslint-disable-next-line no-unused-vars
+		for (let key in this.state.orderForm) {
+			if (this.state.orderForm[key].touched === true && this.state.orderForm[key].value !== context[key].value) {
+				// console.log(this.state.orderForm[key]);
+				submitDatas[key] = this.state.orderForm[key].value; 
+			}
+		}
+		if (this.state.password.touched === true) {
+			submitDatas['password'] = this.state.password.value;
+		}
+		console.log(submitDatas);
+
+		axios
+			.put(`http://localhost:4000/API/users/${this.context.JWT.data.username}`, submitDatas, {headers: {"x-auth-token": token}})
+			.then(response => {
+				this.setState({ loading: false })
+				// console.log(response);
+				console.log(response.data.success)
+				if (response.data.success) {
+					this.setState({
+						alertDesign: {
+							message:"Your infos have been successfully changed !",
+							button:"OK",
+							color: "green",
+							function: true
+						},
+						payload: response.data.payload.user.token
+					});
+				}
+				if (submitDatas.email) {
+					this.getEmails();
+				}
+				if (submitDatas.username) {
+					this.getUsers();
+				}
+			})
+			.catch(error => {
+				this.setState({
+					errors: error.response.data.payload,
+					loading: false
+				})
+				console.log(error)
+				this.setState({
+					alertDesign: {
+						message: error.response.data.payload,
+						button:"Try Again",
+						color: "red"
+					}
+				});
+			})
 	}
 
 	render() {
-		this.getEmails();
-		// const { JWT } = this.context;
 		return (
 			<AccountDumb
 				inputChangedHandler={this.inputChangedHandler.bind(this)}
+				handleChange={this.handleChange.bind(this)}
+				passwordStrength={this.passwordStrength.bind(this)}
+				submit={this.submit.bind(this)}
 				{...this.state}
 				{...this.context}
 			/>

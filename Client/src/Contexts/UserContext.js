@@ -5,21 +5,22 @@ export const UserContext = createContext();
 const UserContextProvider = (props) => {
 	const [JWT, setJWT] = useState(() => {
 		const localData = localStorage.getItem('JWT');
-		const token = JSON.parse(localData);
+		let token = {"token": localData};
+		token = JSON.parse(localData);
 		// console.log(token)
 		if (token !== null && token.data.firstName) {
 			let dateNow = new Date();
 			// console.log(dateNow.getTime() / 1000);
 			// console.log(token.exp);
 			if (token.exp < (dateNow.getTime() / 1000)) {
-				return ({data: {}, exp: 0, iat: 0 })
+				return ({data: {}, exp: 0, iat: 0, token: "" })
 			}
 			else {
 				return (token);
 			}
 		}
 		else {
-			return ({data: {}, exp: 0, iat: 0 });
+			return ({data: {}, exp: 0, iat: 0, token: "" });
 		}
 	});
 
@@ -47,14 +48,14 @@ const UserContextProvider = (props) => {
 			return (JSON.parse(jsonPayload));
 		}
 		else {
-			return ({data: {}, exp: 0, iat: 0 });
+			return ({data: {}, exp: 0, iat: 0, token: "" });
 		}
 	};
 
 	const toggleUser = (datas) => {
 		let token = parseJwt(datas);
-		setJWT({ data: token.data, exp: token.exp, iat: token.iat });
 		// console.log(token);
+		setJWT({ data: token.data, exp: token.exp, iat: token.iat, token: datas });
 		if (token === undefined) {
 			setLog(false);
 		}
@@ -68,6 +69,7 @@ const UserContextProvider = (props) => {
 	}
 
 	useEffect(() => {
+		// console.log(JWT);
 		localStorage.setItem('JWT', JSON.stringify(JWT))
 		if (JWT.data.firstName) {
 			setLog(true);

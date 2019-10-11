@@ -53,7 +53,9 @@ class AlertBox extends Component {
 								this.props.logIn ?
 								this.props.handleChange(event, "confirm user")
 								: this.props.handleChange(event, "go to log in");
-								document.getElementById("display_page").style.filter = ''
+								if (document.getElementById("display_page") !== null) { 
+									document.getElementById("display_page").style.filter = ''
+								}
 							}} >
 							<h1 className={classes.green}>YEAY!</h1>
 						</button>
