@@ -16,6 +16,19 @@ router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
 
+
+router.get('/infos/:username', wrapper(async (req, res) => {
+  debug('Request to get user information for :', req.params.username);
+  return (new User({ username: req.params.username }).getUserInfo()
+    .then((user) => {
+      const result = _.pick(user, publicProperties);
+      return res.status(200).json({
+        success: true,
+        payload: { value: 'read', result },
+      });
+    }));
+}));
+
 router.get('/:value', wrapper(async (req, res) => {
   debug('Requesting user list...');
   return (new User().getList(req.params.value)
@@ -41,7 +54,7 @@ router.get('/:username/commonTags', wrapper(async (req, res) => {
 }));
 
 router.get('/:username/:relation', wrapper(async (req, res) => {
-  debug('Requesting user list...');
+  debug('Requesting relation list...');
   return (new User({ username: req.params.username }).getRelations(req.params.relation)
     .then(users => (
       res.status(200).json({
@@ -52,17 +65,7 @@ router.get('/:username/:relation', wrapper(async (req, res) => {
   );
 }));
 
-router.get('/infos/:username', wrapper(async (req, res) => {
-  debug('Request to get user information for :', req.params.username);
-  return (new User({ username: req.params.username }).getUserInfo()
-    .then((user) => {
-      const result = _.pick(user, publicProperties);
-      return res.status(200).json({
-        success: true,
-        payload: { value: 'read', result },
-      });
-    }));
-}));
+
 
 router.get('/matches/:username', wrapper(async (req, res) => {
   debug('Request to get user matches :', req.params.username);

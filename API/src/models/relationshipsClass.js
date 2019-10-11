@@ -148,15 +148,14 @@ class Relationship {
     };
     const method = () => (new Promise((resolve, reject) => {
       const query = `MATCH (a:${this.data.node_a.label} {${this.data.node_a.id}: '${this.data.node_a.properties[this.id_a]}'})-[r:${this.data.relation.label}]-(b)
-                    WITH a, collect(b.username) as result
-                    RETURN result`;
+                    WITH a, collect(b.username) as users, collect(b.id) as tags
+                    RETURN users,tags`;
       const session = this.driver.session();
       session.run(query)
         .then((res) => {
           session.close();
           if (res.records.length !== 0) {
-            debug(res.records[0]._fields);
-            resolve(res.records[0]._fields);
+            res.records[0]._fields[0].length !== 0 ? resolve(res.records[0]._fields[0]) : resolve(res.records[0]._fields[1]);
           } else resolve([]);
         })
         .catch((err) => {
