@@ -329,7 +329,7 @@ class Relationship {
       relation: false,
     };
     const method = () => (new Promise((resolve, reject) => {
-      const query = `MATCH (n:${labela})-[r:${reltype}]->(m:${labelb})
+      const query = `MATCH (n:${labela})-[r:${reltype}]-(m:${labelb})
       WITH n, m, collect(r)[1..] as rels
       FOREACH (r in rels | DELETE r)`;
       const session = this.driver.session();

@@ -116,7 +116,7 @@ router.delete('/delete/node/type', [auth, admin], wrapper(async (req, res) => {
 
 router.delete('/delete/duplicates', wrapper(async (req, res) => {
   debug('Request to delete duplicates');
-  return (new Relationship(req.body).deleteRelationshipsDuplicates('User', 'LOOK_FOR', 'Tag')
+  return (new Relationship(req.body).deleteRelationshipsDuplicates('User', 'COMPATIBLE', 'User')
     .then(relationship => (
       res.status(200).json({
         success: true,

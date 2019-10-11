@@ -59,6 +59,8 @@ class User extends Node {
       id: true,
     };
     debug('User constructor called');
+    this.driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
+
   }
 
   hashGenerator() {
@@ -93,7 +95,45 @@ class User extends Node {
     });
   }
 
-  addRelationships() {
+  addOrientRelationships() {
+    return new Promise((resolve, reject) => {
+      if (this.data.node_a.properties.sexOrient) {
+        const date = new Date();
+      let orientation = this.data.node_a.properties.gender === 'male' ? 'm' : 'f';
+      orientation = `${orientation}_${this.data.node_a.properties.sexOrient}`;
+      const data = {
+        node_a: this.data.node_a,
+        node_b: {
+          label: 'Orientation',
+          id: 'id',
+          properties: { id: `${orientation}`},
+        },
+        relation: {
+          label: 'IS',
+          properties: { creationDate: date.toISOString() },
+        },
+      };
+      new Relationship(data).createRelationship()
+        .then(() => resolve())
+        .catch(err => reject(err));
+      } else resolve();
+    });
+  }
+
+  addCompatibilities() {
+    return new Promise((resolve, reject) => {
+      if (this.data.node_a.properties.sexOrient) {
+        let session = this.driver.session();
+      const query = `Match z=(a:User { username: '${this.data.node_a.properties.username}'})-[p:IS]->(c:Orientation)-[q:LOOK_FOR]-(d:Orientation)<-[r:IS]-(b:User)
+                    CREATE (a)-[t:COMPATIBLE]->(b)`;
+      session.run(query)
+        .then(() => { session.close(); debug(`User compatibilities created for ${this.data.node_a.properties.username}`); resolve()})
+        .catch(err => reject(err));   
+      } else resolve();            
+    });
+  }
+
+  addTagsRelationships() {
     return new Promise((resolve, reject) => {
       const date = new Date();
       debug('Linking User with Tags ...');
@@ -192,7 +232,9 @@ class User extends Node {
         .then(() => this.hashGenerator())
         .then(() => this.createNode())
         .then(() => this.validateTags())
-        .then(() => this.addRelationships())
+        .then(() => this.addTagsRelationships())
+        .then(() => this.addOrientRelationships())
+        .then(() => this.addCompatibilities())
         .then(() => resolve(_.pick(this.user,
           this.publicProperties.concat(this.optionalProperties))))
         .catch(err => reject(err))

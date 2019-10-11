@@ -59,7 +59,7 @@ class Node extends Relationship {
           if (res.records.length !== 0) {
             this.result = [];
             res.records.forEach((record) => { this.result.push(record._fields[0]); });
-            debug('Records :\n', this.result);
+            // debug('Records :\n', this.result);
             resolve(this.result);
           } else resolve(`No ${this.data.node_a.label} in database`);
         })

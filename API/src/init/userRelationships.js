@@ -3,8 +3,6 @@ const debug = require('debug')('init:relationships');
 const RelationShip = require('../models/relationshipsClass');
 const User = require('../models/userClass');
 const Tag = require('../models/tagClass');
-const orientationsRelationships = require('../util/orientationsRelationships');
-
 
 const date = new Date();
 const chaosCounter = 2;
@@ -66,14 +64,8 @@ async function randomRelations() {
         }
       })
     ));
-    const promises2 = orientationsRelationships.map(orelation => (
-      new Promise((res, rej) => {
-        relations.push(orelation);
-        res();
-      })
-    ));
+
     Promise.all(promises)
-      .then(Promise.all(promises2))
       .then(() => resolve(relations))
       .catch(err => reject(err));
   });
