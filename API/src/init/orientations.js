@@ -17,11 +17,11 @@ const orientations = [
 function populateOrientations() {
   return new Promise((resolve, reject) => {
     const promises = orientations.map(orientation => (
-        new Promise((res, rej) => (
-          new Orientation({ id: orientation }).createOrientation()
-            .then(() => res())
-            .catch(err => res(err))
-        ))
+      new Promise((res, rej) => (
+        new Orientation({ id: orientation }).createOrientation()
+          .then(() => res())
+          .catch(err => res(err))
+      ))
     ));
     Promise.all(promises)
       .then(debug('All Orientations created'))

@@ -84,6 +84,8 @@ function userParser(user) {
       newUser.firstName = user.name;
       newUser.password = 'Test123456*';
       newUser.photo = user.photo;
+      newUser.bio = 'I love Chicken';
+      newUser.localisation = rand(1, 100);
       const date = new Date(user.birthday.raw * 1000);
       const birthdate = `${date.getFullYear()}-${date.getMonth()}-${date.getDay()}`;
       newUser.birthdate = birthdate;

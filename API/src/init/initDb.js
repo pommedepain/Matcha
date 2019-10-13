@@ -13,14 +13,13 @@ const Tag = require('../models/tagClass');
 const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
 
 
-
 function resetDb() {
   return new Promise((resolve) => {
     let session = driver.session();
     debug('Reseting DB...');
     session.run('MATCH p=()-[]-() DELETE p')
       .then(() => session.close())
-      .then(() => { session = driver.session(); return session.run('MATCH (n) DELETE n') })
+      .then(() => { session = driver.session(); return session.run('MATCH (n) DELETE n'); })
       .then(() => session.close())
       .then(() => resolve(true))
       .catch(err => debug(err));

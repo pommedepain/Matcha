@@ -1,76 +1,37 @@
+/* eslint-disable max-len */
 const debug = require('debug')('tests:user_route');
+const _ = require('lodash');
+const axios = require('axios');
+const userTemplate = require('../util/userTemplate');
 
-const Request = require('../util/requestsClass');
+const infos = _.without(Object.keys(userTemplate), 'tags');
+const route = 'http://localhost:4000/api/users';
 
 
-const adminUser = {
-  username: 'Camille',
-  firstName: 'Lina',
-  lastName: 'cloclo',
-  birthdate: '1992-20-03',
-  password: 'Test12345*',
-  email: 'claudne@gmail.com',
-  birthyear: '1905',
-  optiona: 'lalala',
-  isAdmin: 'false',
-};
-
-const validUserAuth = {
-  username: 'Jean',
-  password: 'Test123*',
-};
-
-const invalidUserAuth = {
-  username: 'Jeane',
-  password: 'Test12*',
-};
-
-const validNewUser = {
-  username: 'Claudinete',
-  firstName: 'camillle',
-  lastName: 'julien',
-  password: 'Test12345*',
-  email: 'cludne@gmail.com',
-  birthdate: '1905-20-03',
-  optional: 'lalala',
-  tags: [{ id: 'athlete', text: 'something' }, { id: 'book', text: 'lala' }],
-};
-
-const invalidNewUser = {
-  username: 'Claudifouete',
-  email: 'cludne@gmail.com',
-  birthyear: '1905',
-  optional: 'lalala',
-  isAdmin: 'true',
-};
-
-const updatedUser = {
-  username: 'Claudinete',
-  firstName: 'camille',
-  lastName: 'julien',
-  password: 'Test12345*',
-  email: 'cludne@gmail.com',
-  birthdate: '1905-20-03',
-  optional: 'lalala2',
-};
-
-test('POST request : /api/users, valid user expect user created', async () => {
-  const data = await new Request('/api/users/', validNewUser, null).post().catch(err => debug(err));
-  return expect(data).toBeTruthy();
+test('GET request : infos array, expect lists', async () => {
+  const promises = infos.map(info => (
+    axios.get(`${route}/${info}`, null, null)
+  ));
+  return expect(Promise.all(promises)).resolves.toBeTruthy();
 });
+
+// test('POST request : /api/users, valid user expect user created', async () => {
+//   const data = await new Request('/api/users/', validNewUser, null).post().catch(err => debug(err));
+//   return expect(data).toBeTruthy();
+// });
 
 // test('POST request : /api/auth, expect valid jwt', async () => {
 //   const data = await new Request('/api/auth', validNewUser, null).post().catch(err => debug(err));
 //   return expect(data).toMatch(/^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/);
 // });
 
-test('PUT request : /api/users/Claudinete, valid user expect user updated', async () => {
-  const req = {};
-  req.value = updatedUser;
-  const token = await new Request('/api/auth', validNewUser).post().catch(err => debug(err));
-  const res = await new Request('/api/users/Claudinete', req, { headers: { 'x-auth-token': token } }).put().catch(err => debug(err));
-  return expect(res).toBeTruthy();
-});
+// test('PUT request : /api/users/Claudinete, valid user expect user updated', async () => {
+//   const req = {};
+//   req.value = updatedUser;
+//   const token = await new Request('/api/auth', validNewUser).post().catch(err => debug(err));
+//   const res = await new Request('/api/users/Claudinete', req, { headers: { 'x-auth-token': token } }).put().catch(err => debug(err));
+//   return expect(res).toBeTruthy();
+// });
 
 // test('POST request : /api/users, valid user expect user created', async () => {
 //   const data = await new Request('/api/users/', adminUser, null).post().catch(err => debug(err));

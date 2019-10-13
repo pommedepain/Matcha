@@ -2,7 +2,7 @@
 module.exports = {
   username: {
     type: 'string',
-    valid: ['Pilip2', 'Jean', 'claude', 'user4test', '78945'],
+    valid: ['Pilip2', 'Jean', 'claude', 'user4test', '78945', 'noé'],
     invalid: ['a', 'truc_', 'qwertyuiopasdfghjklzxcvbnm123456789123456789', '123', 'yol', 0, null],
     public: true,
     unique: true,

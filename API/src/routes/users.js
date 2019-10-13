@@ -15,7 +15,18 @@ const publicProperties = ['username', 'firstName', 'lastName', 'password', 'emai
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
-
+router.get('/:value', wrapper(async (req, res) => {
+  debug('Requesting list...');
+  return (new User().getList(req.params.value)
+    .then((response) => {
+      debug(response);
+      return res.status(200).json({
+        success: true,
+        payload: { value: 'read', response },
+      });
+    })
+  );
+}));
 
 router.get('/infos/:username', wrapper(async (req, res) => {
   debug('Request to get user information for :', req.params.username);
@@ -29,20 +40,9 @@ router.get('/infos/:username', wrapper(async (req, res) => {
     }));
 }));
 
-router.get('/:value', wrapper(async (req, res) => {
-  debug('Requesting user list...');
-  return (new User().getList(req.params.value)
-    .then(users => (
-      res.status(200).json({
-        success: true,
-        payload: { value: 'read', users },
-      })
-    ))
-  );
-}));
 
 router.get('/:username/commonTags', wrapper(async (req, res) => {
-  debug('Requesting user list...');
+  debug('Requesting list...');
   return (new User({ username: req.params.username }).getCommonTags()
     .then(users => (
       res.status(200).json({
@@ -64,8 +64,6 @@ router.get('/:username/:relation', wrapper(async (req, res) => {
     ))
   );
 }));
-
-
 
 router.get('/matches/:username', wrapper(async (req, res) => {
   debug('Request to get user matches :', req.params.username);

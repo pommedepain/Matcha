@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable camelcase */
 
 const debug = require('debug')('models:users');
@@ -99,23 +100,23 @@ class User extends Node {
     return new Promise((resolve, reject) => {
       if (this.data.node_a.properties.sexOrient) {
         const date = new Date();
-      let orientation = this.data.node_a.properties.gender === 'male' ? 'm' : 'f';
-      orientation = `${orientation}_${this.data.node_a.properties.sexOrient}`;
-      const data = {
-        node_a: this.data.node_a,
-        node_b: {
-          label: 'Orientation',
-          id: 'id',
-          properties: { id: `${orientation}`},
-        },
-        relation: {
-          label: 'IS',
-          properties: { creationDate: date.toISOString() },
-        },
-      };
-      new Relationship(data).createRelationship()
-        .then(() => resolve())
-        .catch(err => reject(err));
+        let orientation = this.data.node_a.properties.gender === 'male' ? 'm' : 'f';
+        orientation = `${orientation}_${this.data.node_a.properties.sexOrient}`;
+        const data = {
+          node_a: this.data.node_a,
+          node_b: {
+            label: 'Orientation',
+            id: 'id',
+            properties: { id: `${orientation}` },
+          },
+          relation: {
+            label: 'IS',
+            properties: { creationDate: date.toISOString() },
+          },
+        };
+        new Relationship(data).createRelationship()
+          .then(() => resolve())
+          .catch(err => reject(err));
       } else resolve();
     });
   }
@@ -131,7 +132,7 @@ class User extends Node {
           this.result = [];
           if (res.records.length !== 0) {
             res.records.forEach((record) => {
-              this.result.push({ username: record._fields[0] , commonTags: record._fields[1] });
+              this.result.push({ username: record._fields[0], commonTags: record._fields[1] });
             });
           }
           debug(this.result);
@@ -144,13 +145,13 @@ class User extends Node {
   addCompatibilities() {
     return new Promise((resolve, reject) => {
       if (this.data.node_a.properties.sexOrient) {
-        let session = this.driver.session();
+        const session = this.driver.session();
         const query = `MATCH z=(a:User { username: '${this.data.node_a.properties.username}'})-[p:IS]->(c:Orientation)-[q:LOOK_FOR]-(d:Orientation)<-[r:IS]-(b:User)
                     CREATE (a)-[t:COMPATIBLE]->(b)`;
         session.run(query)
-          .then(() => { session.close(); debug(`User compatibilities created for ${this.data.node_a.properties.username}`); resolve()})
-          .catch(err => reject(err));   
-      } else resolve();            
+          .then(() => { session.close(); debug(`User compatibilities created for ${this.data.node_a.properties.username}`); resolve(); })
+          .catch(err => reject(err));
+      } else resolve();
     });
   }
 
@@ -236,8 +237,6 @@ class User extends Node {
     });
   }
 
-
-
   getRelations(relation) {
     return new Promise((resolve, reject) => {
       this.data.relation = {
@@ -278,8 +277,8 @@ class User extends Node {
   updateUser(newData) {
     return new Promise((resolve, reject) => (
       new UserValidator(this.updateRequirements, this.user).validate()
-        .then(() => { if (newData.password) { this.user.password = newData.password }; return this.hashGenerator(); })
-        .then((pass) => { this.newData = newData; this.newData.password = pass; return this.updateNode(this.newData) })
+        .then(() => { if (newData.password) { this.user.password = newData.password; } return this.hashGenerator(); })
+        .then((pass) => { this.newData = newData; this.newData.password = pass; return this.updateNode(this.newData); })
         .then((user) => { this.updatedUser = user; return (this.generateAuthToken(user)); })
         .then((token) => { this.updatedUser.token = token; resolve(_.omit(this.updatedUser, 'password')); })
         .catch(err => reject(err))

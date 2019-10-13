@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable camelcase */
 
 const debug = require('debug')('models:relationships');
@@ -155,6 +156,7 @@ class Relationship {
         .then((res) => {
           session.close();
           if (res.records.length !== 0) {
+            // eslint-disable-next-line no-unused-expressions
             res.records[0]._fields[0].length !== 0 ? resolve(res.records[0]._fields[0]) : resolve(res.records[0]._fields[1]);
           } else resolve([]);
         })
