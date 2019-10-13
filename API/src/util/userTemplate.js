@@ -109,7 +109,7 @@ module.exports = {
     type: 'string',
     valid: ['true', 'false'],
     invalid: ['a', 'truc_', '42', 'qwertyuiopasdfghjklzxcvbnm123456789123456789', 0, null, false],
-    public: true,
+    public: false,
     unique: false,
   },
 };
