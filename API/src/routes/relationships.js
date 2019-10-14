@@ -18,10 +18,10 @@ router.use(express.urlencoded({ extended: true }));
 router.get('/type/:type', wrapper(async (req, res) => {
   debug('Request to get Relationship information for :', req.params.type);
   return (new Relationship({ relation: { label: req.params.type } }).getRelationships()
-    .then(relationship => (
+    .then(result => (
       res.status(200).json({
         success: true,
-        payload: { value: 'read', relationship },
+        payload: { value: 'read', result },
       })
     )));
 }));
@@ -29,10 +29,10 @@ router.get('/type/:type', wrapper(async (req, res) => {
 router.get('/mutual', wrapper(async (req, res) => {
   debug('Request to get Relationship information for :', req.body);
   return (new Relationship(req.body).getNodeMutualRelationships()
-    .then(relationship => (
+    .then(result => (
       res.status(200).json({
         success: true,
-        payload: { value: 'read', relationship },
+        payload: { value: 'read', result },
       })
     )));
 }));
@@ -40,10 +40,10 @@ router.get('/mutual', wrapper(async (req, res) => {
 router.get('/matches/:relation', wrapper(async (req, res) => {
   debug('Request to get matches');
   return (new Relationship(req.body).getMatches(req.params.relation)
-    .then(relationship => (
+    .then(result => (
       res.status(200).json({
         success: true,
-        payload: { value: 'read', relationship },
+        payload: { value: 'read', result },
       })
     )));
 }));
@@ -51,10 +51,10 @@ router.get('/matches/:relation', wrapper(async (req, res) => {
 router.post('/create', wrapper(async (req, res) => {
   debug('Request to add new Relationship :\n', _.pick(req.body, validProperties));
   return (new Relationship(req.body).createRelationship()
-    .then(relationship => (
+    .then(result => (
       res.status(200).json({
         success: true,
-        payload: { value: 'create', relationship },
+        payload: { value: 'create', result },
       })
     )));
 }));
@@ -62,10 +62,10 @@ router.post('/create', wrapper(async (req, res) => {
 router.post('/toggle', wrapper(async (req, res) => {
   debug('Request to add new Relationship :\n', _.pick(req.body, validProperties));
   return (new Relationship(req.body).toggleRelationship()
-    .then(relationship => (
+    .then(result => (
       res.status(200).json({
         success: true,
-        payload: { value: 'toggle', relationship },
+        payload: { value: 'toggle', result },
       })
     )));
 }));
@@ -73,10 +73,10 @@ router.post('/toggle', wrapper(async (req, res) => {
 router.delete('/delete/relation', [auth, admin], wrapper(async (req, res) => {
   debug('Request to delete :', req.body.relation);
   return (new Relationship(req.body).deleteRelationship()
-    .then(relationship => (
+    .then(result => (
       res.status(200).json({
         success: true,
-        payload: { value: 'delete', relationship },
+        payload: { value: 'delete', result },
       })
     )));
 }));
@@ -84,10 +84,10 @@ router.delete('/delete/relation', [auth, admin], wrapper(async (req, res) => {
 router.delete('/delete/node/', [auth, admin], wrapper(async (req, res) => {
   debug('Request to delete :', req.body.node_a);
   return (new Relationship(req.body).deleteThisNodeRelationships()
-    .then(relationship => (
+    .then(result => (
       res.status(200).json({
         success: true,
-        payload: { value: 'delete', relationship },
+        payload: { value: 'delete', result },
       })
     )));
 }));
@@ -95,10 +95,10 @@ router.delete('/delete/node/', [auth, admin], wrapper(async (req, res) => {
 router.delete('/delete/type', [auth, admin], wrapper(async (req, res) => {
   debug('Request to delete :', req.body.node_a);
   return (new Relationship(req.body).deleteThisTypeofRelationship()
-    .then(relationship => (
+    .then(result => (
       res.status(200).json({
         success: true,
-        payload: { value: 'delete', relationship },
+        payload: { value: 'delete', result },
       })
     )));
 }));
@@ -106,10 +106,10 @@ router.delete('/delete/type', [auth, admin], wrapper(async (req, res) => {
 router.delete('/delete/node/type', [auth, admin], wrapper(async (req, res) => {
   debug('Request to delete :', req.body.node_a);
   return (new Relationship(req.body).deleteThisNodeTypeofRelationship()
-    .then(relationship => (
+    .then(result => (
       res.status(200).json({
         success: true,
-        payload: { value: 'delete', relationship },
+        payload: { value: 'delete', result },
       })
     )));
 }));
@@ -117,10 +117,10 @@ router.delete('/delete/node/type', [auth, admin], wrapper(async (req, res) => {
 router.delete('/delete/duplicates', wrapper(async (req, res) => {
   debug('Request to delete duplicates');
   return (new Relationship(req.body).deleteRelationshipsDuplicates('User', 'COMPATIBLE', 'User')
-    .then(relationship => (
+    .then(result => (
       res.status(200).json({
         success: true,
-        payload: { value: 'delete', relationship },
+        payload: { value: 'delete', result },
       })
     )));
 }));

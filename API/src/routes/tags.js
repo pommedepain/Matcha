@@ -19,10 +19,10 @@ router.use(express.urlencoded({ extended: true }));
 router.get('/:value', wrapper(async (req, res) => {
   debug('Requesting Tag list...');
   return (new Tag().getList(req.params.value)
-    .then(tags => (
+    .then(result => (
       res.status(200).json({
         success: true,
-        payload: { value: 'read', tags },
+        payload: { value: 'read', result },
       })
     ))
   );
@@ -43,10 +43,10 @@ router.get('/:id', wrapper(async (req, res) => {
 router.post('/', [auth, admin], wrapper(async (req, res) => {
   debug('Request to add new Tag :\n', _.pick(req.body, validProperties));
   return (new Tag(_.pick(req.body, validProperties)).createTag()
-    .then(tag => (
+    .then(result => (
       res.status(200).json({
         success: true,
-        payload: { value: 'create', tag },
+        payload: { value: 'create', result },
       })
     )));
 }));
@@ -65,10 +65,10 @@ router.post('/', [auth, admin], wrapper(async (req, res) => {
 router.delete('/:id', [auth, admin], wrapper(async (req, res) => {
   debug('Request to delete :', req.params.id);
   return (new Tag({ id: req.params.id }).deleteTag()
-    .then(tag => (
+    .then(result => (
       res.status(200).json({
         success: true,
-        payload: { value: 'delete', tag },
+        payload: { value: 'delete', result },
       })
     )));
 }));

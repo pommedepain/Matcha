@@ -1,11 +1,11 @@
 const debug = require('debug')('tests:tag_validation');
 const each = require('jest-each').default;
 const _ = require('lodash');
-const TagValidator = require('../validation/tags');
-const incompleteTagData = require('./data/tags/incompleteTags');
-const validTagData = require('./data/tags/validTags');
-const invalidTagData = require('./data/tags/invalidTags');
-const tagTemplate = require('../util/tagTemplate');
+const TagValidator = require('../../../validation/tags');
+const incompleteTagData = require('../../data/tags/incompleteTags');
+const validTagData = require('../../data/tags/validTags');
+const invalidTagData = require('../../data/tags/invalidTags');
+const tagTemplate = require('../../../util/tagTemplate');
 
 const noRequirements = {};
 const fullRequirements = {};

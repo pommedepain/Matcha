@@ -1,7 +1,8 @@
 const userTemplate = require('../../../util/userTemplate');
 
 const validUserData = [];
-for (let i = 0; i < userTemplate.username.valid.length; i += 1) {
+const l = userTemplate.username.valid.length;
+for (let i = 0; i < l; i += 1) {
   validUserData.push(
     {
       username: userTemplate.username.valid[i],

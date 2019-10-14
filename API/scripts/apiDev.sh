@@ -2,9 +2,10 @@ neo4j start &&
 sleep 10 &&
 export matcha_jwtPrivateKey=aSecureKey &&
 # DEBUG=models:relationships,index,init:* nodemon index.js
-DEBUG=init:*,middleware:*,models:*,routes:*,validation:*,tests:*,index nodemon index.js
+# DEBUG=init:*,middleware:*,models:*,routes:*,validation:*,tests:*,index nodemon index.js
 # DEBUG=init:*,middleware:*,index,models:relationships nodemon index.js
 # DEBUG=index,init:* nodemon index.js
+DEBUG=index,routes:* nodemon index.js
 
 #DEBUG USAGE : DEBUG=DIR1:FILE1,DIR2:FILE2... do not include 'Class' if the filename contain it
 # EXAMPLES :

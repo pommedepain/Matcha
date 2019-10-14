@@ -89,9 +89,9 @@ class Relationship {
       relation: true,
     };
     const method = () => (new Promise((resolve, reject) => {
-      const query = `MATCH (a)-[r:${this.data.relation.label}]-(b)
-                    WHERE a.${this.data.node_a.id}='${this.data.node_a.properties[this.id_a]}'
-                    return b.${this.data.node_a.id}`;
+      const query = `MATCH (a:User {username:'${this.data.node_a.properties.username}'})-[r:${this.data.relation.label}]->(b),(b)-[l:${this.data.relation.label}]->(a)
+                    WITH a, collect(b.username) as targets
+                    return (targets)`;
       const session = this.driver.session();
       session.run(query)
         .then((res) => {
@@ -119,8 +119,8 @@ class Relationship {
     };
     const method = () => (new Promise((resolve, reject) => {
       const query = `MATCH (a)-[r:${type}]->(b),(a)<-[p:${type}]-(b)
-                    WITH a, collect(b) as targets
-                    RETURN (a),(targets)`;
+                    WITH a, collect(b.username) as targets
+                    RETURN (a.username),(targets)`;
       const session = this.driver.session();
       session.run(query)
         .then((res) => {
@@ -333,7 +333,7 @@ class Relationship {
       relation: false,
     };
     const method = () => (new Promise((resolve, reject) => {
-      const query = `MATCH (n:${labela})-[r:${reltype}]-(m:${labelb})
+      const query = `MATCH (n:${labela})-[r:${reltype}]->(m:${labelb})
       WITH n, m, collect(r)[1..] as rels
       FOREACH (r in rels | DELETE r)`;
       const session = this.driver.session();

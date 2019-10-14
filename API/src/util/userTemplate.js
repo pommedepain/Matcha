@@ -98,13 +98,6 @@ module.exports = {
     public: true,
     unique: false,
   },
-  optional: {
-    type: 'string',
-    valid: ['Pilip2', 'Jean', 'claude', 'user4test', '78945'],
-    invalid: ['a', 'truc_', '=/*', '`[', 'qwertyuiopasdfghjklzxcvbnm123456789123456789', 0, null],
-    public: true,
-    unique: false,
-  },
   isAdmin: {
     type: 'string',
     valid: ['true', 'false'],

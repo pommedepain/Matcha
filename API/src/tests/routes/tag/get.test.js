@@ -1,8 +1,8 @@
 const debug = require('debug')('tests:tag_route');
-const Request = require('../util/requestsClass');
-const invalidTags = require('./data/tags/invalidTags');
-const validTags = require('./data/tags/validTags');
-const incompleteTags = require('./data/tags/incompleteTags');
+const Request = require('../../../util/requestsClass');
+const invalidTags = require('../../data/tags/invalidTags');
+const validTags = require('../../data/tags/validTags');
+const incompleteTags = require('../../data/tags/incompleteTags');
 
 const adminUser = {
   username: 'Camille',

@@ -1,11 +1,11 @@
 const debug = require('debug')('tests:user_validation');
 const each = require('jest-each').default;
 const _ = require('lodash');
-const UserValidator = require('../validation/users');
-const incompleteUserData = require('./data/users/incompleteUsers');
-const validUserData = require('./data/users/validUsers');
-const invalidUserData = require('./data/users/invalidUsers');
-const userTemplate = require('../util/userTemplate');
+const UserValidator = require('../../../validation/users');
+const incompleteUserData = require('../../data/users/incompleteUsers');
+const validUserData = require('../../data/users/validUsers');
+const invalidUserData = require('../../data/users/invalidUsers');
+const userTemplate = require('../../../util/userTemplate');
 
 const noRequirements = {};
 const fullRequirements = {};

@@ -219,10 +219,13 @@ class User extends Node {
   }
 
   getList(value) {
+    debug(this.publicProperties.find(el => (el === value)));
     return new Promise((resolve, reject) => {
-      this.getNodeList(value)
-        .then(list => resolve(list))
-        .catch(err => reject(err));
+      if (this.publicProperties.find(el => (el === value)) !== undefined) {
+        this.getNodeList(value)
+          .then(list => resolve(list))
+          .catch(err => reject(err));
+      } else (resolve());
     });
   }
 
