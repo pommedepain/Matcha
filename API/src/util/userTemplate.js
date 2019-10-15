@@ -57,14 +57,21 @@ module.exports = {
     unique: false,
   },
   ageMin: {
-    type: 'numstring',
+    type: 'num',
     valid: ['18', '99'],
     invalid: ['17', '-12', '100', 0, null, false],
     public: true,
     unique: false,
   },
   ageMax: {
-    type: 'numstring',
+    type: 'num',
+    valid: ['19', '100'],
+    invalid: ['18', '-12', '101', 0, null, false],
+    public: true,
+    unique: false,
+  },
+  age: {
+    type: 'num',
     valid: ['19', '100'],
     invalid: ['18', '-12', '101', 0, null, false],
     public: true,
@@ -91,8 +98,8 @@ module.exports = {
     public: true,
     unique: false,
   },
-  photo: {
-    type: 'string',
+  photos: {
+    type: 'arrayOfString',
     valid: ['https://uinames.com/api/photos/male/1.jpg', 'https://uinames.com/api/photos/female/1.jpg'],
     invalid: ['4', '161', 0, null, false],
     public: true,

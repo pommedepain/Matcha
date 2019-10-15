@@ -16,6 +16,15 @@ class Relationship {
     if (this.data && this.data.node_b) this.id_b = this.data.node_b.id;
     this.driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
     debug('Relationship constructor called');
+    this.relevantProperties = [
+      'firsname',
+      'age',
+      'gender',
+      'sexOrient',
+      'bio',
+      'photos',
+      'username',
+    ];
   }
 
   wrapper(method, requirements) {
@@ -156,8 +165,9 @@ class Relationship {
         .then((res) => {
           session.close();
           if (res.records.length !== 0) {
+            const users = res.records[0]._fields[0].map(user => (_.pick(user, this.relevantProperties)));
             // eslint-disable-next-line no-unused-expressions
-            res.records[0]._fields[0].length !== 0 ? resolve(_.uniq(res.records[0]._fields[0])) : resolve(_.uniq(res.records[0]._fields[1]));
+            res.records[0]._fields[0].length !== 0 ? resolve(_.uniq(users)) : resolve(_.uniq(res.records[0]._fields[1]));
           } else resolve([]);
         })
         .catch((err) => {

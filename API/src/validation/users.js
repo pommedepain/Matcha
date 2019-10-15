@@ -30,7 +30,7 @@ class UserValidator {
       || this.data.age === 'undefined' || this.data.age === 0 || this.data.age === null
       || this.data.ageMin === 'undefined' || this.data.ageMin === 0 || this.data.ageMin === null
       || this.data.ageMax === 'undefined' || this.data.ageMax === 0 || this.data.ageMax === null
-      || this.data.photo === 'undefined' || this.data.photo === 0 || this.data.photo === null
+      || this.data.photos === 'undefined' || this.data.photos === 0 || this.data.photos === null
       || this.data.sexOrient === 'undefined' || this.data.sexOrient === 0 || this.data.sexOrient === null
       || this.data.isAdmin === 'undefined' || this.data.isAdmin === 0 || this.data.isAdmin === null
     ) this.data = null;
@@ -88,11 +88,14 @@ class UserValidator {
       if (this.req.optional) sch.optional = Joi.string().alphanum().min(3).max(30).required();
       else sch.optional = Joi.string().alphanum().min(3).max(30);
 
-      if (this.req.photo) {
-        sch.photo = Joi.string()
+      if (this.req.photos) {
+        sch.photos = Joi.array().items(Joi.string()
           .regex(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/)
-          .required();
-      } else sch.photo = Joi.string().regex(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/);
+          .required());
+      } else {
+        sch.photos = Joi.array().items(Joi.string()
+          .regex(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/));
+      }
 
       if (this.req.isAdmin) sch.isAdmin = Joi.string().regex(/^(true|false)$/).required();
       else sch.isAdmin = Joi.string().regex(/^(true|false)$/);

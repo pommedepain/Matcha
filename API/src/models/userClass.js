@@ -65,7 +65,7 @@ class User extends Node {
       'gender',
       'sexOrient',
       'bio',
-      'photo',
+      'photos',
       'username',
     ];
     debug('User constructor called');
@@ -266,7 +266,7 @@ class User extends Node {
           this.result = [];
           if (res.records.length !== 0) {
             res.records.forEach((record) => {
-              this.result.push({ user: record._fields[0], compTags: _.uniq(record._fields[1]) });
+              this.result.push({ user: _.pick(record._fields[0], this.relevantProperties), compTags: _.uniq(record._fields[1]) });
             });
           }
           debug(this.result);
