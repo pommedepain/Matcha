@@ -55,6 +55,14 @@ test('GET request : infos array, expect match list for each user', async () => {
   return expect(Promise.all(promises)).resolves.toBeTruthy();
 });
 
+test('GET request : infos array, expect suggestions lists', async () => {
+  const res = await axios.get(`${route}/username`, null, null);
+  const promises = res.data.payload.result.map(user => (
+    axios.get(`${route}/suggestions/${user}`, null, null)
+  ));
+  return expect(Promise.all(promises)).resolves.toBeTruthy();
+});
+
 // test('POST request : /api/users, valid user expect user created', async () => {
 //   const data = await new Request('/api/users/', validNewUser, null).post().catch(err => debug(err));
 //   return expect(data).toBeTruthy();

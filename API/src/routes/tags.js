@@ -19,12 +19,13 @@ router.use(express.urlencoded({ extended: true }));
 router.get('/:value', wrapper(async (req, res) => {
   debug('Requesting Tag list...');
   return (new Tag().getList(req.params.value)
-    .then(result => (
-      res.status(200).json({
+    .then((result) => {
+      debug(result);
+      return res.status(200).json({
         success: true,
         payload: { value: 'read', result },
-      })
-    ))
+      });
+    })
   );
 }));
 
@@ -43,12 +44,13 @@ router.get('/:id', wrapper(async (req, res) => {
 router.post('/', [auth, admin], wrapper(async (req, res) => {
   debug('Request to add new Tag :\n', _.pick(req.body, validProperties));
   return (new Tag(_.pick(req.body, validProperties)).createTag()
-    .then(result => (
-      res.status(200).json({
+    .then((result) => {
+      debug(result);
+      return res.status(200).json({
         success: true,
         payload: { value: 'create', result },
-      })
-    )));
+      });
+    }));
 }));
 
 // router.put('/:id', [auth, admin], wrapper(async (req, res) => {
@@ -65,23 +67,25 @@ router.post('/', [auth, admin], wrapper(async (req, res) => {
 router.delete('/:id', [auth, admin], wrapper(async (req, res) => {
   debug('Request to delete :', req.params.id);
   return (new Tag({ id: req.params.id }).deleteTag()
-    .then(result => (
-      res.status(200).json({
+    .then((result) => {
+      debug(result);
+      return res.status(200).json({
         success: true,
         payload: { value: 'delete', result },
-      })
-    )));
+      });
+    }));
 }));
 
 router.delete('/delete/duplicates', wrapper(async (req, res) => {
   debug('Request to delete duplicates');
   return (new Tag().deleteTagsDuplicates()
-    .then(result => (
-      res.status(200).json({
+    .then((result) => {
+      debug(result);
+      return res.status(200).json({
         success: true,
         payload: { value: 'delete', result },
-      })
-    )));
+      });
+    }));
 }));
 
 module.exports = router;

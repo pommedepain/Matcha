@@ -166,8 +166,9 @@ class Relationship {
           session.close();
           if (res.records.length !== 0) {
             const users = res.records[0]._fields[0].map(user => (_.pick(user, this.relevantProperties)));
+            // debug(res.records[0]._fields[1]);
             // eslint-disable-next-line no-unused-expressions
-            res.records[0]._fields[0].length !== 0 ? resolve(_.uniq(users)) : resolve(_.uniq(res.records[0]._fields[1]));
+            res.records[0]._fields[0].length !== 0 ? resolve(_.uniq(users)) : debug(res.records[0]._fields[1]); resolve(_.uniq(res.records[0]._fields[1]));
           } else resolve([]);
         })
         .catch((err) => {

@@ -294,7 +294,37 @@ class User extends Node {
         label: relation,
       };
       this.getNodetypeofRelationships()
-        .then(list => resolve(list))
+        .then((list) => { debug(list); return (resolve(list)); })
+        .catch(err => reject(err));
+    });
+  }
+
+  getUserIsTags(username) {
+    return new Promise((resolve, reject) => {
+      const session = this.driver.session();
+      const query = `MATCH (a:User {username:'${username}'})-[r:IS]->(b:Tag)
+                    WITH a, collect(b.id) as tags
+                    RETURN tags`;
+      session.run(query)
+        .then((res) => {
+          session.close();
+          resolve(res.records[0]._fields[0]);
+        })
+        .catch(err => reject(err));
+    });
+  }
+
+  getUserLookTags(username) {
+    return new Promise((resolve, reject) => {
+      const session = this.driver.session();
+      const query = `MATCH (a:User {username:'${username}'})-[r:LOOK_FOR]->(b:Tag)
+                    WITH a, collect(b.id) as tags
+                    RETURN tags`;
+      session.run(query)
+        .then((res) => {
+          session.close();
+          resolve(res.records[0]._fields[0]);
+        })
         .catch(err => reject(err));
     });
   }
@@ -304,7 +334,9 @@ class User extends Node {
       debug('Getting user info for :', this.user);
       new UserValidator(this.getRequirements, this.user).validate()
         .then(() => this.getNodeInfo())
-        .then(user => resolve(user))
+        .then((user) => { this.result = user; return (this.getUserIsTags(this.data.node_a.properties.username)); })
+        .then((isTags) => { debug(isTags); this.result.isTags = isTags; return (this.getUserLookTags(this.data.node_a.properties.username)); })
+        .then((lookTags) => { debug(lookTags); this.result.lookTags = lookTags; return (resolve(this.result)); })
         .catch(err => reject(err));
     });
   }

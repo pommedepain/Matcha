@@ -10,7 +10,7 @@ const router = express.Router();
 const User = require('../models/userClass');
 
 const validProperties = ['username', 'firstName', 'lastName', 'password', 'email', 'birthdate', 'bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'localisation', 'photos', 'tags', 'optional'];
-const publicProperties = ['age', 'username', 'firstName', 'lastName', 'password', 'email', 'birthdate', 'bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'localisation', 'tags', 'photos', 'optional', 'error', 'value'];
+const publicProperties = ['age', 'isTags', 'lookTags', 'username', 'firstName', 'lastName', 'password', 'email', 'birthdate', 'bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'localisation', 'tags', 'photos', 'optional', 'error', 'value'];
 
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
@@ -57,7 +57,7 @@ router.get('/suggestions/:username', wrapper(async (req, res) => {
   debug('Request to get user matches :', req.params.username);
   return (new User({ username: req.params.username }).getSuggestions()
     .then((result) => {
-      debug('haha', result);
+      debug(result);
       return res.status(200).json({
         success: true,
         payload: { value: 'read', result },
@@ -69,12 +69,13 @@ router.get('/suggestions/:username', wrapper(async (req, res) => {
 router.get('/:username/commonTags', wrapper(async (req, res) => {
   debug('Requesting list...');
   return (new User({ username: req.params.username }).getCommonTags()
-    .then(result => (
-      res.status(200).json({
+    .then((result) => {
+      debug(result);
+      return res.status(200).json({
         success: true,
         payload: { value: 'read', result },
-      })
-    ))
+      });
+    })
   );
 }));
 
@@ -94,45 +95,49 @@ router.get('/:username/:relation', wrapper(async (req, res) => {
 router.post('/', wrapper(async (req, res) => {
   debug('Request to add new user :\n', req.body);
   return (new User(req.body).createUser()
-    .then(result => (
-      res.status(200).json({
+    .then((result) => {
+      debug(result);
+      return res.status(200).json({
         success: true,
         payload: { value: 'create', result },
-      })
-    )));
+      });
+    }));
 }));
 
 router.put('/:username', [auth, identify], wrapper(async (req, res) => {
   debug('Request to update :\n', _.pick(req.user, validProperties));
   return (new User(_.pick(req.user, validProperties)).updateUser(req.body)
-    .then(result => (
-      res.status(200).json({
+    .then((result) => {
+      debug(result);
+      return res.status(200).json({
         success: true,
         payload: { value: 'update', result },
-      })
-    )));
+      });
+    }));
 }));
 
 router.delete('/:username', [auth, admin], wrapper(async (req, res) => {
   debug('Request to delete :', req.params.username);
   return (new User({ username: req.params.username }).deleteUser()
-    .then(result => (
-      res.status(200).json({
+    .then((result) => {
+      debug(result);
+      return res.status(200).json({
         success: true,
         payload: { value: 'delete', result },
-      })
-    )));
+      });
+    }));
 }));
 
 router.delete('/delete/duplicates', wrapper(async (req, res) => {
   debug('Request to delete duplicates');
   return (new User().deleteUsersDuplicates()
-    .then(result => (
-      res.status(200).json({
+    .then((result) => {
+      debug(result);
+      return res.status(200).json({
         success: true,
         payload: { value: 'delete', result },
-      })
-    )));
+      });
+    }));
 }));
 
 module.exports = router;
