@@ -9,7 +9,7 @@ const User = require('../models/userClass');
 const props = ['gender', 'email', 'password'];
 const requiredProperties = ['username', 'firstName', 'lastName', 'password', 'email', 'birthdate'];
 const optionalProperties = ['bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'tags', 'photo', 'localisation', 'optional', 'isAdmin'];
-const amount = 10;
+const amount = 30;
 
 function rand(min, max) { // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -23,7 +23,9 @@ const admin = {
   sexOrient: 'hetero',
   password: 'Test12345*',
   email: 'camille@gmail.com',
-  birthdate: '1992-27-03',
+  birthdate: '1992-03-27',
+  ageMin: 18,
+  ageMax: 99,
   tags: [{ id: 'athlete', text: 'something' }, { id: 'book', text: 'lala' }],
   isAdmin: 'true',
 };
@@ -35,6 +37,8 @@ const admin2 = {
   password: 'Test12*',
   gender: 'female',
   sexOrient: 'hetero',
+  ageMin: 18,
+  ageMax: 99,
   email: 'Philoutre@gmail.com',
   birthdate: '1996-02-14',
   tags: [{ id: 'athlete', text: 'something' }, { id: 'book', text: 'lala' }],
@@ -85,17 +89,26 @@ function userParser(user) {
       newUser.password = 'Test123456*';
       newUser.photo = user.photo;
       newUser.bio = 'I love Chicken';
-      newUser.localisation = rand(1, 100);
+      newUser.localisation = rand(5, 100);
       const date = new Date(user.birthday.raw * 1000);
-      const birthdate = `${date.getFullYear()}-${date.getMonth()}-${date.getDay()}`;
+      const year = date.getFullYear();
+      let month = date.getMonth();
+      let day = date.getDay();
+      debug(`${year}-${month}-${day}`);
+      if (month === 0) month += 1;
+      if (month < 10) month = `0${month}`;
+      if (day === 0) day += 1;
+      if (day < 10) day = `0${day}`;
+      debug(`${year}-${month}-${day}`);
+      const birthdate = `${year}-${month}-${day}`;
       newUser.birthdate = birthdate;
       const sexOrient = rand(1, 5);
       if (sexOrient === 1 || sexOrient === 5) newUser.sexOrient = 'hetero';
       else if (sexOrient === 2) newUser.sexOrient = 'homo';
       else if (sexOrient === 3) newUser.sexOrient = 'bi';
       else if (sexOrient === 4) newUser.sexOrient = 'pan';
-      newUser.ageMin = rand(18, 99);
-      newUser.ageMax = rand(newUser.ageMin, 100);
+      newUser.ageMin = rand(18, 35);
+      newUser.ageMax = rand(newUser.ageMin + 5, 100);
       newUser.tags = [];
       resolve(newUser);
     }

@@ -27,6 +27,7 @@ class UserValidator {
       || this.data.birthdate === 'undefined' || this.data.birthdate === 0 || this.data.birthdate === null
       || this.data.bio === 'undefined' || this.data.bio === 0 || this.data.bio === null
       || this.data.gender === 'undefined' || this.data.gender === 0 || this.data.gender === null
+      || this.data.age === 'undefined' || this.data.age === 0 || this.data.age === null
       || this.data.ageMin === 'undefined' || this.data.ageMin === 0 || this.data.ageMin === null
       || this.data.ageMax === 'undefined' || this.data.ageMax === 0 || this.data.ageMax === null
       || this.data.photo === 'undefined' || this.data.photo === 0 || this.data.photo === null
@@ -70,6 +71,9 @@ class UserValidator {
 
       if (this.req.ageMax) sch.ageMax = Joi.number().integer().min(19).max(100).required();
       else sch.ageMax = Joi.number().integer().min(19).max(100);
+
+      if (this.req.age) sch.age = Joi.number().integer().min(18).max(100).required();
+      else sch.age = Joi.number().integer().min(18).max(100);
 
       if (this.req.localisation) {
         sch.localisation = Joi.number().integer().min(5).max(160).required();

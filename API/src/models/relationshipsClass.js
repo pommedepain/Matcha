@@ -90,7 +90,7 @@ class Relationship {
     };
     const method = () => (new Promise((resolve, reject) => {
       const query = `MATCH (a:User {username:'${this.data.node_a.properties.username}'})-[r:${this.data.relation.label}]->(b),(b)-[l:${this.data.relation.label}]->(a)
-                    WITH a, collect(b.username) as targets
+                    WITH a, collect(properties(b)) as targets
                     return (targets)`;
       const session = this.driver.session();
       session.run(query)
@@ -149,7 +149,7 @@ class Relationship {
     };
     const method = () => (new Promise((resolve, reject) => {
       const query = `MATCH (a:${this.data.node_a.label} {${this.data.node_a.id}: '${this.data.node_a.properties[this.id_a]}'})-[r:${this.data.relation.label}]-(b)
-                    WITH a, collect(b.username) as users, collect(b.id) as tags
+                    WITH a, collect(DISTINCT properties(b)) as users, collect(b.id) as tags
                     RETURN users,tags`;
       const session = this.driver.session();
       session.run(query)
@@ -157,7 +157,7 @@ class Relationship {
           session.close();
           if (res.records.length !== 0) {
             // eslint-disable-next-line no-unused-expressions
-            res.records[0]._fields[0].length !== 0 ? resolve(res.records[0]._fields[0]) : resolve(res.records[0]._fields[1]);
+            res.records[0]._fields[0].length !== 0 ? resolve(_.uniq(res.records[0]._fields[0])) : resolve(_.uniq(res.records[0]._fields[1]));
           } else resolve([]);
         })
         .catch((err) => {

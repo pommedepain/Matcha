@@ -10,7 +10,7 @@ const router = express.Router();
 const User = require('../models/userClass');
 
 const validProperties = ['username', 'firstName', 'lastName', 'password', 'email', 'birthdate', 'bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'localisation', 'photo', 'tags', 'optional'];
-const publicProperties = ['username', 'firstName', 'lastName', 'password', 'email', 'birthdate', 'bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'localisation', 'tags', 'photo', 'optional', 'error', 'value'];
+const publicProperties = ['age', 'username', 'firstName', 'lastName', 'password', 'email', 'birthdate', 'bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'localisation', 'tags', 'photo', 'optional', 'error', 'value'];
 
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
@@ -46,6 +46,18 @@ router.get('/matches/:username', wrapper(async (req, res) => {
   return (new User({ username: req.params.username }).getMatches()
     .then((result) => {
       debug(result);
+      return res.status(200).json({
+        success: true,
+        payload: { value: 'read', result },
+      });
+    }));
+}));
+
+router.get('/suggestions/:username', wrapper(async (req, res) => {
+  debug('Request to get user matches :', req.params.username);
+  return (new User({ username: req.params.username }).getSuggestions()
+    .then((result) => {
+      debug('haha', result);
       return res.status(200).json({
         success: true,
         payload: { value: 'read', result },

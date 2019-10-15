@@ -25,9 +25,9 @@ class User extends Node {
     super({ node_a: node });
     this.data = { node_a: node };
     this.user = this.data.node_a.properties;
-    this.allProperties = [];
-    this.publicProperties = [];
-    this.optionalProperties = [];
+    this.allProperties = ['age'];
+    this.publicProperties = ['age'];
+    this.optionalProperties = ['age'];
 
     Object.keys(userTemplate).forEach((property) => {
       this.allProperties.push(property);
@@ -59,6 +59,15 @@ class User extends Node {
     this.tagRequirements = {
       id: true,
     };
+    this.relevantProperties = [
+      'firsname',
+      'age',
+      'gender',
+      'sexOrient',
+      'bio',
+      'photo',
+      'username',
+    ];
     debug('User constructor called');
     this.driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
 
@@ -121,33 +130,13 @@ class User extends Node {
     });
   }
 
-  getCommonTags() {
-    return new Promise((resolve, reject) => {
-      const session = this.driver.session();
-      const query = `MATCH (a:User { username: '${this.data.node_a.properties.username}'})-[r:LOOK_FOR]->(c:Tag)<-[l:IS]-(b:User),(a)-[m:COMPATIBLE]-(b)
-                    WITH a,b, collect(c.id) as common
-                    RETURN (b.username),common`;
-      session.run(query)
-        .then((res) => {
-          this.result = [];
-          if (res.records.length !== 0) {
-            res.records.forEach((record) => {
-              this.result.push({ username: record._fields[0], commonTags: record._fields[1] });
-            });
-          }
-          debug(this.result);
-          resolve(this.result);
-        })
-        .catch(err => reject(err));
-    });
-  }
-
   addCompatibilities() {
     return new Promise((resolve, reject) => {
       if (this.data.node_a.properties.sexOrient) {
         const session = this.driver.session();
         const query = `MATCH z=(a:User { username: '${this.data.node_a.properties.username}'})-[p:IS]->(c:Orientation)-[q:LOOK_FOR]-(d:Orientation)<-[r:IS]-(b:User)
-                    CREATE (a)-[t:COMPATIBLE]->(b)`;
+                      WHERE (b.age <= a.ageMax AND b.age >= a.ageMin AND a.age <= b.ageMax AND a.age >= b.ageMin)
+                      CREATE (a)-[t:COMPATIBLE]->(b)`;
         session.run(query)
           .then(() => { session.close(); debug(`User compatibilities created for ${this.data.node_a.properties.username}`); resolve(); })
           .catch(err => reject(err));
@@ -240,6 +229,65 @@ class User extends Node {
     });
   }
 
+  getSuggestions() {
+    return new Promise((resolve, reject) => {
+      this.getRelations('COMPATIBLE')
+        .then((targets) => { this.targets = _.uniq(targets); return (this.getCommonTags()); })
+        .then((common) => {
+          this.common = common;
+          this.maxcomp = 0;
+          this.list = this.targets.map((target) => {
+            if (this.common.find(el => (target.username === el.user.username)) === undefined) {
+              return ({ user: target, compTags: [] });
+            } const l = this.common.find(el => (target.username === el.user.username)).compTags.length;
+            if (this.maxcomp <= l) { this.maxcomp = l; }
+            return (this.common.find(el => (target.username === el.user.username)));
+          });
+          this.result = [];
+          for (let i = this.maxcomp; i >= 0; i -= 1) {
+            this.list.forEach((element) => {
+              if (element.compTags.length === i) this.result.push(element);
+            });
+          }
+          resolve(this.result);
+        })
+        .catch(err => reject(err));
+    });
+  }
+
+  getCommonTags() {
+    return new Promise((resolve, reject) => {
+      const session = this.driver.session();
+      const query = `MATCH (a:User { username: '${this.data.node_a.properties.username}'})-[r:LOOK_FOR]->(c:Tag)<-[l:IS]-(b:User),(a)-[m:COMPATIBLE]-(b)
+                    WITH a,b, collect(c.id) as common
+                    RETURN properties(b),common`;
+      session.run(query)
+        .then((res) => {
+          this.result = [];
+          if (res.records.length !== 0) {
+            res.records.forEach((record) => {
+              this.result.push({ user: record._fields[0], compTags: _.uniq(record._fields[1]) });
+            });
+          }
+          debug(this.result);
+          resolve(this.result);
+        })
+        .catch(err => reject(err));
+    });
+  }
+
+  calcAge() {
+    return new Promise((resolve, reject) => {
+      if (this.data.node_a.properties.birthdate) {
+        const getAge = birthDate => Math.floor((new Date() - new Date(birthDate).getTime()) / 3.15576e+10);
+        const age = getAge(this.data.node_a.properties.birthdate);
+        debug(age);
+        this.data.node_a.properties.age = age;
+        resolve();
+      } resolve();
+    });
+  }
+
   getRelations(relation) {
     return new Promise((resolve, reject) => {
       this.data.relation = {
@@ -266,6 +314,7 @@ class User extends Node {
       new UserValidator(this.creationRequirements, this.user).validate()
         .then(() => this.redundancyCheck())
         .then(() => this.hashGenerator())
+        .then(() => this.calcAge())
         .then(() => this.createNode())
         .then(() => this.validateTags())
         .then(() => this.addTagsRelationships())
