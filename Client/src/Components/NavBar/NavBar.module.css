@@ -40,11 +40,13 @@ a, a:hover {
   color: black;
 }
 
+.wrapper {
+  margin: 1% 1% 1% 1%;
+}
 .username {
 	display: flex;
 	font-family: 'ComfortaaLight', cursive;
 	font-size: 0.4em;
-	margin-top: 5%;
 }
 
 .buttons {

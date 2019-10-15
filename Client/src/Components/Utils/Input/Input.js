@@ -41,7 +41,7 @@ const input = (props) => {
 				style={props.style}
 				className={inputClasses.join(' ')} 
 				{...props.elementConfig}
-				value={props.value}
+				defaultValue={props.value}
 				onChange={props.changed} />;
 			break;
 		case ( 'radio' ) :
@@ -68,7 +68,7 @@ const input = (props) => {
 			inputElement = <textarea 
 				className={inputClasses.join(' ')} 
 				{...props.elementConfig}
-				value={props.value}
+				defaultValue={props.value}
 				onChange={props.changed} />;
 			break;
 		case ( 'select' ):
@@ -91,7 +91,7 @@ const input = (props) => {
 			inputElement = <input 
 				className={inputClasses.join(' ')} 
 				{...props.elementConfig}
-				value={props.value}
+				defaultValue={props.value}
 				onChange={props.changed} />;
 	}
 

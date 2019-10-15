@@ -38,7 +38,7 @@ class NavBar extends React.Component {
 				{isLoggedIn === false ?
 					<Login />
 					:
-					[<div key={1}>
+					[<div key={1} className={classes.wrapper}>
 						<h4 className={classes.username}>Welcome back {JWT.data.username} !</h4>
 						<div className={classes.buttons}>
 							<Link 

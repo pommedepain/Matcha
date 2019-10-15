@@ -46,8 +46,8 @@ class Account extends Component {
 	getUsers = () => {
 		axios.get(`http://localhost:4000/API/users/username`)
 			.then(response => {
-				// console.log(response.data.payload.users);
-				this.setState({ users: response.data.payload.users });
+				// console.log(response.data.payload.result);
+				this.setState({ users: response.data.payload.result });
 			})
 			.catch(err => { 
 				console.log(err);
@@ -57,8 +57,8 @@ class Account extends Component {
 	getEmails = () => {
 		axios.get(`http://localhost:4000/API/users/email`)
 			.then(response => {
-				// console.log(response.data.payload.users);
-				this.setState({ emails: response.data.payload.users });
+				// console.log(response.data.payload.result);
+				this.setState({ emails: response.data.payload.result });
 			})
 			.catch(err => { 
 				console.log(err);
@@ -114,6 +114,7 @@ class Account extends Component {
 				resolve(isValid);
 			}
 			if (rules.checkEmail === true) {
+				// console.log(state)
 				if (state.emails.includes(value) === false) {
 					isValid = true && isValid;
 					resolve(isValid);
@@ -157,7 +158,7 @@ class Account extends Component {
 		// if (updatedFormElement.value !== this.context.JWT.data[inputIdentifier]) {
 			this.checkValidity(updatedFormElement.value, updatedFormElement.validation, inputIdentifier, this.state, this.context.JWT.data)
 				.then((response) => {
-					console.log(response);
+					// console.log(response);
 					updatedFormElement.valid = response;
 					if (response && updatedFormElement.value !== this.context.JWT.data[inputIdentifier]) {
 						updatedFormElement.touched = true;
@@ -170,7 +171,6 @@ class Account extends Component {
 					// eslint-disable-next-line no-unused-vars
 					for (let inputIdentifier in updatedOrderForm) {
 						formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
-						console.log(inputIdentifier + " : " + formIsValid);
 					}
 					this.setState({ orderForm: updatedOrderForm, formIsValid: formIsValid });
 				})
@@ -281,7 +281,7 @@ class Account extends Component {
 			.then(response => {
 				this.setState({ loading: false })
 				// console.log(response);
-				console.log(response.data.success)
+				console.log(response.data.payload)
 				if (response.data.success) {
 					this.setState({
 						alertDesign: {
@@ -290,7 +290,7 @@ class Account extends Component {
 							color: "green",
 							function: true
 						},
-						payload: response.data.payload.user.token
+						payload: response.data.payload.result.token
 					});
 				}
 				if (submitDatas.email) {
@@ -302,13 +302,13 @@ class Account extends Component {
 			})
 			.catch(error => {
 				this.setState({
-					errors: error.response.data.payload,
+					errors: error,
 					loading: false
 				})
 				console.log(error)
 				this.setState({
 					alertDesign: {
-						message: error.response.data.payload,
+						message: error,
 						button:"Try Again",
 						color: "red"
 					}
