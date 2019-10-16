@@ -6,6 +6,7 @@ const config = require('config');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const neo4j = require('neo4j-driver').v1;
+const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
 const UserValidator = require('../validation/users');
 const TagValidator = require('../validation/tags');
@@ -22,12 +23,13 @@ class User extends Node {
       id: 'username',
       properties: data,
     };
+    if (node.properties && node.properties.active === undefined) { node.properties.active = 'false'; }
     super({ node_a: node });
     this.data = { node_a: node };
     this.user = this.data.node_a.properties;
     this.allProperties = ['age'];
     this.publicProperties = ['age'];
-    this.optionalProperties = ['age'];
+    this.optionalProperties = ['age', 'confToken'];
 
     Object.keys(userTemplate).forEach((property) => {
       this.allProperties.push(property);
@@ -83,10 +85,19 @@ class User extends Node {
           .then((hash) => {
             this.user.password = hash;
             this.data.node_a.properties.password = hash;
-            resolve();
+            if (this.user.active === 'false') {
+              const token = this.user.username;
+              bcrypt.genSalt(5)
+                .then(salt => bcrypt.hash(token, salt))
+                .then((tokenHash) => {
+                  this.user.confToken = tokenHash;
+                  this.data.node_a.properties.confToken = tokenHash;
+                  resolve();
+                });
+            } else resolve();
           })
           .catch(err => debug(err));
-      } else resolve(null);
+      } else resolve();
     });
   }
 
@@ -341,6 +352,65 @@ class User extends Node {
     });
   }
 
+  sendConfMail() {
+    return new Promise((resolve, reject) => {
+      debug('SENDING CONFIRMATION MAIL');
+
+      const transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+          user: 'cajulien.42.matcha@gmail.com',
+          pass: 'Ff7midgar6',
+        },
+      });
+      const token = this.user.confToken.replace(/\//gi, '\\');
+      debug(this.user.confToken);
+      debug(token);
+
+      transporter.sendMail({
+        from: 'cajulien.42.matcha@gmail.com',
+        to: 'example@example.com',
+        subject: 'Matcha account confirmation',
+        text: 'Hi',
+        html: `Hi ${this.user.username}, to complete your registration to Matcha, please click on <a href='http://localhost:4000/api/users/confirm/${this.user.username}/${token}'>this link</a>`, // html body
+      }).then(() => resolve())
+        .catch(err => reject(err));
+    });
+  }
+
+  matchConfTokens(token) {
+    return new Promise((resolve, reject) => {
+      this.getUserInfo()
+        .then((user) => {
+          
+          let decodedToken = token.replace(/%5C/gi, '/');
+          decodedToken = token.replace(/\\/gi, '/');
+          debug(user.confToken, decodedToken);
+          if (user.confToken === decodedToken) resolve('email confirmed');
+          else reject(new Error('bad request'));
+        })
+        .catch(err => reject(err));
+    });
+  }
+
+  eraseConfToken() {
+    const newData = {
+      username: this.username,
+      confToken: '',
+      active: 'true',
+    };
+    return (this.updateUser(newData));
+  }
+
+  confirmUser(token) {
+    return new Promise((resolve, reject) => {
+      this.matchConfTokens(token)
+        .then(() => this.eraseConfToken())
+        .then(user => resolve(user))
+        .catch(err => reject(err));
+    });
+  }
+
   createUser() {
     return new Promise((resolve, reject) => (
       new UserValidator(this.creationRequirements, this.user).validate()
@@ -352,6 +422,7 @@ class User extends Node {
         .then(() => this.addTagsRelationships())
         .then(() => this.addOrientRelationships())
         .then(() => this.addCompatibilities())
+        .then(() => { if (this.data.node_a.properties.active === 'false') return this.sendConfMail(); return (new Promise(res => res())); })
         .then(() => resolve(_.pick(this.user,
           this.publicProperties.concat(this.optionalProperties))))
         .catch(err => reject(err))

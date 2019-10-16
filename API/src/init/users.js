@@ -8,7 +8,7 @@ const User = require('../models/userClass');
 
 const props = ['gender', 'email', 'password'];
 const requiredProperties = ['username', 'firstName', 'lastName', 'password', 'email', 'birthdate'];
-const optionalProperties = ['bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'tags', 'photos', 'localisation', 'optional', 'isAdmin'];
+const optionalProperties = ['bio', 'active', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'tags', 'photos', 'localisation', 'optional', 'isAdmin'];
 const amount = 10;
 
 function rand(min, max) { // min and max included
@@ -110,6 +110,7 @@ function userParser(user) {
       newUser.ageMin = rand(18, 35);
       newUser.ageMax = rand(newUser.ageMin + 5, 100);
       newUser.tags = [];
+      newUser.active = 'true';
       resolve(newUser);
     }
   });

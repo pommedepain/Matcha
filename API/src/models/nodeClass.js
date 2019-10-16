@@ -92,6 +92,7 @@ class Node extends Relationship {
       Object.keys(newData).forEach((key) => {
         if (newData[key]) this.props[key] = newData[key];
       });
+      this.props.confToken = newData.confToken;
       const props = this.props;
       const session = this.driver.session();
       session.run(

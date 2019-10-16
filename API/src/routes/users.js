@@ -104,6 +104,18 @@ router.post('/', wrapper(async (req, res) => {
     }));
 }));
 
+router.get('/confirm/:username/:token', wrapper(async (req, res) => {
+  debug('Request to update :\n', _.pick(req.user, validProperties));
+  return (new User({ username: req.params.username }).confirmUser(req.params.token)
+    .then((result) => {
+      debug(result);
+      return res.status(200).json({
+        success: true,
+        payload: { value: 'confirm', result },
+      });
+    }));
+}));
+
 router.put('/:username', [auth, identify], wrapper(async (req, res) => {
   debug('Request to update :\n', _.pick(req.user, validProperties));
   return (new User(_.pick(req.user, validProperties)).updateUser(req.body)

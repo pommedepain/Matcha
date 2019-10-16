@@ -53,6 +53,9 @@ class UserValidator {
       if (this.req.password) sch.password = Joi.string().regex(/^[^`\\<>]{7,150}$/i).required();
       else sch.password = Joi.string().regex(/^[^`\\<>]{7,150}$/i);
 
+      if (this.req.confToken) sch.confToken = Joi.string().regex(/^[^`\\<>]{7,150}$/i).required();
+      else sch.confToken = Joi.string().regex(/^[^`\\<>]{7,150}$/i);
+
       if (this.req.birthdate) {
         sch.birthdate = Joi.string().regex(/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/).required();
       } else sch.birthdate = Joi.string().regex(/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/);
@@ -99,6 +102,9 @@ class UserValidator {
 
       if (this.req.isAdmin) sch.isAdmin = Joi.string().regex(/^(true|false)$/).required();
       else sch.isAdmin = Joi.string().regex(/^(true|false)$/);
+
+      if (this.req.active) sch.active = Joi.string().regex(/^(true|false)$/).required();
+      else sch.active = Joi.string().regex(/^(true|false)$/);
 
       Joi.validate(this.data, sch, (err, value) => {
         if (err === null) resolve({ success: true, value });

@@ -15,19 +15,19 @@ const validNewUser = {
   sexOrient: 'hetero',
   bio: ' THIS IS A TEST!',
   localisation: '77',
-  ageMin: '18',
-  ageMax: '99',
+  ageMin: 18,
+  ageMax: 99,
   password: 'Test12345*',
   email: 'camille777@gmail.com',
-  birthdate: '1992-27-03',
+  birthdate: '1992-03-27',
   tags: [{ id: 'athlete', text: 'something' }, { id: 'book', text: 'lala' }],
   isAdmin: 'true',
 };
 
-// test('POST request : /api/users, valid user expect user created', async () => {
-//   const data = await new Request('/api/users/', validNewUser, null).post().catch(err => debug(err));
-//   return expect(data).toBeTruthy();
-// });
+test('POST request : /api/users, valid user expect user created', async () => {
+  const res = await axios.post(`${route}/`, validNewUser, null);
+  return expect(res.data.success).toBe(true);
+});
 
 // test('POST request : /api/auth, expect valid jwt', async () => {
 //   const data = await new Request('/api/auth', validNewUser, null).post().catch(err => debug(err));
