@@ -175,13 +175,14 @@ const SignUp = (props) => {
 									onChange={props.handleSlider}
 								/>
 							</div>
-								<Tags
-									divclassname={classes.step3}
-									h3classname={classes.questionsS3}
-									tags={props.tags}
-									handleDelete={props.handleDelete}
-									handleAddition={props.handleAddition}
-								/>
+							<Tags
+								title="What traits do you find most attractive?"
+								divclassname={classes.step3}
+								h3classname={classes.questionsS3}
+								tags={props.tags}
+								handleDelete={props.handleDelete}
+								handleAddition={props.handleAddition}
+							/>
 							<input 
 								type="button" 
 								name="previous" 

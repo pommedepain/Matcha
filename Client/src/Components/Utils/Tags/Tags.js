@@ -14,19 +14,6 @@ const delimiters = [KeyCodes.comma, KeyCodes.enter, KeyCodes.tab];
 const datas = require('../../../Datas/tagSuggestions.json');
 
 const Tags = (props) => {
-	// handleDelete = (i) => {
-	// 	const { tags } = this.state
-	// 	this.setState({
-	// 		tags: tags.filter((tag, index) => index !== i),
-	// 	})
-	// }
-
-	// handleAddition = (tag) => {
-	// 	this.setState(
-	// 		state => ({ tags: [...state.tags, tag] })
-	// 	)
-	// }
-
 	// handleDrag = (tag, currPos, newPos) => {
 	// 	const tags = [...this.state.tags]
 	// 	const newTags = tags.slice()
@@ -42,8 +29,14 @@ const Tags = (props) => {
 
 	return (
 		<div className={props.divclassname}>
-			<h3 className={props.h3classname}>What traits do you find most attractive?</h3>
+			<h3 className={props.h3classname}>{props.title}</h3>
+			{props.style ?
 			<ReactTags
+				classNames={{
+					tags: 'tagsClass',
+					tagInput: 'TagInputClass', 
+					tagInputField: 'tagInputFieldClass',
+				}}
 				tags={props.tags}
 				suggestions={datas.suggestions}
 				handleDelete={props.handleDelete}
@@ -55,6 +48,19 @@ const Tags = (props) => {
 				allowDeleteFromEmptyInput={false}
 				allowDragDrop={false}
 			/>
+			:
+			<ReactTags
+				tags={props.tags}
+				suggestions={datas.suggestions}
+				handleDelete={props.handleDelete}
+				handleAddition={props.handleAddition}
+				// handleDrag={this.handleDrag.bind(this)}
+				delimiters={delimiters}
+				minQueryLength={1}
+				inputFieldPosition="top"
+				allowDeleteFromEmptyInput={false}
+				allowDragDrop={false}
+			/>}
 		</div>
 	)
 }
