@@ -5,6 +5,8 @@ import 'rc-slider/assets/index.css';
 import classes from './Home.module.css';
 import { UserContext } from '../../Contexts/UserContext';
 import Tags from '../Utils/Tags/Tags';
+import UserIcon from './UserIcon/UserIcon';
+import axios from 'axios';
 
 // const axios = require('axios');
 const TagDatas = require('../../Datas/tagSuggestions.json');
@@ -24,10 +26,23 @@ class Home extends Component {
 				{ id: "geek", text: "Geek" }
 			],
 			touched: false,
+			suggestions: null
 		}
 	}
 
 	static contextType = UserContext;
+
+	componentDidMount () {
+		const { username } = this.context.JWT.data;
+
+		axios.get(`http://localhost:4000/API/users/suggestions/${username}`)
+			.then(response => {
+				this.setState({ suggestions: response.data.payload.result }, function() { console.log(this.state.suggestions);});
+			})
+			.catch(err => { 
+				console.log(err);
+			})
+	}
 
 	handleSlider = (newValue) => {
 		this.setState({
@@ -78,6 +93,7 @@ class Home extends Component {
 	}
 
 	render() {
+		console.log(this.state.suggestions)
 		return (
 			<div className={classes.main}>
 				<div className={classes.filters}>
@@ -120,7 +136,7 @@ class Home extends Component {
 						</div>
 						<Tags
 							title="Tags"
-							style={true}
+							styling={true}
 							divclassname={classes.step3}
 							h3classname={classes.questionsS3}
 							tags={this.state.tags}
@@ -128,6 +144,12 @@ class Home extends Component {
 							handleAddition={this.handleAddition.bind(this)}
 						/>
 					</div>
+				</div>
+				<div className={classes.wrapper}>
+					{this.state.suggestions !== null ?
+						this.state.suggestions.map((elem, index) => (<UserIcon {...elem} key={elem.username + "-" + index}/>))
+						: null
+					}
 				</div>
 			</div>
 		)

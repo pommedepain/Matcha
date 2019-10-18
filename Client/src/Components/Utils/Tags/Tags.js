@@ -30,7 +30,7 @@ const Tags = (props) => {
 	return (
 		<div className={props.divclassname}>
 			<h3 className={props.h3classname}>{props.title}</h3>
-			{props.style ?
+			{props.styling ?
 			<ReactTags
 				classNames={{
 					tags: 'tagsClass',

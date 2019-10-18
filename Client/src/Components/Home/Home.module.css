@@ -1,7 +1,7 @@
 .main {
 	display: flex;
 	background-color: white;
-	height: 100vh;
+	height: 100%;
 	color: rgb(116, 209, 234);
 	flex-direction: column;
 	/* justify-content: center; */
@@ -98,4 +98,20 @@ div.ReactTags__tagInput input.ReactTags__tagInputField:focus {
 	justify-content: center;
 	margin-top: 2%;
 	width: 22%;
+}
+
+
+/* 
+	USERS ICON DISPLAY
+*/
+.wrapper {
+	padding-top: 5%;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	flex-wrap: wrap;
+	margin-bottom: 2%;
+	/* align-items: center; */
 }
