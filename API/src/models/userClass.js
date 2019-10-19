@@ -524,7 +524,7 @@ class User extends Node {
               .then(() => this.addTagsRelationships()));
           } return (new Promise(res => res()));
         })
-        .then((user) => { this.updatedUser = user; return (this.generateAuthToken(user)); })
+        .then(() => { this.updatedUser = this.user; return (new User(this.user).generateAuthToken()); })
         .then((token) => { this.updatedUser.token = token; resolve(_.omit(this.updatedUser, 'password')); })
         .catch(err => reject(err))
     ));
