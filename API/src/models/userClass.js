@@ -285,17 +285,29 @@ class User extends Node {
           return Promise.all(this.promises);
         })
         .then((targets) => { this.targets = targets; return (this.getCommonTags()); })
-        .then((common) => {
-          this.common = common;
+        .then((common) => { this.common = common; return (this.getReverseCommonTags()); })
+        .then((reverseCommon) => {
+          this.reverseCommon = reverseCommon;
           this.maxcomp = 0;
           this.list = this.targets.map((target) => {
-            if (this.common.find(el => (target.username === el.user.username)) === undefined) {
-              return ({ user: target, compTags: [] });
+            if (this.common.find(el => (target.username === el.user.username)) === undefined
+              && this.reverseCommon.find(el => (target.username === el.user.username)) === undefined) {
+              return ({ user: target, compTags: [], reverseCompTags: [] });
+            } if (this.common.find(el => (target.username === el.user.username)) === undefined) {
+              // eslint-disable-next-line prefer-destructuring
+              const reverseCompTags = this.reverseCommon.find(el => (target.username === el.user.username)).reverseCompTags;
+              return ({ user: target, compTags: [], reverseCompTags });
+            } if (this.reverseCommon.find(el => (target.username === el.user.username)) === undefined) {
+              // eslint-disable-next-line prefer-destructuring
+              const compTags = this.common.find(el => (target.username === el.user.username)).compTags;
+              return ({ user: target, compTags, reverseCompTags: [] });
             } const l = this.common.find(el => (target.username === el.user.username)).compTags.length;
             if (this.maxcomp <= l) { this.maxcomp = l; }
             // eslint-disable-next-line prefer-destructuring
             const compTags = this.common.find(el => (target.username === el.user.username)).compTags;
-            return ({ user: target, compTags });
+            // eslint-disable-next-line prefer-destructuring
+            const reverseCompTags = this.reverseCommon.find(el => (target.username === el.user.username)).reverseCompTags;
+            return ({ user: target, compTags, reverseCompTags });
           });
           this.result = [];
           for (let i = this.maxcomp; i >= 0; i -= 1) {
@@ -320,7 +332,28 @@ class User extends Node {
           this.result = [];
           if (res.records.length !== 0) {
             res.records.forEach((record) => {
-              this.result.push({ user: _.pick(record._fields[0], this.relevantProperties), compTags: _.uniq(record._fields[1]) });
+              this.result.push({ user: _.pick(record._fields[0], this.relevantProperties), compTags: _.uniqBy(record._fields[1], 'id') });
+            });
+          }
+          debug(this.result);
+          resolve(this.result);
+        })
+        .catch(err => reject(err));
+    });
+  }
+
+  getReverseCommonTags() {
+    return new Promise((resolve, reject) => {
+      const session = this.driver.session();
+      const query = `MATCH (a:User { username: '${this.data.node_a.properties.username}'})-[r:IS]->(c:Tag)<-[l:LOOK_FOR]-(b:User),(a)-[m:COMPATIBLE]-(b)
+                    WITH a,b, collect(properties(c)) as common
+                    RETURN properties(b),common`;
+      session.run(query)
+        .then((res) => {
+          this.result = [];
+          if (res.records.length !== 0) {
+            res.records.forEach((record) => {
+              this.result.push({ user: _.pick(record._fields[0], this.relevantProperties), reverseCompTags: _.uniqBy(record._fields[1], 'id') });
             });
           }
           debug(this.result);
@@ -491,7 +524,7 @@ class User extends Node {
               .then(() => this.addTagsRelationships()));
           } return (new Promise(res => res()));
         })
-        .then(() => { this.updatedUser = this.user; return (new User(this.user).generateAuthToken()); })
+        .then((user) => { this.updatedUser = user; return (this.generateAuthToken(user)); })
         .then((token) => { this.updatedUser.token = token; resolve(_.omit(this.updatedUser, 'password')); })
         .catch(err => reject(err))
     ));
