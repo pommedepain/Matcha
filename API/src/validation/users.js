@@ -103,9 +103,6 @@ class UserValidator {
       if (this.req.isAdmin) sch.isAdmin = Joi.string().regex(/^(true|false)$/).required();
       else sch.isAdmin = Joi.string().regex(/^(true|false)$/);
 
-      if (this.req.active) sch.active = Joi.string().regex(/^(true|false)$/).required();
-      else sch.active = Joi.string().regex(/^(true|false)$/);
-
       Joi.validate(this.data, sch, (err, value) => {
         if (err === null) resolve({ success: true, value });
         else {
