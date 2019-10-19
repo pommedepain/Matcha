@@ -179,10 +179,10 @@ class User extends Node {
   deleteTagsRelationships() {
     return new Promise((resolve, reject) => {
       const session = this.driver.session();
-      const query = `MATCH (n:User { username:'${this.data.node_a.properties.username}'})-[r:LOOK_FOR]->(b:Tags)
+      const query = `MATCH (n:User { username:'${this.data.node_a.properties.username}'})-[r:LOOK_FOR]->(b:Tag)
                     DELETE r`;
       session.run(query)
-        .then(() => { session.close(); resolve(); })
+        .then((res) => { debug(res); session.close(); resolve(); })
         .catch(err => reject(err));
     });
   }

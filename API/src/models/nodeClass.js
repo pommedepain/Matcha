@@ -90,7 +90,7 @@ class Node extends Relationship {
     return new Promise((resolve, reject) => {
       this.props = _.omit(this.data.node_a.properties, 'tags');
       Object.keys(newData).forEach((key) => {
-        if (newData[key]) this.props[key] = newData[key];
+        if (newData[key] && key !== 'tags') this.props[key] = newData[key];
       });
       this.props.confToken = newData.confToken;
       const props = this.props;
