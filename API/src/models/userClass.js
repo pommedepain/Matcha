@@ -23,7 +23,6 @@ class User extends Node {
       id: 'username',
       properties: data,
     };
-    if (node.properties && !node.properties.sexOrient) { node.properties.sexOrient = 'bi'; }
     super({ node_a: node });
     this.data = { node_a: node };
     this.user = this.data.node_a.properties;
@@ -85,8 +84,17 @@ class User extends Node {
           .then((hash) => {
             this.user.password = hash;
             this.data.node_a.properties.password = hash;
-            resolve();
-            })
+            if (this.user.active === 'false') {
+              const token = this.user.username;
+              bcrypt.genSalt(5)
+                .then(salt => bcrypt.hash(token, salt))
+                .then((tokenHash) => {
+                  this.user.confToken = tokenHash;
+                  this.data.node_a.properties.confToken = tokenHash;
+                  resolve();
+                });
+            } else resolve();
+          })
           .catch(err => debug(err));
       } else resolve();
     });
@@ -229,16 +237,20 @@ class User extends Node {
     });
   }
 
-  generateAuthToken(user) {
+  generateAuthToken() {
     return new Promise((resolve, reject) => {
-      this.token = jwt.sign(_.omit(user, 'password'), config.get('jwtPrivateKey'));
-      this.token = jwt.sign({
-        exp: Math.floor(Date.now() / 1000) + (3600), // 30s
-        data: _.omit(user, 'password'),
-      }, config.get('jwtPrivateKey'));
+      this.getUserInfo()
+        .then((infos) => {
+          this.token = jwt.sign(_.omit(infos, 'password'), config.get('jwtPrivateKey'));
+          this.token = jwt.sign({
+            exp: Math.floor(Date.now() / 1000) + (3600), // 30s
+            data: _.omit(infos, 'password'),
+          }, config.get('jwtPrivateKey'));
 
-      debug('Generating Auth token :', this.token);
-      resolve(this.token);
+          debug('Generating Auth token :', this.token);
+          resolve(this.token);
+        })
+        .catch(err => reject(err));
     });
   }
 
@@ -267,7 +279,12 @@ class User extends Node {
   getSuggestions() {
     return new Promise((resolve, reject) => {
       this.getRelations('COMPATIBLE')
-        .then((targets) => { this.targets = _.uniq(targets); return (this.getCommonTags()); })
+        .then((targets) => {
+          this.targets = _.uniq(targets);
+          this.promises = this.targets.map(user => (new User(user).getUserInfo()));
+          return Promise.all(this.promises);
+        })
+        .then((targets) => { this.targets = targets; return (this.getCommonTags()); })
         .then((common) => {
           this.common = common;
           this.maxcomp = 0;
@@ -276,7 +293,9 @@ class User extends Node {
               return ({ user: target, compTags: [] });
             } const l = this.common.find(el => (target.username === el.user.username)).compTags.length;
             if (this.maxcomp <= l) { this.maxcomp = l; }
-            return (this.common.find(el => (target.username === el.user.username)));
+            // eslint-disable-next-line prefer-destructuring
+            const compTags = this.common.find(el => (target.username === el.user.username)).compTags;
+            return ({ user: target, compTags });
           });
           this.result = [];
           for (let i = this.maxcomp; i >= 0; i -= 1) {
@@ -294,7 +313,7 @@ class User extends Node {
     return new Promise((resolve, reject) => {
       const session = this.driver.session();
       const query = `MATCH (a:User { username: '${this.data.node_a.properties.username}'})-[r:LOOK_FOR]->(c:Tag)<-[l:IS]-(b:User),(a)-[m:COMPATIBLE]-(b)
-                    WITH a,b, collect(c.id) as common
+                    WITH a,b, collect(properties(c)) as common
                     RETURN properties(b),common`;
       session.run(query)
         .then((res) => {
@@ -338,7 +357,7 @@ class User extends Node {
     return new Promise((resolve, reject) => {
       const session = this.driver.session();
       const query = `MATCH (a:User {username:'${username}'})-[r:IS]->(b:Tag)
-                    WITH a, collect(b.id) as tags
+                    WITH a, collect(properties(b)) as tags
                     RETURN tags`;
       session.run(query)
         .then((res) => {
@@ -353,7 +372,7 @@ class User extends Node {
     return new Promise((resolve, reject) => {
       const session = this.driver.session();
       const query = `MATCH (a:User {username:'${username}'})-[r:LOOK_FOR]->(b:Tag)
-                    WITH a, collect(b.id) as tags
+                    WITH a, collect(properties(b)) as tags
                     RETURN tags`;
       session.run(query)
         .then((res) => {
@@ -367,7 +386,7 @@ class User extends Node {
   getUserInfo() {
     return new Promise((resolve, reject) => {
       debug('Getting user info for :', this.user);
-      new UserValidator(this.getRequirements, this.user).validate()
+      new UserValidator(this.getRequirements, this.data.node_a.properties).validate()
         .then(() => this.getNodeInfo())
         .then((user) => { this.result = user; return (this.getUserIsTags(this.data.node_a.properties.username)); })
         .then((isTags) => { debug(isTags); this.result.isTags = isTags; return (this.getUserLookTags(this.data.node_a.properties.username)); })
@@ -406,7 +425,7 @@ class User extends Node {
     return new Promise((resolve, reject) => {
       this.getUserInfo()
         .then((user) => {
-          
+
           let decodedToken = token.replace(/%5C/gi, '/');
           decodedToken = token.replace(/\\/gi, '/');
           debug(user.confToken, decodedToken);
@@ -441,11 +460,12 @@ class User extends Node {
         .then(() => this.redundancyCheck())
         .then(() => this.hashGenerator())
         .then(() => this.calcAge())
-        .then(() => this.createNode())
+        .then(() => { if (this.data.node_a.properties && !this.data.node_a.properties.sexOrient) { this.data.node_a.properties.sexOrient = 'bi'; } return this.createNode(); })
         .then(() => this.validateTags())
         .then(() => this.addTagsRelationships())
         .then(() => this.addOrientRelationships())
         .then(() => this.addCompatibilities())
+        .then(() => { if (this.data.node_a.properties.active === 'false') return this.sendConfMail(); return (new Promise(res => res())); })
         .then(() => resolve(_.pick(this.user,
           this.publicProperties.concat(this.optionalProperties))))
         .catch(err => reject(err))
@@ -468,10 +488,10 @@ class User extends Node {
             };
             this.data = { node_a: node };
             return (this.deleteTagsRelationships()
-            .then(() => this.addTagsRelationships()));
-          } else return (new Promise((res) => res()));
+              .then(() => this.addTagsRelationships()));
+          } return (new Promise(res => res()));
         })
-        .then((user) => { this.updatedUser = user; return (this.generateAuthToken(user)); })
+        .then(() => { this.updatedUser = this.user; return (new User(this.user).generateAuthToken()); })
         .then((token) => { this.updatedUser.token = token; resolve(_.omit(this.updatedUser, 'password')); })
         .catch(err => reject(err))
     ));
