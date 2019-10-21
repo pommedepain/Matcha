@@ -1,4 +1,5 @@
 .main {
+	position: relative;
 	display: flex;
 	background-color: white;
 	height: 100%;
@@ -100,6 +101,22 @@ div.ReactTags__tagInput input.ReactTags__tagInputField:focus {
 	width: 22%;
 }
 
+.submit {
+	background-color: none;
+	border: none;
+}
+
+.submit:focus {
+	outline: 0;
+}
+
+.submit > i {
+	/* color: #524a54; */
+	color: -moz-linear-gradient(-45deg, #e2a9e5 15%, #2b94e5 100%);
+	color: -webkit-linear-gradient(-45deg, #e2a9e5 15%,#2b94e5 100%);
+	color: linear-gradient(135deg, #e2a9e5 15%,#2b94e5 100%);
+	font-size: 3vw;
+}
 
 /* 
 	USERS ICON DISPLAY

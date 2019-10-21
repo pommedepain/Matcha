@@ -1,14 +1,9 @@
 import React, { Component } from 'react';
-import Slider, { Range } from 'rc-slider';
-import 'rc-slider/assets/index.css';
 
-import classes from './Home.module.css';
 import { UserContext } from '../../Contexts/UserContext';
-import Tags from '../Utils/Tags/Tags';
-import UserIcon from './UserIcon/UserIcon';
 import axios from 'axios';
+import HomeDumb from './HomeD';
 
-// const axios = require('axios');
 const TagDatas = require('../../Datas/tagSuggestions.json');
 
 class Home extends Component {
@@ -33,15 +28,30 @@ class Home extends Component {
 	static contextType = UserContext;
 
 	componentDidMount () {
+		this.getSuggestions();
+		this.updateFilters();
+	}
+
+	getSuggestions = () => {
 		const { username } = this.context.JWT.data;
 
 		axios.get(`http://localhost:4000/API/users/suggestions/${username}`)
 			.then(response => {
-				this.setState({ suggestions: response.data.payload.result }, function() { console.log(this.state.suggestions);});
+				this.setState({ suggestions: response.data.payload.result});
 			})
 			.catch(err => { 
 				console.log(err);
 			})
+	}
+
+	updateFilters = () => {
+		const { ageMin, ageMax, lookTags, localisation } = this.context.JWT.data;
+
+		this.setState({
+			ageRange: [ageMin, ageMax],
+			tags: lookTags,
+			localisation: localisation
+		})
 	}
 
 	handleSlider = (newValue) => {
@@ -92,66 +102,33 @@ class Home extends Component {
 		)
 	}
 
+	popupUser = (e, id) => {
+		e.preventDefault();
+		const users = document.querySelectorAll('.back');
+		console.log(users);
+		users[id].style.display = "inline";
+		document.getElementById("main").style.filter = 'blur(3px)'
+		// userBack.style.filter = "blur(0px)";
+	}
+
+	submit = (e) => {
+		e.preventDefault();
+		console.log("apply filters");
+	}
+
 	render() {
-		console.log(this.state.suggestions)
 		return (
-			<div className={classes.main}>
-				<div className={classes.filters}>
-					<h3>Filters</h3>
-					<div className={classes.border}>
-						<div className={classes.step3}>
-							<h3 className={classes.questionsS3}>Age Range</h3>
-							<h4 className={classes.values}>{this.state.ageRange[0]} - {this.state.ageRange[1]}</h4>
-							<Range
-								min={18}
-								max={100}
-								defaultValue={[18, 25]}
-								count={1}
-								pushable={true}
-								onChange={this.handleAgeRange.bind(this)}
-							/>
-						</div>
-						<div className={classes.step3}>
-							<h3 className={classes.questionsS3}>Maximum Distance</h3>
-							<h4 className={classes.values}>{this.state.localisation}km</h4>
-							<Slider
-								min={3}
-								max={160}
-								defaultValue={5}
-								count={1}
-								onChange={this.handleSlider.bind(this)}
-							/>
-						</div>
-						<div className={classes.step3}>
-							<h3 className={classes.questionsS3}>Scoring</h3>
-							<h4 className={classes.values}>{this.state.scoreRange[0]}% - {this.state.scoreRange[1]}%</h4>
-							<Range
-								min={0}
-								max={100}
-								defaultValue={[50, 100]}
-								count={5}
-								pushable={true}
-								onChange={this.handleScoreRange.bind(this)}
-							/>
-						</div>
-						<Tags
-							title="Tags"
-							styling={true}
-							divclassname={classes.step3}
-							h3classname={classes.questionsS3}
-							tags={this.state.tags}
-							handleDelete={this.handleDelete.bind(this)}
-							handleAddition={this.handleAddition.bind(this)}
-						/>
-					</div>
-				</div>
-				<div className={classes.wrapper}>
-					{this.state.suggestions !== null ?
-						this.state.suggestions.map((elem, index) => (<UserIcon {...elem} key={elem.username + "-" + index}/>))
-						: null
-					}
-				</div>
-			</div>
+			<HomeDumb 
+				submit={this.submit.bind(this)}
+				popupUser={this.popupUser.bind(this)}
+				handleAddition={this.handleAddition.bind(this)}
+				handleDelete={this.handleDelete.bind(this)}
+				handleScoreRange={this.handleScoreRange.bind(this)}
+				handleAgeRange={this.handleAgeRange.bind(this)}
+				handleSlider={this.handleSlider.bind(this)}
+				{...this.state}
+				{...this.context}
+			/>
 		)
 	}
 }

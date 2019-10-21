@@ -87,7 +87,7 @@ class SignUp extends Component {
 	getUsers = () => {
 		axios.get(`http://localhost:4000/API/users/username`)
 			.then(response => {
-				console.log(response.data.payload.result);
+				// console.log(response.data.payload.result);
 				this.setState({ users: response.data.payload.result });
 			})
 			.catch(err => { 
@@ -98,7 +98,7 @@ class SignUp extends Component {
 	getEmails = () => {
 		axios.get(`http://localhost:4000/API/users/email`)
 			.then(response => {
-				console.log(response.data.payload.result);
+				// console.log(response.data.payload.result);
 				this.setState({ emails: response.data.payload.result });
 			})
 			.catch(err => { 

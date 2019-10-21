@@ -8,7 +8,8 @@ class Main extends Component {
 	static contextType = UserContext;
 
 	render() {
-		const isLoggedIn = this.context.isLoggedIn;
+		const { isLoggedIn } = this.context;
+		// console.log(isLoggedIn);
 
 		return (
 			isLoggedIn === true ?
