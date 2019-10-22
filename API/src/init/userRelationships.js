@@ -22,24 +22,6 @@ async function randomRelations() {
         for (let i = 0; i < chaosCounter; i += 1) {
           const tag = tags[rand(0, tags.length - 1)];
           const target = users[rand(0, users.length - 1)];
-          relations.push(
-            {
-              node_a: {
-                label: 'User',
-                id: 'username',
-                properties: { username: user },
-              },
-              node_b: {
-                label: 'Tag',
-                id: 'id',
-                properties: { id: tag },
-              },
-              relation: {
-                label: 'IS',
-                properties: { creationDate: date.toISOString() },
-              },
-            },
-          );
           if (target !== user) {
             relations.push(
               {
@@ -72,23 +54,11 @@ async function randomRelations() {
 }
 
 function populateRelationships(type) {
-  return (
-    randomRelations(type).then(relations => (
-      new Promise((resolve, reject) => {
-        const promises = relations.map(relation => (
-          new Promise((res, rej) => {
-            new RelationShip(relation).createRelationship()
-              .then(() => res())
-              .catch(err => res(err));
-          })
-        ));
-        Promise.all(promises)
-          .then(debug('All relationships created'))
-          .then(() => resolve())
-          .catch(err => reject(err));
-      })
-    ))
-  );
+  return (randomRelations(type)
+    .then(relations => (relations.reduce(async (prev, next) => {
+      await prev;
+      return new RelationShip(next).createRelationship();
+    }, Promise.resolve()))));
 }
 
 module.exports = populateRelationships;

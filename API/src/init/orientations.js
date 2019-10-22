@@ -15,19 +15,10 @@ const orientations = [
 ];
 
 function populateOrientations() {
-  return new Promise((resolve, reject) => {
-    const promises = orientations.map(orientation => (
-      new Promise((res, rej) => (
-        new Orientation({ id: orientation }).createOrientation()
-          .then(() => res())
-          .catch(err => res(err))
-      ))
-    ));
-    Promise.all(promises)
-      .then(debug('All Orientations created'))
-      .then(() => resolve())
-      .catch(err => reject(err));
-  });
+  return (orientations.reduce(async (prev, next) => {
+    await prev;
+    return new Orientation({ id: next }).createOrientation();
+  }, Promise.resolve()));
 }
 
 module.exports = populateOrientations;

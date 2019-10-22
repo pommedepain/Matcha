@@ -116,7 +116,7 @@ class Node extends Relationship {
     return new Promise((resolve, reject) => {
       const date = new Date().toISOString();
       this.data.node_a.properties.creationDate = date;
-      const props = _.omit(this.data.node_a.properties, 'tags');
+      const props = _.omit(this.data.node_a.properties, 'tags', 'isTags');
       const session = this.driver.session();
       session.run(`CREATE (n:${this.data.node_a.label} $props) RETURN n`, { props })
         .then((result) => {

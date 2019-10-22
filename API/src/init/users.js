@@ -8,7 +8,7 @@ const User = require('../models/userClass');
 
 const props = ['gender', 'email', 'password'];
 const requiredProperties = ['username', 'firstName', 'lastName', 'password', 'email', 'birthdate'];
-const optionalProperties = ['bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'tags', 'photos', 'localisation', 'optional', 'isAdmin'];
+const optionalProperties = ['bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'tags', 'isTags', 'photos', 'localisation', 'optional', 'isAdmin'];
 const amount = 20;
 
 function rand(min, max) { // min and max included
@@ -28,6 +28,7 @@ const admin = {
   ageMin: 18,
   ageMax: 99,
   tags: [{ id: 'athlete', text: 'something' }, { id: 'book', text: 'lala' }],
+  isTags: [{ id: 'geek', text: 'something' }, { id: 'book', text: 'lala' }],
   isAdmin: 'true',
 };
 
@@ -44,6 +45,7 @@ const admin2 = {
   email: 'Philoutre@gmail.com',
   birthdate: '1996-02-14',
   tags: [{ id: 'athlete', text: 'something' }, { id: 'book', text: 'lala' }],
+  isTags: [{ id: 'geek', text: 'something' }, { id: 'book', text: 'lala' }],
   isAdmin: 'true',
 };
 
@@ -80,6 +82,21 @@ function randomTags(users) {
   });
 }
 
+function randomIsTags(users) {
+  return new Promise((resolve, reject) => {
+    users.forEach((user) => {
+      const len = tags.length;
+      const random1 = rand(0, len - 1);
+      const random2 = rand(0, len - 1);
+      const random3 = rand(0, len - 1);
+      user.isTags.push(tags[random1]);
+      if (random2 !== random1) user.isTags.push(tags[random2]);
+      if (random3 !== random2 && random3 !== random1) user.isTags.push(tags[random3]);
+    });
+    resolve(users);
+  });
+}
+
 
 function userParser(user) {
   return new Promise((resolve, reject) => {
@@ -96,12 +113,10 @@ function userParser(user) {
       const year = date.getFullYear();
       let month = date.getMonth();
       let day = date.getDay();
-      debug(`${year}-${month}-${day}`);
       if (month === 0) month += 1;
       if (month < 10) month = `0${month}`;
       if (day === 0) day += 1;
       if (day < 10) day = `0${day}`;
-      debug(`${year}-${month}-${day}`);
       const birthdate = `${year}-${month}-${day}`;
       newUser.birthdate = birthdate;
       const sexOrient = rand(1, 5);
@@ -112,6 +127,7 @@ function userParser(user) {
       newUser.ageMin = rand(18, 35);
       newUser.ageMax = rand(newUser.ageMin + 5, 100);
       newUser.tags = [];
+      newUser.isTags = [];
       newUser.active = 'true';
       resolve(newUser);
     }
@@ -142,24 +158,13 @@ function getUsers() {
 
 
 function populateUsers() {
-  return new Promise((resolve, reject) => {
-    getUsers()
-      .then(users => randomTags(users))
-      .then((users) => {
-        const promises = users.map(user => (
-          new Promise((res, rej) => {
-            new User(_.pick(user, requiredProperties.concat(optionalProperties))).createUser()
-              .then(() => res())
-              .catch(err => res(err));
-          })
-        ));
-        Promise.all(promises)
-          .then(debug('All Users created'))
-          .then(() => resolve())
-          .catch(err => reject(err));
-      })
-      .catch(err => reject(err));
-  });
+  return (getUsers()
+    .then(users => randomTags(users))
+    .then(users => randomIsTags(users))
+    .then(users => (users.reduce(async (previousPromise, nextUser) => {
+      await previousPromise;
+      return new User(_.pick(nextUser, requiredProperties.concat(optionalProperties))).createUser();
+    }, Promise.resolve()))));
 }
 
 module.exports = populateUsers;

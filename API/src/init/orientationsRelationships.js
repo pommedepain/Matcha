@@ -5,19 +5,10 @@ const orientationsRelationships = require('../util/orientationsRelationships');
 
 
 function populateOrientationsRelationships() {
-  return new Promise((resolve, reject) => {
-        const promises = orientationsRelationships.map(relation => (
-          new Promise((res, rej) => {
-            new RelationShip(relation).createRelationship()
-              .then(() => res())
-              .catch(err => res(err));
-          })
-        ));
-        Promise.all(promises)
-          .then(debug('All orientationsrelationships created'))
-          .then(() => resolve())
-          .catch(err => reject(err));
-      });
+  return (orientationsRelationships.reduce(async (prev, next) => {
+    await prev;
+    return new RelationShip(next).createRelationship();
+  }, Promise.resolve()));
 }
 
 module.exports = populateOrientationsRelationships;

@@ -29,12 +29,12 @@ function resetDb() {
 function populateDb() {
   return new Promise((resolve, reject) => {
     resetDb()
-      .then(() => populateTags())
-      .then(() => populateOrientations())
-      .then(() => populateOrientationsRelationships())
-      .then(() => populateUsers())
-      .then(() => populateUserRelationships())
-      .then(() => resolve())
+      .then(() => { debug('############# DB RESETED ###############'); return populateTags(); })
+      .then(() => { debug('############# TAGS CREATED ###############'); return populateOrientations(); })
+      .then(() => { debug('############# ORIENTATIONS CREATED ###############'); return populateOrientationsRelationships(); })
+      .then(() => { debug('############# ORIENTATION RELATIONSHIPS CREATED ###############'); return populateUsers(); })
+      .then(() => { debug('############# USERS CREATED ###############'); return populateUserRelationships(); })
+      .then(() => { debug('############# USER RELATIONSHIPS CREATED ###############'); resolve(); })
       .catch(err => reject(err));
   });
 }

@@ -24,19 +24,11 @@ const tags = [
 ];
 
 function populateTags() {
-  return new Promise((resolve, reject) => {
-    const promises = tags.map(tag => (
-      new Promise((res, rej) => {
-        new Tag(_.pick(tag, requiredProperties)).createTag()
-          .then(() => res())
-          .catch(err => res(err));
-      })
-    ));
-    Promise.all(promises)
-      .then(debug('All Tags created'))
-      .then(() => resolve())
-      .catch(err => reject(err));
-  });
+  return (
+    tags.reduce(async (prev, next) => {
+      await prev;
+      return new Tag(_.pick(next, requiredProperties)).createTag();
+    }, Promise.resolve()));
 }
 
 module.exports = populateTags;

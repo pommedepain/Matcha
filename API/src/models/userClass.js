@@ -26,8 +26,8 @@ class User extends Node {
     super({ node_a: node });
     this.data = { node_a: node };
     this.user = this.data.node_a.properties;
-    this.allProperties = ['age'];
-    this.publicProperties = ['age'];
+    this.allProperties = ['age', 'isTags'];
+    this.publicProperties = ['age', 'isTags'];
     this.optionalProperties = ['age', 'confToken'];
 
     Object.keys(userTemplate).forEach((property) => {
@@ -101,8 +101,6 @@ class User extends Node {
   }
 
   matchPasswords(user) {
-    debug(user.password);
-    debug(this.user.password);
     return new Promise((resolve, reject) => {
       bcrypt.compare(this.user.password, user.password)
         .then((valid) => {
@@ -176,7 +174,7 @@ class User extends Node {
     });
   }
 
-  deleteTagsRelationships() {
+  deleteLookTagsRelationships() {
     return new Promise((resolve, reject) => {
       const session = this.driver.session();
       const query = `MATCH (n:User { username:'${this.data.node_a.properties.username}'})-[r:LOOK_FOR]->(b:Tag)
@@ -187,12 +185,11 @@ class User extends Node {
     });
   }
 
-  addTagsRelationships() {
+  addLookTagsRelationships() {
     return new Promise((resolve, reject) => {
       const date = new Date();
       debug('Linking User with Tags ...');
       if (this.user.tags) {
-        debug(this.user.tags);
         const promises = this.user.tags.map(tag => (
           new Promise((res, rej) => {
             const data = {
@@ -219,11 +216,71 @@ class User extends Node {
     });
   }
 
-  validateTags() {
+  deleteIsTagsRelationships() {
+    return new Promise((resolve, reject) => {
+      const session = this.driver.session();
+      const query = `MATCH (n:User { username:'${this.data.node_a.properties.username}'})-[r:IS]->(b:Tag)
+                    DELETE r`;
+      session.run(query)
+        .then((res) => { debug(res); session.close(); resolve(); })
+        .catch(err => reject(err));
+    });
+  }
+
+  addIsTagsRelationships() {
+    return new Promise((resolve, reject) => {
+      const date = new Date();
+      debug('Linking User with Tags ...');
+      if (this.user.isTags) {
+        const promises = this.user.isTags.map(tag => (
+          new Promise((res, rej) => {
+            const data = {
+              node_a: this.data.node_a,
+              node_b: {
+                label: 'Tag',
+                id: 'id',
+                properties: tag,
+              },
+              relation: {
+                label: 'IS',
+                properties: { creationDate: date.toISOString() },
+              },
+            };
+            new Relationship(data).createRelationship()
+              .then(() => res())
+              .catch(err => rej(err));
+          })
+        ));
+        Promise.all(promises)
+          .then(() => resolve())
+          .catch(err => reject(err));
+      } else resolve();
+    });
+  }
+
+  validateLookTags() {
     return new Promise((resolve, reject) => {
       debug('Validating Tags ...');
       if (this.data.node_a.properties.tags) {
         const promises = this.data.node_a.properties.tags.map(tag => (
+          new Promise((res, rej) => {
+            new TagValidator(this.tagRequirements, tag).validate()
+              .then(() => res())
+              .catch(err => rej(err));
+          })
+        ));
+        Promise.all(promises)
+          .then(() => resolve())
+          .catch(err => reject(err));
+      } else resolve();
+    });
+  }
+
+  validateIsTags() {
+    return new Promise((resolve, reject) => {
+      debug('Validating Tags ...');
+      if (this.data.node_a.properties.isTags) {
+        const promises = this.data.node_a.properties.isTags.map(tag => (
           new Promise((res, rej) => {
             new TagValidator(this.tagRequirements, tag).validate()
               .then(() => res())
@@ -255,7 +312,6 @@ class User extends Node {
   }
 
   getList(value) {
-    debug(this.publicProperties.find(el => (el === value)));
     return new Promise((resolve, reject) => {
       if (this.publicProperties.find(el => (el === value)) !== undefined) {
         this.getNodeList(value)
@@ -368,7 +424,6 @@ class User extends Node {
       if (this.data.node_a.properties.birthdate) {
         const getAge = birthDate => Math.floor((new Date() - new Date(birthDate).getTime()) / 3.15576e+10);
         const age = getAge(this.data.node_a.properties.birthdate);
-        debug(age);
         this.data.node_a.properties.age = age;
         resolve();
       } resolve();
@@ -428,6 +483,114 @@ class User extends Node {
     });
   }
 
+  createUser() {
+    return new Promise((resolve, reject) => (
+      new UserValidator(this.creationRequirements, this.user).validate()
+        .then(() => this.redundancyCheck())
+        .then(() => this.hashGenerator())
+        .then(() => this.calcAge())
+        .then(() => { if (this.data.node_a.properties && !this.data.node_a.properties.sexOrient) { this.data.node_a.properties.sexOrient = 'bi'; } return this.createNode(); })
+        .then(() => this.validateLookTags())
+        .then(() => this.addLookTagsRelationships())
+        .then(() => this.validateIsTags())
+        .then(() => this.addIsTagsRelationships())
+        .then(() => this.addOrientRelationships())
+        .then(() => this.addCompatibilities())
+        .then(() => { if (this.data.node_a.properties.active === 'false') return this.sendConfMail(); return (new Promise(res => res())); })
+        .then(() => resolve(_.pick(this.user,
+          this.publicProperties.concat(this.optionalProperties))))
+        .catch((err) => { debug(err); resolve(err); })
+    ));
+  }
+
+  updateUser(newData) {
+    return new Promise((resolve, reject) => (
+      new UserValidator(this.updateRequirements, this.user).validate()
+        .then(() => { if (newData.password) { this.user.password = newData.password; } return this.hashGenerator(); })
+        .then((pass) => { this.newData = newData; this.newData.password = pass; return this.updateNode(this.newData); })
+        .then((user) => {
+          this.user = user;
+          if (newData.tags) {
+            this.user.tags = newData.tags;
+            const node = {
+              label: 'User',
+              id: 'username',
+              properties: this.user,
+            };
+            this.data = { node_a: node };
+            return (this.deleteLookTagsRelationships()
+              .then(() => this.addLookTagsRelationships()));
+          } return (new Promise(res => res()));
+        })
+        .then(() => {
+          if (newData.isTags) {
+            this.user.isTags = newData.isTags;
+            const node = {
+              label: 'User',
+              id: 'username',
+              properties: this.user,
+            };
+            this.data = { node_a: node };
+            return (this.deleteIsTagsRelationships()
+              .then(() => this.addIsTagsRelationships()));
+          } return (new Promise(res => res()));
+        })
+        .then(() => {
+          if (newData.sexOrient) {
+            this.user.sexOrient = newData.sexOrient;
+            const node = {
+              label: 'User',
+              id: 'username',
+              properties: this.user,
+            };
+            this.data = { node_a: node };
+            return (this.deleteOrientRelationships()
+              .then(() => this.addOrientRelationships()));
+          } return (new Promise(res => res()));
+        })
+        .then(() => this.deleteCompatibilitiesRelationships())
+        .then(() => this.addCompatibilities())
+        .then(() => { this.updatedUser = this.user; return (new User(this.user).generateAuthToken()); })
+        .then((token) => { this.updatedUser.token = token; resolve(_.omit(this.updatedUser, 'password')); })
+        .catch(err => reject(err))
+    ));
+  }
+
+  deleteUser() {
+    return new Promise((resolve, reject) => (
+      new UserValidator(this.deleteRequirements, this.user).validate()
+        .then(() => this.deleteThisNodeRelationships())
+        .then(() => this.deleteNode())
+        .then(user => resolve(user))
+        .catch(err => reject(err))
+    ));
+  }
+
+  authenticateUser() {
+    return new Promise((resolve, reject) => (
+      new UserValidator(this.authRequirements, this.user).validate()
+        .then(() => this.getUserInfo())
+        .then(existingUser => this.matchPasswords(existingUser))
+        .then(existingUser => this.generateAuthToken(existingUser))
+        .then(token => resolve(token))
+        .catch(err => reject(err))
+    ));
+  }
+
+  deleteUsersDuplicates() {
+    return new Promise((resolve, reject) => {
+      this.data = {
+        node_a: {
+          label: 'User',
+          id: 'username',
+        },
+      };
+      this.deleteNodeDuplicates()
+        .then(res => resolve(res))
+        .catch(err => reject(err));
+    });
+  }
+
   sendConfMail() {
     return new Promise((resolve, reject) => {
       debug('SENDING CONFIRMATION MAIL');
@@ -483,84 +646,6 @@ class User extends Node {
       this.matchConfTokens(token)
         .then(() => this.eraseConfToken())
         .then(user => resolve(user))
-        .catch(err => reject(err));
-    });
-  }
-
-  createUser() {
-    return new Promise((resolve, reject) => (
-      new UserValidator(this.creationRequirements, this.user).validate()
-        .then(() => this.redundancyCheck())
-        .then(() => this.hashGenerator())
-        .then(() => this.calcAge())
-        .then(() => { if (this.data.node_a.properties && !this.data.node_a.properties.sexOrient) { this.data.node_a.properties.sexOrient = 'bi'; } return this.createNode(); })
-        .then(() => this.validateTags())
-        .then(() => this.addTagsRelationships())
-        .then(() => this.addOrientRelationships())
-        .then(() => this.addCompatibilities())
-        .then(() => { if (this.data.node_a.properties.active === 'false') return this.sendConfMail(); return (new Promise(res => res())); })
-        .then(() => resolve(_.pick(this.user,
-          this.publicProperties.concat(this.optionalProperties))))
-        .catch(err => reject(err))
-    ));
-  }
-
-  updateUser(newData) {
-    return new Promise((resolve, reject) => (
-      new UserValidator(this.updateRequirements, this.user).validate()
-        .then(() => { if (newData.password) { this.user.password = newData.password; } return this.hashGenerator(); })
-        .then((pass) => { this.newData = newData; this.newData.password = pass; return this.updateNode(this.newData); })
-        .then((user) => {
-          this.user = user;
-          if (newData.tags) {
-            this.user.tags = newData.tags;
-            const node = {
-              label: 'User',
-              id: 'username',
-              properties: this.user,
-            };
-            this.data = { node_a: node };
-            return (this.deleteTagsRelationships()
-              .then(() => this.addTagsRelationships()));
-          } return (new Promise(res => res()));
-        })
-        .then(() => { this.updatedUser = this.user; return (new User(this.user).generateAuthToken()); })
-        .then((token) => { this.updatedUser.token = token; resolve(_.omit(this.updatedUser, 'password')); })
-        .catch(err => reject(err))
-    ));
-  }
-
-  deleteUser() {
-    return new Promise((resolve, reject) => (
-      new UserValidator(this.deleteRequirements, this.user).validate()
-        .then(() => this.deleteThisNodeRelationships())
-        .then(() => this.deleteNode())
-        .then(user => resolve(user))
-        .catch(err => reject(err))
-    ));
-  }
-
-  authenticateUser() {
-    return new Promise((resolve, reject) => (
-      new UserValidator(this.authRequirements, this.user).validate()
-        .then(() => this.getUserInfo())
-        .then(existingUser => this.matchPasswords(existingUser))
-        .then(existingUser => this.generateAuthToken(existingUser))
-        .then(token => resolve(token))
-        .catch(err => reject(err))
-    ));
-  }
-
-  deleteUsersDuplicates() {
-    return new Promise((resolve, reject) => {
-      this.data = {
-        node_a: {
-          label: 'User',
-          id: 'username',
-        },
-      };
-      this.deleteNodeDuplicates()
-        .then(res => resolve(res))
         .catch(err => reject(err));
     });
   }
