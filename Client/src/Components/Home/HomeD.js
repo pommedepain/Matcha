@@ -68,7 +68,7 @@ const HomeDumb = (props) => {
 				<div className={classes.wrapper}>
 					{props.suggestions !== null ?
 						props.suggestions.map((elem, i) => {
-							console.log(i);
+							// console.log(i);
 							return(<UserIcon 
 								{...elem} 
 								key={i}

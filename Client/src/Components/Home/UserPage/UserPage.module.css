@@ -1,15 +1,28 @@
-.bubble {
-	position: relative;
-	border: 1px solid rgb(116, 209, 234);
-	background-color: rgb(116, 209, 234);
-	border-radius: 50%;
-	width: 60vh;
-	height: 60vh;
-	margin-left: 1%;
-	margin-bottom: 3%;
-	/* cursor: pointer; */
+.underDiv {
+	top: 0;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	display: none;
 }
-.bubble > img {
+
+.back {
+	display: flex;
+	flex-direction: column;
+	display: none;
+	position: absolute;
+	background: -moz-linear-gradient(-45deg, #e2a9e5 15%, #2b94e5 100%);
+	background: -webkit-linear-gradient(-45deg, #e2a9e5 15%,#2b94e5 100%);
+	background: linear-gradient(135deg, #e2a9e5 15%,#2b94e5 100%);
+	border-radius: 2px;
+	width: 40vh;
+	height: 40vh;
+	top: 25%;
+	left: 30%;
+	z-index: 10;
+}
+
+.bubble > .profilPic {
 	position: relative;
 	display: flex;
 	margin: 2% auto;
@@ -17,28 +30,26 @@
 	border-radius: 50%;
 }
 
-.back {
-	display: none;
-	position: absolute;
-	background: -moz-linear-gradient(-45deg, #e2a9e5 15%, #2b94e5 100%);
-	background: -webkit-linear-gradient(-45deg, #e2a9e5 15%,#2b94e5 100%);
-	background: linear-gradient(135deg, #e2a9e5 15%,#2b94e5 100%);
-	border-radius: 2px;
-	width: 60vh;
-	height: 60vh;
-	top: 25%;
-	left: 30%;
-	z-index: 10;
+.icon {
+	/* display: flex;
+	justify-content: center; */
+	position: relative;
+	margin-top: 2%;
+	margin-left: 28%;
+	margin-right: 26%;
+	text-align: center;
+	color: white;
+	font-size: 19vh;
 }
 
-.icon {
+/* .icon {
 	position: relative;
 	margin: 2% auto;
 	width: 100%;
 	text-align: center;
 	color: white;
 	font-size: 30vh;
-}
+} */
 .username {
 	color: white;
 	font-weight: 300;
@@ -110,18 +121,16 @@
 	display: flex;
 	flex-direction: row;
 	justify-content: space-evenly;
-	flex-wrap: nowrap;
+	flex-wrap: wrap;
 	margin: 0 auto;
 	margin-top: 5px;
-	width: 45vh;
+	width: 40vh;
 	height: 10vh;
-	border-bottom-left-radius: 10vh;
-	border-bottom-right-radius: 10vh;
 }
 
 .hash {
 	color: white;
-	font-size: 1.2vw;
+	font-size: 1vh;
 	margin-bottom: 4px;
 	margin-right: 2px;
 }
@@ -131,9 +140,9 @@
 	position: relative;
 	display: inline-block;
 	width: auto;
-	height: 20px;
-	margin: 1%;
-	font-size: 1vw;
+	height: 1.5vh;
+	margin: 2%;
+	font-size: .8vh;
 	padding-left: 10px;
 	padding-right: 10px;
 	background: -moz-linear-gradient(-45deg, #e2a9e5 15%, #2b94e5 100%);
@@ -151,8 +160,8 @@
 	border: 1px solid #f2f2f2;
   }
   .price_tag:after {  /* the arrow on left side positioned using left property */
-	height: 14px;
-	width: 14px;
+	height: 1vh;
+	width: .8vh;
 	transform: rotate(45deg);
 	background: #e2a9e5;
 	border-color: transparent transparent #f2f2f2 #f2f2f2;

@@ -105,10 +105,10 @@ class Home extends Component {
 	popupUser = (e, id) => {
 		e.preventDefault();
 		const users = document.querySelectorAll('.back');
-		console.log(users);
+		const underDiv = document.querySelectorAll('.underDiv');
 		users[id].style.display = "inline";
-		document.getElementById("main").style.filter = 'blur(3px)'
-		// userBack.style.filter = "blur(0px)";
+		underDiv[id].style.display = "inline";
+		document.getElementById("main").style.filter = 'blur(3px)';
 	}
 
 	submit = (e) => {

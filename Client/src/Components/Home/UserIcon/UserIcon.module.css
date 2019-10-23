@@ -1,10 +1,12 @@
 .bubble {
+	display: flex;
+	flex-direction: column;
 	position: relative;
 	border: 1px solid rgb(116, 209, 234);
 	background-color: rgb(116, 209, 234);
 	border-radius: 50%;
-	width: 60vh;
-	height: 60vh;
+	width: 40vh;
+	height: 40vh;
 	margin-left: 1%;
 	margin-bottom: 3%;
 	/* cursor: pointer; */
@@ -15,7 +17,7 @@
 	cursor: pointer;
 }
 
-.bubble > img {
+.bubble > .profilPic {
 	position: relative;
 	display: flex;
 	margin: 2% auto;
@@ -26,10 +28,9 @@
 .icon {
 	position: relative;
 	margin: 2% auto;
-	width: 100%;
 	text-align: center;
 	color: white;
-	font-size: 30vh;
+	font-size: 19vh;
 }
 .username {
 	color: white;
@@ -99,10 +100,14 @@
 	display: flex;
 	flex-direction: row;
 	justify-content: space-evenly;
-	flex-wrap: nowrap;
+	flex-wrap: wrap;
+	/* display: inline-block; */
+	/* -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box; */
 	margin: 0 auto;
 	margin-top: 5px;
-	width: 45vh;
+	width: 31vh;
 	height: 10vh;
 	border-bottom-left-radius: 10vh;
 	border-bottom-right-radius: 10vh;
@@ -110,7 +115,7 @@
 
 .hash {
 	color: white;
-	font-size: 1.2vw;
+	font-size: 1vh;
 	margin-bottom: 4px;
 	margin-right: 2px;
 }
@@ -120,9 +125,9 @@
 	position: relative;
 	display: inline-block;
 	width: auto;
-	height: 20px;
+	height: 1.5vh;
 	margin: 1%;
-	font-size: 1vw;
+	font-size: .8vh;
 	padding-left: 10px;
 	padding-right: 10px;
 	background: -moz-linear-gradient(-45deg, #e2a9e5 15%, #2b94e5 100%);
@@ -140,8 +145,8 @@
 	border: 1px solid #f2f2f2;
   }
   .price_tag:after {  /* the arrow on left side positioned using left property */
-	height: 14px;
-	width: 14px;
+	height: 1vh;
+	width: .8vh;
 	transform: rotate(45deg);
 	background: #e2a9e5;
 	border-color: transparent transparent #f2f2f2 #f2f2f2;
