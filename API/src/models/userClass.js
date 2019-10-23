@@ -484,7 +484,12 @@ class User extends Node {
         .then(() => this.redundancyCheck())
         .then(() => this.hashGenerator())
         .then(() => this.calcAge())
-        .then(() => { if (this.data.node_a.properties && !this.data.node_a.properties.sexOrient) { this.data.node_a.properties.sexOrient = 'bi'; } return this.createNode(); })
+        .then(() => {
+          if (this.data.node_a.properties && !this.data.node_a.properties.sexOrient) {
+            this.data.node_a.properties.sexOrient = 'bi';
+          } this.data.node_a.properties.active = 'false';
+          return this.createNode();
+        })
         .then(() => this.validateLookTags())
         .then(() => this.addLookTagsRelationships())
         .then(() => this.validateIsTags())
@@ -633,7 +638,7 @@ class User extends Node {
     });
   }
 
-  matchConfTokens(token) {
+  matchResetTokens(token) {
     return new Promise((resolve, reject) => {
       this.getUserInfo()
         .then((user) => {
@@ -661,8 +666,92 @@ class User extends Node {
 
   resetPwd(token) {
     return new Promise((resolve, reject) => {
-      this.matchConfTokens(token)
+      this.matchResetTokens(token)
         .then(() => this.eraseResetToken())
+        .then(user => resolve(true))
+        .catch(err => reject(err));
+    });
+  }
+
+  createConfToken() {
+    debug('Conf Token generator');
+    return new Promise((resolve) => {
+      bcrypt.genSalt(10)
+        .then(salt => bcrypt.hash(this.user.username, salt))
+        .then(hash => resolve(hash))
+        .catch(err => debug(err));
+    });
+  }
+
+  sendConfLink() {
+    return new Promise((resolve, reject) => {
+      this.createConfToken()
+        .then((token) => {
+          const newData = { confToken: token };
+          this.confToken = token;
+          return this.updateUser(newData);
+        })
+        .then(() => this.sendConfMail(this.confToken))
+        .then(() => resolve(true))
+        .catch(err => reject(err));
+    });
+  }
+
+  sendConfMail(oldtoken) {
+    return new Promise((resolve, reject) => {
+      debug('SENDING Conf MAIL');
+
+      const transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+          user: 'cajulien.42.matcha@gmail.com',
+          pass: 'Ff7midgar6',
+        },
+      });
+      const token = oldtoken.replace(/\//gi, '\\');
+      debug(token);
+      transporter.sendMail({
+        from: 'cajulien.42.matcha@gmail.com',
+        to: 'kamillejulien@gmail.com',
+        subject: 'Request to Conf password for Matcha',
+        text: 'Hi',
+        html: `Hi ${this.user.username}, to complete your registration to Matcha, please click on <a href='http://localhost:4000/api/users/confirm/${this.user.username}/${token}'>this link</a>`,
+      }).then(() => resolve())
+        .catch(err => reject(err));
+    });
+  }
+
+  matchConfTokens(token) {
+    return new Promise((resolve, reject) => {
+      this.getUserInfo()
+        .then((user) => {
+          let decodedToken = token.replace(/%5C/gi, '/');
+          decodedToken = token.replace(/\\/gi, '/');
+          debug(user.confToken, decodedToken);
+          if (user.confToken === decodedToken) resolve(true);
+          else resolve(false);
+        })
+        .catch(err => reject(err));
+    });
+  }
+
+  eraseConfToken() {
+    return new Promise((resolve, reject) => {
+      const session = this.driver.session();
+      const query = `MATCH (n:User {username:'${this.user.username}'})
+                      SET n.active='true'
+                      REMOVE n.confToken
+                      RETURN n`;
+      session.run(query)
+        .then(() => { session.close(); resolve(); })
+        .catch(err => debug(err));
+    });
+  }
+
+  confirmUser(token) {
+    return new Promise((resolve, reject) => {
+      this.matchConfTokens(token)
+        .then(() => this.eraseConfToken())
         .then(user => resolve(true))
         .catch(err => reject(err));
     });
