@@ -28,6 +28,30 @@ router.get('/:value', wrapper(async (req, res) => {
   );
 }));
 
+router.get('/sendReset/:username', wrapper(async (req, res) => {
+  debug('Request to send reset pwd mail to :', req.params.username);
+  return (new User({ username: req.params.username }).sendResetLink()
+    .then((result) => {
+      debug(result);
+      return res.status(200).json({
+        success: true,
+        payload: { value: 'sendReset', result },
+      });
+    }));
+}));
+
+router.get('/reset/:username/:token', wrapper(async (req, res) => {
+  debug('Request to reset pwd:\n', req.params.username);
+  return (new User({ username: req.params.username }).resetPwd(req.params.token)
+    .then((result) => {
+      debug(result);
+      return res.status(200).json({
+        success: true,
+        payload: { value: 'resetPwd', result },
+      });
+    }));
+}));
+
 router.get('/infos/:username', wrapper(async (req, res) => {
   debug('Request to get user information for :', req.params.username);
   return (new User({ username: req.params.username }).getUserInfo()
@@ -104,17 +128,6 @@ router.post('/', wrapper(async (req, res) => {
     }));
 }));
 
-router.get('/confirm/:username/:token', wrapper(async (req, res) => {
-  debug('Request to update :\n', _.pick(req.user, validProperties));
-  return (new User({ username: req.params.username }).confirmUser(req.params.token)
-    .then((result) => {
-      debug(result);
-      return res.status(200).json({
-        success: true,
-        payload: { value: 'confirm', result },
-      });
-    }));
-}));
 
 router.put('/:username', [auth, identify], wrapper(async (req, res) => {
   debug('Request to update :\n', _.pick(req.user, validProperties));

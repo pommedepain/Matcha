@@ -10,6 +10,7 @@ const tags = require('./src/routes/tags');
 const relationships = require('./src/routes/relationships');
 const auth = require('./src/routes/auth');
 const initdb = require('./src/init/initDb');
+const seed = require('./src/init/createSeed');
 const error = require('./src/middleware/error');
 
 const app = express();
@@ -30,6 +31,14 @@ app.use('/api/relationships', relationships);
 app.use('/api/auth', auth);
 
 app.use(error);
+
+
+// seed()
+//   .then(() => {
+//     const port = 4000;
+//     app.listen(port, () => debug(`Listening on port ${port}...`));
+//   })
+//   .catch(err => debug(err));
 
 initdb()
   .then(() => {

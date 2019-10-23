@@ -6,6 +6,7 @@ const neo4j = require('neo4j-driver').v1;
 const Relationship = require('./relationshipsClass');
 const userTemplate = require('../util/userTemplate');
 const tagTemplate = require('../util/tagTemplate');
+const driver = require('../util/driver');
 
 
 class Node extends Relationship {
@@ -29,7 +30,7 @@ class Node extends Relationship {
 
     if (this.data && this.data.node_a) this.id_a = this.data.node_a.id;
     debug('Node constructor called');
-    this.driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
+    this.driver = driver;
   }
 
   redundancyCheck() {
@@ -70,14 +71,13 @@ class Node extends Relationship {
   getNodeInfo() {
     return new Promise((resolve, reject) => {
       const session = this.driver.session();
-      debug(`Getting ${this.data.node_a.label} info for :`, this.data.node_a.properties[this.id_a]);
       const query = `MATCH (n:${this.data.node_a.label} {${this.data.node_a.id}:'${this.data.node_a.properties[this.id_a]}'}) RETURN n`;
       session.run(query)
         .then((res) => {
           session.close();
           if (res.records.length !== 0) {
             const result = res.records[0]._fields[0].properties;
-            debug('Data fetched :\n', result);
+            // debug('Data fetched :\n', result);
             resolve(result);
           } else resolve(`${this.data.node_a.label} does not exist`);
         })
@@ -88,9 +88,9 @@ class Node extends Relationship {
 
   updateNode(newData) {
     return new Promise((resolve, reject) => {
-      this.props = _.omit(this.data.node_a.properties, 'tags');
+      this.props = _.omit(this.data.node_a.properties, 'tags', 'isTags');
       Object.keys(newData).forEach((key) => {
-        if (newData[key] && key !== 'tags') this.props[key] = newData[key];
+        if (newData[key] && key !== 'tags' && key !== 'isTags') this.props[key] = newData[key];
       });
       this.props.confToken = newData.confToken;
       const props = this.props;
@@ -167,7 +167,7 @@ class Node extends Relationship {
         .then(() => {
           session = this.driver.session();
           session.run(query2)
-            .then(() => debug(`${this.data.node_a.label} nodes duplicates destroyed`))
+            .then(() => { session.close(); debug(`${this.data.node_a.label} nodes duplicates destroyed`); })
             .then(res => resolve(res))
             .catch(err => reject(err));
         })

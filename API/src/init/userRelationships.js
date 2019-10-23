@@ -11,16 +11,13 @@ function rand(min, max) { // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-
 async function randomRelations() {
   const users = await new User().getList('username');
-  const tags = await new Tag().getList('id');
   return new Promise((resolve, reject) => {
     const relations = [];
     const promises = users.map(user => (
       new Promise((res) => {
         for (let i = 0; i < chaosCounter; i += 1) {
-          const tag = tags[rand(0, tags.length - 1)];
           const target = users[rand(0, users.length - 1)];
           if (target !== user) {
             relations.push(

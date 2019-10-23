@@ -13,6 +13,7 @@ const TagValidator = require('../validation/tags');
 const userTemplate = require('../util/userTemplate');
 const Node = require('./nodeClass');
 const Relationship = require('./relationshipsClass');
+const driver = require('../util/driver');
 
 
 class User extends Node {
@@ -28,7 +29,7 @@ class User extends Node {
     this.user = this.data.node_a.properties;
     this.allProperties = ['age', 'isTags'];
     this.publicProperties = ['age', 'isTags'];
-    this.optionalProperties = ['age', 'confToken'];
+    this.optionalProperties = ['age'];
 
     Object.keys(userTemplate).forEach((property) => {
       this.allProperties.push(property);
@@ -70,8 +71,7 @@ class User extends Node {
       'username',
     ];
     debug('User constructor called');
-    this.driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
-
+    this.driver = driver;
   }
 
   hashGenerator() {
@@ -84,16 +84,7 @@ class User extends Node {
           .then((hash) => {
             this.user.password = hash;
             this.data.node_a.properties.password = hash;
-            if (this.user.active === 'false') {
-              const token = this.user.username;
-              bcrypt.genSalt(5)
-                .then(salt => bcrypt.hash(token, salt))
-                .then((tokenHash) => {
-                  this.user.confToken = tokenHash;
-                  this.data.node_a.properties.confToken = tokenHash;
-                  resolve();
-                });
-            } else resolve();
+            resolve(hash);
           })
           .catch(err => debug(err));
       } else resolve();
@@ -116,7 +107,7 @@ class User extends Node {
   deleteOrientRelationships() {
     return new Promise((resolve, reject) => {
       const session = this.driver.session();
-      const query = `MATCH (n:User { username:'${this.data.node_a.properties.username}'})-[r:IS]->(b:Orient)
+      const query = `MATCH (n:User { username:'${this.data.node_a.properties.username}'})-[r:IS]->(b:Orientation)
                     DELETE r`;
       session.run(query)
         .then(() => { session.close(); resolve(); })
@@ -152,7 +143,7 @@ class User extends Node {
   deleteCompatibilitiesRelationships() {
     return new Promise((resolve, reject) => {
       const session = this.driver.session();
-      const query = `MATCH (n:User { username:'${this.data.node_a.properties.username}'})-[r:COMPATIBLE]->(b:User)
+      const query = `MATCH (n:User { username:'${this.data.node_a.properties.username}'})-[r:COMPATIBLE]-(b:User)
                     DELETE r`;
       session.run(query)
         .then(() => { session.close(); resolve(); })
@@ -385,13 +376,13 @@ class User extends Node {
                     RETURN properties(b),common`;
       session.run(query)
         .then((res) => {
+          session.close();
           this.result = [];
           if (res.records.length !== 0) {
             res.records.forEach((record) => {
               this.result.push({ user: _.pick(record._fields[0], this.relevantProperties), compTags: _.uniqBy(record._fields[1], 'id') });
             });
           }
-          debug(this.result);
           resolve(this.result);
         })
         .catch(err => reject(err));
@@ -406,13 +397,13 @@ class User extends Node {
                     RETURN properties(b),common`;
       session.run(query)
         .then((res) => {
+          session.close();
           this.result = [];
           if (res.records.length !== 0) {
             res.records.forEach((record) => {
               this.result.push({ user: _.pick(record._fields[0], this.relevantProperties), reverseCompTags: _.uniqBy(record._fields[1], 'id') });
             });
           }
-          debug(this.result);
           resolve(this.result);
         })
         .catch(err => reject(err));
@@ -436,7 +427,7 @@ class User extends Node {
         label: relation,
       };
       this.getNodetypeofRelationships()
-        .then((list) => { debug(list); return (resolve(list)); })
+        .then(list => resolve(list))
         .catch(err => reject(err));
     });
   }
@@ -450,7 +441,9 @@ class User extends Node {
       session.run(query)
         .then((res) => {
           session.close();
-          resolve(res.records[0]._fields[0]);
+          if (res.records.length !== 0) {
+            resolve(res.records[0]._fields[0]);
+          } resolve();
         })
         .catch(err => reject(err));
     });
@@ -465,7 +458,9 @@ class User extends Node {
       session.run(query)
         .then((res) => {
           session.close();
-          resolve(res.records[0]._fields[0]);
+          if (res.records.length !== 0) {
+            resolve(res.records[0]._fields[0]);
+          } resolve();
         })
         .catch(err => reject(err));
     });
@@ -473,12 +468,12 @@ class User extends Node {
 
   getUserInfo() {
     return new Promise((resolve, reject) => {
-      debug('Getting user info for :', this.user);
+      debug('Getting user info for :', this.user.username);
       new UserValidator(this.getRequirements, this.data.node_a.properties).validate()
         .then(() => this.getNodeInfo())
         .then((user) => { this.result = user; return (this.getUserIsTags(this.data.node_a.properties.username)); })
-        .then((isTags) => { debug(isTags); this.result.isTags = isTags; return (this.getUserLookTags(this.data.node_a.properties.username)); })
-        .then((lookTags) => { debug(lookTags); this.result.lookTags = lookTags; return (resolve(this.result)); })
+        .then((isTags) => { this.result.isTags = isTags; return (this.getUserLookTags(this.data.node_a.properties.username)); })
+        .then((lookTags) => { this.result.lookTags = lookTags; return (resolve(this.result)); })
         .catch(err => reject(err));
     });
   }
@@ -496,7 +491,6 @@ class User extends Node {
         .then(() => this.addIsTagsRelationships())
         .then(() => this.addOrientRelationships())
         .then(() => this.addCompatibilities())
-        .then(() => { if (this.data.node_a.properties.active === 'false') return this.sendConfMail(); return (new Promise(res => res())); })
         .then(() => resolve(_.pick(this.user,
           this.publicProperties.concat(this.optionalProperties))))
         .catch((err) => { debug(err); resolve(err); })
@@ -507,7 +501,7 @@ class User extends Node {
     return new Promise((resolve, reject) => (
       new UserValidator(this.updateRequirements, this.user).validate()
         .then(() => { if (newData.password) { this.user.password = newData.password; } return this.hashGenerator(); })
-        .then((pass) => { this.newData = newData; this.newData.password = pass; return this.updateNode(this.newData); })
+        .then((pass) => { this.newData = newData; debug(this.newData); this.newData.password = pass; return this.updateNode(this.newData); })
         .then((user) => {
           this.user = user;
           if (newData.tags) {
@@ -591,9 +585,33 @@ class User extends Node {
     });
   }
 
-  sendConfMail() {
+  createResetToken() {
+    debug('Reset Token generator');
+    return new Promise((resolve) => {
+      bcrypt.genSalt(10)
+        .then(salt => bcrypt.hash(this.user.username, salt))
+        .then(hash => resolve(hash))
+        .catch(err => debug(err));
+    });
+  }
+
+  sendResetLink() {
     return new Promise((resolve, reject) => {
-      debug('SENDING CONFIRMATION MAIL');
+      this.createResetToken()
+        .then((token) => {
+          const newData = { resetToken: token };
+          this.resetToken = token;
+          return this.updateUser(newData);
+        })
+        .then(() => this.sendResetMail(this.resetToken))
+        .then(() => resolve(true))
+        .catch(err => reject(err));
+    });
+  }
+
+  sendResetMail(oldtoken) {
+    return new Promise((resolve, reject) => {
+      debug('SENDING RESET MAIL');
 
       const transporter = nodemailer.createTransport({
         service: 'Gmail',
@@ -602,16 +620,14 @@ class User extends Node {
           pass: 'Ff7midgar6',
         },
       });
-      const token = this.user.confToken.replace(/\//gi, '\\');
-      debug(this.user.confToken);
+      const token = oldtoken.replace(/\//gi, '\\');
       debug(token);
-
       transporter.sendMail({
         from: 'cajulien.42.matcha@gmail.com',
-        to: 'example@example.com',
-        subject: 'Matcha account confirmation',
+        to: 'kamillejulien@gmail.com',
+        subject: 'Request to reset password for Matcha',
         text: 'Hi',
-        html: `Hi ${this.user.username}, to complete your registration to Matcha, please click on <a href='http://localhost:4000/api/users/confirm/${this.user.username}/${token}'>this link</a>`, // html body
+        html: `Hi ${this.user.username}, to complete your registration to Matcha, please click on <a href='http://localhost:4000/api/users/reset/${this.user.username}/${token}'>this link</a>`,
       }).then(() => resolve())
         .catch(err => reject(err));
     });
@@ -621,31 +637,33 @@ class User extends Node {
     return new Promise((resolve, reject) => {
       this.getUserInfo()
         .then((user) => {
-
           let decodedToken = token.replace(/%5C/gi, '/');
           decodedToken = token.replace(/\\/gi, '/');
-          debug(user.confToken, decodedToken);
-          if (user.confToken === decodedToken) resolve('email confirmed');
-          else reject(new Error('bad request'));
+          debug(user.resetToken, decodedToken);
+          if (user.resetToken === decodedToken) resolve(true);
+          else resolve(false);
         })
         .catch(err => reject(err));
     });
   }
 
-  eraseConfToken() {
-    const newData = {
-      username: this.username,
-      confToken: '',
-      active: 'true',
-    };
-    return (this.updateUser(newData));
+  eraseResetToken() {
+    return new Promise((resolve, reject) => {
+      const session = this.driver.session();
+      const query = `MATCH (n:User {username:'${this.user.username}'})
+                      REMOVE n.resetToken
+                      RETURN n`;
+      session.run(query)
+        .then(() => { session.close(); resolve(); })
+        .catch(err => debug(err));
+    });
   }
 
-  confirmUser(token) {
+  resetPwd(token) {
     return new Promise((resolve, reject) => {
       this.matchConfTokens(token)
-        .then(() => this.eraseConfToken())
-        .then(user => resolve(user))
+        .then(() => this.eraseResetToken())
+        .then(user => resolve(true))
         .catch(err => reject(err));
     });
   }

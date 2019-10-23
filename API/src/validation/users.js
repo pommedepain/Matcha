@@ -53,8 +53,11 @@ class UserValidator {
       if (this.req.password) sch.password = Joi.string().regex(/^[^`\\<>]{7,150}$/i).required();
       else sch.password = Joi.string().regex(/^[^`\\<>]{7,150}$/i);
 
-      if (this.req.confToken) sch.confToken = Joi.string().regex(/^[^`\\<>]{7,150}$/i).required();
-      else sch.confToken = Joi.string().regex(/^[^`\\<>]{7,150}$/i);
+      if (this.req.resetToken) sch.resetToken = Joi.string().regex(/^[^`\\<>]{7,150}$/i).required();
+      else sch.resetToken = Joi.string().regex(/^[^`\\<>]{7,150}$/i);
+
+      if (this.req.token) sch.token = Joi.string().regex(/^[^`\\<>]{7,150}$/i).required();
+      else sch.token = Joi.string().regex(/^[^`\\<>]{7,150}$/i);
 
       if (this.req.birthdate) {
         sch.birthdate = Joi.string().regex(/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/).required();

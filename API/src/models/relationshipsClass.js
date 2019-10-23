@@ -6,6 +6,7 @@ const config = require('config');
 const _ = require('lodash');
 const neo4j = require('neo4j-driver').v1;
 const RelationshipValidator = require('../validation/relationships');
+const driver = require('../util/driver');
 
 class Relationship {
 
@@ -14,7 +15,7 @@ class Relationship {
     this.iDs = ['id', 'username'];
     if (this.data && this.data.node_a) this.id_a = this.data.node_a.id;
     if (this.data && this.data.node_b) this.id_b = this.data.node_b.id;
-    this.driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456'));
+    this.driver = driver;
     debug('Relationship constructor called');
     this.relevantProperties = [
       'firsname',
