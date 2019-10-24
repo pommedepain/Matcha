@@ -3,7 +3,7 @@ sleep 12 &&
 export matcha_jwtPrivateKey=aSecureKey &&
 # DEBUG=models:relationships,index,init:* nodemon index.js
 # DEBUG=init:*,middleware:*,models:*,routes:*,validation:*,tests:*,index nodemon index.js
-DEBUG=init:*,middleware:*,index,routes:*,models:* nodemon index.js
+DEBUG=init:*,middleware:*,index,routes:*,models:users nodemon index.js
 # DEBUG=index,init:* nodemon index.js
 # DEBUG=index,routes:* nodemon index.js
 

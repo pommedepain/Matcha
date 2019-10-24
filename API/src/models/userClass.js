@@ -74,6 +74,38 @@ class User extends Node {
     this.driver = driver;
   }
 
+  confTokenGenerator() {
+    return new Promise((resolve) => {
+      if (this.user.username) {
+        const data = this.user.username;
+        bcrypt.genSalt(10)
+          .then(salt => bcrypt.hash(data, salt))
+          .then((hash) => {
+            this.user.confToken = hash;
+            this.data.node_a.properties.confToken = hash;
+            resolve(hash);
+          })
+          .catch(err => debug(err));
+      } else resolve();
+    });
+  }
+
+  resetTokenGenerator() {
+    return new Promise((resolve) => {
+      if (this.user.username) {
+        const data = this.user.username;
+        bcrypt.genSalt(10)
+          .then(salt => bcrypt.hash(data, salt))
+          .then((hash) => {
+            this.user.resetToken = hash;
+            this.data.node_a.properties.resetToken = hash;
+            resolve(hash);
+          })
+          .catch(err => debug(err));
+      } else resolve();
+    });
+  }
+
   hashGenerator() {
     debug('hash generator');
     return new Promise((resolve) => {
@@ -93,8 +125,10 @@ class User extends Node {
 
   matchPasswords(user) {
     return new Promise((resolve, reject) => {
+      debug(this.user.password, user.password);
       bcrypt.compare(this.user.password, user.password)
         .then((valid) => {
+          debug(valid);
           if (valid === true) {
             debug('Verifying password for :', user.username);
             resolve(user);
@@ -510,7 +544,7 @@ class User extends Node {
         .then(() => this.getNodeInfo())
         .then((user) => { this.result = user; return (this.getUserIsTags(this.data.node_a.properties.username)); })
         .then((isTags) => { this.result.isTags = isTags; return (this.getUserLookTags(this.data.node_a.properties.username)); })
-        .then((lookTags) => { this.result.lookTags = lookTags; return (resolve(this.result)); })
+        .then((lookTags) => { this.result.lookTags = lookTags; debug(this.result); return (resolve(this.result)); })
         .catch(err => reject(err));
     });
   }
@@ -528,19 +562,17 @@ class User extends Node {
           if (this.data.node_a.properties && !this.data.node_a.properties.active) {
             this.data.node_a.properties.active = 'false';
           }
-          return this.createNode();
+          if (this.data.node_a.properties.active === 'false') {
+            return this.sendConfLink();
+          } return new Promise(res => res());
         })
+        .then(() => this.createNode())
         .then(() => this.validateLookTags())
         .then(() => this.addLookTagsRelationships())
         .then(() => this.validateIsTags())
         .then(() => this.addIsTagsRelationships())
         .then(() => this.addOrientRelationships())
         .then(() => this.addCompatibilities())
-        .then(() => {
-          if (this.data.node_a.properties.active === 'false') {
-            return this.sendConfLink();
-          } return new Promise(res => res());
-        })
         .then(() => resolve(_.pick(this.user,
           this.publicProperties.concat(this.optionalProperties))))
         .catch((err) => { debug(err); resolve(err); })
@@ -732,11 +764,9 @@ class User extends Node {
     return new Promise((resolve, reject) => {
       this.createConfToken()
         .then((token) => {
-          const newData = { confToken: token };
-          this.confToken = token;
-          return this.updateUser(newData);
+          this.data.node_a.properties.confToken = token;
+          this.sendConfMail(token);
         })
-        .then(() => this.sendConfMail(this.confToken))
         .then(() => resolve(true))
         .catch(err => reject(err));
     });

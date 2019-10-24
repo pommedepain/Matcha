@@ -41,18 +41,18 @@ test('POST request : /api/auth, expect valid jwt', async () => {
   return expect(res.data.payload).toMatch(/^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/);
 });
 
-test('GET request : infos array, expect suggestions lists', async () => {
-  const res = await axios.get(`${route}/users//suggestions/${updatedUSer.username}`, null, null);
-  return expect(res.data.success).toBe(true);
-});
+// test('GET request : infos array, expect suggestions lists', async () => {
+//   const res = await axios.get(`${route}/users//suggestions/${updatedUSer.username}`, null, null);
+//   return expect(res.data.success).toBe(true);
+// });
 
-test('PUT request : /api/users, successful update', async () => {
-  const token = await axios.post(`${route}/auth`, validNewUser, null);
-  const res = await axios.put(`${route}/users/${updatedUSer.username}`, updatedUSer, { headers: { 'x-auth-token': token.data.payload } });
-  return expect(res.data.success).toBe(true);
-});
+// test('PUT request : /api/users, successful update', async () => {
+//   const token = await axios.post(`${route}/auth`, validNewUser, null);
+//   const res = await axios.put(`${route}/users/${updatedUSer.username}`, updatedUSer, { headers: { 'x-auth-token': token.data.payload } });
+//   return expect(res.data.success).toBe(true);
+// });
 
-test('GET request : infos array, expect suggestions lists', async () => {
-  const res = await axios.get(`${route}/users//suggestions/${updatedUSer.username}`, null, null);
-  return expect(res.data.success).toBe(true);
-});
+// test('GET request : infos array, expect suggestions lists', async () => {
+//   const res = await axios.get(`${route}/users//suggestions/${updatedUSer.username}`, null, null);
+//   return expect(res.data.success).toBe(true);
+// });
