@@ -115,6 +115,32 @@ router.get('/:username/commonTags', wrapper(async (req, res) => {
   );
 }));
 
+router.get('/:username/likedBy', wrapper(async (req, res) => {
+  debug('Requesting list...');
+  return (new User({ username: req.params.username }).getLikedBy()
+    .then((result) => {
+      debug(result);
+      return res.status(200).json({
+        success: true,
+        payload: { value: 'read', result },
+      });
+    })
+  );
+}));
+
+router.get('/:username/viewedBy', wrapper(async (req, res) => {
+  debug('Requesting list...');
+  return (new User({ username: req.params.username }).getViewedBy()
+    .then((result) => {
+      debug(result);
+      return res.status(200).json({
+        success: true,
+        payload: { value: 'read', result },
+      });
+    })
+  );
+}));
+
 router.get('/:username/:relation', wrapper(async (req, res) => {
   debug('Requesting relation list...');
   return (new User({ username: req.params.username }).getRelations(req.params.relation)

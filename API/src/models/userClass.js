@@ -312,6 +312,43 @@ class User extends Node {
     });
   }
 
+  getProfiles(usersArray) {
+    this.profiles = usersArray.map(user => (new User(user).getUserInfo()));
+    return Promise.all(this.profiles);
+  }
+
+  getLikedBy() {
+    return new Promise((resolve, reject) => {
+      const session = this.driver.session();
+      const query = `MATCH (a:User {username:'${this.user.username}'})<-[r:LIKES]-(b)
+                    WITH a, collect(properties(b)) as col
+                    RETURN col`;
+      session.run(query)
+        .then((res) => {
+          session.close();
+          return this.getProfiles(res.records[0]._fields[0]);
+        })
+        .then(res => resolve(res))
+        .catch(err => reject(err));
+    });
+  }
+
+  getViewedBy() {
+    return new Promise((resolve, reject) => {
+      const session = this.driver.session();
+      const query = `MATCH (a:User {username:'${this.user.username}'})<-[r:VIEWED]-(b)
+                    WITH a, collect(properties(b)) as col
+                    RETURN col`;
+      session.run(query)
+        .then((res) => {
+          session.close();
+          return this.getProfiles(res.records[0]._fields[0]);
+        })
+        .then(res => resolve(res))
+        .catch(err => reject(err));
+    });
+  }
+
   getMatches() {
     return new Promise((resolve, reject) => {
       this.data.relation = {
@@ -637,7 +674,7 @@ class User extends Node {
       debug(token);
       transporter.sendMail({
         from: 'cajulien.42.matcha@gmail.com',
-        to: 'kamillejulien@gmail.com',
+        to: ['kamillejulien@gmail.com', 'psentilh@student.42.fr', this.user.email],
         subject: 'Request to reset password for Matcha',
         text: 'Hi',
         html: `Hi ${this.user.username}, to complete your registration to Matcha, please click on <a href='http://localhost:4000/api/users/reset/${this.user.username}/${token}'>this link</a>`,
@@ -720,7 +757,7 @@ class User extends Node {
       debug(token);
       transporter.sendMail({
         from: 'cajulien.42.matcha@gmail.com',
-        to: 'example@gmail.com',
+        to: ['kamillejulien@gmail.com', 'philousentilhes@gmail.com', this.user.email],
         subject: 'Request to Conf password for Matcha',
         text: 'Hi',
         html: `Hi ${this.user.username}, to complete your registration to Matcha, please click on <a href='http://localhost:4000/api/users/confirm/${this.user.username}/${token}'>this link</a>`,
