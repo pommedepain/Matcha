@@ -52,6 +52,18 @@ router.get('/reset/:username/:token', wrapper(async (req, res) => {
     }));
 }));
 
+router.get('/confirm/:username/:token', wrapper(async (req, res) => {
+  debug('Request to confirm mail:\n', req.params.username);
+  return (new User({ username: req.params.username }).confirmUser(req.params.token)
+    .then((result) => {
+      debug(result);
+      return res.status(200).json({
+        success: true,
+        payload: { value: 'confirmation', result },
+      });
+    }));
+}));
+
 router.get('/infos/:username', wrapper(async (req, res) => {
   debug('Request to get user information for :', req.params.username);
   return (new User({ username: req.params.username }).getUserInfo()

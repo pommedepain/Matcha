@@ -487,7 +487,10 @@ class User extends Node {
         .then(() => {
           if (this.data.node_a.properties && !this.data.node_a.properties.sexOrient) {
             this.data.node_a.properties.sexOrient = 'bi';
-          } this.data.node_a.properties.active = 'false';
+          }
+          if (this.data.node_a.properties && !this.data.node_a.properties.active) {
+            this.data.node_a.properties.active = 'false';
+          }
           return this.createNode();
         })
         .then(() => this.validateLookTags())
@@ -496,6 +499,11 @@ class User extends Node {
         .then(() => this.addIsTagsRelationships())
         .then(() => this.addOrientRelationships())
         .then(() => this.addCompatibilities())
+        .then(() => {
+          if (this.data.node_a.properties.active === 'false') {
+            return this.sendConfLink();
+          } return new Promise(res => res());
+        })
         .then(() => resolve(_.pick(this.user,
           this.publicProperties.concat(this.optionalProperties))))
         .catch((err) => { debug(err); resolve(err); })
@@ -712,7 +720,7 @@ class User extends Node {
       debug(token);
       transporter.sendMail({
         from: 'cajulien.42.matcha@gmail.com',
-        to: 'kamillejulien@gmail.com',
+        to: 'example@gmail.com',
         subject: 'Request to Conf password for Matcha',
         text: 'Hi',
         html: `Hi ${this.user.username}, to complete your registration to Matcha, please click on <a href='http://localhost:4000/api/users/confirm/${this.user.username}/${token}'>this link</a>`,
