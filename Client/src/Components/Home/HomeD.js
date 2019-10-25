@@ -12,6 +12,7 @@ const HomeDumb = (props) => {
 	const ageRange = props.JWT.data.ageMin ? [props.JWT.data.ageMin, props.JWT.data.ageMax] : props.ageRange;
 	const localisation = props.JWT.data.localisation ? props.JWT.data.localisation : props.localisation; 
 
+	// console.log(props);
 	return (
 		<div>
 			<div className={classes.main} id="main" >

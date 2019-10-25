@@ -1,6 +1,6 @@
 import React from 'react';
 import cx from 'classnames';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 
 import classes from './LogIn.module.css';
 import Input from '../../Utils/Input/Input';
@@ -66,9 +66,9 @@ const LogIn = (props) => {
 									onClick={(event) => props.toggleShow(event, formElementsArray[1].id)}
 								>{props.hidden ? "Show" : "Hide"}</span>
 							</div>
-							<Link
+							{/* <Link
 								to="/home"
-							>
+							> */}
 								<input 
 									type="submit" 
 									name="submit" 
@@ -77,7 +77,7 @@ const LogIn = (props) => {
 									onClick={props.submit}
 									disabled={!props.formIsValid}
 								/>
-							</Link>
+							{/* </Link> */}
 						</fieldset>
 					</form>
 				</div>

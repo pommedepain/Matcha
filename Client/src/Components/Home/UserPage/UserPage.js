@@ -38,11 +38,12 @@ const UserPage = (props) => {
 		}
 	}
 
+	console.log(props.user);
 	return (
 		<div className={cx(classes.underDiv, "underDiv")} onClick={handleClickOutside} id={props.id}>
 			<div className={cx(classes.bubble, "back", classes.back)} id={props.id}>
 				{props.user.photos ?
-					<img className={classes.profilPic} src={props.user.photos[0]} alt="profil" />
+					[props.user.photos.map((elem, i) => <img key={i} className={classes.profilPic} src={elem} alt="profil" />)]
 					: <i className={cx(classes.icon, "fas fa-user-circle")}></i> 
 				}
 				<h3 className={classes.username}><i className={genderIcon}></i> {props.user.username}</h3>

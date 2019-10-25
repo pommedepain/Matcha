@@ -16,10 +16,7 @@ class Home extends Component {
 			scoreRangeTouched: false,
 			localisation: 5,
 			sliderTouched: false,
-			tags: [
-				{ id: "athlete", text: "Athlete" },
-				{ id: "geek", text: "Geek" }
-			],
+			tags: [],
 			touched: false,
 			suggestions: null
 		}
@@ -37,6 +34,7 @@ class Home extends Component {
 
 		axios.get(`http://localhost:4000/API/users/suggestions/${username}`)
 			.then(response => {
+				// console.log(response.data.payload.result);
 				this.setState({ suggestions: response.data.payload.result});
 			})
 			.catch(err => { 
@@ -46,12 +44,20 @@ class Home extends Component {
 
 	updateFilters = () => {
 		const { ageMin, ageMax, lookTags, localisation } = this.context.JWT.data;
+		let tags = null;
+
+		if (lookTags === undefined) {
+			tags = [];
+		}
+		else {
+			tags = lookTags;
+		}
 
 		this.setState({
 			ageRange: [ageMin, ageMax],
-			tags: lookTags,
+			tags: tags,
 			localisation: localisation
-		})
+		}/*, function () { console.log(this.state)}*/);
 	}
 
 	handleSlider = (newValue) => {
