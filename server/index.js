@@ -59,6 +59,20 @@ class Server {
             })
           }
         }
+        const emitter = notification.emitter;
+        if (notification.type === 'like') {
+          if (this.correlationTable[emitter] !== undefined
+          && this.correlationTable[emitter].length) {
+            this.correlationTable[emitter].forEach((socketId) => {
+              this.io.to(`${socketId}`).emit('notification', {
+                data: {
+                  type: notification.type,
+                  emitter: notification.receiver,
+                },
+              })
+            })
+          }
+        }
       })
 
       socket.on('isOnline', (usernameList) => {
@@ -108,3 +122,7 @@ class Server {
 }
 
 new Server().listen()
+
+// const io = require('socket.io');
+// const mySocket = io('http://localhost:5000')
+// mySocket.emit('loginUser', username)
