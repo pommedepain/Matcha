@@ -402,7 +402,7 @@ class User extends Node {
           this.promises = this.targets.map(user => (new User(user).getUserInfo()));
           return Promise.all(this.promises);
         })
-        .then((targets) => { this.targets = targets; return (this.getCommonTags()); })
+        .then((targets) => { this.targets = targets.map(user => (_.omit(user, 'email', 'isAdmin'))); return (this.getCommonTags()); })
         .then((common) => { this.common = common; return (this.getReverseCommonTags()); })
         .then((reverseCommon) => {
           this.reverseCommon = reverseCommon;

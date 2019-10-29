@@ -1,52 +1,114 @@
-import socketIO from 'socket.io';
+const express = require('express');
+const debug = require('debug')('socket');
+const http = require('http');
+const _ = require('lodash');
 
-class DemoSocket {
+const SERVER = {
+  HOST: 'localhost',
+  PORT: 5000,
+}
 
-  constructor(http) {
-    this.sockets = [];
-    this.http = http;
-    this.io = socketIO(http, { pingTimeout: 60000 });
+const NOTIFICATION_TYPES = [
+  'like',
+  'match',
+  'unlike',
+  'visit',
+  'message'
+]
+
+class Server {
+  constructor() {
+    // Server variables
+    this.app = express()
+    this.http = http.Server(this.app)
+
+    // Sockets handler
+    this.io = require('socket.io')(this.http, { pingTimeout: 60000 });
+    this.socketTable = {}
+    this.io.sockets.on('connection', (socket) => {
+      socket.on('loginUser', (username) => {
+        if (!_.isEmpty(username)) {
+          if (_.isEmpty(this.socketTable[username])) {
+            Object.assign(this.socketTable, { [username]: [socket.id] })
+          } else this.socketTable[username].push(socket.id)
+        }
+        debug('New user connected', this.socketTable);
+      })
+
+      socket.on('logoutUser', (username) => {
+        if (!_.isEmpty(this.socketTable[username])) {
+          this.socketTable[username].forEach((socketId) => {
+            this.io.to(`${socketId}`).emit('logout')
+          })
+        }
+      })
+
+      socket.on('notification', (notification) => {
+        if (notification.type && NOTIFICATION_TYPES.indexOf(notification.type) > -1
+        && notification.emitter && notification.receiver) {
+          const receiver = notification.receiver;
+          if (this.socketTable[receiver] !== undefined
+          && this.socketTable[receiver].length) {
+            this.socketTable[receiver].forEach((socketId) => {
+              this.io.to(`${socketId}`).emit('notification', {
+                data: {
+                  type: notification.type,
+                  emitter: notification.emitter,
+                },
+              })
+            })
+          }
+        }
+      })
+
+      socket.on('isOnline', (usernameList) => {
+        const onlineUsers = usernameList.map((username) => {
+          let isOnline = false
+          Object.keys(this.socketTable).forEach((key) => {
+            if (key === username && !_.isEmpty(this.socketTable[key])) isOnline = true
+          })
+          return { id, isOnline }
+        })
+        this.io.to(`${socket.id}`).emit('isOnline', { data: { onlineUsers } })
+      })
+
+      // Handle chat messages
+      socket.on('message', (message) => {
+        if (message.emitter && message.receiver && message.content) {
+          const receiver = message.receiver;
+          if (this.socketTable[receiver]
+          && this.socketTable[receiver].length) {
+            this.socketTable[receiver].forEach((socketId) => {
+              this.io.to(`${socketId}`).emit('message', {
+                data: {
+                  content: message.content,
+                  emitter: message.emitter,
+                  receiver: message.receiver,
+                },
+              })
+            })
+          }
+        }
+      })
+
+      socket.on('disconnect', () => {
+        const key = _.findKey(this.socketTable, socketIds => (
+          socketIds.indexOf(socket.id) > -1
+        ))
+        _.remove(this.socketTable[key], el => el === socket.id)
+      })
+    })
   }
 
   listen() {
-
-    this.io.sockets.on('connection', (socket) => {
-
-      // debug
-      console.log(`[connection] ${socket.id} is now connected`);
-
-      socket.on('identyUser', (userId) => {
-        this.sockets.push({ socket: socket.id, user: userId });
-      })
-
-      socket.on("messageSend", ({ from, message }))
-
-      // Disconnect: event predefini
-      socket.on('disconnect', () => {
-
-        // On retire la socket de la liste
-        this.sockets = this.sockets.filter(el => el.socket !== socket.id);
-
-        console.log(`[disconnect] ${socket.id} has disconnect`);
-      });
+    this.http.listen(SERVER.PORT, SERVER.HOST, () => {
+      console.log(`Listening on http://${SERVER.HOST}:${SERVER.PORT}`)
     })
-
   }
 }
 
-export default DemoSocket;
+new Server().listen()
 
-
-/**
- * Cote front
- */
-const dataobj = {
-  someDate: 2,
-};
-
-
-socket.emit('messageSend', { to: userId, message: "A super message" });
-
-socket.on('messageReceived', (payload) => {
-  console.log(`Message recu de ${payload.from}: ${payload.message}`)
-})
+// const io = require('socket.io');
+// const mySocket = io('http://localhost:5000')
+// mySocket.emit('loginUser', id)
