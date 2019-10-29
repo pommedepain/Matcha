@@ -5,29 +5,30 @@ import NavBar from '../Components/NavBar/NavBar';
 // import Main from '../Containers/Main';
 import Home from '../Components/Home/HomeS';
 import SignUp from '../Components/Forms/SignUp/SignUpS';
-import LogIn from '../Components/Forms/LogIn/LoginS';
+// import LogIn from '../Components/Forms/LogIn/LoginS';
 import Account from '../Components/Forms/Account/AccountS';
 import Footer from './Footer';
-// import UserContextProvider from '../Contexts/UserContext';
+import UserContextProvider from '../Contexts/UserContext';
 import PrivateRoute from './PrivateRoute';
 
 class App extends Component {
   render() {
     return (
       <Router>
-        {/* <UserContextProvider> */}
+        <UserContextProvider>
           <div>
 			    	<NavBar />
             <Switch>
+              {/* <Route path="/" exact component={Home} /> */}
               <PrivateRoute path="/" exact component={Home} />
               <PrivateRoute path="/home" component={Home} />
               <Route path="/sign-up" component={SignUp} />
-              <Route path="/login" component={LogIn} />
+              {/* <Route path="/login" component={LogIn} /> */}
               <PrivateRoute path="/account" component={Account} />
             </Switch>
 			    	<Footer />
 			    </div>
-        {/* </UserContextProvider> */}
+        </UserContextProvider>
       </Router>
     );
   }

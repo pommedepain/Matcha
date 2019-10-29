@@ -108,7 +108,3 @@ class Server {
 }
 
 new Server().listen()
-
-// const io = require('socket.io');
-// const mySocket = io('http://localhost:5000')
-// mySocket.emit('loginUser', id)

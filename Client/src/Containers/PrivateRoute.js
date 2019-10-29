@@ -5,7 +5,7 @@ import { UserContext } from '../Contexts/UserContext';
 
 const PrivateRoute = ({component: Component, ...rest}) => {
 	const { isLoggedIn } = useContext(UserContext);
-	console.log(isLoggedIn)
+	console.log(isLoggedIn);
 
 	return (
 		<Route 

@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
 import cx from 'classnames';
+import io from 'socket.io-client';
 
 import { UserContext } from '../../../Contexts/UserContext';
 import classes from './LogIn.module.css';
@@ -8,6 +9,8 @@ import LoginDumb from './LogInD';
 import Account from '../Account/AccountS';
 const axios = require('axios');
 const datas = require('../../../Datas/loginForm.json');
+// const io = require('socket.io');
+const mySocket = io('http://localhost:5000')
 
 class Login extends Component {
 	state = {
@@ -67,9 +70,8 @@ class Login extends Component {
 	handleChange = (event, message) => {
 		const {name, value} = event.target
 		if (event.type === "click") {
-			event.preventDefault();
 			if (message === "confirm user"){
-				// console.log(this.state)
+				console.log("message === confirm user")
 				this.context.toggleUser(this.state.payload);
 				this.setState({
 					payload: null,
@@ -77,12 +79,14 @@ class Login extends Component {
 				})
 			}
 			else {
+				event.preventDefault();
 				this.setState({
 					alertDesign: null
 				});	
 			}
 		}
 		else {
+			event.preventDefault();
 			this.setState({[name]: value});
 		}
 	}
@@ -151,6 +155,7 @@ class Login extends Component {
 						},
 						payload: response.data.payload
 					});
+					mySocket.emit('loginUser', formDatas.username)
 				}
 			})
 			.catch(error => {

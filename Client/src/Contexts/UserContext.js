@@ -29,6 +29,7 @@ const UserContextProvider = (props) => {
 		const token = JSON.parse(localDatas);
 		// console.log(token);
 		if (token !== null) {
+			token.data.firstName ? console.log("isLoggedIn initialized true"): console.log("isLoggedIn initialized false");
 			return (token.data.firstName ? true : false);
 		}
 		else {
@@ -65,6 +66,7 @@ const UserContextProvider = (props) => {
 	}
 
 	const toggleLogInPopup = () => {
+		console.log("open/close Pop Up")
 		setLogInPopup(!logInPopup);
 	}
 

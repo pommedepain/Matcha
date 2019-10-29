@@ -69,14 +69,15 @@ const LogIn = (props) => {
 							{/* <Link
 								to="/home"
 							> */}
-								<input 
+								<button
 									type="submit" 
 									name="submit" 
 									className={cx(classes.submit, classes.action_button)} 
-									value="Submit" 
+									// value="Submit" 
 									onClick={props.submit}
 									disabled={!props.formIsValid}
-								/>
+									// href="/home"
+								>Submit</button>
 							{/* </Link> */}
 						</fieldset>
 					</form>

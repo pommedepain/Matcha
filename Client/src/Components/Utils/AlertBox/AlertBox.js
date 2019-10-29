@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 
 import classes from './AlertBox.module.css';
 import { UserContext } from '../../../Contexts/UserContext';
@@ -45,12 +44,11 @@ class AlertBox extends Component {
 					<h1 className={`${classes.alert} ${classes.h1}`}>Success!</h1>
 					<p className={classes.p}>{this.props.message}</p>
 				</div>
-				{/* <Link to="/home" className={classes.link} > */}
 				{this.props.function ? 
-						<Link to="/home"
+						<a
+							href="/"
 							className={`${classes.button_box} ${classes.button}`}
 							onClick={(event) => {
-								event.preventDefault();
 								this.context.toggleLogInPopup();
 								this.props.logIn ?
 								this.props.handleChange(event, "confirm user")
@@ -60,15 +58,15 @@ class AlertBox extends Component {
 								}
 							}} >
 							<h1 className={classes.green}>YEAY!</h1>
-						</Link>
-					: <Link 
+						</a>
+					: <a
 						className={`${classes.button_box} ${classes.button}`}
 						onClick={this.props.handleChange}
+						href="/"
 					>
 						<h1 className={classes.green}>{this.props.button}</h1>
-					</Link>
+					</a>
 				}
-				{/* </Link> */}
 			</div>
 		)
 	}

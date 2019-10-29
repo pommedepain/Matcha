@@ -53,6 +53,7 @@ class NavBar extends React.Component {
 								<button 
 									className={cx(classes.sidebarLogged, "btn-sm")}
 									onClick={this.logOut.bind(this)}
+									href="/"
 								>Log Out</button>
 							</div>
 						</div>]

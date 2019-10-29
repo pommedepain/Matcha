@@ -6,21 +6,45 @@
 	display: none;
 }
 
-.back {
-	display: flex;
-	flex-direction: column;
-	display: none;
-	position: absolute;
-	background: -moz-linear-gradient(-45deg, #e2a9e5 15%, #2b94e5 100%);
-	background: -webkit-linear-gradient(-45deg, #e2a9e5 15%,#2b94e5 100%);
-	background: linear-gradient(135deg, #e2a9e5 15%,#2b94e5 100%);
-	border-radius: 2px;
-	width: 60vh;
-	height: 50vh;
-	top: 20%;
-	left: 12%;
-	z-index: 10;
+@media only screen and (max-device-width: 1450px) {
+	.back {
+		display: flex;
+		flex-direction: column;
+		display: none;
+		position: absolute;
+		/* background: -moz-linear-gradient(-45deg, #e2a9e5 15%, #2b94e5 100%);
+		background: -webkit-linear-gradient(-45deg, #e2a9e5 15%,#2b94e5 100%);
+		background: linear-gradient(135deg, #e2a9e5 15%,#2b94e5 100%); */
+		background-color: #FDF38A;
+		border-radius: 2px;
+		width: 60vh;
+		height: auto;
+		left: 0; 
+		right: 0; 
+		margin-left: auto; 
+		margin-right: auto; 
+		top: 15%;
+		z-index: 10;
+	}
 }
+@media only screen and (min-device-width: 1450px) {
+	.back {
+		display: flex;
+		flex-direction: column;
+		display: none;
+		position: absolute;
+		background: -moz-linear-gradient(-45deg, #e2a9e5 15%, #2b94e5 100%);
+		background: -webkit-linear-gradient(-45deg, #e2a9e5 15%,#2b94e5 100%);
+		background: linear-gradient(135deg, #e2a9e5 15%,#2b94e5 100%);
+		border-radius: 2px;
+		width: 60vh;
+		height: 50vh;
+		top: 15%;
+		left: 12%;
+		z-index: 10;
+	}
+}
+
 
 .bubble > .profilPic {
 	position: relative;

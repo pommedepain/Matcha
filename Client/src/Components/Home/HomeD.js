@@ -70,7 +70,7 @@ const HomeDumb = (props) => {
 					{props.suggestions !== null ?
 						props.suggestions.map((elem, i) => {
 							// console.log(i);
-							return(<UserIcon 
+							return (<UserIcon 
 								{...elem} 
 								key={i}
 								popupUser={props.popupUser}

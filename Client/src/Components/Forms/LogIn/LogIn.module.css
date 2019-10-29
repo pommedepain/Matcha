@@ -268,3 +268,8 @@
 		cursor: pointer;
 	}
 }
+
+.submit {
+	font-family: montserrat;
+	font-size: 1.2vw;
+}
