@@ -30,9 +30,13 @@ class Server {
         if (!_.isEmpty(username)) {
           if (_.isEmpty(this.socketTable[username])) {
             Object.assign(this.socketTable, { [username]: [socket.id] })
-          } else this.socketTable[username].push(socket.id)
+            debug('Here 1 New user connected', this.socketTable);
+          } else {
+            this.socketTable[username].push(socket.id);
+            debug('Here 2 New user connected', this.socketTable);
+          }
         }
-        debug('New user connected', this.socketTable);
+        
       })
 
       socket.on('logoutUser', (username) => {
@@ -109,7 +113,9 @@ class Server {
         const key = _.findKey(this.socketTable, socketIds => (
           socketIds.indexOf(socket.id) > -1
         ))
+        debug('user disconnected', this.socketTable);
         _.remove(this.socketTable[key], el => el === socket.id)
+        debug('user disconnected', this.socketTable);
       })
     })
   }
