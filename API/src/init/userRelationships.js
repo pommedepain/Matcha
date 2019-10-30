@@ -52,10 +52,30 @@ async function randomRelations() {
 
 function populateRelationships(type) {
   return (randomRelations(type)
-    .then(relations => (relations.reduce(async (prev, next) => {
-      await prev;
-      return new RelationShip(next).createRelationship();
-    }, Promise.resolve()))));
+    .then((relations) => {
+      relations.push(
+        {
+          node_a: {
+            label: 'User',
+            id: 'username',
+            properties: { username: 'camille' },
+          },
+          node_b: {
+            label: 'User',
+            id: 'username',
+            properties: { username: 'philoutre' },
+          },
+          relation: {
+            label: 'LIKES',
+            properties: { creationDate: date.toISOString() },
+          },
+        }
+      );
+      return (relations.reduce(async (prev, next) => {
+        await prev;
+        return new RelationShip(next).createRelationship();
+      }, Promise.resolve()));
+    }));
 }
 
 module.exports = populateRelationships;
