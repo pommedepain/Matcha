@@ -30,10 +30,10 @@ class Server {
         if (!_.isEmpty(username)) {
           if (_.isEmpty(this.socketTable[username])) {
             Object.assign(this.socketTable, { [username]: [socket.id] })
-            debug('Here 1 New user connected', this.socketTable);
+            debug(' New user connected', this.socketTable);
           } else {
             this.socketTable[username].push(socket.id);
-            debug('Here 2 New user connected', this.socketTable);
+            debug(` New socket for ${username}`, this.socketTable);
           }
         }
         
