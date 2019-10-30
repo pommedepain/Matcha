@@ -8,60 +8,60 @@ const infos = _.without(Object.keys(userTemplate), 'tags');
 const route = 'http://localhost:4000/api/users';
 
 
-// test('GET request : infos array, expect public infos lists', async () => {
-//   const promises = infos.map(info => (
-//     axios.get(`${route}/${info}`, null, null)
-//   ));
-//   return expect(Promise.all(promises)).resolves.toBeTruthy();
-// });
-
-// test('GET request : expect public infos for each user', async () => {
-//   const res = await axios.get(`${route}/username`, null, null);
-//   const promises = res.data.payload.result.map(user => (
-//     axios.get(`${route}/infos/${user}`, null, null)
-//   ));
-//   return expect(Promise.all(promises)).resolves.toBeTruthy();
-// });
-
-// test('GET request : infos array, expect lists', async () => {
-//   const res = await axios.get(`${route}/username`, null, null);
-//   const promises = res.data.payload.result.map(user => (
-//     axios.get(`${route}/${user}/commonTags`, null, null)
-//   ));
-//   return expect(Promise.all(promises)).resolves.toBeTruthy();
-// });
-
-// test('GET request : relations user->node , expect lists', async () => {
-//   const res = await axios.get(`${route}/username`, null, null);
-//   const promises = [];
-//   const promises1 = res.data.payload.result.map(user => (
-//     axios.get(`${route}/${user}/COMPATIBLE`, null, null)
-//   ));
-//   const promises2 = res.data.payload.result.map(user => (
-//     axios.get(`${route}/${user}/LOOK_FOR`, null, null)
-//   ));
-//   const promises3 = res.data.payload.result.map(user => (
-//     axios.get(`${route}/${user}/IS`, null, null)
-//   ));
-//   promises.push(promises1, promises2, promises3);
-//   return expect(Promise.all(promises)).resolves.toBeTruthy();
-// });
-
-// test('GET request : infos array, expect match list for each user', async () => {
-//   const res = await axios.get(`${route}/username`, null, null);
-//   const promises = res.data.payload.result.map(user => (
-//     axios.get(`${route}/matches/${user}`, null, null)
-//   ));
-//   return expect(Promise.all(promises)).resolves.toBeTruthy();
-// });
-
-test('GET request : infos array, expect suggestions lists', async () => {
-  const res = await axios.get(`${route}/username`, null, null);
-  const promises = res.data.payload.result.map(user => (
-    axios.get(`${route}/suggestions/${user}`, null, null)
+test('GET request : infos array, expect public infos lists', async () => {
+  const promises = infos.map(info => (
+    axios.get(`${route}/${info}`, null, null)
   ));
   return expect(Promise.all(promises)).resolves.toBeTruthy();
 });
+
+test('GET request : expect public infos for each user', async () => {
+  const res = await axios.get(`${route}/username`, null, null);
+  const promises = res.data.payload.result.map(user => (
+    axios.get(`${route}/infos/${user}`, null, null)
+  ));
+  return expect(Promise.all(promises)).resolves.toBeTruthy();
+});
+
+test('GET request : infos array, expect lists', async () => {
+  const res = await axios.get(`${route}/username`, null, null);
+  const promises = res.data.payload.result.map(user => (
+    axios.get(`${route}/${user}/commonTags`, null, null)
+  ));
+  return expect(Promise.all(promises)).resolves.toBeTruthy();
+});
+
+test('GET request : relations user->node , expect lists', async () => {
+  const res = await axios.get(`${route}/username`, null, null);
+  const promises = [];
+  const promises1 = res.data.payload.result.map(user => (
+    axios.get(`${route}/${user}/COMPATIBLE`, null, null)
+  ));
+  const promises2 = res.data.payload.result.map(user => (
+    axios.get(`${route}/${user}/LOOK_FOR`, null, null)
+  ));
+  const promises3 = res.data.payload.result.map(user => (
+    axios.get(`${route}/${user}/IS`, null, null)
+  ));
+  promises.push(promises1, promises2, promises3);
+  return expect(Promise.all(promises)).resolves.toBeTruthy();
+});
+
+test('GET request : infos array, expect match list for each user', async () => {
+  const res = await axios.get(`${route}/username`, null, null);
+  const promises = res.data.payload.result.map(user => (
+    axios.get(`${route}/matches/${user}`, null, null)
+  ));
+  return expect(Promise.all(promises)).resolves.toBeTruthy();
+});
+
+// test('GET request : infos array, expect suggestions lists', async () => {
+//   const res = await axios.get(`${route}/username`, null, null);
+//   const promises = res.data.payload.result.map(user => (
+//     axios.get(`${route}/suggestions/${user}`, null, null)
+//   ));
+//   return expect(Promise.all(promises)).resolves.toBeTruthy();
+// });
 
 // test('POST request : /api/users, valid user expect user created', async () => {
 //   const data = await new Request('/api/users/', validNewUser, null).post().catch(err => debug(err));

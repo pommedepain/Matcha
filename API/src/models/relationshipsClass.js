@@ -225,8 +225,10 @@ class Relationship {
       session.run(query, { props })
         .then((res) => {
           session.close();
-          debug(`${this.data.node_a.properties[this.id_a]} ${this.data.relation.label} ${this.data.node_b.properties[this.id_b]} RELATION CREATED`);
-          resolve(`${this.data.node_a.properties[this.id_a]} ${this.data.relation.label} ${this.data.node_b.properties[this.id_b]} RELATION CREATED`);
+          if (res.records.length !== 0) {
+            debug(`${this.data.node_a.properties[this.id_a]} ${this.data.relation.label} ${this.data.node_b.properties[this.id_b]} RELATION CREATED`);
+            resolve(`${this.data.node_a.properties[this.id_a]} ${this.data.relation.label} ${this.data.node_b.properties[this.id_b]} RELATION CREATED`);
+          } resolve(false);
         })
         .catch((err) => {
           debug(err);

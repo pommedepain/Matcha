@@ -31,8 +31,8 @@ function getUsers() {
 
 function populateUsers() {
   return (getUsers()
-    .then(users => (users.reduce(async (previousPromise, nextUser) => {
-      await previousPromise;
+    .then(users => (users.reduce(async (previousUser, nextUser) => {
+      await previousUser;
       return new User(_.pick(nextUser, requiredProperties.concat(optionalProperties))).createUser();
     }, Promise.resolve()))));
 }

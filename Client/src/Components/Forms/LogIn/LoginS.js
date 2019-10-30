@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
 import cx from 'classnames';
-import io from 'socket.io-client';
+
 
 import { UserContext } from '../../../Contexts/UserContext';
 import classes from './LogIn.module.css';
@@ -10,7 +10,7 @@ import Account from '../Account/AccountS';
 const axios = require('axios');
 const datas = require('../../../Datas/loginForm.json');
 // const io = require('socket.io');
-const mySocket = io('http://localhost:5000')
+
 
 class Login extends Component {
 	state = {
@@ -155,7 +155,7 @@ class Login extends Component {
 						},
 						payload: response.data.payload
 					});
-					mySocket.emit('loginUser', formDatas.username)
+					
 				}
 			})
 			.catch(error => {

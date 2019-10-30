@@ -360,10 +360,9 @@ class User extends Node {
       session.run(query)
         .then((res) => {
           session.close();
-          if(res.records.lentgh !== 0) {
+          if (res.records.lentgh !== 0) {
             return this.getProfiles(res.records[0]._fields[0]);
-          }
-          else return [];
+          } return [];
         })
         .then(res => resolve(res))
         .catch(err => reject(err));
@@ -379,10 +378,9 @@ class User extends Node {
       session.run(query)
         .then((res) => {
           session.close();
-          if(res.records.lentgh !== 0) {
+          if (res.records.lentgh !== 0) {
             return this.getProfiles(res.records[0]._fields[0]);
-          }
-          else return [];
+          } return [];
         })
         .then(res => resolve(res))
         .catch(err => reject(err));
@@ -398,10 +396,9 @@ class User extends Node {
       session.run(query)
         .then((res) => {
           session.close();
-          if(res.records.lentgh !== 0) {
+          if (res.records.lentgh !== 0) {
             return this.getProfiles(res.records[0]._fields[0]);
-          }
-          else return [];
+          } return [];
         })
         .then(res => resolve(res))
         .catch(err => reject(err));
@@ -427,16 +424,16 @@ class User extends Node {
           this.promises = this.targets.map(user => (new User(user).getUserInfo()));
           return Promise.all(this.promises);
         })
-        .then((targets) => { this.targets = targets.map(user => (_.omit(user, 'email', 'isAdmin','active'))); return (this.getLikedBy()); })
-        .then((likedBys) => { 
+        .then((targets) => { this.targets = targets.map(user => (_.omit(user, 'password', 'email', 'isAdmin', 'active'))); return (this.getLikedBy()); })
+        .then((likedBys) => {
           this.targets.forEach((user) => {
-          Object.assign(user, { likedU: likedBys.find(el => (user.username === el.username)) === undefined ? false : true })
+            Object.assign(user, { likedU: likedBys.find(el => (user.username === el.username)) === undefined ? false : true });
           });
           return (this.getLikedTo());
         })
-        .then((likedTos) => { 
+        .then((likedTos) => {
           this.targets.forEach((user) => {
-          Object.assign(user, { Uliked: likedTos.find(el => (user.username === el.username)) === undefined ? false : true })
+            Object.assign(user, { Uliked: likedTos.find(el => (user.username === el.username)) === undefined ? false : true });
           });
           return (this.getCommonTags());
         })
