@@ -1,8 +1,11 @@
 import React, { createContext, useState, useEffect } from 'react';
+import io from 'socket.io-client';
 
 export const UserContext = createContext();
 
 const UserContextProvider = (props) => {
+	const mySocket = io('http://localhost:5000');
+
 	const [JWT, setJWT] = useState(() => {
 		const localData = localStorage.getItem('JWT');
 		let token = {"token": localData};
@@ -39,6 +42,8 @@ const UserContextProvider = (props) => {
 
 	const [logInPopup, setLogInPopup] = useState(false);
 
+	const [socket, setSocket] = useState(null);
+
 	const parseJwt = (token) => {
 		if (token !== null) {
 			let base64Url = token.split('.')[1];
@@ -59,8 +64,10 @@ const UserContextProvider = (props) => {
 		setJWT({ data: token.data, exp: token.exp, iat: token.iat, token: datas });
 		if (token === undefined) {
 			setLog(false);
+			setSocket(null);
 		}
 		else {
+			setSocket(mySocket);
 			setLog(true);
 		}
 	}
@@ -72,8 +79,11 @@ const UserContextProvider = (props) => {
 
 	useEffect(() => {
 		// console.log(JWT);
+		const mySocket = io('http://localhost:5000');
 		localStorage.setItem('JWT', JSON.stringify(JWT))
 		if (JWT.data.firstName) {
+			mySocket.emit("loginUser", JWT.data.username);
+			setSocket(mySocket);
 			setLog(true);
 		}
 		else {
@@ -84,6 +94,10 @@ const UserContextProvider = (props) => {
 	useEffect(() => {
 		localStorage.setItem('isLoggedIn', isLoggedIn)
 	}, [isLoggedIn]);
+
+	useEffect(() => {
+		localStorage.setItem('socket', socket)
+	}, [socket]);
 
 	return (
 		<UserContext.Provider 

@@ -10,10 +10,10 @@ const UserPageDumb = (props) => {
 	if (props.user.gender === "male") {
 		genderIcon = "fas fa-mars";
 	}
-	else if  (props.user.gender === "female") {
+	else if (props.user.gender === "female") {
 		genderIcon = "fas fa-venus";
 	}
-	else if  (props.user.gender === "queer") {
+	else if (props.user.gender === "queer") {
 		genderIcon = "fas fa-transgender";
 	}
 	
@@ -60,7 +60,9 @@ const UserPageDumb = (props) => {
 					button={props.alertBox.button}
 					handleChange={props.handleChange}
 					color={props.alertBox.color}
-					function={props.alertBox.function}
+					function={true}
+					logIn={true}
+					style={{position: 'fixed', top: '65%'}}
 				/>
 				: null
 			}
@@ -71,23 +73,34 @@ const UserPageDumb = (props) => {
 							{props.user.photos ?
 								props.user.photos.map((elem, i) => (
 									i === 0 ?
-									<img className={classes.profilPicFront} src={elem} alt="profil" key={i} />
-									: <img className={classes.profilPicBack} src={elem} alt="profil" key={i} />
+									<i key={i} id={i} className={"profilPicFront"} ><img className={classes.profilPicFront} src={elem} alt="profil" key={i} /></i>
+									: <i key={i} id={i} className={"profilPicBack"} ><img className={classes.profilPicBack} src={elem} alt="profil" key={i} /></i>
 								))
-								: <i className={cx(classes.profilPicFront, "fas fa-user-circle", classes.icon)}></i> 
+								: <i className={cx(classes.profilPicFront, "fas fa-user-circle", classes.icon)} id={0} ></i> 
 							}
 						</div>
 						<div className={classes.dotGroup}>
 							{props.user.photos ?
 								props.user.photos.map((elem, i) => {
+									console.log(i);
 									if (i === 0 && props.user.photos[1]) {
-										return (<div className={cx(classes.dotFront, classes.dot)} key={i} id={i} ></div>);
+										return (<div 
+													className={cx(classes.dotFront, classes.dot, "dot", "dotFront")} 
+													key={i} 
+													id={i} 
+													onClick={(event) => props.handleNextPic(event, i)}
+												></div>);
 									}
 									else if (i === 0 && !props.user.photos[1]) {
 										return (null);
 									}
 									else { 
-										return (<div className={cx(classes.dotBack, classes.dot)} key={i} id={i} ></div>);
+										return (<div 
+													className={cx(classes.dotBack, classes.dot, "dot", "dotBack")} 
+													key={i} 
+													id={i}
+													onClick={(event) => props.handleNextPic(event, i)}
+												></div>);
 								}})
 								: null
 							}
@@ -113,8 +126,8 @@ const UserPageDumb = (props) => {
 					<div className={classes.rightTop}>
 						<div className={classes.basicInfos}>
 							<h3>{props.user.firstName} {props.user.lastName}</h3>
-							<h4>{props.user.username}, {props.user.age} yo</h4>
-							<h4><i className={cx(genderIcon, classes.genderIcon)}></i>{gender}, {sexOrient}</h4>
+							<h4 className={classes.usernameAge}>{props.user.username}, {props.user.age} yo</h4>
+							<h4 className={classes.genderSex}><i className={cx(genderIcon, classes.genderIcon)}></i>{gender}, {sexOrient}</h4>
 						</div>
 						<div className={classes.heartGroup}>
 							{props.user.Uliked ? 

@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-// import io from 'socket.io-client';
 
 import NavBar from '../Components/NavBar/NavBar';
 // import Main from '../Containers/Main';
@@ -11,7 +10,6 @@ import Account from '../Components/Forms/Account/AccountS';
 import Footer from './Footer';
 import UserContextProvider from '../Contexts/UserContext';
 import PrivateRoute from './PrivateRoute';
-// const mySocket = io('http://localhost:5000');
 
 class App extends Component {
   render() {

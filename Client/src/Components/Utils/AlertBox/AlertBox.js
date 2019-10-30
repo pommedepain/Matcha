@@ -31,7 +31,7 @@ class AlertBox extends Component {
 				</button>
 			</div>
 			:
-			<div id={classes.success_box}>
+			<div id={classes.success_box} style={this.props.style}>
 				<div className={classes.dot}></div>
 				<div className={`${classes.dot} ${classes.two}`}></div>
 				<div className={classes.face}>
@@ -57,7 +57,7 @@ class AlertBox extends Component {
 									document.getElementById("display_page").style.filter = ''
 								}
 							}} >
-							<h1 className={classes.green}>YEAY!</h1>
+							<h1 className={classes.green}>{this.props.button}</h1>
 						</a>
 					: <a
 						className={`${classes.button_box} ${classes.button}`}

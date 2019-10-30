@@ -23,7 +23,8 @@ class UserPage extends Component {
 					label: "LIKES",
 					properties: {}
 				}
-			}
+			},
+			alertBox: null
 		}
 	}
 
@@ -45,11 +46,27 @@ class UserPage extends Component {
 			}
 		}
 	}
+
+	handleNextPic = (event, index) => {
+		console.log("handleNextPic() triggered");
+		console.log("dot index: " + index);
+		event.preventDefault();
+		const currSrcPic = this.props.user.photos[index];
+		const nextSrcPic = this.props.user.photos[index + 1];
+		console.log("div index: " + this.props.id);
+		const currPicElem  = document.getElementsByClassName("back")[this.props.id].getElementsByClassName("profilPicFront")[0];
+		const nextPicElem = document.getElementsByClassName("back")[this.props.id].getElementsByClassName("profilPicBack")[index];
+		console.log(currPicElem);
+		console.log(nextPicElem);
+		console.log(currSrcPic);
+		console.log(nextSrcPic);
+	}
 	
 	handleHeartClick = (e) => {
 		e.preventDefault();
 		console.log(e.type);
 		if (e.type === "click") {
+			/* Construction of node to send to db */
 			const usersnames = this.state.liked;
 			const userlike = usersnames.node_a;
 			const userliked = usersnames.node_b;
@@ -58,6 +75,7 @@ class UserPage extends Component {
 			this.setState({
 				liked: usersnames
 			}, function () {console.log(this.state.liked)});
+
 			axios
 				.post('http://localhost:4000/API/relationships/toggle', this.state.liked)
 				.then(response => {
@@ -71,13 +89,13 @@ class UserPage extends Component {
 						elem.classList.add(addClass);
 						elem.classList.remove(removeClass);
 
+						/* If it's a match, display an alert to congrats */
 						if (this.props.user.likedU === true && addClass === "fas") {
 							this.setState({
 								alertBox: {
-									message:"You have a new match!",
-									button:"OK",
-									color: "green",
-									function: true
+									message:"This is a new match!",
+									button:"YEAY!",
+									color: "green"
 								}
 							})
 						}
@@ -108,6 +126,8 @@ class UserPage extends Component {
 			<UserPageDummy 
 				handleClickOutside={this.handleClickOutside.bind(this)}
 				handleHeartClick={this.handleHeartClick.bind(this)}
+				handleChange={this.handleChange.bind(this)}
+				handleNextPic={this.handleNextPic.bind(this)}
 				{...this.state}
 				{...this.props}
 			/>

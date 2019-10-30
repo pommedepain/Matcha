@@ -85,6 +85,7 @@
 	width: 0.5em;
 	height: 0.5em;
 	margin-right: 1%;
+	cursor: pointer;
 }
 .dotFront {
 	background-color: #524A54;
@@ -198,7 +199,12 @@
 	font-weight: 300;
 	color: #524A54;
 	font-size: 0.6em;
+}
+.usernameAge {
 	width: 60%;
+}
+.genderSex {
+	width: 80%;
 }
 .genderIcon {
 	margin-right: 2%;
@@ -397,7 +403,7 @@
 		float: right;
 		/* display: inline-block; */
 		/* width: auto; */
-		height: 2.4vh;
+		height: 2.5vh;
 		margin-right: 2.5%;
 		font-size: 1.4vh;
 		padding-left: 10px;
@@ -408,7 +414,7 @@
 		color: #f2f2f2;
 		line-height: 20px;
 		border-radius: 4px;
-		border: 1px solid #f2f2f2;
+		/* border: 1px solid #f2f2f2; */
 	  }
 }
 @media only screen and (min-device-width: 1450px) {
@@ -435,13 +441,13 @@
   .price_tag:before {
 	position: absolute;
 	content: '';
-	border: 1px solid #f2f2f2;
+	/* border: 1px solid #f2f2f2; */
 	box-sizing: unset;
   }
 @media only screen and (max-device-width: 1450px) {
   	.price_tag:after {  /* the arrow on left side positioned using left property */
-		height: 1.65vh;
-		width: 1.65vh;
+		height: 1.75vh;
+		width: 1.75vh;
 		transform: rotate(45deg);
 		background: #e2a9e5;
 		border-color: transparent transparent #f2f2f2 #f2f2f2;
