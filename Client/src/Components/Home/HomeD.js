@@ -6,7 +6,7 @@ import cx from 'classnames';
 import classes from './Home.module.css';
 import Tags from '../Utils/Tags/Tags';
 import UserIcon from './UserIcon/UserIcon';
-import UserPage from './UserPage/UserPage';
+import UserPage from './UserPage/UserPageS';
 
 const HomeDumb = (props) => {
 	const ageRange = props.JWT.data.ageMin ? [props.JWT.data.ageMin, props.JWT.data.ageMax] : props.ageRange;

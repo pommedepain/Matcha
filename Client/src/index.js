@@ -8,6 +8,7 @@ import openSocket from 'socket.io-client';
 
 const socket = openSocket('http://localhost:5000');
 const username = '';
+// eslint-disable-next-line no-const-assign
 if (localStorage.getItem('JWT') && localStorage.getItem('JWT').data) username = localStorage.getItem('JWT').data.username;
 socket.emit('LoginUser', username);
 

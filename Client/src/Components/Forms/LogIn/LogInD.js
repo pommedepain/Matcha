@@ -66,19 +66,13 @@ const LogIn = (props) => {
 									onClick={(event) => props.toggleShow(event, formElementsArray[1].id)}
 								>{props.hidden ? "Show" : "Hide"}</span>
 							</div>
-							{/* <Link
-								to="/home"
-							> */}
 								<button
 									type="submit" 
 									name="submit" 
-									className={cx(classes.submit, classes.action_button)} 
-									// value="Submit" 
+									className={cx(classes.submit, classes.action_button)}
 									onClick={props.submit}
 									disabled={!props.formIsValid}
-									// href="/home"
 								>Submit</button>
-							{/* </Link> */}
 						</fieldset>
 					</form>
 				</div>

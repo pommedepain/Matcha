@@ -112,8 +112,8 @@ class Home extends Component {
 		e.preventDefault();
 		const users = document.querySelectorAll('.back');
 		const underDiv = document.querySelectorAll('.underDiv');
-		users[id].style.display = "inline";
-		underDiv[id].style.display = "inline";
+		users[id].style.display = "flex";
+		underDiv[id].style.display = "flex";
 		document.getElementById("main").style.filter = 'blur(3px)';
 	}
 
