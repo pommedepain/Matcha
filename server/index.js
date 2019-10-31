@@ -67,27 +67,6 @@ class Server {
             })
           }
         }
-<<<<<<< HEAD
-        const emitter = notification.emitter;
-        if (notification.type === 'like') {
-          if (this.socketTable[emitter] !== undefined
-          && this.socketTable[emitter].length) {
-            this.socketTable[emitter].forEach((socketId) => {
-              this.io.to(`${socketId}`).emit('notification', {
-                data: {
-                  type: notification.type,
-                  emitter: notification.receiver,
-                },
-              })
-              debug('emitted', {
-                type: notification.type,
-                emitter: notification.receiver,
-              });
-            })
-          }
-        }
-=======
->>>>>>> bf1ce58e924d6b31df69b4dd3f8a37fd20676d5e
       })
 
       socket.on('isOnline', (usernameList) => {
@@ -121,10 +100,11 @@ class Server {
       })
 
       socket.on('disconnect', () => {
+        debug('HEEEEEEEY');
         const key = _.findKey(this.socketTable, socketIds => (
           socketIds.indexOf(socket.id) > -1
         ))
-        debug('user disconnected', this.socketTable);
+        debug(key);
         _.remove(this.socketTable[key], el => el === socket.id)
         debug('user disconnected', this.socketTable);
       })
