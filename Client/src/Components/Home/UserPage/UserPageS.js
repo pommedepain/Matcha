@@ -176,7 +176,7 @@ class UserPage extends Component {
 					console.log(allElem);
 					console.log(this.props.id);
 					const elem = allElem[this.props.id];
-					elem.style.color = "red";
+					elem.style.color = "#ff665e";
 					elem.style.pointerEvents = 'none';
 					
 					/* notif de block */
@@ -215,7 +215,7 @@ class UserPage extends Component {
 					const elem = allElem[this.props.id];
 					console.log(allElem);
 					console.log(this.props.id);
-					elem.style.color = "red";
+					elem.style.color = "#ff665e";
 					elem.style.pointerEvents = 'none';
 					
 					/* notif de block */

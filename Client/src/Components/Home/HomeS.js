@@ -35,7 +35,7 @@ class Home extends Component {
 		axios.get(`http://localhost:4000/API/users/suggestions/${username}`)
 			.then(response => {
 				// console.log(response.data.payload.result);
-				this.setState({ suggestions: response.data.payload.result});
+				this.setState({ suggestions: response.data.payload.result}, function () { console.log(this.state.suggestions)});
 			})
 			.catch(err => { 
 				console.log(err);

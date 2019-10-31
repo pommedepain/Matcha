@@ -10,11 +10,20 @@ const PrivateRoute = ({component: Component, ...rest}) => {
 	return (
 		<Route 
 			{...rest}
-			render={props =>
-				isLoggedIn === true ? 
-				(<Component {...props} />) : 
-				(<Redirect to={{pathname: '/sign-up', state:{from: props.location }}} />)
-			}
+			render={props => {
+				if (isLoggedIn === true && Component.name !== "SignUp") {
+					return (<Component {...props} />) 
+				}
+				else if (isLoggedIn === true && Component.name === "SignUp") {
+					return (<Redirect to={{pathname: '/home', state:{from: props.location }}} />)
+				}
+				else if (isLoggedIn === false && Component.name === "SignUp") {
+					return (<Component {...props} />)
+				}
+				else { 
+					return (<Redirect to={{pathname: '/sign-up', state:{from: props.location }}} />)
+				}
+			}}
 		/>
 	)
 }

@@ -23,7 +23,7 @@ class Server {
     this.http = http.Server(this.app)
 
     // Sockets handler
-    this.io = require('socket.io')(this.http, { pingTimeout: 60000 });
+    this.io = require('socket.io')(this.http, { pingTimeout: 60000 * 60 });
     this.socketTable = {}
     this.io.sockets.on('connection', (socket) => {
       socket.on('loginUser', (username) => {

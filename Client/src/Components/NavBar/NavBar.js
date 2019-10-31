@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import cx from 'classnames';
+import io from 'socket.io-client';
 
 import classes from './NavBar.module.css';
 import Login from '../Forms/LogIn/LoginS';
@@ -19,7 +20,10 @@ class NavBar extends React.Component {
 	}
 
 	logOut = () => {
+		const mySocket = io('http://localhost:5000');
 		this.context.toggleUser(null);
+		mySocket.emit('disconnect');
+		// document.location.reload(false);
 	}
 
 	showNotifs = (e) => {
