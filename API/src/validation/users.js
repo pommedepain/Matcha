@@ -97,6 +97,9 @@ class UserValidator {
       if (this.req.isTtags) sch.isTags = Joi.any().required();
       else sch.isTags = Joi.any();
 
+      if (this.req.popularity) sch.popularity = Joi.any().required();
+      else sch.popularity = Joi.any();
+
       if (this.req.optional) sch.optional = Joi.string().alphanum().min(3).max(30).required();
       else sch.optional = Joi.string().alphanum().min(3).max(30);
 

@@ -155,6 +155,31 @@ router.get('/:username/visits', wrapper(async (req, res) => {
   );
 }));
 
+router.get('/:username/score', wrapper(async (req, res) => {
+  debug('Request to get score:\n');
+  return (new User({ username: req.params.username }).updateScore()
+    .then((result) => {
+      debug(result);
+      return res.status(200).json({
+        success: true,
+        payload: { value: 'update', result },
+      });
+    }));
+}));
+
+router.get('/:username/conversations', wrapper(async (req, res) => {
+  debug('Requesting list...');
+  return (new User({ username: req.params.username }).getConversations()
+    .then((result) => {
+      debug(result);
+      return res.status(200).json({
+        success: true,
+        payload: { value: 'read', result },
+      });
+    })
+  );
+}));
+
 router.get('/:username/BLOCK', wrapper(async (req, res) => {
   debug('Requesting relation list...');
   return (new User({ username: req.params.username }).getBlocked()
@@ -205,7 +230,6 @@ router.post('/', wrapper(async (req, res) => {
       });
     }));
 }));
-
 
 router.put('/:username', [auth, identify], wrapper(async (req, res) => {
   debug('Request to update :\n', _.pick(req.user, validProperties));

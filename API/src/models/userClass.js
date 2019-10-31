@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 /* eslint-disable max-len */
 /* eslint-disable camelcase */
 
@@ -947,6 +948,71 @@ class User extends Node {
           debug(messages);
           resolve(messages);
         })
+        .catch(err => debug(err));
+    });
+  }
+
+  getConversations() {
+    return new Promise((resolve, reject) => {
+      const session = this.driver.session();
+      const query = `MATCH (n:User { username:'${this.user.username}'})-[r:CONVERSATION]-(b:User)
+                    WITH n,b, collect(properties(r)) as conv
+                    return b.username,conv`;
+      session.run(query)
+        .then((res) => {
+          const result = [];
+          if (res.records.length !== 0) {
+            res.records.forEach((record) => {
+              result.push({
+                username: record._fields[0],
+                conversation: record._fields[1],
+              });
+            });
+          } resolve(result);
+        });
+    });
+  }
+
+  updateScore() {
+    return new Promise((resolve, reject) => {
+      const session = this.driver.session();
+      const query = `MATCH (n:User { username:'${this.user.username}'})<-[r:LIKES]-(b:User)
+                    RETURN count(r)`;
+      const query2 = `MATCH (n:User { username:'${this.user.username}'})<-[r:VISITED]-(b:User)
+                    RETURN count(r)`;
+      const query3 = `MATCH (n:User { username:'${this.user.username}'})<-[r:CONVERSATION]-(b:User)
+                    RETURN count(r)`;
+      const query4 = `MATCH (n:User { username:'${this.user.username}'})-[r:LIKES]->(b:User),(n)-[:LIKES]->(b)
+                    RETURN count(r)`;
+      const query5 = `MATCH (n:User { username:'${this.user.username}'})<-[r:BLOCK]-(b:User)
+                    RETURN count(r)`;
+      session.run(query)
+        .then((res) => {
+          this.liked = res.records[0]._fields[0];
+          return session.run(query2);
+        })
+        .then((res) => {
+          this.visits = res.records[0]._fields[0];
+          return session.run(query3);
+        })
+        .then((res) => {
+          this.conversations = res.records[0]._fields[0];
+          return session.run(query4);
+        })
+        .then((res) => {
+          this.matches = res.records[0]._fields[0];
+          return session.run(query5);
+        })
+        .then((res) => {
+          this.blocks = res.records[0]._fields[0];
+          this.popularity = 1 * this.visits
+                          + 2 * this.liked
+                          + 3 * this.matches
+                          + 4 * this.conversations
+                          - 10 * this.blocks;
+          return (this.updateUser({ popularity: this.popularity }));
+        })
+        .then(() => resolve({ newPopularity: this.popularity }))
         .catch(err => debug(err));
     });
   }
