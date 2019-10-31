@@ -67,24 +67,6 @@ class Server {
             })
           }
         }
-        const emitter = notification.emitter;
-        if (notification.type === 'like') {
-          if (this.correlationTable[emitter] !== undefined
-          && this.correlationTable[emitter].length) {
-            this.correlationTable[emitter].forEach((socketId) => {
-              this.io.to(`${socketId}`).emit('notification', {
-                data: {
-                  type: notification.type,
-                  emitter: notification.receiver,
-                },
-              })
-              debug('emitted', {
-                type: notification.type,
-                emitter: notification.receiver,
-              });
-            })
-          }
-        }
       })
 
       socket.on('isOnline', (usernameList) => {
