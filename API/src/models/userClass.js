@@ -436,12 +436,14 @@ class User extends Node {
         .then((targets) => { this.targets = targets.map(user => (_.omit(user, 'blocked', 'password', 'email', 'isAdmin', 'active'))); return (this.getLikedBy()); })
         .then((likedBys) => {
           this.targets.forEach((user) => {
+            // eslint-disable-next-line no-unneeded-ternary
             Object.assign(user, { likedU: likedBys.find(el => (user.username === el.username)) === undefined ? false : true });
           });
           return (this.getLikedTo());
         })
         .then((likedTos) => {
           this.targets.forEach((user) => {
+            // eslint-disable-next-line no-unneeded-ternary
             Object.assign(user, { Uliked: likedTos.find(el => (user.username === el.username)) === undefined ? false : true });
           });
           return (this.getCommonTags());
@@ -889,6 +891,63 @@ class User extends Node {
         .then(() => this.eraseConfToken())
         .then(user => resolve(true))
         .catch(err => reject(err));
+    });
+  }
+
+  visits(target) {
+    return new Promise((resolve, reject) => {
+      const date = new Date().toISOString();
+      const session = this.driver.session();
+      const query1 = `MATCH (n:User { username:'${this.user.username}'})-[r:VISITED]->(b:User {username:'${target}'})
+                      DELETE r`;
+      const query2 = `CREATE (n:User { username:'${this.user.username}'})-[r:VISITED {lastVisit:'${date}'}]->(b:User {username:'${target}'})`;
+      session.run(query1)
+        .then(() => session.run(query2))
+        .then(() => { session.close(); resolve(true); })
+        .catch(err => debug(err));
+    });
+  }
+
+  getVisits() {
+    return new Promise((resolve, reject) => {
+      const session = this.driver.session();
+      const query = `MATCH (n:User { username:'${this.user.username}'})<-[r:VISITED]-(b:User)
+                    RETURN properties(b),r.lastVisit`;
+      session.run(query)
+        .then((res) => {
+          const result = [];
+          if (res.records.length !== 0) {
+            res.records.forEach((record) => {
+              result.push({ user: record._fields[0], date: record._fields[1] });
+            });
+          } resolve(result);
+        })
+        .catch(err => debug(err));
+    });
+  }
+
+  chat(data) {
+    return new Promise((resolve, reject) => {
+      const [target, message] = data;
+      const date = new Date().toDateString();
+      const session = this.driver.session();
+      const query = `MATCH (n:User { username:'${this.user.username}'})-[r:CONVERSATION]-(b:User {username:'${target}'})`;
+      const query1 = `CREATE (n:User { username:'${this.user.username}'})-[r:CONVERSATION { messages: [{ emitter:'${this.user.username}' , receiver:'${target}' , date:'${date}', content:'${message}' }] }]->(b:User {username:'${target}'})
+                      RETURN r.messages`;
+      const query2 = `MATCH (n:User { username:'${this.user.username}'})-[r:CONVERSATION]-(b:User {username:'${target}'})
+                      SET r.messages= r.messages + { emitter:'${this.user.username}' , receiver:'${target}' , date:'${date}', content:'${message}' }
+                      RETURN r.messages`;
+      session.run(query)
+        .then((res) => {
+          if (res.records.length !== 0) {
+            return (session.run(query1));
+          } return (session.run(query2));
+        })
+        .then((messages) => {
+          debug(messages);
+          resolve(messages);
+        })
+        .catch(err => debug(err));
     });
   }
 }

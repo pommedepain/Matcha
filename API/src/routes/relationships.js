@@ -52,6 +52,18 @@ router.get('/matches/:relation', wrapper(async (req, res) => {
 }));
 
 router.post('/create', wrapper(async (req, res) => {
+  debug('Request to add visit :\n', _.pick(req.body, validProperties));
+  return (new Relationship(req.body).visit()
+    .then((result) => {
+      debug(result);
+      return res.status(200).json({
+        success: true,
+        payload: { value: 'create', result },
+      });
+    }));
+}));
+
+router.post('/create', wrapper(async (req, res) => {
   debug('Request to add new Relationship :\n', _.pick(req.body, validProperties));
   return (new Relationship(req.body).createRelationship()
     .then((result) => {

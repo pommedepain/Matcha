@@ -129,9 +129,22 @@ router.get('/:username/likedBy', wrapper(async (req, res) => {
   );
 }));
 
-router.get('/:username/viewedBy', wrapper(async (req, res) => {
+router.post('/:username/visit/:target', wrapper(async (req, res) => {
   debug('Requesting list...');
-  return (new User({ username: req.params.username }).getViewedBy()
+  return (new User({ username: req.params.username }).visits(req.params.target)
+    .then((result) => {
+      debug(result);
+      return res.status(200).json({
+        success: true,
+        payload: { value: 'read', result },
+      });
+    })
+  );
+}));
+
+router.get('/:username/visits', wrapper(async (req, res) => {
+  debug('Requesting list...');
+  return (new User({ username: req.params.username }).getVisits()
     .then((result) => {
       debug(result);
       return res.status(200).json({
@@ -145,6 +158,19 @@ router.get('/:username/viewedBy', wrapper(async (req, res) => {
 router.get('/:username/BLOCK', wrapper(async (req, res) => {
   debug('Requesting relation list...');
   return (new User({ username: req.params.username }).getBlocked()
+    .then((result) => {
+      debug(result);
+      return res.status(200).json({
+        success: true,
+        payload: { value: 'read', result },
+      });
+    })
+  );
+}));
+
+router.post('/:username/chat', wrapper(async (req, res) => {
+  debug('Requesting relation list...');
+  return (new User({ username: req.params.username }).chat(req.body)
     .then((result) => {
       debug(result);
       return res.status(200).json({

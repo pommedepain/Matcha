@@ -101,10 +101,11 @@ class Server {
       })
 
       socket.on('disconnect', () => {
+        debug('HEEEEEEEY');
         const key = _.findKey(this.socketTable, socketIds => (
           socketIds.indexOf(socket.id) > -1
         ))
-        debug('user disconnected', this.socketTable);
+        debug(key);
         _.remove(this.socketTable[key], el => el === socket.id)
         debug('user disconnected', this.socketTable);
       })
