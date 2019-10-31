@@ -70,11 +70,13 @@ const UserPageDumb = (props) => {
 				<div className={classes.left}>
 					<div className={classes.leftTopGroup} >
 						<div className={classes.photos}>
-							{props.user.photos ?
+							{/* If there are photos, assemble it. Else, put an icon */
+							props.user.photos ?
 								props.user.photos.map((elem, i) => (
+									/* If it's the first photo, put it up front, else put it behind with no display */
 									i === 0 ?
-									<i key={i} id={i} className={"profilPicFront"} ><img className={classes.profilPicFront} src={elem} alt="profil" key={i} /></i>
-									: <i key={i} id={i} className={"profilPicBack"} ><img className={classes.profilPicBack} src={elem} alt="profil" key={i} /></i>
+									<img className={cx(classes.profilPicFront, "profilPic", "profilPicFront")} src={elem} alt="profil" key={i} id={i} />
+									: <img className={cx(classes.profilPicBack, "profilPic")} src={elem} alt="profil" key={i} id={i} />
 								))
 								: <i className={cx(classes.profilPicFront, "fas fa-user-circle", classes.icon)} id={0} ></i> 
 							}
@@ -82,24 +84,26 @@ const UserPageDumb = (props) => {
 						<div className={classes.dotGroup}>
 							{props.user.photos ?
 								props.user.photos.map((elem, i) => {
-									console.log(i);
+									/* If it's there's at least 2 photos, create first dot as the active one */
 									if (i === 0 && props.user.photos[1]) {
 										return (<div 
 													className={cx(classes.dotFront, classes.dot, "dot", "dotFront")} 
 													key={i} 
 													id={i} 
-													onClick={(event) => props.handleNextPic(event, i)}
+													onClick={(event) => props.handleThisPic(event, i)}
 												></div>);
 									}
+									/* If there's only one photo, don't create a dot */
 									else if (i === 0 && !props.user.photos[1]) {
 										return (null);
 									}
+									/* For as long as there are photos and it's not the first one, create clickable dots */
 									else { 
 										return (<div 
-													className={cx(classes.dotBack, classes.dot, "dot", "dotBack")} 
+													className={cx(classes.dotBack, classes.dot, "dot")} 
 													key={i} 
 													id={i}
-													onClick={(event) => props.handleNextPic(event, i)}
+													onClick={(event) => props.handleThisPic(event, i)}
 												></div>);
 								}})
 								: null
@@ -173,11 +177,17 @@ const UserPageDumb = (props) => {
 					</div>
 					<div className={classes.rightBottom}>
 						<div className={classes.problemsCont}>
-							<div className={classes.block}>
+							<div 
+								className={cx(classes.block, "block")}
+								onClick={props.handleBlock}
+							>
 								<i className="fas fa-user-slash"></i>
 								<h5>Block</h5>
 							</div>
-							<div className={classes.fake}>
+							<div 
+								className={cx(classes.fake, "fake")}
+								onClick={props.handleFake}
+							>
 								<i className="fas fa-bullhorn"></i>
 								<h5>Fake</h5>
 							</div>

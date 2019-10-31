@@ -24,16 +24,48 @@ class UserPage extends Component {
 					properties: {}
 				}
 			},
+			block: {
+				node_a: {
+					label: "User",
+					id: "username",
+					properties: {}
+				},
+				node_b: {
+					label: "User",
+					id: "username",
+					properties: {}
+				},
+				relation: {
+					label: "BLOCK",
+					properties: {}
+				}
+			},
+			fake: {
+				node_a: {
+					label: "User",
+					id: "username",
+					properties: {}
+				},
+				node_b: {
+					label: "User",
+					id: "username",
+					properties: {}
+				},
+				relation: {
+					label: "FAKE_ACCOUNT",
+					properties: {}
+				}
+			},
 			alertBox: null
 		}
 	}
+
 
 	static contextType = UserContext;
 
 	handleChange = (event, message) => {
 		if (event.type === "click") {
 			if (message === "confirm user") {
-				console.log("message === confirm user")
 				this.setState({
 					alertBox: null
 				})
@@ -47,24 +79,28 @@ class UserPage extends Component {
 		}
 	}
 
-	handleNextPic = (event, index) => {
-		console.log("handleNextPic() triggered");
-		console.log("dot index: " + index);
+	handleThisPic = (event, index) => {
 		event.preventDefault();
-		const currSrcPic = this.props.user.photos[index];
-		const nextSrcPic = this.props.user.photos[index + 1];
-		console.log("div index: " + this.props.id);
-		const currPicElem  = document.getElementsByClassName("back")[this.props.id].getElementsByClassName("profilPicFront")[0];
-		const nextPicElem = document.getElementsByClassName("back")[this.props.id].getElementsByClassName("profilPicBack")[index];
-		console.log(currPicElem);
-		console.log(nextPicElem);
-		console.log(currSrcPic);
-		console.log(nextSrcPic);
+		const thisDot = event.target;
+		const dotFront = document.getElementsByClassName("back")[this.props.id].getElementsByClassName("dotFront")[0];
+		const thisPic = document.getElementsByClassName("back")[this.props.id].getElementsByClassName("profilPic")[index];
+		const frontPic = document.getElementsByClassName("back")[this.props.id].getElementsByClassName("profilPicFront")[0];
+		
+		/* Make front picture and dot basic */
+		frontPic.classList.remove("profilPicFront");
+		dotFront.classList.remove("dotFront");
+		frontPic.style.display = 'none';
+		dotFront.style.backgroundColor = '#FDF38A';
+
+		/* Make dot clicked and associated picture, front ones */
+		thisPic.classList.add("profilPicFront");
+		thisDot.classList.add("dotFront");
+		thisPic.style.display = 'inline';
+		thisDot.style.backgroundColor = "#524A54";
 	}
 	
 	handleHeartClick = (e) => {
 		e.preventDefault();
-		console.log(e.type);
 		if (e.type === "click") {
 			/* Construction of node to send to db */
 			const usersnames = this.state.liked;
@@ -74,7 +110,7 @@ class UserPage extends Component {
 			userliked.properties = { username: this.props.user.username };
 			this.setState({
 				liked: usersnames
-			}, function () {console.log(this.state.liked)});
+			});
 
 			axios
 				.post('http://localhost:4000/API/relationships/toggle', this.state.liked)
@@ -108,6 +144,85 @@ class UserPage extends Component {
 		}
 	}
 
+	handleBlock = (e) => {
+		e.preventDefault();
+		if (e.type === "click") {
+			/* Construction of node to send to db */
+			const usersnames = this.state.block;
+			const userblock = usersnames.node_a;
+			const userblocked = usersnames.node_b;
+			userblock.properties = { username: this.context.JWT.data.username };
+			userblocked.properties = { username: this.props.user.username };
+			this.setState({
+				block: usersnames
+			}, function () { console.log(this.state.block )});
+		}
+
+		axios.post('http://localhost:4000/API/relationships/toggle', this.state.block)
+			.then(response => {
+				this.setState({ loading: false });
+				console.log(response.data);
+				if (response.data.success) {
+					/* Dynamically changes the css display of block to mark as active and making it unclickable */
+					const allElem = document.getElementsByClassName("block");
+					console.log(allElem);
+					console.log(this.props.id);
+					const elem = allElem[this.props.id];
+					elem.style.color = "red";
+					elem.style.pointerEvents = 'none';
+					
+					/* notif de block */
+					// if () {
+						
+					// }
+				}
+			})
+			.catch(error => {
+				this.setState({ loading: false });
+				console.log(error);
+			})
+	}
+
+	handleFake = (e) => {
+		e.preventDefault();
+		if (e.type === "click") {
+			/* Construction of node to send to db */
+			const usersnames = this.state.fake;
+			const userfake = usersnames.node_a;
+			const userfaked = usersnames.node_b;
+			userfake.properties = { username: this.context.JWT.data.username };
+			userfaked.properties = { username: this.props.user.username };
+			this.setState({
+				fake: usersnames
+			}, function () { console.log(this.state.fake )});
+		}
+
+		axios.post('http://localhost:4000/API/relationships/toggle', this.state.fake)
+			.then(response => {
+				this.setState({ loading: false });
+				console.log(response.data);
+				if (response.data.success) {
+					/* Dynamically changes the css display of fake to mark as active and making it unclickable */
+					const allElem = document.getElementsByClassName("fake");
+					const elem = allElem[this.props.id];
+					console.log(allElem);
+					console.log(this.props.id);
+					elem.style.color = "red";
+					elem.style.pointerEvents = 'none';
+					
+					/* notif de block */
+					// if () {
+						
+					// }
+				}
+			})
+			.catch(error => {
+				this.setState({ loading: false });
+				console.log(error);
+			})
+		
+	}
+
 	handleClickOutside = (e) => {
 		e.preventDefault();
 		if (e.target.classList.contains("underDiv")) {
@@ -127,7 +242,9 @@ class UserPage extends Component {
 				handleClickOutside={this.handleClickOutside.bind(this)}
 				handleHeartClick={this.handleHeartClick.bind(this)}
 				handleChange={this.handleChange.bind(this)}
-				handleNextPic={this.handleNextPic.bind(this)}
+				handleThisPic={this.handleThisPic.bind(this)}
+				handleBlock={this.handleBlock.bind(this)}
+				handleFake={this.handleFake.bind(this)}
 				{...this.state}
 				{...this.props}
 			/>

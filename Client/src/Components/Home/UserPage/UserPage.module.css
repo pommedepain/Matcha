@@ -64,6 +64,7 @@
 }
 .profilPicBack {
 	display: none;
+	border-radius: 50%;
 }
 .icon {
 	margin-right: 2%;
@@ -319,6 +320,7 @@
 	width: 7%;
 	position: relative;
 	right: -82%;
+	cursor: pointer;
 }
 .block > i {
 	margin-left: 25%;
