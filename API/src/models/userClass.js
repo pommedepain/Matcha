@@ -594,7 +594,8 @@ class User extends Node {
         .then(() => this.getNodeInfo())
         .then((user) => { this.result = user; return (this.getUserIsTags(this.data.node_a.properties.username)); })
         .then((isTags) => { this.result.isTags = isTags; return (this.getUserLookTags(this.data.node_a.properties.username)); })
-        .then((lookTags) => { this.result.lookTags = lookTags; debug(this.result); return (resolve(this.result)); })
+        .then((lookTags) => { this.result.lookTags = lookTags; return (this.getBlocked()); })
+        .then((blocked) => { this.result.blocked = blocked; debug('YOLO', this.result); resolve(this.result); })
         .catch(err => reject(err));
     });
   }

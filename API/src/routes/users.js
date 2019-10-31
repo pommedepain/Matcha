@@ -10,7 +10,7 @@ const router = express.Router();
 const User = require('../models/userClass');
 
 const validProperties = ['username', 'firstName', 'lastName', 'password', 'email', 'birthdate', 'bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'localisation', 'photos', 'tags', 'optional'];
-const publicProperties = ['age', 'isTags', 'lookTags', 'username', 'firstName', 'lastName', 'password', 'email', 'birthdate', 'bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'localisation', 'tags', 'photos', 'optional', 'error', 'value'];
+const publicProperties = ['age', 'isTags', 'blocked', 'lookTags', 'username', 'firstName', 'lastName', 'birthdate', 'bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'localisation', 'tags', 'photos', 'optional', 'error', 'value'];
 
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
@@ -68,6 +68,7 @@ router.get('/infos/:username', wrapper(async (req, res) => {
   debug('Request to get user information for :', req.params.username);
   return (new User({ username: req.params.username }).getUserInfo()
     .then((user) => {
+      debug(user);
       const result = _.pick(user, publicProperties);
       debug(result);
       return res.status(200).json({
