@@ -100,6 +100,7 @@ class Relationship {
     };
     const method = () => (new Promise((resolve, reject) => {
       const query = `MATCH (a:User {username:'${this.data.node_a.properties.username}'})-[r:${this.data.relation.label}]->(b),(b)-[l:${this.data.relation.label}]->(a)
+                    WHERE NOT (a)-[:BLOCK]-(b)
                     WITH a, collect(properties(b)) as targets
                     return (targets)`;
       const session = this.driver.session();
