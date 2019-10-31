@@ -141,6 +141,19 @@ router.get('/:username/viewedBy', wrapper(async (req, res) => {
   );
 }));
 
+router.get('/:username/BLOCK', wrapper(async (req, res) => {
+  debug('Requesting relation list...');
+  return (new User({ username: req.params.username }).getBlocked()
+    .then((result) => {
+      debug(result);
+      return res.status(200).json({
+        success: true,
+        payload: { value: 'read', result },
+      });
+    })
+  );
+}));
+
 router.get('/:username/:relation', wrapper(async (req, res) => {
   debug('Requesting relation list...');
   return (new User({ username: req.params.username }).getRelations(req.params.relation)
