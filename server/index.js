@@ -60,6 +60,10 @@ class Server {
                   emitter: notification.emitter,
                 },
               })
+              debug('emitted', {
+                type: notification.type,
+                emitter: notification.emitter,
+              });
             })
           }
         }
@@ -74,6 +78,10 @@ class Server {
                   emitter: notification.receiver,
                 },
               })
+              debug('emitted', {
+                type: notification.type,
+                emitter: notification.receiver,
+              });
             })
           }
         }

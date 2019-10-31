@@ -100,6 +100,14 @@ class UserPage extends Component {
 	}
 	
 	handleHeartClick = (e) => {
+    const mySocket = this.context.socket;
+    console.log(mySocket);
+    console.log(this.context);
+    mySocket.emit('notification', {
+      type: 'like',
+      emitter: 'philoutre',
+      receiver: 'camille',
+      });
 		e.preventDefault();
 		if (e.type === "click") {
 			/* Construction of node to send to db */
