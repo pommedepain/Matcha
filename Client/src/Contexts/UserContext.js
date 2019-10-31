@@ -75,6 +75,7 @@ const UserContextProvider = (props) => {
 			mySocket.emit("loginUser", JWT.data.username);
 			setSocket(mySocket);
 			setLog(true);
+			mySocket.on('notification', notification => { console.log(notification)});
 		}
 		else {
 			console.log("setSocket(null) && setLog to false");

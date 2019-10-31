@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import io from 'socket.io-client';
 
 import UserPageDummy from './UserPageD';
 import { UserContext } from '../../../Contexts/UserContext';
@@ -100,14 +101,6 @@ class UserPage extends Component {
 	}
 	
 	handleHeartClick = (e) => {
-    const mySocket = this.context.socket;
-    console.log(mySocket);
-    console.log(this.context);
-    mySocket.emit('notification', {
-      type: 'like',
-      emitter: 'philoutre',
-      receiver: 'camille',
-      });
 		e.preventDefault();
 		if (e.type === "click") {
 			/* Construction of node to send to db */
@@ -132,6 +125,14 @@ class UserPage extends Component {
 						const elem = allElem[this.props.id];
 						elem.classList.add(addClass);
 						elem.classList.remove(removeClass);
+
+						const mySocket = io('http://localhost:5000');
+						const ret = mySocket.emit('notification', {
+							type: 'like',
+							emitter: 'philoutre',
+							receiver: 'camille',
+						})
+						console.log(ret);
 
 						/* If it's a match, display an alert to congrats */
 						if (this.props.user.likedU === true && addClass === "fas") {
