@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import io from 'socket.io-client';
 
 import { UserContext } from '../../Contexts/UserContext';
 import axios from 'axios';
@@ -35,7 +36,7 @@ class Home extends Component {
 		axios.get(`http://localhost:4000/API/users/suggestions/${username}`)
 			.then(response => {
 				// console.log(response.data.payload.result);
-				this.setState({ suggestions: response.data.payload.result}, function () { console.log(this.state.suggestions)});
+				this.setState({ suggestions: response.data.payload.result});
 			})
 			.catch(err => { 
 				console.log(err);
@@ -115,6 +116,16 @@ class Home extends Component {
 		users[id].style.display = "flex";
 		underDiv[id].style.display = "flex";
 		document.getElementById("main").style.filter = 'blur(3px)';
+
+		console.log(this.state.suggestions[id].user.username)
+		console.log(this.context.JWT.data.username)
+		const mySocket = io('http://localhost:5000');
+		const ret = mySocket.emit('notification', {
+			type: 'visit',
+			emitter: this.context.JWT.data.username,
+			receiver: this.state.suggestions[id].user.username,
+		})
+		console.log(ret);
 	}
 
 	submit = (e) => {

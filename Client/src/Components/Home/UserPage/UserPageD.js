@@ -177,13 +177,13 @@ const UserPageDumb = (props) => {
 					</div>
 					<div className={classes.rightBottom}>
 						<div className={classes.problemsCont}>
-							<div 
+							<button 
 								className={cx(classes.block, "block")}
 								onClick={props.handleBlock}
 							>
 								<i className="fas fa-user-slash"></i>
 								<h5>Block</h5>
-							</div>
+							</button>
 							<div 
 								className={cx(classes.fake, "fake")}
 								onClick={props.handleFake}

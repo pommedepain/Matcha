@@ -101,6 +101,7 @@ class UserPage extends Component {
 	}
 	
 	handleHeartClick = (e) => {
+		console.log("handleHeartClick() triggered");
 		e.preventDefault();
 		if (e.type === "click") {
 			/* Construction of node to send to db */
@@ -126,23 +127,49 @@ class UserPage extends Component {
 						elem.classList.add(addClass);
 						elem.classList.remove(removeClass);
 
-						const mySocket = io('http://localhost:5000');
-						const ret = mySocket.emit('notification', {
-							type: 'like',
-							emitter: 'philoutre',
-							receiver: 'camille',
-						})
-						console.log(ret);
+						console.log(this.context.JWT.data.username);
+						console.log(this.props.user.username);
+						/* If the user liked someone, send a notification 'like' to the receiver */
+						if (addClass === "fas") {
+							const mySocket = io('http://localhost:5000');
+							const ret = mySocket.emit('notification', {
+								type: 'like',
+								emitter: this.context.JWT.data.username,
+								receiver: this.props.user.username,
+							})
+							console.log(ret);
+						}
+						/* If the user unliked someone, create a notification 'unlike' that will not be displayed */
+						// else if (addClass === "far" && this.props.user.likedU === false) {
+						// 	const mySocket = io('http://localhost:5000');
+						// 	const ret = mySocket.emit('notification', {
+						// 		type: 'unlike',
+						// 		emitter: this.context.JWT.data.username,
+						// 		receiver: this.props.user.username,
+						// 	})
+						// 	console.log(ret);
+						// }
+
+						/* If the user unlike someone that was previously marked as a match, send an "unmatch" notification to the receiver */
+						else if (addClass === "far" && this.props.user.likedU === true) {
+							const mySocket = io('http://localhost:5000');
+							const ret = mySocket.emit('notification', {
+								type: 'unlike',
+								emitter: this.context.JWT.data.username,
+								receiver: this.props.user.username,
+							})
+							console.log(ret);
+						}
 
 						/* If it's a match, display an alert to congrats */
 						if (this.props.user.likedU === true && addClass === "fas") {
-							this.setState({
-								alertBox: {
-									message:"This is a new match!",
-									button:"YEAY!",
-									color: "green"
-								}
+							const mySocket = io('http://localhost:5000');
+							const ret = mySocket.emit('notification', {
+								type: 'match',
+								emitter: this.context.JWT.data.username,
+								receiver: this.props.user.username,
 							})
+							console.log(ret);
 						}
 					}
 				})
@@ -174,16 +201,11 @@ class UserPage extends Component {
 				if (response.data.success) {
 					/* Dynamically changes the css display of block to mark as active and making it unclickable */
 					const allElem = document.getElementsByClassName("block");
-					console.log(allElem);
-					console.log(this.props.id);
 					const elem = allElem[this.props.id];
-					elem.style.color = "#ff665e";
-					elem.style.pointerEvents = 'none';
-					
-					/* notif de block */
-					// if () {
-						
-					// }
+					elem.style.color = "#ff665e9f";
+					elem.disabled = true;
+
+					document.location.reload(false);
 				}
 			})
 			.catch(error => {
@@ -212,17 +234,10 @@ class UserPage extends Component {
 				console.log(response.data);
 				if (response.data.success) {
 					/* Dynamically changes the css display of fake to mark as active and making it unclickable */
+					const color = response.data.payload.result.search("CREATED") !== -1 ?  "#ff665e" : "#524A54";
 					const allElem = document.getElementsByClassName("fake");
 					const elem = allElem[this.props.id];
-					console.log(allElem);
-					console.log(this.props.id);
-					elem.style.color = "#ff665e";
-					elem.style.pointerEvents = 'none';
-					
-					/* notif de block */
-					// if () {
-						
-					// }
+					elem.style.color = color;
 				}
 			})
 			.catch(error => {
@@ -245,7 +260,7 @@ class UserPage extends Component {
 	}
 
 	render () {
-		console.log(this.props.user);
+		// console.log(this.props.user);
 		return (
 			<UserPageDummy 
 				handleClickOutside={this.handleClickOutside.bind(this)}

@@ -9,6 +9,7 @@ const SERVER = {
 }
 
 const NOTIFICATION_TYPES = [
+  'unlike',
   'like',
   'match',
   'unlike',
@@ -67,27 +68,6 @@ class Server {
             })
           }
         }
-<<<<<<< HEAD
-        const emitter = notification.emitter;
-        if (notification.type === 'like') {
-          if (this.socketTable[emitter] !== undefined
-          && this.socketTable[emitter].length) {
-            this.socketTable[emitter].forEach((socketId) => {
-              this.io.to(`${socketId}`).emit('notification', {
-                data: {
-                  type: notification.type,
-                  emitter: notification.receiver,
-                },
-              })
-              debug('emitted', {
-                type: notification.type,
-                emitter: notification.receiver,
-              });
-            })
-          }
-        }
-=======
->>>>>>> bf1ce58e924d6b31df69b4dd3f8a37fd20676d5e
       })
 
       socket.on('isOnline', (usernameList) => {

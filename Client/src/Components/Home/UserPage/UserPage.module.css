@@ -321,18 +321,31 @@
 	position: relative;
 	right: -82%;
 	cursor: pointer;
+	border: none;
+	background-color: #FDF38A;
+	color: #524A54;
 }
-.block > i {
+.block:focus,
+button[focus] {
+	outline: none;
+}
+.bloc:disabled,
+button[disabled] {
+	cursor: not-allowed;
+	/* color: #ff665e9f;  */
+}
+/* .block > i {
 	margin-left: 25%;
 	margin-right: 25%;
-}
+} */
 .block > h5 {
 	text-align: center;
 	font-size: 1vw;
 	font-weight: 400;
+	width: 100%;
 }
 .fake > i {
-	margin-left: 30%;
+	margin-left: 25%;
 	margin-right: 25%;
 }
 .fake > h5 {
