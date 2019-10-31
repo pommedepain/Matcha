@@ -360,7 +360,6 @@ class User extends Node {
       session.run(query)
         .then((res) => {
           session.close();
-          debug('getting liked by', res.records.length, res.records);
           if (res.records.length !== 0) {
             return this.getProfiles(res.records[0]._fields[0]);
           } return [];
@@ -422,11 +421,15 @@ class User extends Node {
       this.getUserInfo()
         .then((currentUser) => {
           this.blocked = currentUser.blocked;
+          debug('blocked', this.blocked);
           return (this.getRelations('COMPATIBLE'));
         })
         .then((targets) => {
           this.targets = _.uniq(targets);
-          this.targets = _.without(targets, this.blocked);
+          this.blocked.forEach((blocked) => {
+            this.targets = _.remove(this.targets, target => (target.username !== blocked.username));
+          });
+          debug('targets', this.targets);
           this.promises = this.targets.map(user => (new User(user).getUserInfo()));
           return Promise.all(this.promises);
         })
@@ -601,7 +604,7 @@ class User extends Node {
         .then((user) => { this.result = user; return (this.getUserIsTags(this.data.node_a.properties.username)); })
         .then((isTags) => { this.result.isTags = isTags; return (this.getUserLookTags(this.data.node_a.properties.username)); })
         .then((lookTags) => { this.result.lookTags = lookTags; return (this.getBlocked()); })
-        .then((blocked) => { this.result.blocked = blocked; debug('YOLO', this.result); resolve(this.result); })
+        .then((blocked) => { this.result.blocked = blocked; resolve(this.result); })
         .catch(err => reject(err));
     });
   }
