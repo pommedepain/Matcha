@@ -360,7 +360,8 @@ class User extends Node {
       session.run(query)
         .then((res) => {
           session.close();
-          if (res.records.lentgh !== 0) {
+          debug('getting liked by', res.records.length, res.records);
+          if (res.records.length !== 0) {
             return this.getProfiles(res.records[0]._fields[0]);
           } return [];
         })
@@ -378,7 +379,7 @@ class User extends Node {
       session.run(query)
         .then((res) => {
           session.close();
-          if (res.records.lentgh !== 0) {
+          if (res.records.length !== 0) {
             return this.getProfiles(res.records[0]._fields[0]);
           } return [];
         })
@@ -396,7 +397,7 @@ class User extends Node {
       session.run(query)
         .then((res) => {
           session.close();
-          if (res.records.lentgh !== 0) {
+          if (res.records.length !== 0) {
             return this.getProfiles(res.records[0]._fields[0]);
           } return [];
         })
@@ -418,13 +419,18 @@ class User extends Node {
 
   getSuggestions() {
     return new Promise((resolve, reject) => {
-      this.getRelations('COMPATIBLE')
+      this.getUserInfo()
+        .then((currentUser) => {
+          this.blocked = currentUser.blocked;
+          return (this.getRelations('COMPATIBLE'));
+        })
         .then((targets) => {
           this.targets = _.uniq(targets);
+          this.targets = _.without(targets, this.blocked);
           this.promises = this.targets.map(user => (new User(user).getUserInfo()));
           return Promise.all(this.promises);
         })
-        .then((targets) => { this.targets = targets.map(user => (_.omit(user, 'password', 'email', 'isAdmin', 'active'))); return (this.getLikedBy()); })
+        .then((targets) => { this.targets = targets.map(user => (_.omit(user, 'blocked', 'password', 'email', 'isAdmin', 'active'))); return (this.getLikedBy()); })
         .then((likedBys) => {
           this.targets.forEach((user) => {
             Object.assign(user, { likedU: likedBys.find(el => (user.username === el.username)) === undefined ? false : true });
