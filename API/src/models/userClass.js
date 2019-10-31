@@ -529,9 +529,9 @@ class User extends Node {
   getBlocked() {
     return new Promise((resolve, reject) => {
       const session = this.driver.session();
-      const query = `MATCH (n:User {username:'${this.user.username}})-[r:BLOCK]->(b:User)
-                    WITH n, collect((properties(b))) as blocked
-                    return blocked`;
+      const query = `MATCH (n:User {username:'${this.user.username}'})-[r:BLOCK]->(b:User)
+                    WITH n, collect(properties(b)) as col
+                    RETURN col`;
       session.run(query)
         .then((res) => {
           if (res.records.length !== 0) resolve(res.records[0]._fields[0]);
