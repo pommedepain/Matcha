@@ -19,11 +19,22 @@ class NavBar extends React.Component {
 		this.setState({[name]: value})
 	}
 
+	pre_log_out = () => {
+		return new Promise((resolve) => {
+			const mySocket = io('http://localhost:5000');
+			this.context.toggleUser(null);
+			mySocket.emit('logoutUser', this.context.JWT.data.username);
+			resolve();
+		}) 
+	}
 	logOut = () => {
-		const mySocket = io('http://localhost:5000');
-		this.context.toggleUser(null);
-		mySocket.emit('disconnect');
-		// document.location.reload(false);
+		this.pre_log_out()
+			.then(() => {
+				document.location.reload(false);
+			})
+			.catch((err) => {
+				console.log(err);
+			})
 	}
 
 	showNotifs = (e) => {
