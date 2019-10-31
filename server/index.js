@@ -67,6 +67,7 @@ class Server {
             })
           }
         }
+<<<<<<< HEAD
         const emitter = notification.emitter;
         if (notification.type === 'like') {
           if (this.socketTable[emitter] !== undefined
@@ -85,6 +86,8 @@ class Server {
             })
           }
         }
+=======
+>>>>>>> bf1ce58e924d6b31df69b4dd3f8a37fd20676d5e
       })
 
       socket.on('isOnline', (usernameList) => {
