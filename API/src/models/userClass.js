@@ -986,7 +986,11 @@ class User extends Node {
                     RETURN count(r)`;
       const query5 = `MATCH (n:User { username:'${this.user.username}'})<-[r:BLOCK]-(b:User)
                     RETURN count(r)`;
-      session.run(query)
+      this.getUserInfo()
+        .then((res) => {
+          this.data.node_a.properties = _.pick(res, this.relevantProperties);
+          return (session.run(query));
+        })
         .then((res) => {
           this.liked = res.records[0]._fields[0];
           return session.run(query2);
@@ -1004,6 +1008,7 @@ class User extends Node {
           return session.run(query5);
         })
         .then((res) => {
+          session.close();
           this.blocks = res.records[0]._fields[0];
           this.popularity = 1 * this.visits
                           + 2 * this.liked
