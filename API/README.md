@@ -19,4 +19,15 @@ GET /api/users/:username/visits
 POST /api/users/:username/chat
 -> register message in history
 body for request : { target: $target_username, message: $message_content}
+
+GET /api/notifications/:username
+id for notif is in payload.result.id.low *
+
+POST /api/notifications/create
+body for request : {emitter: $emitter_username, receiver: $receiver_username, type: $notification_type }
+
+PUT /api/notifications/read
+body for request : { id: id } *
+
+
 ```
