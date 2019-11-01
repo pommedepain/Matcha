@@ -619,6 +619,7 @@ class User extends Node {
         .then(() => this.hashGenerator())
         .then(() => this.calcAge())
         .then(() => {
+          this.data.node_a.properties.popularity = 0;
           if (this.data.node_a.properties && !this.data.node_a.properties.sexOrient) {
             this.data.node_a.properties.sexOrient = 'bi';
           }
@@ -988,7 +989,7 @@ class User extends Node {
                     RETURN count(r)`;
       this.getUserInfo()
         .then((res) => {
-          this.data.node_a.properties = _.pick(res, this.relevantProperties);
+          this.data.node_a.properties = _.pick(res, this.rele);
           return (session.run(query));
         })
         .then((res) => {
@@ -1015,6 +1016,8 @@ class User extends Node {
                           + 3 * this.matches
                           + 4 * this.conversations
                           - 10 * this.blocks;
+          if (this.popularity < 0) this.popularity = 0;
+          if (this.popularity > 100) this.popularity = 100;
           return (this.updateUser({ popularity: this.popularity }));
         })
         .then(() => resolve({ newPopularity: this.popularity }))

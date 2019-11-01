@@ -6,6 +6,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const users = require('./src/routes/users');
+const notifications = require('./src/routes/notifications');
 const tags = require('./src/routes/tags');
 const relationships = require('./src/routes/relationships');
 const auth = require('./src/routes/auth');
@@ -26,6 +27,7 @@ app.use(morgan('tiny'));
 app.use(cors());
 
 app.use('/api/users', users);
+app.use('/api/notifications', notifications);
 app.use('/api/tags', tags);
 app.use('/api/relationships', relationships);
 app.use('/api/auth', auth);

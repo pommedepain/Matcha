@@ -99,6 +99,9 @@ class UserValidator {
 
       if (this.req.popularity) sch.popularity = Joi.any().required();
       else sch.popularity = Joi.any();
+      
+      if (this.req.notifs) sch.notifs = Joi.any().required();
+      else sch.notifs = Joi.any();
 
       if (this.req.optional) sch.optional = Joi.string().alphanum().min(3).max(30).required();
       else sch.optional = Joi.string().alphanum().min(3).max(30);

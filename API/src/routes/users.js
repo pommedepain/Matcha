@@ -142,6 +142,19 @@ router.post('/:username/visit/:target', wrapper(async (req, res) => {
   );
 }));
 
+router.post('/:username/notify/', wrapper(async (req, res) => {
+  debug('Requesting list...');
+  return (new User({ username: req.params.username }).notify(req.body)
+    .then((result) => {
+      debug(result);
+      return res.status(200).json({
+        success: true,
+        payload: { value: 'read', result },
+      });
+    })
+  );
+}));
+
 router.get('/:username/visits', wrapper(async (req, res) => {
   debug('Requesting list...');
   return (new User({ username: req.params.username }).getVisits()
