@@ -33,14 +33,16 @@ class Home extends Component {
 	getSuggestions = () => {
 		const { username } = this.context.JWT.data;
 
-		axios.get(`http://localhost:4000/API/users/suggestions/${username}`)
-			.then(response => {
-				// console.log(response.data.payload.result);
-				this.setState({ suggestions: response.data.payload.result});
-			})
-			.catch(err => { 
-				console.log(err);
-			})
+		if (username !== undefined) {
+			axios.get(`http://localhost:4000/API/users/suggestions/${username}`)
+				.then(response => {
+					// console.log(response.data.payload.result);
+					this.setState({ suggestions: response.data.payload.result});
+				})
+				.catch(err => { 
+					console.log(err);
+				})
+		}
 	}
 
 	updateFilters = () => {
@@ -117,15 +119,15 @@ class Home extends Component {
 		underDiv[id].style.display = "flex";
 		document.getElementById("main").style.filter = 'blur(3px)';
 
-		console.log(this.state.suggestions[id].user.username)
-		console.log(this.context.JWT.data.username)
+		/* Creates a visit notification to receiver */
 		const mySocket = io('http://localhost:5000');
-		const ret = mySocket.emit('notification', {
+		mySocket.emit('notification', {
 			type: 'visit',
 			emitter: this.context.JWT.data.username,
 			receiver: this.state.suggestions[id].user.username,
 		})
-		console.log(ret);
+		// console.log("this.context retrieved in Home:");
+		// console.log(this.context.notifications);
 	}
 
 	submit = (e) => {
