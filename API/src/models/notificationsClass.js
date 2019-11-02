@@ -39,7 +39,7 @@ class Notification {
       if (!this.receiver) resolve('No receiver Provided!');
       const session = this.driver.session();
       const query = `MATCH (a:User {username:'${this.receiver}'})<-[:TO]-(b)<-[:EMITTED]-(c:User)
-                    RETURN b.type,b.read,c.username,ID(b)
+                    RETURN b.type,b.read,properties(c),ID(b)
                     ORDER BY b.date`;
       session.run(query)
         .then((res) => {
