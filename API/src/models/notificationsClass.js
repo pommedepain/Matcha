@@ -23,7 +23,7 @@ class Notification {
       const date = new Date().toDateString();
       const session = this.driver.session();
       const query = `MATCH (a:User {username:'${this.emitter}'}),(b:User {username:'${this.receiver}'})
-                      CREATE (a)-[:EMITTED]->(n:notification {type:'${this.type}', date:'${date}', read:'false'})-[:TO]->(b)`;
+                      CREATE (a)-[:EMITTED]->(n:notification {type:'${this.type}', date:'${date}', read:false})-[:TO]->(b)`;
       session.run(query)
         .then((res) => {
           debug(res);

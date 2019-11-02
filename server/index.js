@@ -12,9 +12,9 @@ const NOTIFICATION_TYPES = [
   'unlike',
   'like',
   'match',
-  'unlike',
   'visit',
-  'message'
+  'message',
+  'online',
 ]
 
 class Server {
