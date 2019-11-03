@@ -41,7 +41,6 @@ class Server {
       })
 
       socket.on('logoutUser', (username) => {
-        debug(key);
         this.socketTable[username] = [];
         debug('user disconnected', this.socketTable);
         const result = Object.keys(this.socketTable).map((key, sockets) => { 
