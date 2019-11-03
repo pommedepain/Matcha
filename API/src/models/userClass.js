@@ -688,8 +688,8 @@ class User extends Node {
               .then(() => this.addOrientRelationships()));
           } return (new Promise(res => res()));
         })
-        .then(() => this.deleteCompatibilitiesRelationships())
-        .then(() => this.addCompatibilities())
+        .then(() => { this.data.node_a.properties = this.user; debug('deleting compatibilities'); return this.deleteCompatibilitiesRelationships(); })
+        .then(() => { debug('creating compatibilities'); return this.addCompatibilities(); })
         .then(() => { this.updatedUser = this.user; return (new User(this.user).generateAuthToken()); })
         .then((token) => { this.updatedUser.token = token; resolve(_.omit(this.updatedUser, 'password')); })
         .catch(err => reject(err))
