@@ -86,7 +86,7 @@ class Server {
                 {key, isOnline:true }
               ))
               debug('isOnline',result);
-            this.io.to(`${socket.id}`).emit('isOnline', result);
+            this.io.to(`${socket.id}`).emit('notification', {type: 'isOnline', result });
           }
         
       })
