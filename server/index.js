@@ -41,10 +41,11 @@ class Server {
       })
 
       socket.on('logoutUser', (username) => {
+        debug(key);
         this.socketTable[username] = [];
         debug('user disconnected', this.socketTable);
-        const result = Object.keys(this.socketTable).map((key, sockets) => { 
-          if (sockets.length) return {key, isOnline:true };
+        const result = Object.keys(this.socketTable).map((key) => {
+          if(this.socketTable[key]) return {key, isOnline:true };
         })
         debug('isOnline', result);
         socket.broadcast.emit('notification', {type: 'isOnline', result });
@@ -84,8 +85,8 @@ class Server {
             }
           }
         } else if (notification.type === 'isOnline') {
-              const result = Object.keys(this.socketTable).map((key, sockets) => { 
-                if (sockets.length) return {key, isOnline:true };
+              const result = Object.keys(this.socketTable).map((key) => {
+                if(this.socketTable[key]) return {key, isOnline:true };
               })
               debug('isOnline',result);
             socket.broadcast.emit('notification', {type: 'isOnline', result });
