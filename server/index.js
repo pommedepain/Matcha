@@ -41,11 +41,14 @@ class Server {
       })
 
       socket.on('logoutUser', (username) => {
-        if (!_.isEmpty(this.socketTable[username])) {
-          this.socketTable[username].forEach((socketId) => {
-            this.io.to(`${socketId}`).emit('logout')
-          })
-        }
+        debug(key);
+        this.socketTable[username] = [];
+        debug('user disconnected', this.socketTable);
+        const result = Object.keys(this.socketTable).map((key) => (   
+          {key, isOnline:true }
+        ))
+        debug('isOnline', result);
+        socket.broadcast.emit('notification', {type: 'isOnline', result });
       })
 
       socket.on('notification', (notification) => {
