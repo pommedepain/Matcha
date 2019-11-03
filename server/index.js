@@ -82,14 +82,10 @@ class Server {
             }
           }
           if (notification.type === 'isOnline') {
-            const onlineUsers = notification.map((username) => {
-              let isOnline = false
-              Object.keys(this.socketTable).forEach((key) => {
-                if (key === id && !_.isEmpty(this.socketTable[key])) isOnline = true
-              })
-              return { username, isOnline }
-            })
-            this.io.to(`${socket.id}`).emit('isOnline', { data: { onlineUsers } })
+              const result = Object.keys(this.socketTable).map((key) => (   
+                {key, isOnline:true }
+              ))
+            this.io.to(`${socket.id}`).emit('isOnline', result);
           }
         }
         
