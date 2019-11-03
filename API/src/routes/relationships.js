@@ -7,6 +7,7 @@ const wrapper = require('../middleware/wrapper');
 
 const router = express.Router();
 const Relationship = require('../models/relationshipsClass');
+const User = require('../models/userClass');
 
 const validProperties = ['node_a', 'node_b', 'relation'];
 const publicProperties = ['node_a', 'node_b', 'relation'];
@@ -79,6 +80,7 @@ router.post('/toggle', wrapper(async (req, res) => {
   debug('Request to add new Relationship :\n', _.pick(req.body, validProperties));
   return (new Relationship(req.body).toggleRelationship()
     .then((result) => {
+      new User({ username: req.body.node_b.properties.username }).updateScore();
       debug(result);
       return res.status(200).json({
         success: true,

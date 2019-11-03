@@ -619,7 +619,7 @@ class User extends Node {
         .then(() => this.hashGenerator())
         .then(() => this.calcAge())
         .then(() => {
-          this.data.node_a.properties.popularity = 0;
+          this.data.node_a.properties.popularity = '0';
           if (this.data.node_a.properties && !this.data.node_a.properties.sexOrient) {
             this.data.node_a.properties.sexOrient = 'bi';
           }
@@ -1021,8 +1021,9 @@ class User extends Node {
                           - 10 * this.blocks;
           if (this.popularity < 0) this.popularity = 0;
           if (this.popularity > 100) this.popularity = 100;
+          debug(this.popularity);
           const query6 = `MATCH (n:User {username:'${this.user.username}'})
-          SET n.popularity = ${this.popularity}`;
+          SET n.popularity = '${this.popularity}'`;
           return (session.run(query6));
         })
         .then(() => { session.close(); resolve({ newPopularity: this.popularity }); })
