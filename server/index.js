@@ -50,7 +50,7 @@ class Server {
 
       socket.on('notification', (notification) => {
         if (notification.type && NOTIFICATION_TYPES.indexOf(notification.type) > -1
-        && notification.emitter && notification.receiver && notification.type !== 'isOnline') {
+        && notification.emitter && notification.receiver) {
           const receiver = notification.receiver;
           if (this.socketTable[receiver] !== undefined
           && this.socketTable[receiver].length) {
@@ -81,13 +81,13 @@ class Server {
               })
             }
           }
-          if (notification.type === 'isOnline') {
+        } else if (notification.type === 'isOnline') {
               const result = Object.keys(this.socketTable).map((key) => (   
                 {key, isOnline:true }
               ))
+              debug('isOnline',result);
             this.io.to(`${socket.id}`).emit('isOnline', result);
           }
-        }
         
       })
 
