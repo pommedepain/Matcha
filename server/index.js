@@ -76,7 +76,7 @@ class Server {
           Object.keys(this.socketTable).forEach((key) => {
             if (key === username && !_.isEmpty(this.socketTable[key])) isOnline = true
           })
-          return { id, isOnline }
+          return { username, isOnline }
         })
         this.io.to(`${socket.id}`).emit('isOnline', { data: { onlineUsers } })
       })

@@ -244,9 +244,9 @@ router.post('/', wrapper(async (req, res) => {
     }));
 }));
 
-router.put('/:username', [auth, identify], wrapper(async (req, res) => {
-  debug('Request to update :\n', _.pick(req.user, validProperties));
-  return (new User(_.pick(req.user, validProperties)).updateUser(req.body)
+router.put('/update/:username', wrapper(async (req, res) => {
+  debug('Request to update :\n', { username: req.params.username });
+  return (new User({ username: req.params.username }).updateUser(req.body)
     .then((result) => {
       debug(result);
       return res.status(200).json({
