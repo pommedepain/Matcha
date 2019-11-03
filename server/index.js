@@ -14,7 +14,7 @@ const NOTIFICATION_TYPES = [
   'match',
   'visit',
   'message',
-  'online',
+  'isOnline',
 ]
 
 class Server {
@@ -50,7 +50,7 @@ class Server {
 
       socket.on('notification', (notification) => {
         if (notification.type && NOTIFICATION_TYPES.indexOf(notification.type) > -1
-        && notification.emitter && notification.receiver) {
+        && notification.emitter && notification.receiver && notification.type !== 'isOnline') {
           const receiver = notification.receiver;
           if (this.socketTable[receiver] !== undefined
           && this.socketTable[receiver].length) {
@@ -81,19 +81,18 @@ class Server {
               })
             }
           }
+          if (notification.type === 'isOnline') {
+            const onlineUsers = notification.map((username) => {
+              let isOnline = false
+              Object.keys(this.socketTable).forEach((key) => {
+                if (key === id && !_.isEmpty(this.socketTable[key])) isOnline = true
+              })
+              return { username, isOnline }
+            })
+            this.io.to(`${socket.id}`).emit('isOnline', { data: { onlineUsers } })
+          }
         }
         
-      })
-
-      socket.on('isOnline', (usernameList) => {
-        const onlineUsers = usernameList.map((username) => {
-          let isOnline = false
-          Object.keys(this.socketTable).forEach((key) => {
-            if (key === id && !_.isEmpty(this.socketTable[key])) isOnline = true
-          })
-          return { username, isOnline }
-        })
-        this.io.to(`${socket.id}`).emit('isOnline', { data: { onlineUsers } })
       })
 
       // Handle chat messages
