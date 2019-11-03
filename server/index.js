@@ -86,7 +86,7 @@ class Server {
           }
         } else if (notification.type === 'isOnline') {
               const result = Object.keys(this.socketTable).map((key, sockets) => { 
-                if (socket.length) return {key, isOnline:true };
+                if (sockets.length) return {key, isOnline:true };
               })
               debug('isOnline',result);
             socket.broadcast.emit('notification', {type: 'isOnline', result });
