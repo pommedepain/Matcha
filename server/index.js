@@ -67,7 +67,22 @@ class Server {
               });
             })
           }
+          const emitter = notification.emitter
+          if (notification.type === 'match') {
+            if (this.socketTable[emitter] !== undefined
+            && this.socketTable[emitter].length) {
+              this.socketTable[emitter].forEach((socketId) => {
+                this.io.to(`${socketId}`).emit('notification', {
+                  data: {
+                    type: notification.type,
+                    emitter: notification.receiver,
+                  },
+                })
+              })
+            }
+          }
         }
+        
       })
 
       socket.on('isOnline', (usernameList) => {
