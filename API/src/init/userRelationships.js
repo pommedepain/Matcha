@@ -69,7 +69,7 @@ function populateRelationships(type) {
             label: 'LIKES',
             properties: { creationDate: date.toLocaleString() },
           },
-        }
+        },
       );
       return (relations.reduce(async (prev, next) => {
         await prev;

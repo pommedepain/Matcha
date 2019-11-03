@@ -916,7 +916,8 @@ class User extends Node {
       const session = this.driver.session();
       const query1 = `MATCH (n:User { username:'${this.user.username}'})-[r:VISITED]->(b:User {username:'${target}'})
                       DELETE r`;
-      const query2 = `CREATE (n:User { username:'${this.user.username}'})-[r:VISITED {lastVisit:'${date}'}]->(b:User {username:'${target}'})`;
+      const query2 = `MATCH (n:User { username:'${this.user.username}'}),(b:User {username:'${target}'})
+                      CREATE (n)-[r:VISITED {lastVisit:'${date}'}]->(b)`;
       session.run(query1)
         .then(() => session.run(query2))
         .then(() => { session.close(); new User({ username: target }).updateScore(); })
@@ -933,6 +934,7 @@ class User extends Node {
       session.run(query)
         .then((res) => {
           const result = [];
+          debug('getting visits', res);
           if (res.records.length !== 0) {
             res.records.forEach((record) => {
               result.push({ user: record._fields[0], date: record._fields[1] });
