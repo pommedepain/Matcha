@@ -18,12 +18,17 @@ body for request : { target: $target_username, message: $message_content}
 POST /api/users/:username/visit/:target
 -> register that username visited
 
+PUT /api/users/connect/:username
+register connection date in db
+
 GET /api/users/:username/visits
 -> get visit history
 
-GET /api/users/username/LIKES
+utilities for philou
+GET /api/users/:username/LIKES
 
-GET /api/users/usrname/likedBy
+GET /api/users/:usrename/likedBy
+
 ```
 
 

@@ -124,6 +124,12 @@ class UserValidator {
       if (this.req.active) sch.active = Joi.string().regex(/^(true|false)$/).required();
       else sch.active = Joi.string().regex(/^(true|false)$/);
 
+      if (this.req.complete) sch.complete = Joi.string().regex(/^(true|false)$/).required();
+      else sch.complete = Joi.string().regex(/^(true|false)$/);
+
+      if (this.req.lastConnected) sch.lastConnected = Joi.string().required();
+      else sch.lastConnected = Joi.string();
+
       Joi.validate(this.data, sch, (err, value) => {
         if (err === null) resolve({ success: true, value });
         else {

@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable prefer-destructuring */
 /* eslint-disable max-len */
 /* eslint-disable camelcase */
@@ -165,7 +166,7 @@ class User extends Node {
           },
           relation: {
             label: 'IS',
-            properties: { creationDate: date.toISOString() },
+            properties: { creationDate: date.toLocaleString() },
           },
         };
         new Relationship(data).createRelationship()
@@ -191,7 +192,7 @@ class User extends Node {
       if (this.data.node_a.properties.sexOrient) {
         const session = this.driver.session();
         const query = `MATCH z=(a:User { username: '${this.data.node_a.properties.username}'})-[p:IS]->(c:Orientation)-[q:LOOK_FOR]-(d:Orientation)<-[r:IS]-(b:User)
-                      WHERE (b.age <= a.ageMax AND b.age >= a.ageMin AND a.age <= b.ageMax AND a.age >= b.ageMin)
+                      WHERE (b.age <= a.ageMax AND b.age >= a.ageMin AND a.age <= b.ageMax AND a.age >= b.ageMin AND toInt(a.popularity) <= (toInt(b.popularity) + 10) AND toInt(a.popularity) >= (toInt(b.popularity) - 10))
                       CREATE (a)-[t:COMPATIBLE]->(b)`;
         session.run(query)
           .then(() => { session.close(); debug(`User compatibilities created for ${this.data.node_a.properties.username}`); resolve(); })
@@ -227,7 +228,7 @@ class User extends Node {
               },
               relation: {
                 label: 'LOOK_FOR',
-                properties: { creationDate: date.toISOString() },
+                properties: { creationDate: date.toLocaleString() },
               },
             };
             new Relationship(data).createRelationship()
@@ -269,7 +270,7 @@ class User extends Node {
               },
               relation: {
                 label: 'IS',
-                properties: { creationDate: date.toISOString() },
+                properties: { creationDate: date.toLocaleString() },
               },
             };
             new Relationship(data).createRelationship()
@@ -626,6 +627,9 @@ class User extends Node {
           if (this.data.node_a.properties && !this.data.node_a.properties.active) {
             this.data.node_a.properties.active = 'false';
           }
+          if (this.data.node_a.properties && this.data.node_a.properties.complete === undefined) {
+            this.data.node_a.properties.complete = 'false';
+          }
           if (this.data.node_a.properties.active === 'false') {
             return this.sendConfLink();
           } return new Promise(res => res());
@@ -690,7 +694,17 @@ class User extends Node {
         })
         .then(() => { this.data.node_a.properties = this.user; debug('deleting compatibilities'); return this.deleteCompatibilitiesRelationships(); })
         .then(() => { debug('creating compatibilities'); return this.addCompatibilities(); })
-        .then(() => { this.updatedUser = this.user; return (new User(this.user).generateAuthToken()); })
+        .then(() => {
+          this.updatedUser = this.user;
+          if (this.updatedUser.sexOrient && this.updatedUser.gender && this.updatedUser.photos[0]) {
+            const session = this.driver.session();
+            const query = `MATCH (n:User {username:'${this.updatedUser.username}'})
+                          SET n.complete = 'true'`;
+            return session.run(query)
+              .then(() => (session.close()));
+          } return new Promise(res => (res()));
+        })
+        .then(() => new User(this.user).generateAuthToken())
         .then((token) => { this.updatedUser.token = token; resolve(_.omit(this.updatedUser, 'password')); })
         .catch(err => reject(err))
     ));
@@ -898,7 +912,7 @@ class User extends Node {
 
   visits(target) {
     return new Promise((resolve, reject) => {
-      const date = new Date().toISOString();
+      const date = new Date().toLocaleString();
       const session = this.driver.session();
       const query1 = `MATCH (n:User { username:'${this.user.username}'})-[r:VISITED]->(b:User {username:'${target}'})
                       DELETE r`;
@@ -932,7 +946,7 @@ class User extends Node {
   chat(data) {
     return new Promise((resolve, reject) => {
       const [target, message] = data;
-      const date = new Date().toDateString();
+      const date = new Date().toLocaleString();
       const session = this.driver.session();
       const query = `MATCH (n:User { username:'${this.user.username}'})-[r:CONVERSATION]-(b:User {username:'${target}'})`;
       const query1 = `CREATE (n:User { username:'${this.user.username}'})-[r:CONVERSATION { messages: [{ emitter:'${this.user.username}' , receiver:'${target}' , date:'${date}', content:'${message}' }] }]->(b:User {username:'${target}'})
@@ -1021,12 +1035,28 @@ class User extends Node {
                           - 10 * this.blocks;
           if (this.popularity < 0) this.popularity = 0;
           if (this.popularity > 100) this.popularity = 100;
-          debug(this.popularity);
           const query6 = `MATCH (n:User {username:'${this.user.username}'})
           SET n.popularity = '${this.popularity}'`;
           return (session.run(query6));
         })
-        .then(() => { session.close(); resolve({ newPopularity: this.popularity }); })
+        .then(() => {
+          session.close();
+          return this.deleteCompatibilitiesRelationships();
+        })
+        .then(() => this.addCompatibilities())
+        .then(() => { debug('popularity and compatibilities updated'); resolve({ newPopularity: this.popularity }); })
+        .catch(err => debug(err));
+    });
+  }
+
+  connect() {
+    return new Promise((resolve, reject) => {
+      const date = new Date().toLocaleString();
+      const session = this.driver.session();
+      const query = `MATCH (a:User { username:'${this.user.username}'})
+                    SET a.lastConnection='${date}'`;
+      session.run(query)
+        .then(() => resolve(`User connected on ${date}`))
         .catch(err => debug(err));
     });
   }

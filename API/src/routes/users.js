@@ -10,7 +10,7 @@ const router = express.Router();
 const User = require('../models/userClass');
 
 const validProperties = ['username', 'firstName', 'lastName', 'password', 'email', 'birthdate', 'bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'localisation', 'photos', 'tags', 'optional'];
-const publicProperties = ['age', 'isTags', 'popularity', 'blocked', 'lookTags', 'username', 'firstName', 'lastName', 'birthdate', 'bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'localisation', 'tags', 'photos', 'optional', 'error', 'value'];
+const publicProperties = ['age', 'lastConnection', 'complete', 'isTags', 'popularity', 'blocked', 'lookTags', 'username', 'firstName', 'lastName', 'birthdate', 'bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'localisation', 'tags', 'photos', 'optional', 'error', 'value'];
 
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
@@ -247,6 +247,18 @@ router.post('/', wrapper(async (req, res) => {
 router.put('/update/:username', wrapper(async (req, res) => {
   debug('Request to update :\n', { username: req.params.username });
   return (new User({ username: req.params.username }).updateUser(req.body)
+    .then((result) => {
+      debug(result);
+      return res.status(200).json({
+        success: true,
+        payload: { value: 'update', result },
+      });
+    }));
+}));
+
+router.put('/connect/:username', wrapper(async (req, res) => {
+  debug('Request to connect :\n', { username: req.params.username });
+  return (new User({ username: req.params.username }).connect()
     .then((result) => {
       debug(result);
       return res.status(200).json({

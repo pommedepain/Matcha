@@ -34,7 +34,7 @@ async function randomRelations() {
                 },
                 relation: {
                   label: 'LIKES',
-                  properties: { creationDate: date.toISOString() },
+                  properties: { creationDate: date.toLocaleString() },
                 },
               },
             );
@@ -67,7 +67,7 @@ function populateRelationships(type) {
           },
           relation: {
             label: 'LIKES',
-            properties: { creationDate: date.toISOString() },
+            properties: { creationDate: date.toLocaleString() },
           },
         }
       );

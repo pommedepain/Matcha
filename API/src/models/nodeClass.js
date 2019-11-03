@@ -114,7 +114,7 @@ class Node extends Relationship {
 
   createNode() {
     return new Promise((resolve, reject) => {
-      const date = new Date().toISOString();
+      const date = new Date().toLocaleString();
       this.data.node_a.properties.creationDate = date;
       const props = _.omit(this.data.node_a.properties, 'tags', 'isTags');
       const session = this.driver.session();

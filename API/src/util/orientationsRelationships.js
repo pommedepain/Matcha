@@ -14,7 +14,7 @@ const orientationRelationships = [
     },
     relation: {
       label: 'LOOK_FOR',
-      properties: { creationDate: date.toISOString() },
+      properties: { creationDate: date.toLocaleString() },
     },
   },
   {
@@ -30,7 +30,7 @@ const orientationRelationships = [
     },
     relation: {
       label: 'LOOK_FOR',
-      properties: { creationDate: date.toISOString() },
+      properties: { creationDate: date.toLocaleString() },
     },
   },
   {
@@ -46,7 +46,7 @@ const orientationRelationships = [
     },
     relation: {
       label: 'LOOK_FOR',
-      properties: { creationDate: date.toISOString() },
+      properties: { creationDate: date.toLocaleString() },
     },
   },
   {
@@ -62,7 +62,7 @@ const orientationRelationships = [
     },
     relation: {
       label: 'LOOK_FOR',
-      properties: { creationDate: date.toISOString() },
+      properties: { creationDate: date.toLocaleString() },
     },
   },
   {
@@ -78,7 +78,7 @@ const orientationRelationships = [
     },
     relation: {
       label: 'LOOK_FOR',
-      properties: { creationDate: date.toISOString() },
+      properties: { creationDate: date.toLocaleString() },
     },
   },
   {
@@ -94,7 +94,7 @@ const orientationRelationships = [
     },
     relation: {
       label: 'LOOK_FOR',
-      properties: { creationDate: date.toISOString() },
+      properties: { creationDate: date.toLocaleString() },
     },
   },
   {
@@ -110,7 +110,7 @@ const orientationRelationships = [
     },
     relation: {
       label: 'LOOK_FOR',
-      properties: { creationDate: date.toISOString() },
+      properties: { creationDate: date.toLocaleString() },
     },
   },
   {
@@ -126,7 +126,7 @@ const orientationRelationships = [
     },
     relation: {
       label: 'LOOK_FOR',
-      properties: { creationDate: date.toISOString() },
+      properties: { creationDate: date.toLocaleString() },
     },
   },
   {
@@ -142,7 +142,7 @@ const orientationRelationships = [
     },
     relation: {
       label: 'LOOK_FOR',
-      properties: { creationDate: date.toISOString() },
+      properties: { creationDate: date.toLocaleString() },
     },
   },
   {
@@ -158,7 +158,7 @@ const orientationRelationships = [
     },
     relation: {
       label: 'LOOK_FOR',
-      properties: { creationDate: date.toISOString() },
+      properties: { creationDate: date.toLocaleString() },
     },
   },
   {
@@ -174,7 +174,7 @@ const orientationRelationships = [
     },
     relation: {
       label: 'LOOK_FOR',
-      properties: { creationDate: date.toISOString() },
+      properties: { creationDate: date.toLocaleString() },
     },
   },
   {
@@ -190,7 +190,7 @@ const orientationRelationships = [
     },
     relation: {
       label: 'LOOK_FOR',
-      properties: { creationDate: date.toISOString() },
+      properties: { creationDate: date.toLocaleString() },
     },
   },
   {
@@ -206,7 +206,7 @@ const orientationRelationships = [
     },
     relation: {
       label: 'LOOK_FOR',
-      properties: { creationDate: date.toISOString() },
+      properties: { creationDate: date.toLocaleString() },
     },
   },
   {
@@ -222,7 +222,7 @@ const orientationRelationships = [
     },
     relation: {
       label: 'LOOK_FOR',
-      properties: { creationDate: date.toISOString() },
+      properties: { creationDate: date.toLocaleString() },
     },
   },
   {
@@ -238,7 +238,7 @@ const orientationRelationships = [
     },
     relation: {
       label: 'LOOK_FOR',
-      properties: { creationDate: date.toISOString() },
+      properties: { creationDate: date.toLocaleString() },
     },
   },
   {
@@ -254,7 +254,7 @@ const orientationRelationships = [
     },
     relation: {
       label: 'LOOK_FOR',
-      properties: { creationDate: date.toISOString() },
+      properties: { creationDate: date.toLocaleString() },
     },
   },
   {
@@ -270,7 +270,7 @@ const orientationRelationships = [
     },
     relation: {
       label: 'LOOK_FOR',
-      properties: { creationDate: date.toISOString() },
+      properties: { creationDate: date.toLocaleString() },
     },
   },
   {
@@ -286,7 +286,7 @@ const orientationRelationships = [
     },
     relation: {
       label: 'LOOK_FOR',
-      properties: { creationDate: date.toISOString() },
+      properties: { creationDate: date.toLocaleString() },
     },
   },
   {
@@ -302,7 +302,7 @@ const orientationRelationships = [
     },
     relation: {
       label: 'LOOK_FOR',
-      properties: { creationDate: date.toISOString() },
+      properties: { creationDate: date.toLocaleString() },
     },
   },
   {
@@ -318,7 +318,7 @@ const orientationRelationships = [
     },
     relation: {
       label: 'LOOK_FOR',
-      properties: { creationDate: date.toISOString() },
+      properties: { creationDate: date.toLocaleString() },
     },
   },
   {
@@ -334,7 +334,7 @@ const orientationRelationships = [
     },
     relation: {
       label: 'LOOK_FOR',
-      properties: { creationDate: date.toISOString() },
+      properties: { creationDate: date.toLocaleString() },
     },
   },
 ];
