@@ -905,7 +905,8 @@ class User extends Node {
       const query2 = `CREATE (n:User { username:'${this.user.username}'})-[r:VISITED {lastVisit:'${date}'}]->(b:User {username:'${target}'})`;
       session.run(query1)
         .then(() => session.run(query2))
-        .then(() => { session.close(); resolve(true); })
+        .then(() => { session.close(); new User({ username: target }).updateScore(); })
+        .then(() => { resolve(true); })
         .catch(err => debug(err));
     });
   }
@@ -946,9 +947,12 @@ class User extends Node {
           } return (session.run(query2));
         })
         .then((messages) => {
+          this.messages = messages;
           debug(messages);
-          resolve(messages);
+          return this.updateScore();
         })
+        .then(() => new User({ username: target }).updateScore())
+        .then(() => resolve(this.messages))
         .catch(err => debug(err));
     });
   }
@@ -1009,7 +1013,6 @@ class User extends Node {
           return session.run(query5);
         })
         .then((res) => {
-          session.close();
           this.blocks = res.records[0]._fields[0];
           this.popularity = 1 * this.visits
                           + 2 * this.liked
@@ -1018,9 +1021,11 @@ class User extends Node {
                           - 10 * this.blocks;
           if (this.popularity < 0) this.popularity = 0;
           if (this.popularity > 100) this.popularity = 100;
-          return (this.updateUser({ popularity: this.popularity }));
+          const query6 = `MATCH (n:User {username:'${this.user.username}'})
+          SET n.popularity = ${this.popularity}`;
+          return (session.run(query6));
         })
-        .then(() => resolve({ newPopularity: this.popularity }))
+        .then(() => { session.close(); resolve({ newPopularity: this.popularity }); })
         .catch(err => debug(err));
     });
   }

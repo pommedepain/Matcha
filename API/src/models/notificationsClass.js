@@ -50,7 +50,7 @@ class Notification {
             res.records.forEach((record) => {
               result.push({
                 type: record._fields[0],
-                emitter: record._fields[2],
+                emitter: _.omit(record._fields[2], ['password', 'email']),
                 read: record._fields[1],
                 id: record._fields[3],
               });
