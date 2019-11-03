@@ -89,7 +89,7 @@ class Server {
         const onlineUsers = usernameList.map((username) => {
           let isOnline = false
           Object.keys(this.socketTable).forEach((key) => {
-            if (key === username && !_.isEmpty(this.socketTable[key])) isOnline = true
+            if (key === id && !_.isEmpty(this.socketTable[key])) isOnline = true
           })
           return { username, isOnline }
         })
