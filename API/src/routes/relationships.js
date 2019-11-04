@@ -2,6 +2,7 @@ const debug = require('debug')('routes:relationships');
 const _ = require('lodash');
 const express = require('express');
 const auth = require('../middleware/auth');
+const identify = require('../middleware/identify');
 const admin = require('../middleware/admin');
 const wrapper = require('../middleware/wrapper');
 
@@ -16,7 +17,7 @@ router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
 
-router.get('/type/:type', wrapper(async (req, res) => {
+router.get('/type/:type', [auth, admin], wrapper(async (req, res) => {
   debug('Request to get Relationship information for :', req.params.type);
   return (new Relationship({ relation: { label: req.params.type } }).getRelationships()
     .then((result) => {
@@ -28,7 +29,8 @@ router.get('/type/:type', wrapper(async (req, res) => {
     }));
 }));
 
-router.get('/mutual', wrapper(async (req, res) => {
+router.get('/mutual', [auth, identify], wrapper(async (req, res) => {
+  res.locals.check = req.body.node_a.properties.username;
   debug('Request to get Relationship information for :', req.body);
   return (new Relationship(req.body).getNodeMutualRelationships()
     .then((result) => {
@@ -40,7 +42,7 @@ router.get('/mutual', wrapper(async (req, res) => {
     }));
 }));
 
-router.get('/matches/:relation', wrapper(async (req, res) => {
+router.get('/matches/:relation', [auth, admin], wrapper(async (req, res) => {
   debug('Request to get matches');
   return (new Relationship(req.body).getMatches(req.params.relation)
     .then((result) => {
@@ -52,19 +54,7 @@ router.get('/matches/:relation', wrapper(async (req, res) => {
     }));
 }));
 
-router.post('/create', wrapper(async (req, res) => {
-  debug('Request to add visit :\n', _.pick(req.body, validProperties));
-  return (new Relationship(req.body).visit()
-    .then((result) => {
-      debug(result);
-      return res.status(200).json({
-        success: true,
-        payload: { value: 'create', result },
-      });
-    }));
-}));
-
-router.post('/create', wrapper(async (req, res) => {
+router.post('/create', [auth, admin], wrapper(async (req, res) => {
   debug('Request to add new Relationship :\n', _.pick(req.body, validProperties));
   return (new Relationship(req.body).createRelationship()
     .then((result) => {
@@ -76,7 +66,8 @@ router.post('/create', wrapper(async (req, res) => {
     }));
 }));
 
-router.post('/toggle', wrapper(async (req, res) => {
+router.post('/toggle', [auth, identify], wrapper(async (req, res) => {
+  res.locals.check = req.body.node_a.properties.username;
   debug('Request to add new Relationship :\n', _.pick(req.body, validProperties));
   return (new Relationship(req.body).toggleRelationship()
     .then((result) => {
@@ -137,7 +128,7 @@ router.delete('/delete/node/type', [auth, admin], wrapper(async (req, res) => {
     }));
 }));
 
-router.delete('/delete/duplicates', wrapper(async (req, res) => {
+router.delete('/delete/duplicates', [auth, admin], wrapper(async (req, res) => {
   debug('Request to delete duplicates');
   return (new Relationship(req.body).deleteRelationshipsDuplicates('User', 'COMPATIBLE', 'User')
     .then((result) => {

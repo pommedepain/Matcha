@@ -20,9 +20,14 @@ router.get('/:value', wrapper(async (req, res) => {
   return (new User().getList(req.params.value)
     .then((result) => {
       debug(result);
-      return res.status(200).json({
+      if (publicProperties.indexOf(req.params.value) > -1) {
+        return res.status(200).json({
+          success: true,
+          payload: { value: 'read', result },
+        });
+      } return res.status(200).json({
         success: true,
-        payload: { value: 'read', result },
+        payload: { value: 'read', result: [] },
       });
     })
   );
@@ -64,7 +69,8 @@ router.get('/confirm/:username/:token', wrapper(async (req, res) => {
     }));
 }));
 
-router.get('/infos/:username', wrapper(async (req, res) => {
+router.get('/infos/:username', [auth, identify], wrapper(async (req, res) => {
+  res.locals.check = req.params.username;
   debug('Request to get user information for :', req.params.username);
   return (new User({ username: req.params.username }).getUserInfo()
     .then((user) => {
@@ -78,7 +84,8 @@ router.get('/infos/:username', wrapper(async (req, res) => {
     }));
 }));
 
-router.get('/matches/:username', wrapper(async (req, res) => {
+router.get('/matches/:username', [auth, identify], wrapper(async (req, res) => {
+  res.locals.check = req.params.username;
   debug('Request to get user matches :', req.params.username);
   return (new User({ username: req.params.username }).getMatches()
     .then((result) => {
@@ -90,7 +97,8 @@ router.get('/matches/:username', wrapper(async (req, res) => {
     }));
 }));
 
-router.get('/suggestions/:username', wrapper(async (req, res) => {
+router.get('/suggestions/:username', [auth, identify], wrapper(async (req, res) => {
+  res.locals.check = req.params.username;
   debug('Request to get user matches :', req.params.username);
   return (new User({ username: req.params.username }).getSuggestions()
     .then((result) => {
@@ -103,7 +111,8 @@ router.get('/suggestions/:username', wrapper(async (req, res) => {
 }));
 
 
-router.get('/:username/commonTags', wrapper(async (req, res) => {
+router.get('/:username/commonTags', [auth, admin], wrapper(async (req, res) => {
+  res.locals.check = req.params.username;
   debug('Requesting list...');
   return (new User({ username: req.params.username }).getCommonTags()
     .then((result) => {
@@ -116,7 +125,8 @@ router.get('/:username/commonTags', wrapper(async (req, res) => {
   );
 }));
 
-router.get('/:username/likedBy', wrapper(async (req, res) => {
+router.get('/:username/likedBy', [auth, identify], wrapper(async (req, res) => {
+  res.locals.check = req.params.username;
   debug('Requesting list...');
   return (new User({ username: req.params.username }).getLikedBy()
     .then((result) => {
@@ -129,33 +139,9 @@ router.get('/:username/likedBy', wrapper(async (req, res) => {
   );
 }));
 
-router.post('/:username/visit/:target', wrapper(async (req, res) => {
-  debug('Requesting list...');
-  return (new User({ username: req.params.username }).visits(req.params.target)
-    .then((result) => {
-      debug(result);
-      return res.status(200).json({
-        success: true,
-        payload: { value: 'read', result },
-      });
-    })
-  );
-}));
 
-router.post('/:username/notify/', wrapper(async (req, res) => {
-  debug('Requesting list...');
-  return (new User({ username: req.params.username }).notify(req.body)
-    .then((result) => {
-      debug(result);
-      return res.status(200).json({
-        success: true,
-        payload: { value: 'read', result },
-      });
-    })
-  );
-}));
-
-router.get('/:username/visits', wrapper(async (req, res) => {
+router.get('/:username/visits', [auth, identify], wrapper(async (req, res) => {
+  res.locals.check = req.params.username;
   debug('Requesting list...');
   return (new User({ username: req.params.username }).getVisits()
     .then((result) => {
@@ -168,7 +154,8 @@ router.get('/:username/visits', wrapper(async (req, res) => {
   );
 }));
 
-router.get('/:username/score', wrapper(async (req, res) => {
+router.get('/:username/score', [auth, identify], wrapper(async (req, res) => {
+  res.locals.check = req.params.username;
   debug('Request to get score:\n');
   return (new User({ username: req.params.username }).updateScore()
     .then((result) => {
@@ -180,7 +167,8 @@ router.get('/:username/score', wrapper(async (req, res) => {
     }));
 }));
 
-router.get('/:username/conversations', wrapper(async (req, res) => {
+router.get('/:username/conversations', [auth, identify], wrapper(async (req, res) => {
+  res.locals.check = req.params.username;
   debug('Requesting list...');
   return (new User({ username: req.params.username }).getConversations()
     .then((result) => {
@@ -193,7 +181,8 @@ router.get('/:username/conversations', wrapper(async (req, res) => {
   );
 }));
 
-router.get('/:username/BLOCK', wrapper(async (req, res) => {
+router.get('/:username/BLOCK', [auth, identify], wrapper(async (req, res) => {
+  res.locals.check = req.params.username;
   debug('Requesting relation list...');
   return (new User({ username: req.params.username }).getBlocked()
     .then((result) => {
@@ -206,20 +195,8 @@ router.get('/:username/BLOCK', wrapper(async (req, res) => {
   );
 }));
 
-router.post('/:username/chat', wrapper(async (req, res) => {
-  debug('Requesting relation list...');
-  return (new User({ username: req.params.username }).chat(req.body)
-    .then((result) => {
-      debug(result);
-      return res.status(200).json({
-        success: true,
-        payload: { value: 'read', result },
-      });
-    })
-  );
-}));
-
-router.get('/:username/:relation', wrapper(async (req, res) => {
+router.get('/:username/:relation', [auth, identify], wrapper(async (req, res) => {
+  res.locals.check = req.params.username;
   debug('Requesting relation list...');
   return (new User({ username: req.params.username }).getRelations(req.params.relation)
     .then((result) => {
@@ -231,6 +208,7 @@ router.get('/:username/:relation', wrapper(async (req, res) => {
     })
   );
 }));
+
 
 router.post('/', wrapper(async (req, res) => {
   debug('Request to add new user :\n', req.body);
@@ -244,7 +222,37 @@ router.post('/', wrapper(async (req, res) => {
     }));
 }));
 
-router.put('/update/:username', wrapper(async (req, res) => {
+router.post('/:username/chat', [auth, identify], wrapper(async (req, res) => {
+  res.locals.check = req.params.username;
+  debug('Requesting relation list...');
+  return (new User({ username: req.params.username }).chat(req.body)
+    .then((result) => {
+      debug(result);
+      return res.status(200).json({
+        success: true,
+        payload: { value: 'read', result },
+      });
+    })
+  );
+}));
+
+router.post('/:username/visit/:target', [auth, identify], wrapper(async (req, res) => {
+  res.locals.check = req.params.username;
+  debug('Requesting list...');
+  return (new User({ username: req.params.username }).visits(req.params.target)
+    .then((result) => {
+      debug(result);
+      return res.status(200).json({
+        success: true,
+        payload: { value: 'read', result },
+      });
+    })
+  );
+}));
+
+
+router.put('/update/:username', [auth, identify], wrapper(async (req, res) => {
+  res.locals.check = req.params.username;
   debug('Request to update :\n', { username: req.params.username });
   return (new User({ username: req.params.username }).updateUser(req.body)
     .then((result) => {
@@ -256,7 +264,8 @@ router.put('/update/:username', wrapper(async (req, res) => {
     }));
 }));
 
-router.put('/connect/:username', wrapper(async (req, res) => {
+router.put('/connect/:username', [auth, identify], wrapper(async (req, res) => {
+  res.locals.check = req.params.username;
   debug('Request to connect :\n', { username: req.params.username });
   return (new User({ username: req.params.username }).connect()
     .then((result) => {
@@ -267,6 +276,7 @@ router.put('/connect/:username', wrapper(async (req, res) => {
       });
     }));
 }));
+
 
 router.delete('/:username', [auth, admin], wrapper(async (req, res) => {
   debug('Request to delete :', req.params.username);
@@ -280,7 +290,7 @@ router.delete('/:username', [auth, admin], wrapper(async (req, res) => {
     }));
 }));
 
-router.delete('/delete/duplicates', wrapper(async (req, res) => {
+router.delete('/delete/duplicates', [auth, admin], wrapper(async (req, res) => {
   debug('Request to delete duplicates');
   return (new User().deleteUsersDuplicates()
     .then((result) => {

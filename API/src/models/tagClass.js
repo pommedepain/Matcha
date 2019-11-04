@@ -70,10 +70,9 @@ class Tag extends Node {
     ));
   }
 
-  updateTag() {
+  updateTag(newData) {
     return new Promise((resolve, reject) => (
-      new Tagvalidator(this.updateRequirements, this.tag).validate()
-        .then(() => this.updateNode())
+      this.updateNode(newData)
         .then(tag => resolve(_.pick(tag, this.allProperties)))
         .catch(err => reject(err))
     ));

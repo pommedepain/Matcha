@@ -16,7 +16,7 @@ router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
 
-router.get('/:value', wrapper(async (req, res) => {
+router.get('/list/:value', [auth, admin], wrapper(async (req, res) => {
   debug('Requesting Tag list...');
   return (new Tag().getList(req.params.value)
     .then((result) => {
@@ -29,7 +29,7 @@ router.get('/:value', wrapper(async (req, res) => {
   );
 }));
 
-router.get('/:id', wrapper(async (req, res) => {
+router.get('/:id', [auth, admin], wrapper(async (req, res) => {
   debug('Request to get Tag information for :', req.params.id);
   return (new Tag({ id: req.params.id }).getTagInfo()
     .then((tag) => {
@@ -53,16 +53,18 @@ router.post('/', [auth, admin], wrapper(async (req, res) => {
     }));
 }));
 
-// router.put('/:id', [auth, admin], wrapper(async (req, res) => {
-//   debug('Request to update :\n', _.pick(req.body, validProperties));
-//   return (new Tag(_.pick(req.body, validProperties)).updateTag()
-//     .then(tag => (
-//       res.status(200).json({
-//         success: true,
-//         payload: { value: 'update', tag },
-//       })
-//     )));
-// }));
+
+router.put('/:id', [auth, admin], wrapper(async (req, res) => {
+  debug('Request to update :', req.params.id);
+  return (new Tag({ id: req.params.id }).updateTag(req.body)
+    .then((result) => {
+      debug(result);
+      return res.status(200).json({
+        success: true,
+        payload: { value: 'update', result },
+      });
+    }));
+}));
 
 router.delete('/:id', [auth, admin], wrapper(async (req, res) => {
   debug('Request to delete :', req.params.id);
@@ -76,7 +78,7 @@ router.delete('/:id', [auth, admin], wrapper(async (req, res) => {
     }));
 }));
 
-router.delete('/delete/duplicates', wrapper(async (req, res) => {
+router.delete('/delete/duplicates', [auth, admin], wrapper(async (req, res) => {
   debug('Request to delete duplicates');
   return (new Tag().deleteTagsDuplicates()
     .then((result) => {

@@ -696,6 +696,7 @@ class User extends Node {
         .then(() => { debug('creating compatibilities'); return this.addCompatibilities(); })
         .then(() => {
           this.updatedUser = this.user;
+          debug(this.updatedUser);
           if (this.updatedUser.sexOrient && this.updatedUser.gender && this.updatedUser.photos[0]) {
             const session = this.driver.session();
             const query = `MATCH (n:User {username:'${this.updatedUser.username}'})
