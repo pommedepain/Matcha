@@ -7,7 +7,7 @@ const fs = require('fs');
 const User = require('../models/userClass');
 
 const requiredProperties = ['username', 'firstName', 'lastName', 'password', 'email', 'birthdate'];
-const optionalProperties = ['bio', 'complete', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'tags', 'isTags', 'active', 'photos', 'localisation', 'optional', 'isAdmin'];
+const optionalProperties = ['bio', 'lastConnection', 'complete', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'tags', 'isTags', 'active', 'photos', 'localisation', 'optional', 'isAdmin'];
 
 function getUsers() {
   return new Promise(async (resolve, reject) => {
