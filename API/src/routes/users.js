@@ -127,7 +127,7 @@ router.get('/:username/commonTags', [auth, admin], wrapper(async (req, res) => {
 
 router.get('/:username/likedBy', [auth, identify], wrapper(async (req, res) => {
   res.locals.check = req.params.username;
-  debug('Requesting list...');
+  debug('Requesting likedBy list...');
   return (new User({ username: req.params.username }).getLikedBy()
     .then((result) => {
       debug(result);
@@ -142,7 +142,7 @@ router.get('/:username/likedBy', [auth, identify], wrapper(async (req, res) => {
 
 router.get('/:username/visits', [auth, identify], wrapper(async (req, res) => {
   res.locals.check = req.params.username;
-  debug('Requesting list...');
+  debug('Requesting visit list...');
   return (new User({ username: req.params.username }).getVisits()
     .then((result) => {
       debug(result);

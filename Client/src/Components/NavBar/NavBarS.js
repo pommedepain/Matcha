@@ -8,7 +8,7 @@ import NavBarDummy from './NavBarD';
 class NavBar extends React.Component {
 	state = {
 		errors: {},
-		notifications: null,
+		notifications: [],
 		unreadNotifs: 0,
 		displayNotifs: false,
 		usersOnline: null
@@ -21,7 +21,8 @@ class NavBar extends React.Component {
 	}
 
 	getNotifications = () => {
-		const { username, token } = this.context.JWT.data;
+    const { username } = this.context.JWT.data;
+    const { token } = this.context.JWT;
 
 		if (username !== undefined) {
 			axios.get(`http://localhost:4000/API/notifications/${username}`, {headers: {"x-auth-token": token}})
@@ -54,17 +55,19 @@ class NavBar extends React.Component {
 
 	pre_log_out = () => {
 		return new Promise((resolve) => {
-			const { username, token } = this.context.JWT.data;
+      const { username } = this.context.JWT.data;
 			const mySocket = io('http://localhost:5000');
 			this.context.toggleUser(null);
 			mySocket.emit('logoutUser', username);
-			axios.put(`http://localhost:4000/API/users/connect/${username}`, {headers: {"x-auth-token": token}})
 			console.log("log out");
 			resolve();
 		}) 
 	}
 	logOut = () => {
-		this.pre_log_out()
+    const { username } = this.context.JWT.data;
+    const { token } = this.context.JWT;
+    axios.put(`http://localhost:4000/API/users/connect/${username}`, null, {headers: {"x-auth-token": token}})
+      .then(() => this.pre_log_out())
 			.then(() => {
 				document.location.reload(false);
 			})
@@ -75,12 +78,12 @@ class NavBar extends React.Component {
 
 	showNotifs = (e) => {
 		e.preventDefault();
-		this.setState({ displayNotifs: !this.state.displayNotifs });
+		this.setState({ displayNotifs: !this.state.displayNotifs }, function() { console.log("displayNotifs: " + this.state.displayNotifs)});
 	}
 
 	handleNotifClick = (e, index) => {
 		e.preventDefault();
-		const { token } = this.context.JWT.data;
+    const { token } = this.context.JWT;
 		let notifID = null;
 		notifID = { id: this.state.notifications[index].id.low };
 

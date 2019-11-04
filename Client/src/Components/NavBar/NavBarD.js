@@ -6,6 +6,7 @@ import classes from './NavBar.module.css';
 import Login from '../Forms/LogIn/LoginS';
 
 const NavBarDummy = (props) => {
+  // console.log(props)
 	return (
 		<div className={classes.conteneur}>
 				<div className={classes.NavBar}>

@@ -48,7 +48,8 @@ class Home extends Component {
 	}
 
 	getSuggestions = () => {
-		const { username, token } = this.context.JWT.data;
+    const { username } = this.context.JWT.data;
+    const { token } = this.context.JWT;
 
 		if (username !== undefined) {
 			axios.get(`http://localhost:4000/API/users/suggestions/${username}`, {headers: {"x-auth-token": token}})
@@ -170,7 +171,8 @@ class Home extends Component {
 
 	submit = (e) => {
 		e.preventDefault();
-		const { username, token } = this.context.JWT.data;
+    const { username } = this.context.JWT.data;
+    const { token } = this.context.JWT;
 		let newFilters = {};
 		if (this.state.touched.ageRange === true) {
 			newFilters['ageMin'] = this.state.ageRange[0];

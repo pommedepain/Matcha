@@ -935,7 +935,6 @@ class User extends Node {
       session.run(query)
         .then((res) => {
           const result = [];
-          debug('getting visits', res);
           if (res.records.length !== 0) {
             res.records.forEach((record) => {
               result.push({ user: record._fields[0], date: record._fields[1] });

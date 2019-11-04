@@ -91,7 +91,7 @@ const UserContextProvider = (props) => {
 			}
 			else {
 				console.log("new connection");
-				let token = parseJwt(datas);
+        let token = parseJwt(datas);
 				setJWT({ data: token.data, exp: token.exp, iat: token.iat, token: datas });
 			}
 		}
@@ -115,11 +115,13 @@ const UserContextProvider = (props) => {
 
 	useEffect(() => {
 		const mySocket = io('http://localhost:5000');
-		localStorage.setItem('JWT', JSON.stringify(JWT));
+    localStorage.setItem('JWT', JSON.stringify(JWT));
+    // console.log(localStorage.getItem('JWT', JSON.parse(JWT)));
 		if (JWT.data.firstName) {
+      console.log(JWT.data.username);
 			mySocket.emit("loginUser", JWT.data.username);
 			mySocket.emit("notification", { type: 'isOnline' });
-			Axios.put(`http://localhost:4000/API/users/connect/${JWT.data.username}`, {headers: {"x-auth-token": JWT.data.token}})
+			Axios.put(`http://localhost:4000/API/users/connect/${JWT.data.username}`, null, {headers: {"x-auth-token": JWT.token}})
 			setSocket(mySocket);
 			setLog(true);
 			mySocket.on('notification', notification => {
@@ -133,7 +135,7 @@ const UserContextProvider = (props) => {
 					console.log(newNotification);
 					setnewNotif(newNotification);
 
-					Axios.post('http://localhost:4000/API/notifications/create', newNotification, {headers: {"x-auth-token": JWT.data.token}})
+					Axios.post('http://localhost:4000/API/notifications/create', newNotification, {headers: {"x-auth-token": JWT.token}})
 						.then((response) => {
 							if (response.data.payload.result === "Missing information") {
 								console.log(response.data.payload.result);
