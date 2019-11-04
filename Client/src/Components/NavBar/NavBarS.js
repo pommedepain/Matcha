@@ -27,15 +27,16 @@ class NavBar extends React.Component {
 				.then(response => {
 					// console.log(response.data.payload.result);
 					this.setState({ notifications: response.data.payload.result}, function () {
-						console.log(this.state.notifications);
+						// console.log(this.state.notifications);
 						let unreadNotifs = 0;
 						for (let i = 0; i < this.state.notifications.length; i++) {
+							console.log(this.state.notifications[i]);
 							if (this.state.notifications[i].read === false) {
 								unreadNotifs += 1;
 							}
 						}
+						console.log(unreadNotifs);
 						if (unreadNotifs > 0) {
-							console.log(unreadNotifs + " notifications unread");
 							this.setState({
 								unreadNotifs: unreadNotifs
 							});
@@ -50,11 +51,6 @@ class NavBar extends React.Component {
 				})
 		}
 	}
-
-	// handleChange = (event) => {
-	// 	const {name, value} = event.target
-	// 	this.setState({[name]: value})
-	// }
 
 	pre_log_out = () => {
 		return new Promise((resolve) => {
@@ -76,25 +72,17 @@ class NavBar extends React.Component {
 
 	showNotifs = (e) => {
 		e.preventDefault();
-		console.log("showNotifs triggered.");
-		this.setState({ displayNotifs: !this.state.displayNotifs }, function () {
-			if (this.state.displayNotifs === true) {
-				console.log(this.state.notifications);
-			}
-		});
+		this.setState({ displayNotifs: !this.state.displayNotifs });
 	}
 
 	handleNotifClick = (e, index) => {
 		e.preventDefault();
-		console.log(e.target);
-		console.log("notif clicked: " + index);
 		let notifID = null;
 		notifID = { id: this.state.notifications[index].id.low };
-		console.log(notifID);
 
 		axios.put('http://localhost:4000/API/notifications/read', notifID)
 			.then((response) => {
-				console.log(response.data);
+				// console.log(response.data);
 				if (response.data.payload.result === "notification has been read") {
 					const notifications = this.state.notifications;
 					notifications[index].read = true;
@@ -108,14 +96,12 @@ class NavBar extends React.Component {
 				console.log(err);
 			})
 	}
-
-	componentDidUpdate () {
-		if (this.context.newNotif.new === true) {
-			this.getNotifications();
-		}
-	}
 	
 	render() {
+		if (this.context.newNotif.new === true) {
+			console.log("new notif in localStorage detected");
+			this.getNotifications();
+		}
 		return (
 			<NavBarDummy
 				logOut={this.logOut.bind(this)}

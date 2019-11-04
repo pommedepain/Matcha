@@ -49,6 +49,7 @@ class AlertBox extends Component {
 							href="/"
 							className={`${classes.button_box} ${classes.button}`}
 							onClick={(event) => {
+								// event.preventDefault();
 								this.context.toggleLogInPopup();
 								this.props.logIn ?
 								this.props.handleChange(event, "confirm user")

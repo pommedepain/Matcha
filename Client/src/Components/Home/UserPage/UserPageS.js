@@ -127,14 +127,10 @@ class UserPage extends Component {
 						elem.classList.add(addClass);
 						elem.classList.remove(removeClass);
 
-						console.log(this.context.JWT.data.username);
-						console.log(this.props.user.username);
 						console.log("this user liked u?: " + this.props.user.likedU);
-						// const thisUserLinkedNotifs = this.context.notifications;
 						/* If the user liked someone, send a notification 'like' to the receiver */
 						if (addClass === "fas" && this.props.user.likedU === false) {
 							console.log("user liked someone, send a notification 'like'")
-							// console.log(this.context.notifications);
 							const mySocket = io('http://localhost:5000');
 							const ret = mySocket.emit('notification', {
 								type: 'like',
@@ -157,7 +153,6 @@ class UserPage extends Component {
 						/* If the user unlike someone that was previously marked as a match, send an "unmatch" notification to the receiver */
 						else if (addClass === "far" && this.props.user.likedU === true) {
 							console.log("user unlike someone that was previously a match, send an 'unmatch'");
-							// console.log(this.context.notifications);
 							const mySocket = io('http://localhost:5000');
 							const ret = mySocket.emit('notification', {
 								type: 'unlike',
@@ -170,7 +165,6 @@ class UserPage extends Component {
 						/* If it's a match, sends a notification to both emitter and receiver to congrats */
 						if (this.props.user.likedU === true && addClass === "fas") {
 							console.log("it's a match");
-							// console.log(this.context.notifications);
 							const mySocket = io('http://localhost:5000');
 							const ret = mySocket.emit('notification', {
 								type: 'match',

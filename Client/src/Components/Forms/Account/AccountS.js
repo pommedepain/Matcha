@@ -277,7 +277,7 @@ class Account extends Component {
 		console.log(submitDatas);
 
 		axios
-			.put(`http://localhost:4000/API/users/${this.context.JWT.data.username}`, submitDatas, {headers: {"x-auth-token": token}})
+			.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, submitDatas, {headers: {"x-auth-token": token}})
 			.then(response => {
 				this.setState({ loading: false })
 				// console.log(response);

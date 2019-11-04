@@ -41,7 +41,7 @@ const SignUp = (props) => {
 						<AlertBox 
 							message="Please choose a Tag amongst the suggestions"
 							button="Try Again"
-							color="green"
+							color="red"
 							handleChange={props.handleChangeTags}
 						/>
 						: null}

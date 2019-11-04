@@ -43,15 +43,15 @@ const HomeDumb = (props) => {
 							/>
 						</div>
 						<div className={classes.step3}>
-							<h3 className={classes.questionsS3}>Scoring</h3>
-							<h4 className={classes.values}>{props.scoreRange[0]}% - {props.scoreRange[1]}%</h4>
+							<h3 className={classes.questionsS3}>Popularity</h3>
+							<h4 className={classes.values}>{props.popularityRange[0]}% - {props.popularityRange[1]}%</h4>
 							<Range
 								min={0}
 								max={100}
-								defaultValue={props.scoreRange}
+								defaultValue={props.popularityRange}
 								count={5}
 								pushable={true}
-								onChange={props.handleScoreRange}
+								onChange={props.handlePopularityRange}
 							/>
 						</div>
 						<Tags

@@ -24,6 +24,9 @@ class TagValidator {
       if (this.req.text) sch.text = Joi.string().regex(/^[a-zA-Z- ]{3,30}$/).required();
       else sch.text = Joi.string().regex(/^[a-zA-Z- ]{3,30}$/);
 
+      if (this.req.creationDate) sch.creationDate = Joi.any().required();
+      else sch.creationDate = Joi.any();
+
       Joi.validate(this.data, sch, (err, value) => {
         if (err === null) resolve({ success: true, value });
         else {

@@ -6,6 +6,7 @@ import Hashtag from '../../../Icons/hashtag';
 import AlertBox from '../../Utils/AlertBox/AlertBox';
 
 const UserPageDumb = (props) => {
+	// console.log(props);
 	let genderIcon = null;
 	if (props.user.gender === "male") {
 		genderIcon = "fas fa-mars";
@@ -120,7 +121,7 @@ const UserPageDumb = (props) => {
 					<div className={classes.leftBottomGroup}>
 						<div className={classes.cercle}>
 							<div className={classes.matchIndicator}>
-								<h3 className={classes.percentage}>90 <i className="fas fa-percentage"></i></h3>
+								<h3 className={classes.percentage}>{props.user.popularity} <i className="fas fa-percentage"></i></h3>
 								<h3 className={classes.popularity}>popularity</h3>
 							</div>
 						</div>
@@ -164,7 +165,7 @@ const UserPageDumb = (props) => {
 							<div className={classes.lookingFor}>
 								<h5>I'm interested In...</h5>
 								<div className={classes.tagContInterest}>
-									{props.user.isTags.map((elem, i) => (
+									{props.user.lookTags.map((elem, i) => (
 										<span key={i} className={classes.price_tag}>
 											<Hashtag className={classes.hash}/> 
 											{elem.text}

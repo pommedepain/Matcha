@@ -12,14 +12,17 @@ class Home extends Component {
 		super(props);
 		this.state = {
 			ageRange: [18, 25],
-			ageRangeTouched: false,
-			scoreRange: [50, 100],
-			scoreRangeTouched: false,
+			popularityRange: [0, 100],
 			localisation: 5,
-			sliderTouched: false,
 			tags: [],
-			touched: false,
-			suggestions: null
+			touched: {
+				ageRange: false,
+				popularityRange: false,
+				localisation: false,
+				tags: false
+			},
+			suggestions: null,
+			onlineUsers: [],
 		}
 	}
 
@@ -37,7 +40,14 @@ class Home extends Component {
 			axios.get(`http://localhost:4000/API/users/suggestions/${username}`)
 				.then(response => {
 					// console.log(response.data.payload.result);
-					this.setState({ suggestions: response.data.payload.result});
+					let suggestions = []
+					response.data.payload.result.map((elem, i) => {
+						if (this.state.popularityRange[0] <= elem.user.popularity) {
+							suggestions[i] = elem; 
+						}
+						return (suggestions);
+					})
+					this.setState({ suggestions: suggestions });
 				})
 				.catch(err => { 
 					console.log(err);
@@ -64,35 +74,50 @@ class Home extends Component {
 	}
 
 	handleSlider = (newValue) => {
+		let localisationTouched = this.state.touched;
+		localisationTouched.localisation = true;
+
 		this.setState({
 			localisation: newValue,
-			sliderTouched: true
-		})
+			touched: localisationTouched
+		});
 	}
 
 	handleAgeRange = (newValue) => {
+		let ageRangeTouched = this.state.touched;
+		ageRangeTouched.ageRange = true;
+
 		this.setState({
 			ageRange: newValue,
-			ageRangeTouched: true
+			touched: ageRangeTouched
 		})
 	}
 
-	handleScoreRange = (newValue) => {
+	handlePopularityRange = (newValue) => {
+		let popularityTouched = this.state.touched;
+		popularityTouched.popularityRange = true;
+
 		this.setState({
-			scoreRange: newValue,
-			scoreRangeTouched: true
-		})
+			popularityRange: newValue,
+			touched: popularityTouched
+		});
 	}
 
 	handleDelete = (i) => {
 		const { tags } = this.state
+		let tagsTouched = this.state.touched;
+		tagsTouched.tags = true;
+
 		this.setState({
-			touched: true,
+			touched: tagsTouched,
 			tags: tags.filter((tag, index) => index !== i),
 		})
 	}
 
 	handleAddition = (tag) => {
+		let tagsTouched = this.state.touched;
+		tagsTouched.tags = true;
+
 		for (let i = 0; i < TagDatas.suggestions.length; i++)
 		{
 			if (TagDatas.suggestions[i].text === tag.text)
@@ -100,7 +125,7 @@ class Home extends Component {
 				return (this.setState(
 					state => ({ 
 						tags: [...state.tags, tag],
-						touched: true })
+						touched: tagsTouched })
 				));
 			}
 		}
@@ -126,13 +151,35 @@ class Home extends Component {
 			emitter: this.context.JWT.data.username,
 			receiver: this.state.suggestions[id].user.username,
 		})
-		// console.log("this.context retrieved in Home:");
-		// console.log(this.context.notifications);
+		console.log(this.state.suggestions[id]);
 	}
 
 	submit = (e) => {
 		e.preventDefault();
-		console.log("apply filters");
+		const { username } = this.context.JWT.data;
+		let newFilters = {};
+		if (this.state.touched.ageRange === true) {
+			newFilters['ageMin'] = this.state.ageRange[0];
+			newFilters['ageMax'] = this.state.ageRange[1];
+		}
+		if (this.state.touched.localisation === true) {
+			newFilters['localisation'] = this.state.localisation;
+		}
+		if (this.state.touched.tags === true) {
+			newFilters['tags'] = this.state.tags;
+		}
+
+		console.log(newFilters)
+		if (username !== undefined) {
+			axios.put(`http://localhost:4000/API/users/update/${username}`, newFilters)
+				.then(response => {
+					this.context.toggleUser(response.data.payload.result);
+					this.getSuggestions();
+				})
+				.catch(err => { 
+					console.log(err);
+				})
+		}
 	}
 
 	render() {
@@ -142,7 +189,7 @@ class Home extends Component {
 				popupUser={this.popupUser.bind(this)}
 				handleAddition={this.handleAddition.bind(this)}
 				handleDelete={this.handleDelete.bind(this)}
-				handleScoreRange={this.handleScoreRange.bind(this)}
+				handlePopularityRange={this.handlePopularityRange.bind(this)}
 				handleAgeRange={this.handleAgeRange.bind(this)}
 				handleSlider={this.handleSlider.bind(this)}
 				{...this.state}

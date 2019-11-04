@@ -52,24 +52,17 @@ const UserContextProvider = (props) => {
 
 	const [socket, setSocket] = useState(() => {
 		const localDatas = localStorage.getItem('socket');
-		// let token = {"token": localDatas};
-		// console.log(token);
 		return (localDatas);
 	});
 
 	const [newNotif, setnewNotif] = useState(() => {
 		const localDatas = localStorage.getItem('newNotif');
 		const token = JSON.parse(localDatas);
-		console.log("token:");
-		console.log(token);
+		/* If there's somthing in localStorage */
 		if (token !== null && token.localDatas) {
-			console.log("localStorage detected:");
-			console.log(localDatas)
 			return (token);
 		}
 		else {
-			console.log("nothing retrieved from localStorage:");
-			console.log(localDatas);
 			return ({});
 		}
 	});
@@ -89,23 +82,34 @@ const UserContextProvider = (props) => {
 	};
 
 	const toggleUser = (datas) => {
-		let token = parseJwt(datas);
-		setJWT({ data: token.data, exp: token.exp, iat: token.iat, token: datas });
+		if (datas !== null) {
+			if (datas.username) {
+				console.log("new infos for user logged");
+				let newDatas = JWT;
+				newDatas['data'] = datas;
+				setJWT({ data: newDatas.data, exp: newDatas.exp, iat: newDatas.iat, token: newDatas.token });
+			}
+			else {
+				console.log("new connection");
+				let token = parseJwt(datas);
+				setJWT({ data: token.data, exp: token.exp, iat: token.iat, token: datas });
+			}
+		}
+		else {
+			console.log("log out");
+			let token = parseJwt(datas);
+			setJWT({ data: token.data, exp: token.exp, iat: token.iat, token: datas });
+		}
 	}
 
 	const toggleLogInPopup = () => {
 		setLogInPopup(!logInPopup);
 	}
 
+	/* Allows HomeS.js to check if the notif is new and if not, to change it to old */
 	const toggleNotifReceived = (oldNotif) => {
-		console.log(oldNotif)
+		// eslint-disable-next-line no-param-reassign
 		oldNotif["new"] = false;
-		// let notifReceived = {
-		// 	emitter: oldNotif.emitter,
-		// 	receiver: JWT.username,
-		// 	type: oldNotif.type,
-		// 	new: false
-		// };
 		setnewNotif(oldNotif);
 	}
 
@@ -114,51 +118,49 @@ const UserContextProvider = (props) => {
 		localStorage.setItem('JWT', JSON.stringify(JWT));
 		if (JWT.data.firstName) {
 			mySocket.emit("loginUser", JWT.data.username);
+			mySocket.emit("notification", { type: 'isOnline' });
+			Axios.put(`http://localhost:4000/API/users/connect/${JWT.data.username}`);
 			setSocket(mySocket);
 			setLog(true);
 			mySocket.on('notification', notification => {
-				/* Beg of trying to keep notifs in localStorage */
-				// console.log("new notif:");
-				// console.log(notification);
-				// console.log("current state of newNotif:");
-				// console.log(newNotif);
-				// newNotif[Date.now()] = {
-				// 	"emitter": notification.data.emitter,
-				// 	"action": notification.data.type
-				// };
-				// console.log("setNotification of:");
-				// console.log(newNotif);
-				// setnewNotif(newNotif);
-				// console.log("after setNotification:")
-				// console.log(newNotif);
+				// console.log(notification)
+				if (notification.type !== 'isOnline') {
+					let newNotification = {
+						emitter: notification.data.emitter,
+						receiver: JWT.data.username,
+						type: notification.data.type,
+						new: true
+					}
+					console.log(newNotification);
+					setnewNotif(newNotification);
 
-				let newNotification = {
-					emitter: notification.data.emitter,
-					receiver: JWT.data.username,
-					type: notification.data.type,
-					new: true
+					Axios.post('http://localhost:4000/API/notifications/create', newNotification)
+						.then((response) => {
+							if (response.data.payload.result === "Missing information") {
+								console.log(response.data.payload.result);
+							}
+							else {
+								console.log("sent to db successfully");
+							}
+						})
+						.catch((err) => {
+							console.log(err);
+						})
 				}
-				console.log(newNotification);
-
-				setnewNotif(newNotification);
-
-
-				Axios.post('http://localhost:4000/API/notifications/create', newNotification)
-					.then((response) => {
-						if (response.data.payload.result === "Missing information") {
-							console.log(response.data.payload.result);
-						}
-						else {
-							console.log("sent to db successfully");
-						}
-					})
-					.catch((err) => {
-						console.log(err);
-					})
+				else {
+					console.log(notification);
+					// let isOnline = 
+					// Axios.post('http://localhost:4000/API/notifications/create', notification)
+					// 	.then((response) => {
+					// 		console.log(response.data.payload.result);
+					// 	})
+					// 	.catch((err) => {
+					// 		console.log(err);
+					// 	})
+				}
 			});
 		}
 		else {
-			// console.log("setSocket(null) && setLog to false");
 			setLog(false);
 			setSocket(null);
 		}
@@ -186,8 +188,6 @@ const UserContextProvider = (props) => {
 	}, [socket]);
 
 	useEffect(() => {
-		console.log("change recorded in newNotif:");
-		console.log(newNotif);
 		localStorage.setItem('newNotif', JSON.stringify(newNotif) )
 	}, [newNotif]);
 

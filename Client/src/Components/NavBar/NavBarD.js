@@ -6,7 +6,6 @@ import classes from './NavBar.module.css';
 import Login from '../Forms/LogIn/LoginS';
 
 const NavBarDummy = (props) => {
-	// console.log(props);
 	return (
 		<div className={classes.conteneur}>
 				<div className={classes.NavBar}>
@@ -71,13 +70,16 @@ const NavBarDummy = (props) => {
 						</button>
 						{ props.displayNotifs === true ?
 							[<div className={classes.notifs} key={0}>
-								{props.notifications.map((elem, i) => {
+								{!props.notifications[0] ?
+								[<div id={0} key={0} className={classes.notification} /*onClick={(e) => props.handleNotifClick(e, 0)}*/ >
+									You currently have no notification to display.
+								</div>]
+								: props.notifications.map((elem, i) => {
 									console.log(elem);
 									let style = null;
 									if (elem.read === false) {
 										style = { fontWeight: '600', color: '#ff665e' };
 									}
-
 									let action = null;
 									if (elem.type === "visit") {
 										action = "has consulted your profil";
@@ -88,8 +90,32 @@ const NavBarDummy = (props) => {
 									else if (elem.type === "match") {
 										action = "You have a new match with";
 									}
-
-									if (elem.type !== "match") {
+									else if (elem.type === "unlike") {
+										action = "are no longer a match...";
+									}
+									if (elem.type === "match") {
+										return (
+											<div id={i} key={i} className={classes.notification} onClick={(e) => props.handleNotifClick(e, i)} style={style} >
+												{elem.emitter.photos[0] ?
+													<img src={elem.emitter.photos[0]} alt="profil" className={classes.profilPic}/>
+													: <i className={cx(classes.profilPic, "fas fa-user-circle")} ></i> 
+												}
+												{action} {elem.emitter.username}!
+											</div>
+										)
+									}
+									else if (elem.type === "unlike") {
+										return (
+											<div id={i} key={i} className={classes.notification} onClick={(e) => props.handleNotifClick(e, i)} style={style} >
+												{elem.emitter.photos[0] ?
+													<img src={elem.emitter.photos[0]} alt="profil" className={classes.profilPic}/>
+													: <i className={cx(classes.profilPic, "fas fa-user-circle")} ></i> 
+												}
+												You and {elem.emitter.username} {action}
+											</div>
+										)
+									}
+									else {
 										return (
 											<div id={i} key={i} className={classes.notification} onClick={(e) => props.handleNotifClick(e, i)} style={style} >
 												{elem.emitter.photos[0] ?
@@ -97,17 +123,6 @@ const NavBarDummy = (props) => {
 													: <i className={cx(classes.profilPic, "fas fa-user-circle")} ></i> 
 												}
 												{elem.emitter.username} {action}
-											</div>
-										)
-									}
-									else {
-										return (
-											<div id={i} key={i} className={classes.notification} onClick={(e) => props.handleNotifClick(e, i)} >
-												{elem.emitter.photos[0] ?
-													<img src={elem.emitter.photos[0]} alt="profil" className={classes.profilPic}/>
-													: <i className={cx(classes.profilPic, "fas fa-user-circle")} ></i> 
-												}
-												{action} {elem.emitter.username}!
 											</div>
 										)
 									}
