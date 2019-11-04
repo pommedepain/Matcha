@@ -88,6 +88,7 @@ const HomeDumb = (props) => {
 						key={i}
 						id={i}
 						name="back"
+						usersOnline={props.usersOnline}
 					/>)}
 				)
 				: null

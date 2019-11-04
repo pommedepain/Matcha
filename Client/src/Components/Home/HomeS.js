@@ -22,22 +22,36 @@ class Home extends Component {
 				tags: false
 			},
 			suggestions: null,
-			onlineUsers: [],
+			usersOnline: null,
 		}
 	}
 
 	static contextType = UserContext;
 
 	componentDidMount () {
+		const mySocket = io('http://localhost:5000');
+		mySocket.on('notification', notification => {
+			if (notification.type === 'isOnline') {
+				let onlineUsers = [{ howMany: 0 }];
+				for (let i = 0; i < notification.result.length; i++) {
+					if (notification.result[i].isOnline === true) {
+						onlineUsers[0].howMany += 1;
+						onlineUsers[notification.result[i].username] = true;
+					}
+				}
+				this.setState({ usersOnline: onlineUsers }, function() { console.log(this.state.usersOnline); });
+			}
+		});
+
 		this.getSuggestions();
 		this.updateFilters();
 	}
 
 	getSuggestions = () => {
-		const { username } = this.context.JWT.data;
+		const { username, token } = this.context.JWT.data;
 
 		if (username !== undefined) {
-			axios.get(`http://localhost:4000/API/users/suggestions/${username}`)
+			axios.get(`http://localhost:4000/API/users/suggestions/${username}`, {headers: {"x-auth-token": token}})
 				.then(response => {
 					// console.log(response.data.payload.result);
 					let suggestions = []
@@ -151,12 +165,12 @@ class Home extends Component {
 			emitter: this.context.JWT.data.username,
 			receiver: this.state.suggestions[id].user.username,
 		})
-		console.log(this.state.suggestions[id]);
+		// console.log(this.state.suggestions[id]);
 	}
 
 	submit = (e) => {
 		e.preventDefault();
-		const { username } = this.context.JWT.data;
+		const { username, token } = this.context.JWT.data;
 		let newFilters = {};
 		if (this.state.touched.ageRange === true) {
 			newFilters['ageMin'] = this.state.ageRange[0];
@@ -171,7 +185,7 @@ class Home extends Component {
 
 		console.log(newFilters)
 		if (username !== undefined) {
-			axios.put(`http://localhost:4000/API/users/update/${username}`, newFilters)
+			axios.put(`http://localhost:4000/API/users/update/${username}`, newFilters, {headers: {"x-auth-token": token}})
 				.then(response => {
 					this.context.toggleUser(response.data.payload.result);
 					this.getSuggestions();

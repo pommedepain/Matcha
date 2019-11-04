@@ -10,7 +10,8 @@ class NavBar extends React.Component {
 		errors: {},
 		notifications: null,
 		unreadNotifs: 0,
-		displayNotifs: false
+		displayNotifs: false,
+		usersOnline: null
 	}
 
 	static contextType = UserContext;
@@ -20,17 +21,16 @@ class NavBar extends React.Component {
 	}
 
 	getNotifications = () => {
-		const { username } = this.context.JWT.data;
+		const { username, token } = this.context.JWT.data;
 
 		if (username !== undefined) {
-			axios.get(`http://localhost:4000/API/notifications/${username}`)
+			axios.get(`http://localhost:4000/API/notifications/${username}`, {headers: {"x-auth-token": token}})
 				.then(response => {
 					// console.log(response.data.payload.result);
 					this.setState({ notifications: response.data.payload.result}, function () {
 						// console.log(this.state.notifications);
 						let unreadNotifs = 0;
 						for (let i = 0; i < this.state.notifications.length; i++) {
-							console.log(this.state.notifications[i]);
 							if (this.state.notifications[i].read === false) {
 								unreadNotifs += 1;
 							}
@@ -54,9 +54,12 @@ class NavBar extends React.Component {
 
 	pre_log_out = () => {
 		return new Promise((resolve) => {
+			const { username, token } = this.context.JWT.data;
 			const mySocket = io('http://localhost:5000');
 			this.context.toggleUser(null);
-			mySocket.emit('logoutUser', this.context.JWT.data.username);
+			mySocket.emit('logoutUser', username);
+			axios.put(`http://localhost:4000/API/users/connect/${username}`, {headers: {"x-auth-token": token}})
+			console.log("log out");
 			resolve();
 		}) 
 	}
@@ -77,10 +80,11 @@ class NavBar extends React.Component {
 
 	handleNotifClick = (e, index) => {
 		e.preventDefault();
+		const { token } = this.context.JWT.data;
 		let notifID = null;
 		notifID = { id: this.state.notifications[index].id.low };
 
-		axios.put('http://localhost:4000/API/notifications/read', notifID)
+		axios.put('http://localhost:4000/API/notifications/read', notifID, {headers: {"x-auth-token": token}})
 			.then((response) => {
 				// console.log(response.data);
 				if (response.data.payload.result === "notification has been read") {

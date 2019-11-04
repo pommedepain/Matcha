@@ -103,6 +103,7 @@ class UserPage extends Component {
 	handleHeartClick = (e) => {
 		console.log("handleHeartClick() triggered");
 		e.preventDefault();
+		const token = this.context.JWT.token;
 		if (e.type === "click") {
 			/* Construction of node to send to db */
 			const usersnames = this.state.liked;
@@ -115,7 +116,7 @@ class UserPage extends Component {
 			});
 
 			axios
-				.post('http://localhost:4000/API/relationships/toggle', this.state.liked)
+				.post('http://localhost:4000/API/relationships/toggle', this.state.liked, {headers: {"x-auth-token": token}})
 				.then(response => {
 					this.setState({ loading: false });
 					if (response.data.success) {
@@ -184,6 +185,7 @@ class UserPage extends Component {
 
 	handleBlock = (e) => {
 		e.preventDefault();
+		const token = this.context.JWT.token;
 		if (e.type === "click") {
 			/* Construction of node to send to db */
 			const usersnames = this.state.block;
@@ -196,7 +198,7 @@ class UserPage extends Component {
 			}, function () { console.log(this.state.block )});
 		}
 
-		axios.post('http://localhost:4000/API/relationships/toggle', this.state.block)
+		axios.post('http://localhost:4000/API/relationships/toggle', this.state.block, {headers: {"x-auth-token": token}})
 			.then(response => {
 				this.setState({ loading: false });
 				console.log(response.data);
@@ -218,6 +220,7 @@ class UserPage extends Component {
 
 	handleFake = (e) => {
 		e.preventDefault();
+		const token = this.context.JWT.token;
 		if (e.type === "click") {
 			/* Construction of node to send to db */
 			const usersnames = this.state.fake;
@@ -230,7 +233,7 @@ class UserPage extends Component {
 			}, function () { console.log(this.state.fake )});
 		}
 
-		axios.post('http://localhost:4000/API/relationships/toggle', this.state.fake)
+		axios.post('http://localhost:4000/API/relationships/toggle', this.state.fake, {headers: {"x-auth-token": token}})
 			.then(response => {
 				this.setState({ loading: false });
 				console.log(response.data);

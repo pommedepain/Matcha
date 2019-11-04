@@ -71,7 +71,7 @@ class Login extends Component {
 		const {name, value} = event.target
 		if (event.type === "click") {
 			if (message === "confirm user"){
-				console.log("message === confirm user")
+				// console.log("message === confirm user")
 				event.preventDefault();
 				this.context.toggleUser(this.state.payload);
 				this.setState({
@@ -141,7 +141,7 @@ class Login extends Component {
 		axios
 			.post('http://localhost:4000/API/auth', formDatas)
 			.then(response => {
-				console.log(response);
+				// console.log(response);
 				this.setState({ 
 					loading: false,
 					formIsValid: true
@@ -156,7 +156,7 @@ class Login extends Component {
 							logIn: true
 						},
 						payload: response.data.payload
-					}, function() {console.log(this.state)});
+					}/*, function() {console.log(this.state)}*/);
 					
 				}
 			})

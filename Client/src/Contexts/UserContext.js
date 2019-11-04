@@ -108,8 +108,8 @@ const UserContextProvider = (props) => {
 
 	/* Allows HomeS.js to check if the notif is new and if not, to change it to old */
 	const toggleNotifReceived = (oldNotif) => {
-		// eslint-disable-next-line no-param-reassign
-		oldNotif["new"] = false;
+		const setNotifOld = oldNotif;
+		setNotifOld["new"] = false;
 		setnewNotif(oldNotif);
 	}
 
@@ -119,11 +119,10 @@ const UserContextProvider = (props) => {
 		if (JWT.data.firstName) {
 			mySocket.emit("loginUser", JWT.data.username);
 			mySocket.emit("notification", { type: 'isOnline' });
-			Axios.put(`http://localhost:4000/API/users/connect/${JWT.data.username}`);
+			Axios.put(`http://localhost:4000/API/users/connect/${JWT.data.username}`, {headers: {"x-auth-token": JWT.data.token}})
 			setSocket(mySocket);
 			setLog(true);
 			mySocket.on('notification', notification => {
-				// console.log(notification)
 				if (notification.type !== 'isOnline') {
 					let newNotification = {
 						emitter: notification.data.emitter,
@@ -134,7 +133,7 @@ const UserContextProvider = (props) => {
 					console.log(newNotification);
 					setnewNotif(newNotification);
 
-					Axios.post('http://localhost:4000/API/notifications/create', newNotification)
+					Axios.post('http://localhost:4000/API/notifications/create', newNotification, {headers: {"x-auth-token": JWT.data.token}})
 						.then((response) => {
 							if (response.data.payload.result === "Missing information") {
 								console.log(response.data.payload.result);
@@ -146,17 +145,6 @@ const UserContextProvider = (props) => {
 						.catch((err) => {
 							console.log(err);
 						})
-				}
-				else {
-					console.log(notification);
-					// let isOnline = 
-					// Axios.post('http://localhost:4000/API/notifications/create', notification)
-					// 	.then((response) => {
-					// 		console.log(response.data.payload.result);
-					// 	})
-					// 	.catch((err) => {
-					// 		console.log(err);
-					// 	})
 				}
 			});
 		}

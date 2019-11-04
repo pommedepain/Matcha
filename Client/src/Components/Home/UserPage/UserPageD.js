@@ -7,6 +7,104 @@ import AlertBox from '../../Utils/AlertBox/AlertBox';
 
 const UserPageDumb = (props) => {
 	// console.log(props);
+
+	/* Formatting last active status known into time for display */
+	let time = null;
+	if (props.user.lastConnection) {
+		// console.log(props.user.username)
+		/* timestamp for now */
+		const timestamp = Date.now();
+		// console.log(timestamp);
+
+		/* date and time of now */
+		const now = new Date(timestamp);
+		/* Date of now */
+		let dateNow = new Date(now).toLocaleDateString();
+		// console.log(dateNow);
+		// var hours1 = now.getHours();
+		// var minutes1 = "0" + now.getMinutes();
+		// var seconds1 = "0" + now.getSeconds();
+		/* time for now */
+		// var formattedTime1 = hours1 + ':' + minutes1.substr(-2) + ':' + seconds1.substr(-2);
+		// console.log(formattedTime1);
+
+		const lastConnection = new Date(props.user.lastConnection).getTime() + 3600000;
+		/* Date of last connection */
+		let dateLastConnect = new Date(props.user.lastConnection).toLocaleDateString();
+		// console.log(dateLastConnect);
+		/* timestamp of last connection */
+		// console.log(lastConnection);
+
+		if (dateNow === dateLastConnect) {
+			/* timestamp of time elapsed */
+			const timeElapsed = now - lastConnection;
+			// console.log(timeElapsed);
+
+			let date = new Date(timeElapsed);
+			/* time of time elapsed */
+			// let timeString = date.toTimeString();
+			var hours = date.getHours();
+			var minutes = "0" + date.getMinutes();
+			var seconds = "0" + date.getSeconds();
+			if (hours > 0) {
+				if (hours === 1) {
+					time = hours + " hour";
+				}
+				else {
+					time = hours + ' hours';
+				}
+			}
+			else if (hours <= 0 && minutes > 0) {
+				if (minutes === 1) {
+					time = minutes.substr(-2) + " minute";
+				}
+				else {
+					time = minutes.substr(-2) + ' minutes';
+				}
+			}
+			else if (hours <= 0 && minutes <= 0 && seconds > 0) {
+				if (seconds === 1) {
+					time = seconds.substr(-2) + " second";
+				}
+				else {
+					time = seconds.substr(-2) + ' seconds';
+				}
+			}
+		}
+		else {
+			const dateNowArray = dateNow.split('/');
+			const dateLastConnectArray = dateLastConnect.split('/');
+			const daysElapsed = dateNowArray[0] - dateLastConnectArray[0];
+			const monthElapsed = dateNowArray[1] - dateLastConnectArray[1];
+			const yearsElapsed = dateNowArray[2] - dateLastConnectArray[2];
+			if (dateNowArray[0] > dateLastConnectArray[0]) {
+				if (daysElapsed === 1) {
+					time = daysElapsed + " day";
+				}
+				else {
+					time = daysElapsed + ' days';
+				}
+			}
+			else if (daysElapsed <= 0 && monthElapsed > 0) {
+				if (monthElapsed === 1) {
+					time = monthElapsed.substr(-2) + " month";
+				}
+				else {
+					time = monthElapsed.substr(-2) + ' months';
+				}
+			}
+			else if (daysElapsed <= 0 && monthElapsed <= 0 && yearsElapsed > 0) {
+				if (yearsElapsed === 1) {
+					time = yearsElapsed.substr(-2) + " year";
+				}
+				else {
+					time = yearsElapsed.substr(-2) + ' years';
+				}
+			}
+		}
+	}
+
+	/* Picking the right gender icon to display */
 	let genderIcon = null;
 	if (props.user.gender === "male") {
 		genderIcon = "fas fa-mars";
@@ -17,7 +115,8 @@ const UserPageDumb = (props) => {
 	else if (props.user.gender === "queer") {
 		genderIcon = "fas fa-transgender";
 	}
-	
+
+	/* Formatting data for display */
 	let sexOrient = null;
 	if (props.user.sexOrient === "bi") {
 		sexOrient = "Bisexual";
@@ -29,6 +128,7 @@ const UserPageDumb = (props) => {
 		sexOrient = "Pansexual";
 	}
 
+	/* Formatting data for display */
 	let gender = null;
 	if (props.user.gender === "male") {
 		gender = "Male";
@@ -111,11 +211,21 @@ const UserPageDumb = (props) => {
 							}
 						</div>
 						<div className={classes.statusGroup}>
-							{props.user.online ?
-								<div className={cx(classes.active, classes.statusCircle)}></div>
+							{console.log(props)}
+							{props.usersOnline ?
+								props.usersOnline[props.user.username] === true ?
+									<div className={cx(classes.active, classes.statusCircle)}></div>
+									: <div className={cx(classes.inactive, classes.statusCircle)}></div>
 								: <div className={cx(classes.inactive, classes.statusCircle)}></div>
 							}
-							<h5 className={classes.status}>Status</h5>
+							{props.user.lastConnection ?
+								props.usersOnline ?
+									props.usersOnline[props.user.username] === true ?
+									<h5 className={classes.status}>Online</h5>
+									: <h5 className={classes.status}>Active {time} ago</h5>
+								: <h5 className={classes.status}>Active {time} ago</h5>
+							: <h5 className={classes.status}>Inactive</h5>
+							}
 						</div>
 					</div>
 					<div className={classes.leftBottomGroup}>
