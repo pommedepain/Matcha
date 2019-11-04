@@ -1,7 +1,7 @@
 **API basics:**
 ```
 Production mode: npm start
-Dev mode : npm run dev
+Dev mode : npm run dev (only once, after DB is online, just type 'rs' in the terminal to restart the API)
 Run tests: npm test (after one of the above)
 ```
 
@@ -11,7 +11,7 @@ Run tests: npm test (after one of the above)
 
 **ROUTES ACCESS:**
 ```
-ROUTES                          |         CREDENTIALS          |    DESCRIPTION                                            |                              |
+      ROUTES                    |         CREDENTIALS          |    DESCRIPTION                                      |                              |
 ':' means variable              |   NONE: nothing needed       |
                                 |   AUTH: x-auth-token         |
                                 |   IDENTIFY: request target   |
@@ -33,6 +33,7 @@ GET /confirm/:username/:token   | NONE                         | confirms new Us
 GET /infos/:username            | AUTH && (IDENTIFY || ADMIN)  | get user infos
 
 GET /matches/:username          | AUTH && (IDENTIFY || ADMIN)  | get :username's matches
+
 GET /suggestions/:username      | AUTH && (IDENTIFY || ADMIN)  | get suggesion list for
                                 |                              | :username
 
