@@ -44,7 +44,9 @@ class Server {
         this.socketTable[username] = [];
         debug('user disconnected', this.socketTable);
         const result = Object.keys(this.socketTable).map((key) => {
-          if(this.socketTable[key].length) return {key, isOnline:true };
+          debug(key);
+          if(this.socketTable[key].length) return {username: key, isOnline:true };
+          else return {username: key, isOnline:false};
         })
         debug('isOnline', result);
         socket.broadcast.emit('notification', {type: 'isOnline', result });
@@ -55,7 +57,7 @@ class Server {
         && notification.emitter && notification.receiver) {
           const receiver = notification.receiver;
           if (this.socketTable[receiver] !== undefined
-          && this.socketTable[receiver].length) {
+          && this.socketTable[receiver].length && notification.type !== 'isOnline') {
             this.socketTable[receiver].forEach((socketId) => {
               this.io.to(`${socketId}`).emit('notification', {
                 data: {
@@ -85,7 +87,9 @@ class Server {
           }
         } else if (notification.type === 'isOnline') {
               const result = Object.keys(this.socketTable).map((key) => {
-                if(this.socketTable[key].length) return {key, isOnline:true };
+                debug(key);
+                if(this.socketTable[key].length) return {username: key, isOnline:true };
+                else return {username: key, isOnline:false};
               })
               debug('isOnline',result);
             socket.broadcast.emit('notification', {type: 'isOnline', result });
@@ -116,7 +120,6 @@ class Server {
         const key = _.findKey(this.socketTable, socketIds => (
           socketIds.indexOf(socket.id) > -1
         ))
-        debug(key);
         _.remove(this.socketTable[key], el => el === socket.id)
         debug('user disconnected', this.socketTable);
       })
