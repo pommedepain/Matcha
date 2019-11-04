@@ -6,6 +6,7 @@ const User = require('../models/userClass');
 module.exports = (req, res, next) => {
   const token = req.header('x-auth-token');
   if (!token || token === null || token === undefined) {
+    debug(token);
     debug('Acces denied. No token provided');
     return res.status(401).send('Acces denied. No token provided');
   }
