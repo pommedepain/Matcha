@@ -103,6 +103,12 @@ class UserValidator {
       if (this.req.notifs) sch.notifs = Joi.any().required();
       else sch.notifs = Joi.any();
       
+      if (this.req.lat) sch.lat = Joi.any().required();
+      else sch.lat = Joi.any();
+
+      if (this.req.long) sch.long = Joi.any().required();
+      else sch.long = Joi.any();
+      
       if (this.req.gps) sch.gps = Joi.any().required();
       else sch.gps = Joi.any();
 
