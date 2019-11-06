@@ -91,7 +91,7 @@ const NavBarDummy = (props) => {
 									else if (elem.type === "match") {
 										action = "You have a new match with";
 									}
-									else if (elem.type === "unlike") {
+									else if (elem.type === "unmatch") {
 										action = "are no longer a match...";
 									}
 									if (elem.type === "match") {
@@ -105,7 +105,7 @@ const NavBarDummy = (props) => {
 											</div>
 										)
 									}
-									else if (elem.type === "unlike") {
+									else if (elem.type === "unmatch") {
 										return (
 											<div id={i} key={i} className={classes.notification} onClick={(e) => props.handleNotifClick(e, i)} style={style} >
 												{elem.emitter.photos[0] ?

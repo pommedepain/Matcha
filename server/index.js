@@ -10,6 +10,7 @@ const SERVER = {
 
 const NOTIFICATION_TYPES = [
   'unlike',
+  'unmatch',
   'like',
   'match',
   'visit',
@@ -68,6 +69,7 @@ class Server {
               debug('emitted', {
                 type: notification.type,
                 emitter: notification.emitter,
+                receiver: notification.receiver,
               });
             })
           }

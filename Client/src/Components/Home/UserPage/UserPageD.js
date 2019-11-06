@@ -11,34 +11,27 @@ const UserPageDumb = (props) => {
 	/* Formatting last active status known into time for display */
 	let time = null;
 	if (props.user.lastConnection) {
-		// console.log(props.user.username)
 		/* timestamp for now */
 		const timestamp = Date.now();
-		// console.log(timestamp);
 
 		/* date and time of now */
 		const now = new Date(timestamp);
 		/* Date of now */
 		let dateNow = new Date(now).toLocaleDateString();
-		// console.log(dateNow);
 		// var hours1 = now.getHours();
 		// var minutes1 = "0" + now.getMinutes();
 		// var seconds1 = "0" + now.getSeconds();
 		/* time for now */
 		// var formattedTime1 = hours1 + ':' + minutes1.substr(-2) + ':' + seconds1.substr(-2);
-		// console.log(formattedTime1);
 
+		/* timestamp of last connection */
 		const lastConnection = new Date(props.user.lastConnection).getTime() + 3600000;
 		/* Date of last connection */
 		let dateLastConnect = new Date(props.user.lastConnection).toLocaleDateString();
-		// console.log(dateLastConnect);
-		/* timestamp of last connection */
-		// console.log(lastConnection);
 
 		if (dateNow === dateLastConnect) {
 			/* timestamp of time elapsed */
 			const timeElapsed = now - lastConnection;
-			// console.log(timeElapsed);
 
 			let date = new Date(timeElapsed);
 			/* time of time elapsed */
@@ -211,7 +204,7 @@ const UserPageDumb = (props) => {
 							}
 						</div>
 						<div className={classes.statusGroup}>
-							{console.log(props)}
+							{/* {console.log(props)} */}
 							{props.usersOnline ?
 								props.usersOnline[props.user.username] === true ?
 									<div className={cx(classes.active, classes.statusCircle)}></div>

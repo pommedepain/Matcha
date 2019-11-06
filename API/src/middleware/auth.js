@@ -15,6 +15,7 @@ module.exports = (req, res, next) => {
     res.locals.user = decoded.data;
     if (req.params.username) res.locals.check = req.params.username;
     else if (req.body.receiver) res.locals.check = req.body.receiver;
+    else if (req.body.node_a && req.body.node_a.properties && req.body.node_a.properties.username) res.locals.check = req.body.node_a.properties.username;
     // debug('Valid token decoded : ', decoded);
     // return (new User(decoded.username).generateAuthToken()
     //   .then((result) => { req.token = result; return (next()); }));

@@ -21,14 +21,30 @@ class NavBar extends React.Component {
 	}
 
 	getNotifications = () => {
-    const { username } = this.context.JWT.data;
-    const { token } = this.context.JWT;
+    	const { username } = this.context.JWT.data;
+		const { token } = this.context.JWT;
 
 		if (username !== undefined) {
+			// console.log(username)
 			axios.get(`http://localhost:4000/API/notifications/${username}`, {headers: {"x-auth-token": token}})
 				.then(response => {
-					// console.log(response.data.payload.result);
-					this.setState({ notifications: response.data.payload.result}, function () {
+					console.log(response.data.payload.result);
+					let notificationsParsed = [];
+					let j = 0;
+					/* Save notifications except the 'unlike' ones */
+					response.data.payload.result.map(elem => {
+						if (elem.type === 'unlike') {
+							return null;
+						}
+						if (elem.type === 'unmatch') {
+							return (notificationsParsed[j++] = elem);
+						}
+						else {
+							return (notificationsParsed[j++] = elem);
+						}
+					})
+					console.log(notificationsParsed);
+					this.setState({ notifications: notificationsParsed}, function () {
 						// console.log(this.state.notifications);
 						let unreadNotifs = 0;
 						for (let i = 0; i < this.state.notifications.length; i++) {
@@ -36,13 +52,14 @@ class NavBar extends React.Component {
 								unreadNotifs += 1;
 							}
 						}
-						console.log(unreadNotifs);
+						// console.log(unreadNotifs);
 						if (unreadNotifs > 0) {
 							this.setState({
 								unreadNotifs: unreadNotifs
-							});
+							}, function() { console.log(this.state.unreadNotifs)});
 						}
 						if (this.context.newNotif.new) {
+							// console.log(this.context.newNotif);
 							this.context.toggleNotifReceived(this.context.newNotif);
 						}
 					});
@@ -60,36 +77,38 @@ class NavBar extends React.Component {
 			this.context.toggleUser(null);
 			mySocket.emit('logoutUser', username);
 			console.log("log out");
-			resolve();
+			resolve(this.context.JWT);
 		}) 
 	}
+
 	logOut = () => {
-    const { username } = this.context.JWT.data;
-    const { token } = this.context.JWT;
-    axios.put(`http://localhost:4000/API/users/connect/${username}`, null, {headers: {"x-auth-token": token}})
-      .then(() => this.pre_log_out())
-			.then(() => {
-				document.location.reload(false);
-			})
-			.catch((err) => {
-				console.log(err);
-			})
+    	const { username } = this.context.JWT.data;
+    	const { token } = this.context.JWT;
+    	axios.put(`http://localhost:4000/API/users/connect/${username}`, null, {headers: {"x-auth-token": token}})
+    	  .then(() => this.pre_log_out())
+				.then((res) => {
+					console.log(res);
+					// document.location.reload(false);
+				})
+				.catch((err) => {
+					console.log(err);
+				})
 	}
 
 	showNotifs = (e) => {
 		e.preventDefault();
-		this.setState({ displayNotifs: !this.state.displayNotifs }, function() { console.log("displayNotifs: " + this.state.displayNotifs)});
+		this.setState({ displayNotifs: !this.state.displayNotifs });
 	}
 
 	handleNotifClick = (e, index) => {
 		e.preventDefault();
-    const { token } = this.context.JWT;
+    	const { token } = this.context.JWT;
 		let notifID = null;
 		notifID = { id: this.state.notifications[index].id.low };
 
+		console.log(this.state.notifications[index]);
 		axios.put('http://localhost:4000/API/notifications/read', notifID, {headers: {"x-auth-token": token}})
 			.then((response) => {
-				// console.log(response.data);
 				if (response.data.payload.result === "notification has been read") {
 					const notifications = this.state.notifications;
 					notifications[index].read = true;

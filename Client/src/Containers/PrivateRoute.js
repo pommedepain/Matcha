@@ -11,6 +11,7 @@ const PrivateRoute = ({component: Component, ...rest}) => {
 		<Route 
 			{...rest}
 			render={props => {
+				console.log("isLoggedIn: " + isLoggedIn + " & Component is " + Component.name)
 				if (isLoggedIn === true && Component.name !== "SignUp") {
 					return (<Component {...props} />) 
 				}

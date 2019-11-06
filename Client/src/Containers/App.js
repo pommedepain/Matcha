@@ -8,6 +8,8 @@ import SignUp from '../Components/Forms/SignUp/SignUpS';
 // import LogIn from '../Components/Forms/LogIn/LoginS';
 import Account from '../Components/Forms/Account/AccountS';
 import Footer from './Footer';
+import Profil from '../Components/Profil/ProfilS';
+import Search from '../Components/Search/SearchS';
 import UserContextProvider from '../Contexts/UserContext';
 import PrivateRoute from './PrivateRoute';
 
@@ -19,12 +21,12 @@ class App extends Component {
           <div>
 			    	<NavBar />
             <Switch>
-              {/* <Route path="/" exact component={Home} /> */}
               <PrivateRoute path="/" exact component={Home} />
               <PrivateRoute path="/home" component={Home} />
               <PrivateRoute path="/sign-up" component={SignUp} />
-              {/* <Route path="/sign-up" component={SignUp} /> */}
               <PrivateRoute path="/account" component={Account} />
+              <PrivateRoute path="/profil" component={Profil} />
+              <PrivateRoute path="/search" component={Search} />
             </Switch>
 			    	<Footer />
 			    </div>
