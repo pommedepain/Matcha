@@ -12,7 +12,7 @@ router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
 
-router.get('/', handler(async (req, res) => {
+router.get('/geocode', handler(async (req, res) => {
   let ip = req.clientIp;
   const publicIp = require('public-ip');
 
@@ -20,11 +20,23 @@ router.get('/', handler(async (req, res) => {
   // const localisation = await axios.get(`https://www.iplocate.io/api/lookup/${ip}`);
   // const localisation = await axios.get(`https://api.ipgeolocation.io/ipgeo?apiKey=6ec1c766d7d3402ea36680595e7bb16f&ip=${ip}`);
   const localisation = await axios.get('https://api.ipdata.co/?api-key=test');
-  
-  debug(localisation.data);
+  // const adress = await axios.get(`https://www.latlong.net/c/?lat=${localisation.data.lat}&long=${localisation.data.lat}`);
+  // const adress = await axios.get(`https://api.opencagedata.com/geocode/v1/json?q=LAT=${localisation.data.lat}&LNG=${localisation.data.lat}&key=251f06800b5a4219839cd2a3f802e878`);
+  // const adress = await axios.get(`https://eu1.locationiq.com/v1/reverse.php?key=6693e45f2d8b2d&lat=${localisation.data.latitude}&lon=${localisation.data.longitude}&format=json`);
+  // debug(`https://eu1.locationiq.com/v1/reverse.php?key=6693e45f2d8b2d&lat=${localisation.data.latitude}&lon=${localisation.data.longitude}&format=json`);
+  // const result = { localisation: localisation.data, adress }
+  // debug(localisation.data);
   return res.status(200).json({
     success: true,
-    payload: localisation.data,
+    payload: { localisation: localisation.data },
+  });
+}));
+
+router.get('/reverseGeocode/:lat/:long', handler(async (req, res) => {
+  const adress = await axios.get(`https://eu1.locationiq.com/v1/reverse.php?key=6693e45f2d8b2d&lat=${req.params.long}&lon=${req.params.long}&format=json`);
+  return res.status(200).json({
+    success: true,
+    payload: { adress: adress.data },
   });
 }));
 
