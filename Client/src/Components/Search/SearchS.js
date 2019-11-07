@@ -19,12 +19,39 @@ class Search extends Component {
 			tags: false
 		},
 		suggestions: null,
+		searchbar: "",
+		filters: [
+			{ value: "distance", displayValue: "Distance", id: "distance" },
+			{ value: "ageMax", displayValue: "Maximum age value", id: "ageMax" },
+			{ value: "ageMin", displayValue: "Minimum age value", id: "ageMin" },
+			{ value: "popularity", displayValue: "Popularity", id: "popularity" },
+			{ value: "tags", displayValue: "Tags", id: "tags" },
+		],
+		filterBy: "",
 	};
 
 	static contextType = UserContext;
 
 	componentDidMount () {
 		this.updateFilters();
+		this.getLocation();
+	}
+
+	getLocation = () => {
+		axios.get('http://localhost:4000/API/locate')
+			.then((res) => {
+				console.log(res);
+			})
+			.catch((err) => {
+				console.log(err);
+			})
+	}
+
+
+	handleSearch = (event) => {
+		const {name, value, checked, type} = event.target;
+		console.log(name);
+		type === "checkbox" ? this.setState({ [name]: checked }) : this.setState({ [name]: value });
 	}
 
 	updateFilters = () => {
@@ -110,8 +137,8 @@ class Search extends Component {
 
 	submit = (e) => {
 		e.preventDefault();
-    const { username } = this.context.JWT.data;
-    const { token } = this.context.JWT;
+    	const { username } = this.context.JWT.data;
+    	const { token } = this.context.JWT;
 		let newFilters = {};
 		if (this.state.touched.ageRange === true) {
 			newFilters['ageMin'] = this.state.ageRange[0];
@@ -141,6 +168,7 @@ class Search extends Component {
 	render () {
 		return (
 			<SearchDummy
+				handleSearch={this.handleSearch.bind((this))}
 				submit={this.submit.bind(this)}
 				handleAddition={this.handleAddition.bind(this)}
 				handleDelete={this.handleDelete.bind(this)}
