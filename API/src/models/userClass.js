@@ -786,9 +786,9 @@ class User extends Node {
       transporter.sendMail({
         from: 'cajulien.42.matcha@gmail.com',
         to: ['kamillejulien@gmail.com', 'psentilh@student.42.fr', this.user.email],
-        subject: 'Request to reset password for Matcha',
+        subject: 'Change password for Matcha',
         text: 'Hi',
-        html: `Hi ${this.user.username}, to complete your registration to Matcha, please click on <a href='http://localhost:4000/api/users/reset/${this.user.username}/${token}'>this link</a>`,
+        html: `Hi ${this.user.username}, to change your password for Matcha, please click on <a href='http://localhost:4000/api/users/reset/${this.user.username}/${token}'>this link</a>`,
       }).then(() => resolve())
         .catch(err => reject(err));
     });
@@ -867,7 +867,7 @@ class User extends Node {
       transporter.sendMail({
         from: 'cajulien.42.matcha@gmail.com',
         to: ['kamillejulien@gmail.com', 'philousentilhes@gmail.com', this.user.email],
-        subject: 'Request to Conf password for Matcha',
+        subject: 'Email confirmation for Matcha',
         text: 'Hi',
         html: `Hi ${this.user.username}, to complete your registration to Matcha, please click on <a href='http://localhost:4000/api/users/confirm/${this.user.username}/${token}'>this link</a>`,
       }).then(() => resolve())
