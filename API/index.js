@@ -13,6 +13,7 @@ const notifications = require('./src/routes/notifications');
 const tags = require('./src/routes/tags');
 const relationships = require('./src/routes/relationships');
 const auth = require('./src/routes/auth');
+const photos = require('./src/routes/photos');
 const initdb = require('./src/init/initDb');
 const seed = require('./src/init/createSeed');
 const error = require('./src/middleware/error');
@@ -33,6 +34,7 @@ app.use(cors());
 app.use(requestIp.mw());
 
 app.use(reqIp);
+app.use('/api/photos', photos);
 app.use('/api/locate', locate);
 app.use('/api/users', users);
 app.use('/api/notifications', notifications);

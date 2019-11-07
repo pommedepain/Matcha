@@ -17,7 +17,10 @@ router.get('/', handler(async (req, res) => {
   const publicIp = require('public-ip');
 
   if (ip === '::1') ip = await publicIp.v4();
-  const localisation = await axios.get(`https://www.iplocate.io/api/lookup/${ip}`);
+  // const localisation = await axios.get(`https://www.iplocate.io/api/lookup/${ip}`);
+  // const localisation = await axios.get(`https://api.ipgeolocation.io/ipgeo?apiKey=6ec1c766d7d3402ea36680595e7bb16f&ip=${ip}`);
+  const localisation = await axios.get('https://api.ipdata.co/?api-key=test');
+  
   debug(localisation.data);
   return res.status(200).json({
     success: true,
