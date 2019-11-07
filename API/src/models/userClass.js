@@ -356,7 +356,7 @@ class User extends Node {
   getLikedBy() {
     return new Promise((resolve, reject) => {
       const session = this.driver.session();
-      const query = `MATCH (a:User {username:'${this.user.username}'})<-[r:LIKES]-(b)
+      const query = `MATCH (a:User {username:'${this.user.username}'})<-[r:Notification {type:'like'}]-(b)
                     WITH a, collect(properties(b)) as col
                     RETURN col`;
       session.run(query)
@@ -374,7 +374,7 @@ class User extends Node {
   getLikedTo() {
     return new Promise((resolve, reject) => {
       const session = this.driver.session();
-      const query = `MATCH (a:User {username:'${this.user.username}'})-[r:LIKES]->(b)
+      const query = `MATCH (a:User {username:'${this.user.username}'})-[r:Notification {type:'like'}]->(b)
                     WITH a, collect(properties(b)) as col
                     RETURN col`;
       session.run(query)
@@ -409,11 +409,18 @@ class User extends Node {
 
   getMatches() {
     return new Promise((resolve, reject) => {
-      this.data.relation = {
-        label: 'LIKES',
-      };
-      this.getNodeMutualRelationships()
-        .then(list => resolve(list))
+      const session = this.driver.session();
+      const query = `MATCH (a:User {username:'${this.user.username}'})<-[r:Notification {type:'match'}]-(b)
+                    WITH a, collect(properties(b)) as col
+                    RETURN col`;
+      session.run(query)
+        .then((res) => {
+          session.close();
+          if (res.records.length !== 0) {
+            return this.getProfiles(res.records[0]._fields[0]);
+          } return [];
+        })
+        .then(res => resolve(res))
         .catch(err => reject(err));
     });
   }
@@ -930,8 +937,8 @@ class User extends Node {
   getVisits() {
     return new Promise((resolve, reject) => {
       const session = this.driver.session();
-      const query = `MATCH (n:User { username:'${this.user.username}'})<-[r:VISITED]-(b:User)
-                    RETURN properties(b),r.lastVisit`;
+      const query = `MATCH (n:User { username:'${this.user.username}'})<-[r:Notification {type:'visit'}]-(b:User)
+                    RETURN properties(b),r.date`;
       session.run(query)
         .then((res) => {
           const result = [];
@@ -997,13 +1004,13 @@ class User extends Node {
   updateScore() {
     return new Promise((resolve, reject) => {
       const session = this.driver.session();
-      const query = `MATCH (n:User { username:'${this.user.username}'})<-[r:LIKES]-(b:User)
+      const query = `MATCH (n:User { username:'${this.user.username}'})<-[r:Notification {type:'like'}]-(b:User)
                     RETURN count(r)`;
-      const query2 = `MATCH (n:User { username:'${this.user.username}'})<-[r:VISITED]-(b:User)
+      const query2 = `MATCH (n:User { username:'${this.user.username}'})<-[r:Notification {type:'visit'}]-(b:User)
                     RETURN count(r)`;
       const query3 = `MATCH (n:User { username:'${this.user.username}'})<-[r:CONVERSATION]-(b:User)
                     RETURN count(r)`;
-      const query4 = `MATCH (n:User { username:'${this.user.username}'})-[r:LIKES]->(b:User),(n)-[:LIKES]->(b)
+      const query4 = `MATCH (n:User { username:'${this.user.username}'})-[r:Notification {type:'match'}]->(b:User)
                     RETURN count(r)`;
       const query5 = `MATCH (n:User { username:'${this.user.username}'})<-[r:BLOCK]-(b:User)
                     RETURN count(r)`;
