@@ -33,7 +33,7 @@ router.get('/geocode', handler(async (req, res) => {
 }));
 
 router.get('/reverseGeocode/:lat/:long', handler(async (req, res) => {
-  const adress = await axios.get(`https://eu1.locationiq.com/v1/reverse.php?key=6693e45f2d8b2d&lat=${req.params.long}&lon=${req.params.long}&format=json`);
+  const adress = await axios.get(`https://eu1.locationiq.com/v1/reverse.php?key=6693e45f2d8b2d&lat=${req.params.lat}&lon=${req.params.long}&format=json`);
   return res.status(200).json({
     success: true,
     payload: { adress: adress.data },
