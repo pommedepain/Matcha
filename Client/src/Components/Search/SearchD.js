@@ -11,8 +11,6 @@ const SearchDummy = (props) => {
 	const ageRange = props.JWT.data.ageMin ? [props.JWT.data.ageMin, props.JWT.data.ageMax] : props.ageRange;
 	const localisation = props.JWT.data.localisation ? props.JWT.data.localisation : props.localisation; 
 
-	// console.log(props.filterBy)
-
 	return (
 		<div>
 			<div className={classes.main} id="main" >
@@ -79,17 +77,17 @@ const SearchDummy = (props) => {
 									/>
 								</div>
 								<div className={classes.secondRow}>
-									<div className={classes.geolocCont}>
+									<div className={classes.geolocCont} >
 										<MapContainer className={classes.map} />
 										{props.currentLocation ?
 											[<div className={classes.adress} key={0}>
 												<h4>{props.currentLocation.adress}, {props.currentLocation.city}</h4>
-												<h4>{props.currentLocation.region}, {props.currentLocation.country}</h4>
+												<h4>{props.currentLocation.state}, {props.currentLocation.country}</h4>
 											</div>]
 											: null
 										}
 									</div>
-									<div className={classes.filterBy}>
+									<div className={classes.filterBy} >
 										<h4>Filter by...</h4>
 										<div className={classes.optionsCont}>
 											{props.filters.map( elem => (

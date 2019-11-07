@@ -49,12 +49,14 @@ export class CurrentLocation extends React.Component {
           if (error.code === error.PERMISSION_DENIED) {
             console.log('geoloc denied');
             axios.get('http://localhost:4000/API/locate/geocode')
-            .then((position) => this.setState(({
-              currentLocation: {
-                lat: position.localisation.latitude,
-                lng: position.localisation.longitude
-              }
-            })))
+              .then((position) => {
+                this.setState({
+                  currentLocation: {
+                    lat: position.data.payload.localisation.latitude,
+                    lng: position.data.payload.localisation.longitude
+                  }
+                })
+              })
           }
       })
     }}

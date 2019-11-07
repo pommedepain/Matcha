@@ -24,7 +24,6 @@ const UserContextProvider = (props) => {
 		if (token !== null && token.data.firstName) {
 			let dateNow = new Date();
 			if (token.exp < (dateNow.getTime() / 1000)) {
-				setLog(false);
 				return ({data: {}, exp: 0, iat: 0, token: "" })
 			}
 			else {
@@ -39,9 +38,13 @@ const UserContextProvider = (props) => {
 	const [isLoggedIn, setLog] = useState(() => {
 		const localDatas = localStorage.getItem('JWT');
 		const token = JSON.parse(localDatas);
-		// console.log(token);
+		console.log(token);
 		if (token !== null) {
-			// token.data.firstName ? console.log("isLoggedIn initialized true"): console.log("isLoggedIn initialized false");
+			let dateNow = new Date();
+			if (JWT.token.exp < (dateNow.getTime() / 1000)) {
+				return (false);
+			}
+			token.data.firstName ? console.log("isLoggedIn initialized true"): console.log("isLoggedIn initialized false");
 			return (token.data.firstName ? true : false);
 		}
 		else {

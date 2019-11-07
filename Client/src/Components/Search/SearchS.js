@@ -64,21 +64,25 @@ class Search extends Component {
 	getLocation = () => {
 		if (navigator && navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(pos => {
-				console.log(pos)
 				const coords = pos.coords;
 				this.setState({
 					currentLocation: {
+						denied: false,
 						lat: coords.latitude,
-						lng: coords.longitude,
-						adress: "Rue du Tissage",
-						city: "Sauzon", 
-						region: "Bretagne",
-						country: "France"
+						lng: coords.longitude
 					}
-				}, function() { console.log(this.state.currentLocation)});
+				});
+				axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, {lat: coords.latitude, lon: coords.longitude}, {headers: {'x-auth-token': this.context.JWT.token}});
 				axios.get(`http://localhost:4000/API/locate/reverseGeocode/${coords.latitude}/${coords.longitude}`)
 					.then((res) => {
-						console.log(res);
+						const datas = res.data.payload.adress.address;
+						const currentCoords = this.state.currentLocation;
+						currentCoords['adress'] = datas.road;
+						currentCoords['city'] = datas.village;
+						currentCoords['state'] = datas.state;
+						currentCoords['postcode'] = datas.postcode;
+						currentCoords['country'] = datas.country;
+						this.setState({ currentLocation: currentCoords }, function() {console.log(this.state.currentLocation)});
 					})
 			},
 			error => {
@@ -88,14 +92,23 @@ class Search extends Component {
 					.then((position) => {
 						this.setState({
 							currentLocation: {
-								lat: position.payload.localisation.latitude,
-								lng: position.payload.localisation.longitude
+								denied: true,
+								lat: position.data.payload.localisation.latitude,
+								lng: position.data.payload.localisation.longitude
 							}
-						}, function() { console.log(this.state.currentLocation) });
-						return axios.get(`http://localhost:4000/API/locate/reverseGeocode/${position.payload.localisation.latitude}/${position.payload.localisation.longitude}`)
+						});
+						axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, {lat: position.data.payload.localisation.latitude, lon: position.data.payload.localisation.longitude}, {headers: {'x-auth-token': this.context.JWT.token}});
+						return axios.get(`http://localhost:4000/API/locate/reverseGeocode/${position.data.payload.localisation.latitude}/${position.data.payload.localisation.longitude}`)
 					})
 					.then((res) => {
-						console.log(res);	
+						const datas = res.data.payload.adress.address;
+						const currentCoords = this.state.currentLocation;
+						currentCoords['adress'] = datas.road;
+						currentCoords['city'] = datas.village;
+						currentCoords['state'] = datas.state;
+						currentCoords['postcode'] = datas.postcode;
+						currentCoords['country'] = datas.country;
+						this.setState({ currentLocation: currentCoords }, function() {console.log(this.state.currentLocation)});
 					})
 				}
 			})
@@ -108,8 +121,10 @@ class Search extends Component {
 		console.log(value);
 		this.setState({ [name]: value });
 		for (let i = 0; i < this.state.suggestions.length; i++) {
-			if (this.state.suggestions[i] === value) {
-				console.log(this.state.suggestions[i]);
+			if (this.state.suggestions[i].user.username[0] === value ||
+				this.state.suggestions[i].user.firstName[0] === value ||
+				this.state.suggestions[i].user.lastName[0] === value) {
+				console.log(this.state.suggestions[i].user.username);
 			}
 		}
 	}
