@@ -31,7 +31,6 @@ router.post('/create', [auth, identify], wrapper(async (req, res) => {
   debug('############# Creating notif ###########');
   return (new Notifications(req.body).create()
     .then((result) => {
-      debug(result);
       return res.status(200).json({
         success: true,
         payload: { value: 'read', result },

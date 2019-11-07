@@ -6,15 +6,16 @@ const debug = require('debug')('models:notifs');
 const _ = require('lodash');
 const driver = require('../util/driver');
 
-class Notification {
+class Notifications {
 
   constructor(data) {
+    this.data = data;
     if (data.emitter) this.emitter = data.emitter;
     if (data.receiver) this.receiver = data.receiver;
     if (data.type) this.type = data.type;
     if (data.id) this.id = data.id;
     this.driver = driver;
-    debug('Notif constructor called', data);
+    debug('Notif constructor called', this.data);
   }
 
   create() {
@@ -26,7 +27,7 @@ class Notification {
                       CREATE (a)-[:EMITTED]->(n:notification {type:'${this.type}', date:'${date}', read:false})-[:TO]->(b)`;
       session.run(query)
         .then((res) => {
-          debug(res);
+          debug('Notification created:', this.data);
           session.close();
           resolve(true);
         })
@@ -75,4 +76,4 @@ class Notification {
   }
 }
 
-module.exports = Notification;
+module.exports = Notifications;
