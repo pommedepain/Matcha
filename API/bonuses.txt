@@ -1,0 +1,4 @@
+geoloc des targets sur map
+map avec marker des targets
+
+to do: brancher reset password, brancher conf mail, chat

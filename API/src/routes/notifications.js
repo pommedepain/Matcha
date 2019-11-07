@@ -40,7 +40,7 @@ router.post('/create', [auth, identify], wrapper(async (req, res) => {
 }));
 
 router.put('/read', [auth], wrapper(async (req, res) => {
-  debug('############# Creating notif ###########');
+  debug('############# Reading notif ###########');
   return (new Notifications(req.body).read()
     .then((result) => {
       debug(result);
