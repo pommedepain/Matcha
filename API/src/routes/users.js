@@ -10,7 +10,7 @@ const router = express.Router();
 const User = require('../models/userClass');
 
 const validProperties = ['username', 'firstName', 'lastName', 'password', 'email', 'birthdate', 'bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'localisation', 'photos', 'tags', 'optional'];
-const publicProperties = ['age', 'lastConnection', 'complete', 'isTags', 'popularity', 'blocked', 'lookTags', 'username', 'firstName', 'lastName', 'birthdate', 'bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'localisation', 'tags', 'photos', 'optional', 'error', 'value'];
+const publicProperties = ['age', 'lastConnection', 'lat', 'long', 'complete', 'isTags', 'popularity', 'blocked', 'lookTags', 'username', 'firstName', 'lastName', 'birthdate', 'bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'localisation', 'tags', 'photos', 'optional', 'error', 'value'];
 
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
