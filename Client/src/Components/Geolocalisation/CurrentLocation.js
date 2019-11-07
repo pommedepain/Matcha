@@ -30,6 +30,7 @@ export class CurrentLocation extends React.Component {
     }
     if (prevState.currentLocation !== this.state.currentLocation) {
       this.recenterMap();
+      this.loadMap();
     }
   }
 
@@ -44,7 +45,6 @@ export class CurrentLocation extends React.Component {
               lng: coords.longitude
             }
           });
-          this.loadMap();
         },
         error => {
           if (error.code === error.PERMISSION_DENIED) {
@@ -58,11 +58,10 @@ export class CurrentLocation extends React.Component {
                   }
                 })
               })
-              this.loadMap();
           }
       })
     }}
-    
+    this.loadMap();
   }
 
   loadMap() {
