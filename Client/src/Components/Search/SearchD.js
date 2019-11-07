@@ -11,7 +11,7 @@ const SearchDummy = (props) => {
 	const ageRange = props.JWT.data.ageMin ? [props.JWT.data.ageMin, props.JWT.data.ageMax] : props.ageRange;
 	const localisation = props.JWT.data.localisation ? props.JWT.data.localisation : props.localisation; 
 
-	console.log(props.filterBy)
+	// console.log(props.filterBy)
 
 	return (
 		<div>
@@ -78,8 +78,17 @@ const SearchDummy = (props) => {
 										handleAddition={props.handleAddition}
 									/>
 								</div>
-								<div className={classes.geolocCont}>
-									<MapContainer className={classes.map} />
+								<div className={classes.secondRow}>
+									<div className={classes.geolocCont}>
+										<MapContainer className={classes.map} />
+										{props.currentLocation ?
+											[<div className={classes.adress} key={0}>
+												<h4>{props.currentLocation.adress}, {props.currentLocation.city}</h4>
+												<h4>{props.currentLocation.region}, {props.currentLocation.country}</h4>
+											</div>]
+											: null
+										}
+									</div>
 									<div className={classes.filterBy}>
 										<h4>Filter by...</h4>
 										<div className={classes.optionsCont}>
@@ -91,7 +100,7 @@ const SearchDummy = (props) => {
 														type="radio"
 														value={elem.value}
 														name="filterBy"
-														onChange={(event) => props.handleSearch(event, elem.id)}
+														onChange={(event) => props.handleFilterBy(event, elem.id)}
 														checked={props.filterBy === elem.value}
 													/>
 													<label htmlFor={elem.id} className={classes.label}>{elem.displayValue}</label>

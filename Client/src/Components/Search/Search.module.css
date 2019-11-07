@@ -43,7 +43,6 @@
 	margin-right: -10%;
 	position: relative;
 }
-
 .filtersCont {
 	display: flex;
 	flex-direction: column;
@@ -51,6 +50,10 @@
 	align-items: center;
 	width: 100%;
 }
+
+/*
+	SEARCH BAR & SUBMIT
+*/
 .searchbarCont {
 	width: 80%;
 	display: flex;
@@ -78,10 +81,6 @@ input {
 	font-family: montserrat;
 	color: #2C3E50;
 }
-
-/*
-	ARROW SUBMIT BUTTON FOR FILTERS
-*/
 .submit {
 	background-color: none;
 	border: none;
@@ -106,94 +105,15 @@ input {
 }
 
 
+
+/*
+	ROW OF FILTERS
+*/
 .firstRow {
 	display: flex;
 	flex-direction: row;
 	width: 100%;
 }
-.geolocCont {
-	width: 100%;
-	margin-top: 2%;
-	height: 30vh;
-	display: flex;
-	flex-direction: row;
-	/* justify-content: center; */
-}
-.map {
-	order: 1
-}
-.filterBy {
-	order: 2;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	position: absolute;
-	left: 40%;
-	width: 50%;
-}
-.filterBy > h4 {
-	text-align: center;
-	font-family: 'Ubuntu', sans-serif;
-	font-size: 2vw;
-	font-weight: 300;
-}
-.optionsCont {
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-start;
-}
-.labelOption {
-	display: flex;
-}
-
-.radio {
-	position: absolute;
-	opacity: 0;
-	z-index: -2;
-}
-.label {
-	font-family: 'Ubuntu', sans-serif;
-	font-weight: 300;
-	font-size: 0.5em;
-	display: block;
-	position: relative;
-	margin-right: 1em;
-	padding-left: 2.5em;
-	padding-right: 0.5em;
-	cursor: pointer;
-	padding-top: 0.15em;
-	z-index: 1000;
-}
-.label:before {
-	box-sizing: border-box;
-	content: " ";
-	position: absolute;
-	top: 0.2em;
-	bottom: 0.2em;
-	left: 5%;
-	display: block;
-	width: 1.4em;
-	height: 1.4em;
-	border: 1px solid black;
-	border-radius: .25em;
-}  
-.radio + .label::before {
-	border-radius: 1em;
-}
-.radio:checked + .label {
-	color: #27AE60;
-}
-.radio:checked + .label:before {
-	background: #27AE60;
-	border: 1px solid #27AE60;
-}  
-/* Transition */
-.label,
-.label::before {
-	transition: .25s all ease;
-}
-
 /*
 	RANGE & SLIDER
 */
@@ -233,8 +153,7 @@ input {
 	margin-right: 2%;
 	width: 22%;
 }
-
-/* Styles for the input */
+/* Styles for the tag input */
 div.ReactTags__tagInput {
     width: 80%;
     border-radius: 2px;
@@ -250,18 +169,110 @@ div.ReactTags__tagInput input.ReactTags__tagInputField:focus {
     padding: 0 4px;
 }
 
-/* 
-	USERS ICON DISPLAY
+
+/*
+	GEOLOCATION
 */
-/* .wrapper {
-	padding-top: 5%;
+.secondRow {
 	width: 100%;
-	height: 100%;
+	margin-top: 2%;
+	height: 30vh;
 	display: flex;
 	flex-direction: row;
-	justify-content: space-around;
-	flex-wrap: wrap;
-	margin-bottom: 2%;
-	/* align-items: center; */
-/* }  */
+}
+.geolocCont {
+	width: 50%;
+}
+.adress {
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+	z-index: 5;
+	top:85%;
+	width: 30%;
+}
+.adress > h4 {
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 1vw;
+	font-weight: 300;
+}
+
+
+/*
+	FILTERING LIST BY
+*/
+.filterBy {
+	order: 2;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	left: 40%;
+	width: 50%;
+}
+.filterBy > h4 {
+	text-align: center;
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 1.8vw;
+	font-weight: 300;
+}
+.optionsCont {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+}
+.labelOption {
+	display: flex;
+}
+
+.radio {
+	position: absolute;
+	opacity: 0;
+	z-index: -2;
+}
+.label {
+	font-family: 'Ubuntu', sans-serif;
+	color: #524a54;
+	font-weight: 300;
+	font-size: 0.5em;
+	display: block;
+	position: relative;
+	margin-right: 1em;
+	padding-left: 2.5em;
+	padding-right: 0.5em;
+	cursor: pointer;
+	padding-top: 0.15em;
+	z-index: 1000;
+}
+.label:before {
+	box-sizing: border-box;
+	content: " ";
+	position: absolute;
+	top: 0.2em;
+	bottom: 0.2em;
+	left: 5%;
+	display: block;
+	width: 1.4em;
+	height: 1.4em;
+	border: 1px solid #524a54;
+	border-radius: .25em;
+}  
+.radio + .label::before {
+	border-radius: 1em;
+}
+.radio:checked + .label {
+	color: #27AE60;
+}
+.radio:checked + .label:before {
+	background: #27AE60;
+	border: 1px solid #27AE60;
+}  
+/* Transition */
+.label,
+.label::before {
+	transition: .25s all ease;
+}
 

@@ -56,8 +56,8 @@ class Home extends Component {
 	// }
 
 	getSuggestions = () => {
-    const { username } = this.context.JWT.data;
-    const { token } = this.context.JWT;
+    	const { username } = this.context.JWT.data;
+    	const { token } = this.context.JWT;
 
 		if (username !== undefined) {
 			axios.get(`http://localhost:4000/API/users/suggestions/${username}`, {headers: {"x-auth-token": token}})

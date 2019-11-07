@@ -28,6 +28,7 @@ class Search extends Component {
 			{ value: "tags", displayValue: "Tags", id: "tags" },
 		],
 		filterBy: "",
+		currentLocation: null
 	};
 
 	static contextType = UserContext;
@@ -35,20 +36,85 @@ class Search extends Component {
 	componentDidMount () {
 		this.updateFilters();
 		this.getLocation();
+		this.getSuggestions();
+	}
+
+	getSuggestions = () => {
+		const { username } = this.context.JWT.data;
+		const { token } = this.context.JWT;
+	
+		if (username !== undefined) {
+			axios.get(`http://localhost:4000/API/users/suggestions/${username}`, {headers: {"x-auth-token": token}})
+				.then(response => {
+					let suggestions = []
+					response.data.payload.result.map((elem, i) => {
+						if (this.state.popularityRange[0] <= elem.user.popularity) {
+							suggestions[i] = elem; 
+						}
+						return (suggestions);
+					})
+					this.setState({ suggestions: suggestions });
+				})
+				.catch(err => { 
+					console.log(err);
+				})
+		}
 	}
 
 	getLocation = () => {
-		axios.get('http://localhost:4000/API/locate')
-			.then((res) => {
-				console.log(res);
+		if (navigator && navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(pos => {
+				console.log(pos)
+				const coords = pos.coords;
+				this.setState({
+					currentLocation: {
+						lat: coords.latitude,
+						lng: coords.longitude,
+						adress: "Rue du Tissage",
+						city: "Sauzon", 
+						region: "Bretagne",
+						country: "France"
+					}
+				}, function() { console.log(this.state.currentLocation)});
+				axios.get(`http://localhost:4000/API/locate/reverseGeocode/${coords.latitude}/${coords.longitude}`)
+					.then((res) => {
+						console.log(res);
+					})
+			},
+			error => {
+				if (error.code === error.PERMISSION_DENIED) {
+				console.log('geoloc denied');
+				axios.get('http://localhost:4000/API/locate/geocode')
+					.then((position) => {
+						this.setState({
+							currentLocation: {
+								lat: position.payload.localisation.latitude,
+								lng: position.payload.localisation.longitude
+							}
+						}, function() { console.log(this.state.currentLocation) });
+						return axios.get(`http://localhost:4000/API/locate/reverseGeocode/${position.payload.localisation.latitude}/${position.payload.localisation.longitude}`)
+					})
+					.then((res) => {
+						console.log(res);	
+					})
+				}
 			})
-			.catch((err) => {
-				console.log(err);
-			})
+		}
 	}
 
-
 	handleSearch = (event) => {
+		const { name, value } = event.target;
+		console.log(name);
+		console.log(value);
+		this.setState({ [name]: value });
+		for (let i = 0; i < this.state.suggestions.length; i++) {
+			if (this.state.suggestions[i] === value) {
+				console.log(this.state.suggestions[i]);
+			}
+		}
+	}
+
+	handleFilterBy = (event) => {
 		const {name, value, checked, type} = event.target;
 		console.log(name);
 		type === "checkbox" ? this.setState({ [name]: checked }) : this.setState({ [name]: value });
@@ -169,6 +235,7 @@ class Search extends Component {
 		return (
 			<SearchDummy
 				handleSearch={this.handleSearch.bind((this))}
+				handleFilterBy={this.handleFilterBy.bind(this)}
 				submit={this.submit.bind(this)}
 				handleAddition={this.handleAddition.bind(this)}
 				handleDelete={this.handleDelete.bind(this)}

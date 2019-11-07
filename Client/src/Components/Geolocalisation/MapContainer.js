@@ -27,7 +27,6 @@ export class MapContainer extends Component {
   };
 
   render() {
-    console.log(this.state)
     return (
       <CurrentLocation
         centerAroundCurrentLocation
