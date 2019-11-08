@@ -34,11 +34,11 @@ constructor( props ){
       navigator.geolocation.getCurrentPosition(pos => {
         const coords = pos.coords;
         this.setState({
-          currentLocation: {
+          mapPosition: {
             lat: coords.latitude,
             lng: coords.longitude
           }
-        });
+        }, function() { console.log(this.state.mapPosition)});
         Geocode.fromLatLng( this.state.mapPosition.lat , this.state.mapPosition.lng ).then(
           response => {
            const address = response.results[0].formatted_address,
@@ -67,7 +67,7 @@ constructor( props ){
           axios.get('http://localhost:4000/API/locate/geocode')
             .then((position) => {
               this.setState({
-                currentLocation: {
+                mapPosition: {
                   lat: position.data.payload.localisation.latitude,
                   lng: position.data.payload.localisation.longitude
                 }
@@ -254,11 +254,20 @@ const Map = withScriptjs(
       {/* For Auto complete Search Box */}
       <Autocomplete
        style={{
-        width: '100%',
-        height: '40px',
         paddingLeft: '16px',
         marginTop: '2px',
-        marginBottom: '100px'
+        width: '70%',
+        height: '35px',
+        fontFamily: 'montserrat',
+        fontSize: '1.5vw',
+        fontWeight: '400',
+        outline: 'none',
+        padding: '15px',
+        border: '1px solid #ccc',
+        borderRadius: '3px',
+        marginBottom: '10px',
+        boxSizing: 'border-box',
+        color: '#2C3E50'
        }}
        onPlaceSelected={ this.onPlaceSelected }
        types={['(regions)']}
@@ -287,7 +296,7 @@ const Map = withScriptjs(
 let map;
   if( this.props.center.lat !== undefined ) {
    map = <div>
-     <div>
+     <div style={{display: 'none'}}>
       <div className="form-group">
        <label htmlFor="">City</label>
        <input type="text" name="city" className="form-control" onChange={ this.onChange } readOnly="readOnly" value={ this.state.city }/>
@@ -314,7 +323,7 @@ let map;
        <div style={{ height: this.props.height }} />
       }
       mapElement={
-       <div style={{ height: `100%` }} />
+       <div style={{ height: `100%`, width: `70%` }} />
       }
      />
     </div>

@@ -8,7 +8,8 @@ class NewCompo extends Component {
         <Map
      google={this.props.google}
      center={{lat: 47.371310, lng: -3.221410}}
-     height='300px'
+    //  height='300px'
+     height='25vh'
      zoom={15}
     />
       )

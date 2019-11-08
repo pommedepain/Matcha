@@ -72,13 +72,13 @@ const SearchDummy = (props) => {
 									<div className={classes.secondRow}>
 										<div className={classes.geolocCont} >
 											<MapContainer className={classes.map} />
-											{props.currentLocation ?
+											{/* {props.currentLocation ?
 												[<div className={classes.adress} key={0}>
 													<h4>{props.currentLocation.adress}, {props.currentLocation.city}</h4>
 													<h4>{props.currentLocation.state}, {props.currentLocation.country}</h4>
 												</div>]
 												: null
-											}
+											} */}
 										</div>
 										<div className={classes.filterBy} >
 											<h4>Filter by...</h4>
