@@ -5,6 +5,7 @@
 const debug = require('debug')('models:notifs');
 const _ = require('lodash');
 const driver = require('../util/driver');
+const User = require('./userClass');
 
 class Notifications {
 
@@ -53,18 +54,25 @@ class Notifications {
       session.run(query)
         .then((res) => {
           session.close();
-          debug(res);
           const result = [];
-          if (res.records.length !== 0) {
-            res.records.forEach((record) => {
-              result.push({
-                type: record._fields[0],
-                emitter: _.omit(record._fields[2], ['password', 'email']),
-                read: record._fields[1],
-                id: record._fields[3],
-              });
-            });
-          } resolve(result);
+          new User({ username: this.receiver }).getBlocked()
+            .then((blocked) => {
+              debug('blocked: ', blocked);
+              if (res.records.length !== 0) {
+                res.records.forEach((record) => {
+                  debug(record._fields[2].username);
+                  if (_.findKey(blocked, elem => (elem.username === record._fields[2].username)) === undefined) {
+                    result.push({
+                      type: record._fields[0],
+                      emitter: _.omit(record._fields[2], ['password', 'email']),
+                      read: record._fields[1],
+                      id: record._fields[3],
+                    });
+                  }
+                });
+              } resolve(result);
+            })
+            .catch(err => debug(err));
         })
         .catch(err => debug(err));
     });

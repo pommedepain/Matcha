@@ -43,6 +43,18 @@ app.use('/api/relationships', relationships);
 app.use('/api/auth', auth);
 
 app.use(error);
+app.use((req, res, next) => {
+  res.status(404);
+
+  // respond with json
+  if (req.accepts('json')) {
+    res.send({ error: '404 Not found' });
+    return;
+  }
+
+  // default to plain-text. send()
+  res.type('txt').send('404 Not found');
+});
 
 
 // seed()
