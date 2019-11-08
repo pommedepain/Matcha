@@ -89,12 +89,12 @@ const UserContextProvider = (props) => {
 		if (datas !== null) {
 			if (datas.username) {
 				console.log("new infos for user logged");
-				let newDatas = JWT;
-				newDatas['data'] = datas;
-				setJWT({ data: newDatas.data, exp: newDatas.exp, iat: newDatas.iat, token: newDatas.token });
+				let token = parseJwt(datas);
+				setJWT({ data: token.data, exp: token.exp, iat: token.iat, token: datas });
 			}
 			else {
 				console.log("new connection or parsing of token");
+				console.log(datas);
         		let token = parseJwt(datas);
 				setJWT({ data: token.data, exp: token.exp, iat: token.iat, token: datas });
 			}
@@ -122,6 +122,10 @@ const UserContextProvider = (props) => {
     	localStorage.setItem('JWT', JSON.stringify(JWT));
     	// console.log(localStorage.getItem('JWT', JSON.parse(JWT)));
 		if (JWT.data.firstName) {
+			let dateNow = new Date();
+			if (JWT.token.exp < (dateNow.getTime() / 1000)) {
+				setJWT({data: {}, exp: 0, iat: 0, token: "" });
+			}
 			mySocket.emit("loginUser", JWT.data.username);
 			mySocket.emit("notification", { type: 'isOnline' });
 			Axios.put(`http://localhost:4000/API/users/connect/${JWT.data.username}`, null, {headers: {"x-auth-token": JWT.token}})

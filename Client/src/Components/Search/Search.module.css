@@ -2,8 +2,20 @@
 	position: relative;
 	display: flex;
 	background-color: white;
-	/* height: 100vh; */
+	width: 100%;
+	height: 100%;
 	color: rgb(116, 209, 234);
+	flex-direction: column;
+	/* justify-content: center; */
+	align-items: center;
+}
+.searchPart {
+	position: relative;
+	display: flex;
+	width: 100%;
+	/* background-color: white; */
+	/* height: 100vh; */
+	/* color: rgb(116, 209, 234); */
 	flex-direction: column;
 	/* justify-content: center; */
 	align-items: center;
@@ -237,14 +249,14 @@ div.ReactTags__tagInput input.ReactTags__tagInputField:focus {
 	font-family: 'Ubuntu', sans-serif;
 	color: #524a54;
 	font-weight: 300;
-	font-size: 0.5em;
+	font-size: 1vw;
 	display: block;
 	position: relative;
-	margin-right: 1em;
-	padding-left: 2.5em;
-	padding-right: 0.5em;
+	margin-right: 1vw;
+	padding-left: 2.5vw;
+	padding-right: 0.5vw;
 	cursor: pointer;
-	padding-top: 0.15em;
+	padding-top: 0.15vw;
 	z-index: 1000;
 }
 .label:before {
@@ -276,3 +288,18 @@ div.ReactTags__tagInput input.ReactTags__tagInputField:focus {
 	transition: .25s all ease;
 }
 
+
+/* 
+	USERS ICON DISPLAY
+*/
+.wrapper {
+	padding-top: 5%;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	flex-wrap: wrap;
+	margin-bottom: 2%;
+	/* align-items: center; */
+}

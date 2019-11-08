@@ -438,7 +438,7 @@ class User extends Node {
           this.blocked.forEach((blocked) => {
             this.targets = _.remove(this.targets, target => (target.username !== blocked.username));
           });
-          debug('targets', this.targets);
+          // debug('targets', this.targets);
           this.promises = this.targets.map(user => (new User(user).getUserInfo()));
           return Promise.all(this.promises);
         })
@@ -461,7 +461,7 @@ class User extends Node {
         .then((reverseCommon) => {
           this.reverseCommon = reverseCommon;
           this.maxcomp = 0;
-          debug('target before sort', this.targets)
+          // debug('target before sort', this.targets)
           this.list = this.targets.map((target) => {
             if (this.common.find(el => (target.username === el.user.username)) === undefined
               && this.reverseCommon.find(el => (target.username === el.user.username)) === undefined) {
@@ -473,15 +473,19 @@ class User extends Node {
             } if (this.reverseCommon.find(el => (target.username === el.user.username)) === undefined) {
               // eslint-disable-next-line prefer-destructuring
               const compTags = this.common.find(el => (target.username === el.user.username)).compTags;
+              const l = compTags.length;
+              if (this.maxcomp <= l) { this.maxcomp = l; }
               return ({ user: target, compTags, reverseCompTags: [] });
-            } const l = this.common.find(el => (target.username === el.user.username)).compTags.length;
-            if (this.maxcomp <= l) { this.maxcomp = l; }
+            } 
             // eslint-disable-next-line prefer-destructuring
             const compTags = this.common.find(el => (target.username === el.user.username)).compTags;
             // eslint-disable-next-line prefer-destructuring
             const reverseCompTags = this.reverseCommon.find(el => (target.username === el.user.username)).reverseCompTags;
+            const l = compTags.length;
+            if (this.maxcomp <= l) { this.maxcomp = l; }
             return ({ user: target, compTags, reverseCompTags });
           });
+          // debug('list', this.list);
           this.result = [];
           for (let i = this.maxcomp; i >= 0; i -= 1) {
             this.list.forEach((element) => {

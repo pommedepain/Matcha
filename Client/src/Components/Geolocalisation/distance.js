@@ -1,8 +1,10 @@
 
-
+/* user = {lat, lon} 
+  return distance in km
+*/
 module.exports = (user1, user2) => {
   const toRad = (degrees) => (degrees * Math.PI / 180);
-  const R = 6371000;
+  const R = 6371;
   const lat1 = user1.lat;
   const lat2 = user2.lat;
   const dLat = toRad(user1.lat - user2.lat);
