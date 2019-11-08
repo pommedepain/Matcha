@@ -69,7 +69,7 @@ router.get('/confirm/:username/:token', wrapper(async (req, res) => {
     }));
 }));
 
-router.get('/infos/:username', [auth, identify], wrapper(async (req, res) => {
+router.get('/infos/:username', wrapper(async (req, res) => {
   res.locals.check = req.params.username;
   debug('Request to get user information for :', req.params.username);
   return (new User({ username: req.params.username }).getUserInfo()

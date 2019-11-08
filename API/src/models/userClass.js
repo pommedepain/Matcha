@@ -461,6 +461,7 @@ class User extends Node {
         .then((reverseCommon) => {
           this.reverseCommon = reverseCommon;
           this.maxcomp = 0;
+          debug('target before sort', this.targets)
           this.list = this.targets.map((target) => {
             if (this.common.find(el => (target.username === el.user.username)) === undefined
               && this.reverseCommon.find(el => (target.username === el.user.username)) === undefined) {
