@@ -34,8 +34,7 @@ class Search extends Component {
 		filterBy: "",
 		currentLocation: null, 
 		usersOnline: null,
-		suggestionsSearched: null,
-		suggestionsSearchedIndex: 0,
+		suggestionsSearched: [],
 		submitButton: false
 	};
 
@@ -153,40 +152,19 @@ class Search extends Component {
 	}
 
 	handleSearch = (event) => {
-		const { name, value } = event.target;
-		console.log(name);
-		console.log("value = " + value);
-		this.setState({ [name]: value });
-		let suggestionsSearched = [];
-		let k = this.state.suggestionsSearchedIndex;
-		console.log("suggestionsSearched begins at index: " + this.state.suggestionsSearchedIndex)
-		console.log(this.state.suggestions);
+		const { value } = event.target;
+		this.setState({ searchbar: value }, function () { 
+			let suggestionsSearched = this.state.suggestions;
 
-		for (let i = 0; i < value.length; i++) {
-			console.log(value[this.state.searchbarIndex] + " is char searched n° " + this.state.searchbarIndex);
-			for (let j = 0; j < this.state.suggestions.length; j++) {
-				if (value[this.state.searchbarIndex] === this.state.suggestions[j].user.username[i].toLowerCase()) {
-					console.log(this.state.suggestions[j].user.username);
-					if (suggestionsSearched.user && suggestionsSearched.user.username.indexOf(this.state.suggestions[j].user.username) !== -1) {
-						console.log("array contains user ? " + suggestionsSearched.user.username.indexOf(this.state.suggestions[j].user.username));
-						// this.setState({ suggestionsSearchedIndex: this.state.suggestionsSearchedIndex + 1 });
-					}
-					else {
-						console.log("new user added at array n° " + k);
-						suggestionsSearched[k++] = this.state.suggestions[j];
-						// this.setState({ suggestionsSearchedIndex: this.state.suggestionsSearchedIndex + 1 });
-					}
-				}
-			}
-		}
-		console.log(k)
-		if (suggestionsSearched) {
-			this.setState({ 
-				searchbarIndex: this.state.searchbarIndex + 1,
-				suggestionsSearchedIndex: k
+			suggestionsSearched = _.filter(this.state.suggestions, (elem) => {
+
+				return elem.user.username.includes(this.state.searchbar) === true
+					|| elem.user.firstName.includes(this.state.searchbar) === true
+					|| elem.user.lastName.includes(this.state.searchbar) === true;
 			});
-		}
-		this.setState({ suggestionsSearched: suggestionsSearched }, function () { console.log(suggestionsSearched); });
+
+			this.setState({ suggestionsSearched: suggestionsSearched });
+		});
 	}
 
 	distanceSort = () => {

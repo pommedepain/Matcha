@@ -22,17 +22,6 @@ const SearchDummy = (props) => {
 						<div className={classes.border}>
 							<div className={classes.elemCont} >
 								<div className={classes.filtersCont}>
-									<div className={classes.searchbarCont}>
-										<input 
-											className={classes.searchbar}
-											type="text"
-											value={props.searchbar}
-											name="searchbar"
-											placeholder="Who are you looking for ?"
-											onChange={props.handleSearch}
-										/>
-										<button onClick={props.submit} className={classes.submit}><i className={cx(classes.angle, "fas fa-angle-right")}></i></button>
-									</div>
 									<div className={classes.firstRow}>
 										<div className={classes.step3}>
 											<h3 className={classes.questionsS3}>Maximum Distance</h3>
@@ -78,6 +67,7 @@ const SearchDummy = (props) => {
 											handleDelete={props.handleDelete}
 											handleAddition={props.handleAddition}
 										/>
+										<button onClick={props.submit} className={classes.submit}><i className={cx(classes.angle, "fas fa-angle-right")}></i></button>
 									</div>
 									<div className={classes.secondRow}>
 										<div className={classes.geolocCont} >
@@ -111,6 +101,16 @@ const SearchDummy = (props) => {
 												))}
 											</div>
 										</div>
+									</div>
+									<div className={classes.searchbarCont}>
+										<input 
+											className={classes.searchbar}
+											type="text"
+											value={props.searchbar}
+											name="searchbar"
+											placeholder="Who are you looking for ?"
+											onChange={props.handleSearch}
+										/>
 									</div>
 								</div>
 							</div>
