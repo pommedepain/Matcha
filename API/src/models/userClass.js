@@ -192,7 +192,7 @@ class User extends Node {
       if (this.data.node_a.properties.sexOrient) {
         const session = this.driver.session();
         const query = `MATCH z=(a:User { username: '${this.data.node_a.properties.username}'})-[p:IS]->(c:Orientation)-[q:LOOK_FOR]-(d:Orientation)<-[r:IS]-(b:User)
-                      WHERE (b.age <= a.ageMax AND b.age >= a.ageMin AND a.age <= b.ageMax AND a.age >= b.ageMin AND toInt(a.popularity) <= (toInt(b.popularity) + 10) AND toInt(a.popularity) >= (toInt(b.popularity) - 10))
+                      WHERE (b.age <= a.ageMax AND b.age >= a.ageMin AND a.age <= b.ageMax AND a.age >= b.ageMin)
                       CREATE (a)-[t:COMPATIBLE]->(b)`;
         session.run(query)
           .then(() => { session.close(); debug(`User compatibilities created for ${this.data.node_a.properties.username}`); resolve(); })
