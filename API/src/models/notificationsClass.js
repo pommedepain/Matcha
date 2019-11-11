@@ -82,7 +82,7 @@ class Notifications {
     return new Promise((resolve, reject) => {
       if (!this.id) resolve('No id Provided!');
       const session = this.driver.session();
-      const query = `MATCH [r:notification]
+      const query = `MATCH (n)-[r:Notification]-(b)
                     WHERE ID(r) = ${this.id}
                     SET r.read=true`;
       session.run(query)
