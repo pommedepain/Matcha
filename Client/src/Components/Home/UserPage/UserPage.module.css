@@ -16,10 +16,10 @@
 	.back {
 		display: none;
 		position: fixed;
-		/* background: -moz-linear-gradient(-45deg, #e2a9e5 15%, #2b94e5 100%);
+		background: -moz-linear-gradient(-45deg, #e2a9e5 15%, #2b94e5 100%);
 		background: -webkit-linear-gradient(-45deg, #e2a9e5 15%,#2b94e5 100%);
-		background: linear-gradient(135deg, #e2a9e5 15%,#2b94e5 100%); */
-		background-color: #FDF38A;
+		background: linear-gradient(135deg, #e2a9e5 15%,#2b94e5 100%);
+		background-color: none;
 		border-radius: 2px;
 		width: 80%;
 		height: auto;
@@ -322,7 +322,7 @@
 	right: -82%;
 	cursor: pointer;
 	border: none;
-	background-color: #FDF38A;
+	background-color: transparent;
 	color: #524A54;
 }
 .block:focus,

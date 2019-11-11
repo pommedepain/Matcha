@@ -3,9 +3,9 @@ import cx from 'classnames';
 
 import classes from './Profil.module.css';
 import Hashtag from '../../Icons/hashtag';
+import MapContainer from '../Geolocalisation/MapContainer';
 
 const ProfilDummy = (props) => {
-	console.log(classes);
 	const user = props.JWT.data;
 	let photosArray = [];
 	for (let j = 1; j < user.photos.length; j++) {
@@ -104,7 +104,7 @@ const ProfilDummy = (props) => {
         					</div>
 						</div>
 					</div>
-					<div className={classes.descriptionCont}>
+					<div className={classes.rightPart}>
 						<div className={classes.rightTop}>
 							<div className={classes.basicInfos}>
 								<h3>{user.firstName} {user.lastName}</h3>
@@ -147,6 +147,17 @@ const ProfilDummy = (props) => {
 							className={classes.edit}
 							onClick={props.editProfil}
 						>Edit</button>
+					</div>
+				</div>
+				<div className={classes.secondRow}>
+					<div className={classes.cercle}>
+						<div className={classes.matchIndicator}>
+							<h3 className={classes.percentage}>{user.popularity} <i className="fas fa-percentage"></i></h3>
+							<h3 className={classes.popularity}>popularity</h3>
+						</div>
+						<div className={classes.geolocCont} >
+							<MapContainer className={classes.map} />
+						</div>
 					</div>
 				</div>
 			</div>

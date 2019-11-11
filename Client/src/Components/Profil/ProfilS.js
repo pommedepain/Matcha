@@ -5,10 +5,13 @@ import ProfilDummy from './ProfilD';
 import axios from 'axios';
 
 class Profil extends Component {
-	state = {
-		file: '',
-		imagePreviewUrl: ''
-	};
+	constructor () {
+		super();
+		this.state = {
+			file: '',
+			imagePreviewUrl: ''
+		};
+	}
 
 	static contextType = UserContext;
 
@@ -45,6 +48,7 @@ class Profil extends Component {
 			<ProfilDummy
 				handleSubmit={this.handleSubmit.bind(this)}
 				handleImageChange={this.handleImageChange.bind(this)}
+				editProfil={this.editProfil.bind(this)}
 				{...this.state}
 				{...this.context}
 			/>
