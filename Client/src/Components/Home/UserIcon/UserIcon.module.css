@@ -1,20 +1,4 @@
-@media only screen and (max-device-width: 1450px) {
-	.bubble {
-		display: flex;
-		flex-direction: column;
-		position: relative;
-		border: 1px solid rgb(116, 209, 234);
-		background-color: rgb(116, 209, 234);
-		border-radius: 50%;
-		width: 60vh;
-		height: 60vh;
-		margin-left: 1%;
-		margin-bottom: 3%;
-		/* cursor: pointer; */
-	}
-}
-
-@media only screen and (min-device-width: 1450px) {
+@media (max-width: 1450px) {
 	.bubble {
 		display: flex;
 		flex-direction: column;
@@ -24,6 +8,22 @@
 		border-radius: 50%;
 		width: 40vh;
 		height: 40vh;
+		margin-left: 1%;
+		margin-bottom: 3%;
+		/* cursor: pointer; */
+	}
+}
+
+@media (min-width: 1450px) {
+	.bubble {
+		display: flex;
+		flex-direction: column;
+		position: relative;
+		border: 1px solid rgb(116, 209, 234);
+		background-color: rgb(116, 209, 234);
+		border-radius: 50%;
+		width: 50vh;
+		height: 50vh;
 		margin-left: 1%;
 		margin-bottom: 3%;
 		/* cursor: pointer; */

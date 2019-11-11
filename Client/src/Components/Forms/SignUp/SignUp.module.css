@@ -11,13 +11,18 @@
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-}  
+}
+.display_page > h2 {
+	font-size: 3vw;
+	font-family: 'Ubuntu', sans-serif;
+	font-weight: 400;
+}
 .display_page > .sign_up {
 	display: block;
 	background-color: white;
 	font-family: 'Ubuntu', sans-serif;
 	font-weight: 300;
-	font-size: 0.6em;
+	font-size: 1.5vw;
 	border: 1px solid rgb(116, 209, 234);	
 	border-radius: 2px;
 	margin-bottom: 5px;

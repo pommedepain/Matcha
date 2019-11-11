@@ -49,18 +49,18 @@ const UserPageDumb = (props) => {
 			}
 			else if (hours <= 0 && minutes > 0) {
 				if (minutes === 1) {
-					time = minutes.substr(-2) + " minute";
+					time = minutes.toString().substr(-2) + " minute";
 				}
 				else {
-					time = minutes.substr(-2) + ' minutes';
+					time = minutes.toString().substr(-2) + ' minutes';
 				}
 			}
 			else if (hours <= 0 && minutes <= 0 && seconds > 0) {
 				if (seconds === 1) {
-					time = seconds.substr(-2) + " second";
+					time = seconds.toString().substr(-2) + " second";
 				}
 				else {
-					time = seconds.substr(-2) + ' seconds';
+					time = seconds.toString().substr(-2) + ' seconds';
 				}
 			}
 		}
@@ -80,18 +80,18 @@ const UserPageDumb = (props) => {
 			}
 			else if (daysElapsed <= 0 && monthElapsed > 0) {
 				if (monthElapsed === 1) {
-					time = monthElapsed.substr(-2) + " month";
+					time = monthElapsed.toString().substr(-2) + " month";
 				}
 				else {
-					time = monthElapsed.substr(-2) + ' months';
+					time = monthElapsed.toString().substr(-2) + ' months';
 				}
 			}
 			else if (daysElapsed <= 0 && monthElapsed <= 0 && yearsElapsed > 0) {
 				if (yearsElapsed === 1) {
-					time = yearsElapsed.substr(-2) + " year";
+					time = yearsElapsed.toString().substr(-2) + " year";
 				}
 				else {
-					time = yearsElapsed.substr(-2) + ' years';
+					time = yearsElapsed.toString().substr(-2) + ' years';
 				}
 			}
 		}

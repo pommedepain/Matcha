@@ -66,13 +66,25 @@
 /*
 	SEARCH BAR & SUBMIT
 */
-.searchbarCont {
-	width: 80%;
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	align-items: center;
-	margin-top: 3%;
+@media (max-width: 1450px) {
+	.searchbarCont {
+		width: 80%;
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+		margin-top: 5%;
+	}	
+}
+@media (min-width: 1450px) {
+	.searchbarCont {
+		width: 80%;
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+		margin-top: 3%;
+	}
 }
 .searchbar {
 	width: 50%;
@@ -130,7 +142,7 @@ input {
 /*
 	RANGE & SLIDER
 */
-@media only screen and (max-device-width: 1450px) {
+@media (max-width: 1450px) {
 	.questionsS3 {
 		font-size: 0.6em;
 		font-weight: 300;
@@ -144,7 +156,7 @@ input {
 	}
 }
 
-@media only screen and (min-device-width: 1500px) {
+@media (min-width: 1450px) {
 	.questionsS3 {
 		font-size: 1.4vw;
 		font-weight: 300;
@@ -196,35 +208,36 @@ div.ReactTags__tagInput input.ReactTags__tagInputField:focus {
 .geolocCont {
 	width: 50%;
 }
-/* .adress {
-	position: absolute;
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-start;
-	align-items: center;
-	z-index: 5;
-	top:70%;
-	width: 30%;
-}
-.adress > h4 {
-	font-family: 'Ubuntu', sans-serif;
-	font-size: 1vw;
-	font-weight: 300;
-} */
-
 
 /*
 	FILTERING LIST BY
 */
-.filterBy {
-	order: 2;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	position: absolute;
-	left: 40%;
-	width: 50%;
+
+@media (max-width: 1450px) {
+	.filterBy {
+		order: 2;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		position: absolute;
+		left: 40%;
+		top: 40%;
+		width: 50%;
+	}	
+}
+@media (min-width: 1450px) {
+	.filterBy {
+		order: 2;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		position: absolute;
+		left: 40%;
+		top: 30%;
+		width: 50%;
+	}
 }
 .filterBy > h4 {
 	text-align: center;

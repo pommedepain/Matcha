@@ -5,6 +5,7 @@ import classes from './Profil.module.css';
 import Hashtag from '../../Icons/hashtag';
 
 const ProfilDummy = (props) => {
+	console.log(classes);
 	const user = props.JWT.data;
 	let photosArray = [];
 	for (let j = 1; j < user.photos.length; j++) {
@@ -103,7 +104,7 @@ const ProfilDummy = (props) => {
         					</div>
 						</div>
 					</div>
-					<div className={classes.rightPart}>
+					<div className={classes.descriptionCont}>
 						<div className={classes.rightTop}>
 							<div className={classes.basicInfos}>
 								<h3>{user.firstName} {user.lastName}</h3>
