@@ -40,6 +40,7 @@ class Profil extends Component {
 	editProfil = (e) => {
 		e.preventDefault();
 		console.log("editProfil triggered");
+		
 	}
 
 	render () {
