@@ -6,15 +6,42 @@ import axios from 'axios';
 
 class Profil extends Component {
 	state = {
-
+		file: '',
+		imagePreviewUrl: ''
 	};
 
 	static contextType = UserContext;
 
+	handleSubmit(e) {
+		e.preventDefault();
+		// TODO: do something with -> this.state.file
+		console.log('handle uploading-', this.state.file);
+	}
+	
+	handleImageChange(e) {
+		e.preventDefault();
+	
+		let reader = new FileReader();
+		let file = e.target.files[0];
+	
+		reader.onloadend = () => {
+			this.setState({
+				file: file,
+				imagePreviewUrl: reader.result
+			}, function () {console.log(this.state)});
+		}
+	
+		reader.readAsDataURL(file)
+	}
+
 	render () {
+		console.log(this.context)
 		return (
 			<ProfilDummy
+				handleSubmit={this.handleSubmit.bind(this)}
+				handleImageChange={this.handleImageChange.bind(this)}
 				{...this.state}
+				{...this.context}
 			/>
 		)
 	}

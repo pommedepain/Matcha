@@ -72,11 +72,12 @@ const NavBarDummy = (props) => {
 						{ props.displayNotifs === true ?
 							[<div className={classes.notifs} key={0}>
 								{!props.notifications[0] ?
-								[<div id={0} key={0} className={classes.notification} /*onClick={(e) => props.handleNotifClick(e, 0)}*/ >
+								[<div id={0} key={0} className={classes.notification} >
 									You currently have no notification to display.
 								</div>]
 								: props.notifications.map((elem, i) => {
-									// console.log(elem);
+									console.log(props.notifications)
+									console.log(elem);
 									let style = null;
 									if (elem.read === false) {
 										style = { fontWeight: '600', color: '#ff665e' };

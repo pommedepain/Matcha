@@ -24,6 +24,7 @@ const UserContextProvider = (props) => {
 		if (token !== null && token.data.firstName) {
 			let dateNow = new Date();
 			if (token.exp < (dateNow.getTime() / 1000)) {
+				window.location.replace("http://localhost:3000/sign-up");
 				return ({data: {}, exp: 0, iat: 0, token: "" })
 			}
 			else {

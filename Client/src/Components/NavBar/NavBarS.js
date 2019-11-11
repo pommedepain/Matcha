@@ -43,9 +43,9 @@ class NavBar extends React.Component {
 							return (notificationsParsed[j++] = elem);
 						}
 					})
-					console.log(notificationsParsed);
+					// console.log(notificationsParsed);
 					this.setState({ notifications: notificationsParsed}, function () {
-						// console.log(this.state.notifications);
+						console.log(this.state.notifications);
 						let unreadNotifs = 0;
 						for (let i = 0; i < this.state.notifications.length; i++) {
 							if (this.state.notifications[i].read === false) {
@@ -59,7 +59,7 @@ class NavBar extends React.Component {
 							}, function() { console.log(this.state.unreadNotifs)});
 						}
 						if (this.context.newNotif.new) {
-							// console.log(this.context.newNotif);
+							console.log(this.context.newNotif);
 							this.context.toggleNotifReceived(this.context.newNotif);
 						}
 					});
@@ -109,13 +109,14 @@ class NavBar extends React.Component {
 		console.log(this.state.notifications[index]);
 		axios.put('http://localhost:4000/API/notifications/read', notifID, {headers: {"x-auth-token": token}})
 			.then((response) => {
+				console.log(response);
 				if (response.data.payload.result === "notification has been read") {
 					const notifications = this.state.notifications;
 					notifications[index].read = true;
 					this.setState({ 
 						notifications: notifications,
 						unreadNotifs: this.state.unreadNotifs - 1
-					});
+					}, function () { console.log(this.state)});
 				}
 			})
 			.catch((err) => {

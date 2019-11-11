@@ -223,6 +223,7 @@ const address = place.formatted_address,
   console.log( 'event', event );
   let newLat = event.latLng.lat(),
    newLng = event.latLng.lng(),
+   // eslint-disable-next-line no-unused-vars
    addressArray = [];
 Geocode.fromLatLng( newLat , newLng ).then(
    response => {

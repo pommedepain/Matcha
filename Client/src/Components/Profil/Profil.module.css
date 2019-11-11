@@ -1,6 +1,241 @@
-.contener {
+.main {
 	width: 100%;
 	height: 100vh;
 	display: flex;
+	position: relative;
+}
+.contener {
+	display: flex;
+	flex-direction: column;
+	width: 90%;
+	height: 100%;
+	position: relative;
+	/* border: 1px solid red; */
+	margin: 0 auto;
+	margin-top: 2%;
+}
+
+/*
+	FIRST ROW
+*/
+.firstRow {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	height: 50%;
+	position: relative;
+}
+
+/* Left */
+.leftPart {
+	display: flex;
+	flex-direction: column;
+	width: 40%;
+	height: 100%;
+	position: relative;
+}
+.photosCont {
+	display: flex;
+	flex-direction: row;
+	position: relative;
+	width: 100%;
+	height: 100%;
+	/* border: 1px solid green; */
+}
+.profilPic {
+	width: 30vw;
+	border-radius: 50%;
+}
+.otherPics {
+	display: flex;
+	flex-direction: column;
+	width: 20%;
+	align-items: center;
+	justify-content: space-around;
+}
+.otherPic {
+	border-radius: 50%;
+	width: 7.5vw;
+}
+.icon {
+	font-size: 7vw;
+	color: #524A54;;
+}
+
+.uploadPic {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	margin-top: 5%;
+}
+.uploadForm {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	justify-content: center;
+}
+.fileInput {
+	margin: 2%;
+	width: 60%;
+	font-size: 1vw;
+	cursor: pointer;
+}
+.fileInput:focus {
+	outline: none;
+}
+.imgPreview {
+	text-align: center;
+	margin: 0 auto;
+	width: 50%;
+	border-radius: 50%;
+}
+.imgPreview img {
+	width: 100%;
+	height: 100%;
+	border-radius: 50%;
+}
+.previewText {
+	width: 100%;
+	font-size: 1vw;
+	margin-top: 2%;
+	color: #524A54;
+}
+.submitButton {
+	font-size: 2vw;
+	cursor: pointer;
+	color: #524A54;;
+}
+.submitButton:hover {
+	color: rgb(116, 209, 234);
+}
+
+/* Right */
+.rightPart {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 60%;
+	position: relative;
+}
+.rightTop {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+}
+/*
+	Basic infos
+*/
+.basicInfos {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	margin: 0 auto;
+}
+.basicInfos > h3 {
+	display: flex;
+	flex-direction: row;
+	font-weight: 400;
+	color: #524A54;
+}
+.basicInfos > h4 {
+	display: flex;
+	flex-direction: row;
+	font-weight: 300;
+	color: #524A54;
+	font-size: 0.6em;
+}
+.usernameAge {
+	width: 60%;
+}
+.genderSex {
+	width: 80%;
+}
+.genderIcon {
+	margin-right: 2%;
+	margin-top: 1%;
+}
+
+/*
+	Middle
+*/
+.rightMiddle {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	margin-left: 15%;
+}
+.left_quote {
+	color: #524A54;
+	display: flex;
+	justify-self: left;
+}
+.right_quote {
+	color: #524A54;
+	display: block;
+	position: relative;
+	right: -88%;
 	
+}
+.bioCont {
+	display: flex;
+	flex-direction: column;
+	padding-left: 10%;
+	padding-right: 10%;
+}
+.IAm {
+	display: flex;
+	flex-direction: column;
+	justify-self: left;
+}
+.IAm > h5 {
+	color: #524A54;
+	font-weight: 300;
+	position: relative;
+	left: -1.5%;
+	font-size: 1.5vw;
+}
+.bio {
+	text-align: center;
+	color: #524A54;
+	font-weight: 300;
+}
+.bio > h4 {
+	font-weight: 300;
+}
+.lookingFor {
+	display: flex;
+	flex-direction: column;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	/* justify-self: right; */
+}
+.lookingFor > h5 {
+	color: #524A54;
+	font-weight: 300;
+	font-size: 1.5vw;
+	right: -67%;
+	bottom: -50%;
+	display: block;
+	width: 41.7%;
+	position: relative;
+}
+
+@media only screen and (max-device-width: 1450px) {
+	.hash {
+		color: white;
+		font-size: 1.4vh;
+		margin-bottom: 4px;
+		margin-right: 2px;
+	}
+}
+@media only screen and (min-device-width: 1450px) {
+	.hash {
+		color: white;
+		font-size: 1vh;
+		margin-bottom: 4px;
+		margin-right: 2px;
+	}
 }

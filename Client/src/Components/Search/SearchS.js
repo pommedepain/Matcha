@@ -173,8 +173,9 @@ class Search extends Component {
 			let j = 0;
 			this.state.suggestionsSearched.map((elem) => {
 				if (elem.user.distance <= this.state.localisation) {
-					sortedArray[j++] = elem;
+					return (sortedArray[j++] = elem);
 				}
+				else return null;
 			})
 			sortedArray = _.orderBy(sortedArray, ['user.distance'], ['asc']);
 			this.setState({ suggestionsSearched: sortedArray });
@@ -184,8 +185,9 @@ class Search extends Component {
 			let j = 0;
 			this.state.suggestions.map((elem) => {
 				if (elem.user.distance <= this.state.localisation) {
-					sortedArray[j++] = elem;
+					return (sortedArray[j++] = elem);
 				}
+				else return null;
 			})
 			sortedArray = _.orderBy(sortedArray, ['user.distance'], ['asc']);
 			this.setState({ suggestions: sortedArray });
@@ -239,11 +241,12 @@ class Search extends Component {
 					this.tagSortCount = 0;
 					this.context.JWT.data.lookTags.forEach((tag) => {
 						elem.user.isTags.forEach((isTag) => {
-							if (isTag.id === tag.id) this.tagSortCount += 1;
+							if (isTag.id === tag.id) return this.tagSortCount += 1;
 						})
 					})
 	
-					if (this.tagSortCount === this.context.JWT.data.lookTags.length) sortedArray.push(elem);
+					if (this.tagSortCount === this.context.JWT.data.lookTags.length) return sortedArray.push(elem);
+					else return null;
 				})
 				this.setState({ suggestionsSearched: sortedArray });
 			}
@@ -252,10 +255,12 @@ class Search extends Component {
 					this.tagSortCount = 0;
 					this.context.JWT.data.lookTags.forEach((tag) => {
 						elem.user.isTags.forEach((isTag) => {
-							if (isTag.id === tag.id) this.tagSortCount += 1;
+							if (isTag.id === tag.id) return this.tagSortCount += 1;
+							else return null;
 						})
 					})
-					if (this.tagSortCount === this.context.JWT.data.lookTags.length) sortedArray.push(elem);
+					if (this.tagSortCount === this.context.JWT.data.lookTags.length) return sortedArray.push(elem);
+					else return null;
 				})
 				this.setState({ suggestions: sortedArray });
 			}
@@ -284,6 +289,8 @@ class Search extends Component {
 			case 'tags':
 				this.tagsSort();
 				break;
+			default:
+				break ;
 		}
 	}
 
