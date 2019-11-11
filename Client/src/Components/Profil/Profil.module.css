@@ -79,6 +79,7 @@
 	width: 60%;
 	font-size: 1vw;
 	cursor: pointer;
+	color: #524A54;
 }
 .fileInput:focus {
 	outline: none;
@@ -103,7 +104,7 @@
 .submitButton {
 	font-size: 2vw;
 	cursor: pointer;
-	color: #524A54;;
+	color: #524A54;
 }
 .submitButton:hover {
 	color: rgb(116, 209, 234);
@@ -238,4 +239,15 @@
 		margin-bottom: 4px;
 		margin-right: 2px;
 	}
+}
+
+.edit {
+	position: absolute;
+	width: 5%;
+	font-size: 1vw;
+	font-family: 'Ubuntu', sans-serif;
+	border-radius: 2px;
+	background-color: none;
+	top: 0%;
+	left: 75%;
 }

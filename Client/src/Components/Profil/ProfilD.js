@@ -142,6 +142,10 @@ const ProfilDummy = (props) => {
 							</div>
 							<i className={cx("fas fa-quote-right", classes.right_quote)}></i>
 						</div>
+						<button
+							className={classes.edit}
+							onClick={props.editProfil}
+						>Edit</button>
 					</div>
 				</div>
 			</div>

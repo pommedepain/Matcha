@@ -34,6 +34,11 @@ class Profil extends Component {
 		reader.readAsDataURL(file)
 	}
 
+	editProfil = (e) => {
+		e.preventDefault();
+		console.log("editProfil triggered");
+	}
+
 	render () {
 		console.log(this.context)
 		return (
