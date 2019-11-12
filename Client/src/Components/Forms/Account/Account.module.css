@@ -1,6 +1,7 @@
 .main {
 	display: flex;
-	background-color: rgb(116, 209, 234);
+	/* background-color: rgb(116, 209, 234); */
+	background-color: white;
 	height: 90vh;
 	text-align: center;
 	color: black;
@@ -19,7 +20,10 @@
 	position: relative;
 }
 #msform fieldset {
-	background: white;
+	/* background: white; */
+	background: -moz-linear-gradient(-45deg, #e2a9e5 15%, #2b94e5 100%);
+	background: -webkit-linear-gradient(-45deg, #e2a9e5 15%,#2b94e5 100%);
+	background: linear-gradient(135deg, #e2a9e5 15%,#2b94e5 100%);
 	border: 0 none;
 	border-radius: 3px;
 	box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
