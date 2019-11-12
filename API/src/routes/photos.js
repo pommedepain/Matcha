@@ -11,9 +11,9 @@ const handler = require('../middleware/wrapper');
 const router = express.Router();
 
 cloudinary.config({
-  cloud_name: config.has('CLOUD_NAME'),
-  api_key: config.has('API_KEY'),
-  api_secret: config.has('API_SECRET'),
+  cloud_name: config.get('CLOUD_NAME'),
+  api_key: config.get('API_KEY'),
+  api_secret: config.get('API_SECRET'),
 });
 
 const storage = cloudinaryStorage({
@@ -25,14 +25,13 @@ const storage = cloudinaryStorage({
 
 const parser = multer({ storage });
 
-router.post('/api/images', parser.single('image'), handler(async (req, res) => {
-  debug(req.file);
+router.post('/', parser.single('image'), handler(async (req, res) => {
+  debug('req.file', req.file);
   const image = {};
   image.url = req.file.url;
   image.id = req.file.public_id;
-  Image.create(image)
-    .then(newImage => res.status(200).json(newImage))
-    .catch(err => debug(err));
+  debug(image);
+  return res.status(200).json(image);
 }));
 
 module.exports = router;

@@ -275,7 +275,7 @@ class Profil extends Component {
 			{
 				return (this.setState({ 
 						lookTags: [...this.state.lookTags, tag],
-						lookTagsTouched: true }, function() {console.log(this.state)})
+						lookTagsTouched: true }, function() { console.log(this.state) })
 				);
 			}
 		}
@@ -300,6 +300,14 @@ class Profil extends Component {
 		e.preventDefault();
 		// TODO: do something with -> this.state.file
 		console.log('handle uploading-', this.state.file);
+		const formData = new FormData();
+    formData.append('image', this.state.file)
+		axios.post('http://localhost:4000/api/photos', formData, {
+			headers: {
+				'Content-Type': 'multipart/form-data'
+			}
+		})
+		.then((res) => console.log(res))
 	}
 	
 	handleImageChange(e) {
