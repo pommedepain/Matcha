@@ -22,7 +22,9 @@ class Profil extends Component {
 			isTags: [],
 			isTagsTouched: false,
 			lookTags: [],
-			lookTagsTouched: false
+			lookTagsTouched: false,
+			photos : [],
+			photosTouched: false
 		};
 	}
 
@@ -43,6 +45,7 @@ class Profil extends Component {
 		this.setState({
 			isTags: this.context.JWT.data.isTags,
 			lookTags: this.context.JWT.data.lookTags,
+			photos: this.context.JWT.data.photos,
 			orderForm: newInfos
 		}, function() { console.log(this.state) });
 	}
@@ -168,12 +171,9 @@ class Profil extends Component {
 	}
 
 	inputChangedHandler = (event, inputIdentifier) => {
-		let updatedOrderForm = {};
-		const trueOrderForm = inputIdentifier === "birthdate" || inputIdentifier === "gender" || inputIdentifier === "sexualOrient" || inputIdentifier === "bio" ? "orderForm2" : "orderForm1";
-
-		trueOrderForm === "orderForm2" ?
-		updatedOrderForm = { ...this.state.orderForm2 }
-		: updatedOrderForm = { ...this.state.orderForm1 };
+		const updatedOrderForm = {
+			...this.state.orderForm
+		};
 
 		const updatedFormElement = {
 			...updatedOrderForm[inputIdentifier]
@@ -192,9 +192,7 @@ class Profil extends Component {
 					for (let inputIdentifier in updatedOrderForm) {
 						formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
 					}
-					trueOrderForm === "orderForm2" ?
-					this.setState({ orderForm2: updatedOrderForm, formIsValid: formIsValid })
-					: this.setState({ orderForm1: updatedOrderForm, formIsValid: formIsValid });
+					this.setState({ orderForm: updatedOrderForm, formIsValid: formIsValid });
 				})
 				.catch((e) => {
 					updatedFormElement.valid = false;
@@ -208,9 +206,7 @@ class Profil extends Component {
 					for (let inputIdentifier in updatedOrderForm) {
 						formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
 					}
-					trueOrderForm === "orderForm2" ?
-					this.setState({ orderForm2: updatedOrderForm, formIsValid: formIsValid })
-					: this.setState({ orderForm1: updatedOrderForm, formIsValid: formIsValid });
+					this.setState({ orderForm: updatedOrderForm, formIsValid: formIsValid });
 				})
 		}
 		else {
@@ -230,7 +226,7 @@ class Profil extends Component {
 			for (let inputIdentifier in updatedOrderForm) {
 				formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
 			}
-			this.setState({ orderForm2: updatedOrderForm, formIsValid: formIsValid });
+			this.setState({ orderForm: updatedOrderForm, formIsValid: formIsValid });
 		}
 	}
 
@@ -275,7 +271,7 @@ class Profil extends Component {
 			{
 				return (this.setState({ 
 						lookTags: [...this.state.lookTags, tag],
-						lookTagsTouched: true }, function() { console.log(this.state) })
+						lookTagsTouched: true }, function() {console.log(this.state)})
 				);
 			}
 		}
@@ -298,16 +294,23 @@ class Profil extends Component {
 
 	handleSubmit(e) {
 		e.preventDefault();
-		// TODO: do something with -> this.state.file
 		console.log('handle uploading-', this.state.file);
 		const formData = new FormData();
-    formData.append('image', this.state.file)
+    	formData.append('image', this.state.file)
 		axios.post('http://localhost:4000/api/photos', formData, {
 			headers: {
 				'Content-Type': 'multipart/form-data'
 			}
 		})
-		.then((res) => console.log(res))
+		.then((res) => {
+			console.log(res);
+			this.setState({
+				photos: [...this.state.photos, res.data.url],
+				photosTouched: true,
+				file: '',
+				imagePreviewUrl: ''
+			}, function() { console.log(this.state.photos)})
+		})
 	}
 	
 	handleImageChange(e) {
@@ -335,11 +338,30 @@ class Profil extends Component {
 		}
 		else {
 			newEdit.active = false;
+
+			let profilChanges = [];
+			if (this.state.isTagsTouched === true) {
+				profilChanges["isTags"] = this.state.isTags;
+			}
+			if (this.state.lookTagsTouched === true) {
+				profilChanges["tags"] = this.state.lookTags;
+			}
+			if (this.state.photosTouched === true) {
+				profilChanges["photos"] = this.state.photos;
+			}
+			// eslint-disable-next-line no-unused-vars
+			for (let formElementIdentifier in this.state.orderForm) {
+				if (this.state.orderForm[formElementIdentifier].touched === true) {
+					profilChanges[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
+				}
+			}
+			console.log(profilChanges);
 		}
 		this.setState({ edit: newEdit });
 	}
 
 	render () {
+		console.log(this.context)
 		return (
 			<ProfilDummy
 				handleSubmit={this.handleSubmit.bind(this)}

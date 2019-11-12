@@ -179,7 +179,7 @@ input {
 	width: 22%;
 }
 /* Styles for the tag input */
-div.ReactTags__tagInput {
+.TagInputClass {
     width: 80%;
     border-radius: 2px;
     display: inline-block;

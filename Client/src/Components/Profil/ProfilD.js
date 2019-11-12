@@ -23,9 +23,11 @@ const ProfilDummy = (props) => {
 	}
 
 	let {imagePreviewUrl} = props;
-    let imgPreview = null;
+    let imgPreview = [];
     if (imagePreviewUrl) {
-      imgPreview = (<img src={imagePreviewUrl} alt="preview"/>);
+		for (let l = 0; l < imagePreviewUrl.length; l++) {
+			imgPreview[l] = <img src={imagePreviewUrl[l]} alt="preview" key={l}/>;
+		}
     } else {
       imgPreview = (<div className={classes.previewText} >Please select an image for preview</div>);
 	}
@@ -107,7 +109,9 @@ const ProfilDummy = (props) => {
 								<input 
 									className={classes.fileInput}
         							type="file" 
-        						    onChange={(e)=>props.handleImageChange(e)} 
+									onChange={(e)=>props.handleImageChange(e)} 
+									accept="image/*"
+									multiple={true}
 								/>
 									<i className={cx("fas fa-upload", classes.submitButton)} key={0} onClick={(e)=>props.handleSubmit(e)}></i>
         					</form>

@@ -26,7 +26,6 @@ const Tags = (props) => {
 	// 	/* re-render */
 	// 	this.setState({ tags: newTags })
 	// }
-
 	return (
 		<div className={props.divclassname}>
 			<h3 className={props.h3classname}>{props.title}</h3>

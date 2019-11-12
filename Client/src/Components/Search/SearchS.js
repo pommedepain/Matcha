@@ -113,7 +113,7 @@ class Search extends Component {
 							currentCoords['state'] = datas.state;
 							currentCoords['postcode'] = datas.postcode;
 							currentCoords['country'] = datas.country;
-							this.setState({ currentLocation: currentCoords });
+							this.setState({ currentLocation: currentCoords }, function() { console.log(this.state.currentLocation)});
 						})
 				});
 			},
