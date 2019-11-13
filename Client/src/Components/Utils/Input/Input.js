@@ -35,7 +35,6 @@ const input = (props) => {
 
 	switch (props.elementType) {
 		case ( 'input' ) :
-			// console.log(props.elementConfig)
 			inputElement = <input
 				name={props.name}
 				style={props.style}
@@ -45,12 +44,10 @@ const input = (props) => {
 				onChange={props.changed} />;
 			break;
 		case ( 'radio' ) :
-			// console.log(props)
 			inputElement = 
 			<div className={nameclass}>
-				{props.elementConfig.options.map(option => (
-				// console.log(option),
-				<div key={option.id}>
+				{props.elementConfig.options.map(option => {
+				return (<div key={option.id}>
 					<input
 						type={props.elementConfig.type}
 						className={`${inputClasses.join(' ')} ${classes.radio}`}
@@ -60,8 +57,8 @@ const input = (props) => {
 						onChange={props.changed} 
 					/>
 					<label htmlFor={option.id} className={classes.label}>{option.displayValue}</label>
-				</div>
-				))}
+				</div>)
+				})}
 			</div>;
 			break;
 		case ( 'textarea' ):

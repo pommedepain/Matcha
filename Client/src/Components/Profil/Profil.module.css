@@ -477,6 +477,57 @@
 	border: 1px solid white;
 	outline: none;
 }
+.labelOption {
+	display: flex;
+}
+
+.radio {
+	position: absolute;
+	opacity: 0;
+	z-index: -2;
+}
+.label {
+	font-family: 'Ubuntu', sans-serif;
+	color: #524a54;
+	font-weight: 300;
+	font-size: 1vw;
+	display: block;
+	position: relative;
+	margin-right: 1vw;
+	padding-left: 2.5vw;
+	padding-right: 0.5vw;
+	cursor: pointer;
+	padding-top: 0.15vw;
+	z-index: 1000;
+}
+.label:before {
+	box-sizing: border-box;
+	content: " ";
+	position: absolute;
+	top: 0.2em;
+	bottom: 0.2em;
+	left: 5%;
+	display: block;
+	width: 1.4em;
+	height: 1.4em;
+	border: 1px solid #524a54;
+	border-radius: .25em;
+}  
+.radio + .label::before {
+	border-radius: 1em;
+}
+.radio:checked + .label {
+	color: #27AE60;
+}
+.radio:checked + .label:before {
+	background: #27AE60;
+	border: 1px solid #27AE60;
+}  
+/* Transition */
+.label,
+.label::before {
+	transition: .25s all ease;
+}
 input, textarea {
 	outline: none;
 	padding: 15px;
@@ -522,18 +573,3 @@ input, textarea {
 	/* left: 72%; */
 	top: 5%;
 }
-/* Styles for the tag input */
-/* div.ReactTags__tagInput {
-    width: 100%;
-    border-radius: 2px;
-    display: inline-block;
-}
-div.ReactTags__tagInput input.ReactTags__tagInputField,
-div.ReactTags__tagInput input.ReactTags__tagInputField:focus {
-    height: 1vh;
-    margin: 0;
-    font-size: 0.5em;
-    width: 100%;
-    border: 1px solid #eee;
-    padding: 0 4px;
-} */

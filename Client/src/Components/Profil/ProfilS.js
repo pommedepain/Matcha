@@ -171,6 +171,9 @@ class Profil extends Component {
 	}
 
 	inputChangedHandler = (event, inputIdentifier) => {
+		console.log(event.target.value)
+		console.log(event.target.type)
+		console.log(inputIdentifier);
 		const updatedOrderForm = {
 			...this.state.orderForm
 		};
@@ -182,7 +185,7 @@ class Profil extends Component {
 		if (inputIdentifier !== "birthdate") {
 			this.checkValidity(updatedFormElement.value, updatedFormElement.validation, inputIdentifier, this.state)
 				.then((response) => {
-					// console.log(response);
+					console.log(response);
 					updatedFormElement.valid = response;
 					updatedFormElement.touched = true;
 					updatedOrderForm[inputIdentifier] = updatedFormElement;
@@ -192,7 +195,7 @@ class Profil extends Component {
 					for (let inputIdentifier in updatedOrderForm) {
 						formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
 					}
-					this.setState({ orderForm: updatedOrderForm, formIsValid: formIsValid });
+					this.setState({ orderForm: updatedOrderForm, formIsValid: formIsValid }, function() {console.log(this.state.orderForm)});
 				})
 				.catch((e) => {
 					updatedFormElement.valid = false;
@@ -343,7 +346,7 @@ class Profil extends Component {
 		else {
 			newEdit.active = false;
 
-			let profilChanges = [];
+			let profilChanges = {};
 			if (this.state.isTagsTouched === true) {
 				profilChanges["isTags"] = this.state.isTags;
 			}

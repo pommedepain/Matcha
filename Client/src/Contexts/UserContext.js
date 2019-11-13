@@ -95,7 +95,6 @@ const UserContextProvider = (props) => {
 			}
 			else {
 				console.log("new connection or parsing of token");
-				console.log(datas);
         		let token = parseJwt(datas);
 				setJWT({ data: token.data, exp: token.exp, iat: token.iat, token: datas });
 			}

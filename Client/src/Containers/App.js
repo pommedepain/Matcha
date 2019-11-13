@@ -10,6 +10,7 @@ import Account from '../Components/Forms/Account/AccountS';
 import Footer from './Footer';
 import Profil from '../Components/Profil/ProfilS';
 import Search from '../Components/Search/SearchS';
+import Messages from '../Components/Messages/MessagesS';
 import UserContextProvider from '../Contexts/UserContext';
 import PrivateRoute from './PrivateRoute';
 
@@ -27,6 +28,7 @@ class App extends Component {
               <PrivateRoute path="/account" component={Account} />
               <PrivateRoute path="/profil" component={Profil} />
               <PrivateRoute path="/search" component={Search} />
+              <PrivateRoute path="/messages" component={Messages} />
             </Switch>
 			    	<Footer />
 			    </div>

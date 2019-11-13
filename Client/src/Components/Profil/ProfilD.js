@@ -74,8 +74,8 @@ const ProfilDummy = (props) => {
 				<div className={classes.firstRow}>
 					<div className={classes.leftPart}>
 						<div className={classes.photosCont}>
-							{user.photos[0] ?
-								<img src={user.photos[0]} className={classes.profilPic} alt="profil"/>
+							{props.photos ?
+								<img src={props.photos[0]} className={classes.profilPic} alt="profil"/>
 								: <i className={cx(classes.icon, "fas fa-user-circle")}></i>
 							}
 							<div className={classes.otherPics}>
@@ -127,6 +127,8 @@ const ProfilDummy = (props) => {
 								{props.edit.active ? 
 									[<div className={classes.genderSexualOrient} key={0} >
 										<Input 
+											className={formElementsArray.id}
+											id={formElementsArray.id}
 											key={formElementsArray[1].id}
 											elementType={formElementsArray[1].config.elementType}
 											elementConfig={formElementsArray[1].config.elementConfig}
@@ -135,8 +137,11 @@ const ProfilDummy = (props) => {
 											invalid={!formElementsArray[1].config.valid}
 											shouldValidate={formElementsArray[1].config.validation}
 											touched={formElementsArray[1].config.touched}
+											checked={formElementsArray[1].config.value}
 										/>
 										<Input 
+											className={formElementsArray.id}
+											id={formElementsArray.id}
 											key={formElementsArray[2].id}
 											elementType={formElementsArray[2].config.elementType}
 											elementConfig={formElementsArray[2].config.elementConfig}
@@ -145,6 +150,7 @@ const ProfilDummy = (props) => {
 											invalid={!formElementsArray[2].config.valid}
 											shouldValidate={formElementsArray[2].config.validation}
 											touched={formElementsArray[2].config.touched}
+											checked={formElementsArray[2].config.value}
 										/>
 									</div>]
 									: <h4 className={classes.genderSex}><i className={cx(genderIcon, classes.genderIcon)}></i>{gender}, {sexOrient}</h4> 
@@ -177,7 +183,7 @@ const ProfilDummy = (props) => {
 											key={0}
 										/>]
 										: [<div className={classes.tagContIAm} key={0}>
-											{user.isTags.map((elem, i) => (
+											{props.isTags.map((elem, i) => (
 												<span key={i} className={classes.price_tag}>
 													<Hashtag className={classes.hash}/> 
 													{elem.text}
@@ -215,7 +221,7 @@ const ProfilDummy = (props) => {
 											key={0}
 										/>]
 										: [<div className={classes.tagContInterest} key={0} >
-											{user.lookTags.map((elem, i) => (
+											{props.lookTags.map((elem, i) => (
 												<span key={i} className={classes.price_tag}>
 													<Hashtag className={classes.hash}/> 
 													{elem.text}
