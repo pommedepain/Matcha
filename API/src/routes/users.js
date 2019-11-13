@@ -167,7 +167,7 @@ router.get('/:username/score', [auth, identify], wrapper(async (req, res) => {
     }));
 }));
 
-router.get('/:username/conversations', wrapper(async (req, res) => {
+router.get('/:username/conversations', [auth, identify], wrapper(async (req, res) => {
   res.locals.check = req.params.username;
   debug('Requesting list...');
   return (new User({ username: req.params.username }).getConversations()
@@ -181,7 +181,7 @@ router.get('/:username/conversations', wrapper(async (req, res) => {
   );
 }));
 
-router.get('/:username/conversationWith/:target', wrapper(async (req, res) => {
+router.get('/:username/conversationWith/:target', [auth, identify], wrapper(async (req, res) => {
   res.locals.check = req.params.username;
   debug('Requesting list...');
   return (new User({ username: req.params.username }).getConversationWith(req.params.target)
