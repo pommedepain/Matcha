@@ -14,6 +14,7 @@ class Notifications {
     if (data.emitter) this.emitter = data.emitter;
     if (data.receiver) this.receiver = data.receiver;
     if (data.type) this.type = data.type;
+    if (data.message) this.message = data.message;
     if (data.id) this.id = data.id;
     this.driver = driver;
     debug('Notif constructor called', this.data);
@@ -29,18 +30,32 @@ class Notifications {
       if (this.type === 'match') this.previous = 'unmatch';
       if (this.type === 'unlike') this.previous = 'like';
       if (this.type === 'unmatch') this.previous = 'match';
-      const query0 = `MATCH (a:User {username:'${this.emitter}'})-[r:Notification {type:'${this.previous}'}]->(b:User {username:'${this.receiver}'})
+      if (this.type === 'message') {
+        this.previous = 'message';
+        if (!this.message) { resolve('no message'); }
+        const query = `MATCH (a:User {username:'${this.emitter}'}),(b:User {username:'${this.receiver}'})
+                      CREATE (a)-[r:Notification {type:'${this.type}', date:'${date}', message:'${this.message}', emitter:'${this.emitter}', receiver:'${this.receiver}', read:false}]->(b)`;
+        session.run(query)
+          .then((res) => {
+            debug('Notification created:', this.data);
+            session.close();
+            resolve(true);
+          })
+          .catch(err => debug(err));
+      } else {
+        const query0 = `MATCH (a:User {username:'${this.emitter}'})-[r:Notification {type:'${this.previous}'}]->(b:User {username:'${this.receiver}'})
                       DELETE r`;
-      const query = `MATCH (a:User {username:'${this.emitter}'}),(b:User {username:'${this.receiver}'})
+        const query = `MATCH (a:User {username:'${this.emitter}'}),(b:User {username:'${this.receiver}'})
                       CREATE (a)-[r:Notification {type:'${this.type}', date:'${date}', read:false}]->(b)`;
-      session.run(query0)
-        .then(() => session.run(query))
-        .then((res) => {
-          debug('Notification created:', this.data);
-          session.close();
-          resolve(true);
-        })
-        .catch(err => debug(err));
+        session.run(query0)
+          .then(() => session.run(query))
+          .then((res) => {
+            debug('Notification created:', this.data);
+            session.close();
+            resolve(true);
+          })
+          .catch(err => debug(err));
+      }
     });
   }
 

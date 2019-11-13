@@ -167,10 +167,24 @@ router.get('/:username/score', [auth, identify], wrapper(async (req, res) => {
     }));
 }));
 
-router.get('/:username/conversations', [auth, identify], wrapper(async (req, res) => {
+router.get('/:username/conversations', wrapper(async (req, res) => {
   res.locals.check = req.params.username;
   debug('Requesting list...');
   return (new User({ username: req.params.username }).getConversations()
+    .then((result) => {
+      debug(result);
+      return res.status(200).json({
+        success: true,
+        payload: { value: 'read', result },
+      });
+    })
+  );
+}));
+
+router.get('/:username/conversationWith/:target', wrapper(async (req, res) => {
+  res.locals.check = req.params.username;
+  debug('Requesting list...');
+  return (new User({ username: req.params.username }).getConversationWith(req.params.target)
     .then((result) => {
       debug(result);
       return res.status(200).json({
@@ -222,19 +236,19 @@ router.post('/', wrapper(async (req, res) => {
     }));
 }));
 
-router.post('/:username/chat', [auth, identify], wrapper(async (req, res) => {
-  res.locals.check = req.params.username;
-  debug('Requesting relation list...');
-  return (new User({ username: req.params.username }).chat(req.body)
-    .then((result) => {
-      debug(result);
-      return res.status(200).json({
-        success: true,
-        payload: { value: 'read', result },
-      });
-    })
-  );
-}));
+// router.post('/:username/chat', [auth, identify], wrapper(async (req, res) => {
+//   res.locals.check = req.params.username;
+//   debug('Requesting relation list...');
+//   return (new Notification(req.body).create()
+//     .then((result) => {
+//       debug(result);
+//       return res.status(200).json({
+//         success: true,
+//         payload: { value: 'read', result },
+//       });
+//     })
+//   );
+// }));
 
 router.post('/:username/visit/:target', [auth, identify], wrapper(async (req, res) => {
   res.locals.check = req.params.username;

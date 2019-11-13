@@ -960,43 +960,68 @@ class User extends Node {
     });
   }
 
-  chat(data) {
-    return new Promise((resolve, reject) => {
-      const [target, message] = data;
-      const date = new Date().toLocaleString();
-      const session = this.driver.session();
-      const query = `MATCH (n:User { username:'${this.user.username}'})-[r:CONVERSATION]-(b:User {username:'${target}'})`;
-      const query1 = `CREATE (n:User { username:'${this.user.username}'})-[r:CONVERSATION { messages: [{ emitter:'${this.user.username}' , receiver:'${target}' , date:'${date}', content:'${message}' }] }]->(b:User {username:'${target}'})
-                      RETURN r.messages`;
-      const query2 = `MATCH (n:User { username:'${this.user.username}'})-[r:CONVERSATION]-(b:User {username:'${target}'})
-                      SET r.messages= r.messages + { emitter:'${this.user.username}' , receiver:'${target}' , date:'${date}', content:'${message}' }
-                      RETURN r.messages`;
-      session.run(query)
-        .then((res) => {
-          if (res.records.length !== 0) {
-            return (session.run(query1));
-          } return (session.run(query2));
-        })
-        .then((messages) => {
-          this.messages = messages;
-          debug(messages);
-          return this.updateScore();
-        })
-        .then(() => new User({ username: target }).updateScore())
-        .then(() => resolve(this.messages))
-        .catch(err => debug(err));
-    });
-  }
+  // chat(data) {
+  //   return new Promise((resolve, reject) => {
+  //     const { target, message } = data;
+  //     const date = new Date().toLocaleString();
+  //     const session = this.driver.session();
+  //     const query = `MATCH p=(n:User { username:'${this.user.username}'})-[r:CONVERSATION]-(b:User {username:'${target}'}) return p`;
+  //     const query1 = `CREATE (n:User { username:'${this.user.username}'})-[r:CONVERSATION { messages: [{ emitter:'${this.user.username}' , receiver:'${target}' , date:'${date}', content:'${message}' }] }]->(b:User {username:'${target}'})
+  //                     RETURN r.messages`;
+  //     const query2 = `MATCH (n:User { username:'${this.user.username}'})-[r:CONVERSATION]-(b:User {username:'${target}'})
+  //                     SET r.messages= r.messages + { emitter:'${this.user.username}' , receiver:'${target}' , date:'${date}', content:'${message}' }
+  //                     RETURN r.messages`;
+  //     session.run(query)
+  //       .then((res) => {
+  //         debug('first res', res.records);
+  //         if (res.records.length === 0) {
+  //           return (session.run(query1));
+  //         } return (session.run(query2));
+  //       })
+  //       .then((messages) => {
+  //         this.messages = messages;
+  //         debug(messages);
+  //         return this.updateScore();
+  //       })
+  //       .then(() => new User({ username: target }).updateScore())
+  //       .then(() => resolve(this.messages))
+  //       .catch(err => debug(err));
+  //   });
+  // }
 
   getConversations() {
     return new Promise((resolve, reject) => {
       const session = this.driver.session();
-      const query = `MATCH (n:User { username:'${this.user.username}'})-[r:CONVERSATION]-(b:User)
+      const query = `MATCH (n:User { username:'${this.user.username}'})-[r:Notification {type:'message'}]-(b:User)
                     WITH n,b, collect(properties(r)) as conv
                     return b.username,conv`;
       session.run(query)
         .then((res) => {
           const result = [];
+          debug(res);
+          if (res.records.length !== 0) {
+            res.records.forEach((record) => {
+              result.push({
+                username: record._fields[0],
+                conversation: record._fields[1],
+              });
+            });
+          } resolve(result);
+        });
+    });
+  }
+
+  getConversationWith(target) {
+    return new Promise((resolve, reject) => {
+      const session = this.driver.session();
+      const query = `MATCH (n:User { username:'${this.user.username}'})-[r:Notification {type:'message'}]-(b:User {username:'${target}'})
+                    WITH b,r ORDER BY r.date DESC
+                    WITH b,collect(properties(r)) as conv
+                    return b.username,conv`;
+      session.run(query)
+        .then((res) => {
+          const result = [];
+          debug(res);
           if (res.records.length !== 0) {
             res.records.forEach((record) => {
               result.push({

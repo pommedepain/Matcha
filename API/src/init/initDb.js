@@ -6,6 +6,7 @@ const populateTags = require('./tags');
 const populateOrientations = require('./orientations');
 const populateUserRelationships = require('./userRelationships');
 const populateOrientationsRelationships = require('./orientationsRelationships');
+const populateFakeConv = require('./fakeConv');
 const RelationShip = require('../models/relationshipsClass');
 const User = require('../models/userClass');
 const Tag = require('../models/tagClass');
@@ -34,6 +35,7 @@ function populateDb() {
       .then(() => { debug('############# ORIENTATIONS CREATED ###############'); return populateOrientationsRelationships(); })
       .then(() => { debug('############# ORIENTATION RELATIONSHIPS CREATED ###############'); return populateUsers(); })
       .then(() => { debug('############# USERS CREATED ###############'); return populateUserRelationships(); })
+      .then(() => { debug('############# USER RELATIONSHIPS CREATED ###############'); return populateFakeConv(); })
       .then(() => { debug('############# USER RELATIONSHIPS CREATED ###############'); resolve(); })
       .catch(err => reject(err));
   });
