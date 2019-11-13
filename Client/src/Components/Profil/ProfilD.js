@@ -11,27 +11,18 @@ import Tags from '../Utils/Tags/Tags';
 const ProfilDummy = (props) => {
 	const user = props.JWT.data;
 	let photosArray = [];
-	for (let j = 1; j < user.photos.length; j++) {
-		photosArray[j] = <img src={user.photos[j]} alt="others" className={classes.otherPic} key={j} />;
+	let i = 0;
+	for (let j = 1; j < props.photos.length; j++) {
+		photosArray[i++] = <img src={props.photos[j]} alt="others" className={classes.otherPic} key={j} />;
 	}
-	let rest = 5 - photosArray.length;
-	if (photosArray.length < 5) {
+	let rest = 4 - photosArray.length;
+	if (photosArray.length < 4) {
 		let k = photosArray.length;
 		for (rest; rest > 0; rest--) {
 			photosArray[k++] = <i className={cx(classes.icon, "fas fa-user-circle")} key={k} ></i>;
 		}
 	}
 
-	let {imagePreviewUrl} = props;
-    let imgPreview = [];
-    if (imagePreviewUrl) {
-		for (let l = 0; l < imagePreviewUrl.length; l++) {
-			imgPreview[l] = <img src={imagePreviewUrl[l]} alt="preview" key={l}/>;
-		}
-    } else {
-      imgPreview = (<div className={classes.previewText} >Please select an image for preview</div>);
-	}
-	
 	/* Picking the right gender icon to display */
 	let genderIcon = null;
 	if (user.gender === "male") {
@@ -88,37 +79,30 @@ const ProfilDummy = (props) => {
 								: <i className={cx(classes.icon, "fas fa-user-circle")}></i>
 							}
 							<div className={classes.otherPics}>
-								{user.photos ?
-									photosArray.map((elem, i) => {
-										if (i !== 0) {
-											return (elem)
-										}
-										else return null;
-									})
-									: photosArray.map((elem, i) => {
-										if (i !== 0) {
-											return (elem);
-										}
-										else return null;
-									})
-								}
+								{photosArray.map((elem) => (elem))}
 							</div>
 						</div>
-						<div className={classes.uploadPic}>
-        					<form className={classes.uploadForm}>
-								<input 
-									className={classes.fileInput}
-        							type="file" 
-									onChange={(e)=>props.handleImageChange(e)} 
-									accept="image/*"
-									multiple={true}
-								/>
+						{props.edit.active ?
+							[<div className={classes.uploadPic} key={1}>
+        						<form className={classes.uploadForm}>
+									<input 
+										className={classes.fileInput}
+        								type="file" 
+										onChange={(e)=>props.handleImageChange(e)} 
+										accept="image/*"
+										multiple={true}
+									/>
 									<i className={cx("fas fa-upload", classes.submitButton)} key={0} onClick={(e)=>props.handleSubmit(e)}></i>
-        					</form>
-        					<div className={classes.imgPreview} >
-        						{imgPreview}
-        					</div>
-						</div>
+        						</form>
+        						<div className={classes.imgPreview} >
+									{props.imagePreviewUrl ?
+										props.imagePreviewUrl.map((elem, i) => (<img src={elem} alt="preview" key={i}/>))
+										: <div className={classes.previewText} key={0} >Please select an image for preview</div>
+									}
+        						</div>
+							</div>]
+							: null
+						}
 					</div>
 					<div className={classes.rightPart}>
 						<div className={classes.rightTop}>

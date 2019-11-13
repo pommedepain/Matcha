@@ -11,7 +11,7 @@ class Profil extends Component {
 	constructor () {
 		super();
 		this.state = {
-			file: '',
+			files: [],
 			imagePreviewUrl: '',
 			edit: {
 				active: false,
@@ -294,39 +294,43 @@ class Profil extends Component {
 
 	handleSubmit(e) {
 		e.preventDefault();
-		console.log('handle uploading-', this.state.file);
-		const formData = new FormData();
-    	formData.append('image', this.state.file)
-		axios.post('http://localhost:4000/api/photos', formData, {
-			headers: {
-				'Content-Type': 'multipart/form-data'
-			}
-		})
-		.then((res) => {
-			console.log(res);
-			this.setState({
-				photos: [...this.state.photos, res.data.url],
-				photosTouched: true,
-				file: '',
-				imagePreviewUrl: ''
-			}, function() { console.log(this.state.photos)})
-		})
+		console.log('handle uploading-', this.state.files);
+		this.state.files.forEach(elem => {
+			const formData = new FormData();
+			formData.append('image', elem);
+			axios.post('http://localhost:4000/api/photos', formData, {
+				headers: {
+					'Content-Type': 'multipart/form-data'
+				}})
+				.then((res) => {
+					console.log(res);
+					this.setState({
+						photos: [...this.state.photos, res.data.url],
+						photosTouched: true,
+						file: '',
+						imagePreviewUrl: ''
+					}, function() { console.log(this.state.photos)})
+				})
+		});
 	}
 	
 	handleImageChange(e) {
 		e.preventDefault();
 	
-		let reader = new FileReader();
-		let file = e.target.files[0];
+		let files = [];
+		for (let i = 0; i < e.target.files.length; i++){
+			let reader = new FileReader();
+			files.push(e.target.files[i]);
 	
-		reader.onloadend = () => {
-			this.setState({
-				file: file,
-				imagePreviewUrl: reader.result
-			}, function () {console.log(this.state)});
+			reader.onloadend = () => {
+				this.setState({
+					files: files,
+					imagePreviewUrl: [...this.state.imagePreviewUrl, reader.result]
+				}, function () {console.log(this.state)});
+			}
+	
+			reader.readAsDataURL(e.target.files[i]);
 		}
-	
-		reader.readAsDataURL(file)
 	}
 
 	editProfil = (e) => {
@@ -356,12 +360,17 @@ class Profil extends Component {
 				}
 			}
 			console.log(profilChanges);
+			axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, profilChanges, {headers: {"x-auth-token": this.context.JWT.token}})
+				.then((res) => {
+					console.log(res);
+					this.context.toggleUser(res.data.payload.result.token);
+				})
+				.catch((err) => console.log(err))
 		}
 		this.setState({ edit: newEdit });
 	}
 
 	render () {
-		console.log(this.context)
 		return (
 			<ProfilDummy
 				handleSubmit={this.handleSubmit.bind(this)}
