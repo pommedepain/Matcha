@@ -50,7 +50,7 @@ class Notifications {
       const session = this.driver.session();
       const query = `MATCH (a:User {username:'${this.receiver}'})<-[r:Notification]-(c:User)
                     RETURN r.type,r.read,properties(c),ID(r)
-                    ORDER BY r.date`;
+                    ORDER BY r.date DESC`;
       session.run(query)
         .then((res) => {
           session.close();
