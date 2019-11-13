@@ -14,7 +14,8 @@ const MessagesDummy = (props) => {
 						console.log(elem)
 						return (
 							<div key={i} className={classes.userDiv} onClick={(e) => props.getConversation(e, elem.username)} >
-								{elem.firstName} {elem.lastName}
+								<img src={elem.photos[0]} alt="profil" className={classes.photo} />
+								<div className={classes.names}>{elem.firstName} {elem.lastName}</div>
 							</div>)
 					})
 					: null
