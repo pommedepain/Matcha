@@ -104,7 +104,7 @@ class Node extends Relationship {
           if (result.records.length === 1) {
             const singleRecord = result.records[0];
             const node = singleRecord.get(0);
-            debug(`Updated ${this.data.node_a.label}: ${this.data.node_a.properties[this.id_a]}`);
+            debug(`Updated ${this.data.node_a.label}: ${this.data.node_a.properties}`);
             resolve(node.properties);
           } else reject(new Error(`Informations does not match existing ${this.data.node_a.label}`));
         })

@@ -663,10 +663,11 @@ class User extends Node {
     return new Promise((resolve, reject) => (
       new UserValidator(this.updateRequirements, this.user).validate()
         .then(() => { if (newData.password) { this.user.password = newData.password; } return this.hashGenerator(); })
-        .then((pass) => { this.newData = newData; debug(this.newData); this.newData.password = pass; return this.updateNode(this.newData); })
+        .then((pass) => { this.newData = newData; debug('newData:', this.newData); this.newData.password = pass; return this.updateNode(this.newData); })
         .then((user) => {
           this.user = user;
           if (newData.tags) {
+            debug('new looktags detected')
             this.user.tags = newData.tags;
             const node = {
               label: 'User',
@@ -680,6 +681,7 @@ class User extends Node {
         })
         .then(() => {
           if (newData.isTags) {
+            debug('new isTags detected')
             this.user.isTags = newData.isTags;
             const node = {
               label: 'User',
