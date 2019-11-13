@@ -24,7 +24,8 @@ class Profil extends Component {
 			lookTags: [],
 			lookTagsTouched: false,
 			photos : [],
-			photosTouched: false
+			photosTouched: false,
+			displayInput: {display: 'none'}
 		};
 	}
 
@@ -47,7 +48,11 @@ class Profil extends Component {
 			lookTags: this.context.JWT.data.lookTags,
 			photos: this.context.JWT.data.photos,
 			orderForm: newInfos
-		}, function() { console.log(this.state) });
+		}, function() { 
+			console.log(this.state);
+			console.log(document.getElementsByClassName("searchNewLocationInput")[0]);
+		});
+		console.log(document.getElementsByClassName("searchNewLocationInput"));
 	}
 
 	checkValidity2(value, rules, inputIdentifier) {
@@ -340,11 +345,14 @@ class Profil extends Component {
 		e.preventDefault();
 		console.log("editProfil triggered");
 		let newEdit = this.state.edit;
+		let isDisplayed = null;
 		if (this.state.edit.active === false) {
 			newEdit.active = true;
+			isDisplayed = {display: 'flex'};
 		}
 		else {
 			newEdit.active = false;
+			isDisplayed = {display: 'none'};
 
 			let profilChanges = {};
 			if (this.state.isTagsTouched === true) {
@@ -370,7 +378,10 @@ class Profil extends Component {
 				})
 				.catch((err) => console.log(err))
 		}
-		this.setState({ edit: newEdit });
+		this.setState({ 
+			edit: newEdit,
+			displayInput: isDisplayed
+		});
 	}
 
 	render () {

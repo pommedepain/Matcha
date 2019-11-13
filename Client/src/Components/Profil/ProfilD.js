@@ -241,7 +241,7 @@ const ProfilDummy = (props) => {
 				</div>
 				<div className={classes.secondRow}>
 					<div className={classes.geolocCont} >
-						<MapContainer className={classes.map} />
+						<MapContainer displayInput={props.displayInput} />
 					</div>
 					<div className={classes.cercle}>
 						<div className={classes.matchIndicator}>

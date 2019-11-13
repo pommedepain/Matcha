@@ -5,12 +5,13 @@ import GoogleMap from './GoogleMap';
 import AutoComplete from './AutoComplete';
 import axios from 'axios';
 import Geocode from "react-geocode";
+import { UserContext } from '../../Contexts/UserContext';
+
 Geocode.setApiKey(process.env.REACT_APP_MAP_KEY);
 
 class NewCompo extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       mapApiLoaded: false,
       mapInstance: null,
@@ -21,6 +22,8 @@ class NewCompo extends Component {
       customCenter: [48.896704899999996, 1.3184218],
     };
   }
+
+  static contextType = UserContext;
 
   getCity = ( addressArray ) => {
     let city = '';
@@ -62,7 +65,7 @@ class NewCompo extends Component {
     const markers = [];
     if (navigator && navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(pos => {
-        console.log(pos);
+        // console.log(pos);
         const customCenter = [pos.coords.latitude, pos.coords.longitude];
         this.setState({ customCenter })
         markers.push(new maps.Marker({
@@ -73,7 +76,7 @@ class NewCompo extends Component {
           map,
         }));
         map.setCenter({ lat: this.state.customCenter[0], lng: this.state.customCenter[1] })
-        console.log({ lat: this.state.customCenter[0], lng: this.state.customCenter[1] });
+        // console.log({ lat: this.state.customCenter[0], lng: this.state.customCenter[1] });
         this.setState({
         mapApiLoaded: true,
         mapInstance: map,
@@ -81,6 +84,11 @@ class NewCompo extends Component {
         locations,
         markers,
         });
+        axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, { lat: this.state.customCenter[0], lon: this.state.customCenter[1]} , {headers: {"x-auth-token": this.context.JWT.token}})
+          .then((res) => {
+            this.context.toggleUser(res.data.payload.result.token);
+          })
+          .catch((err) => console.log(err))
         Geocode.fromLatLng( this.state.customCenter[0] , this.state.customCenter[1] ).then(
           response => {
            const address = response.results[0].formatted_address,
@@ -89,7 +97,7 @@ class NewCompo extends Component {
             area = this.getArea( addressArray ),
             state = this.getState( addressArray );
          
-           console.log( 'city', city, area, state );
+          //  console.log( 'city', city, area, state );
          
            this.setState( {
             address: ( address ) ? address : '',
@@ -118,7 +126,7 @@ class NewCompo extends Component {
                 map,
               }));
               map.setCenter({ lat: this.state.customCenter[0], lng: this.state.customCenter[1] })
-              console.log({ lat: this.state.customCenter[0], lng: this.state.customCenter[1] });
+              // console.log({ lat: this.state.customCenter[0], lng: this.state.customCenter[1] });
               this.setState({
               mapApiLoaded: true,
               mapInstance: map,
@@ -126,6 +134,11 @@ class NewCompo extends Component {
               locations,
               markers,
               });
+              axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, { lat: this.state.customCenter[0], lon: this.state.customCenter[1]} , {headers: {"x-auth-token": this.context.JWT.token}})
+                .then((res) => {
+                  this.context.toggleUser(res.data.payload.result.token);
+                })
+                .catch((err) => console.log(err))
               Geocode.fromLatLng( this.state.customCenter[0] , this.state.customCenter[1] ).then(
                 response => {
                  const address = response.results[0].formatted_address,
@@ -134,7 +147,7 @@ class NewCompo extends Component {
                   area = this.getArea( addressArray ),
                   state = this.getState( addressArray );
                
-                 console.log( 'city', city, area, state );
+                //  console.log( 'city', city, area, state );
                
                  this.setState( {
                   address: ( address ) ? address : '',
@@ -180,8 +193,12 @@ class NewCompo extends Component {
         area = this.getArea( addressArray ),
         state = this.getState( addressArray );
      
-       console.log( 'city', city, area, state );
-     
+      //  console.log( 'city', city, area, state );
+        axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, {lat: place.geometry.location.lat(), lon: place.geometry.location.lng()} , {headers: {"x-auth-token": this.context.JWT.token}})
+          .then((res) => {
+            this.context.toggleUser(res.data.payload.result.token);
+          })
+          .catch((err) => console.log(err))
        this.setState( {
         address: ( address ) ? address : '',
         area: ( area ) ? area : '',
@@ -202,9 +219,6 @@ class NewCompo extends Component {
     } = this.state;
     return (
       <Fragment>
-        {mapApiLoaded && (
-          <AutoComplete map={mapInstance} mapApi={mapApi} customCenter={customCenter} addplace={this.addPlace} />
-        )}
         <GoogleMap
           defaultZoom={15}
           defaultCenter={[customCenter[0], customCenter[1]]}
@@ -225,6 +239,9 @@ class NewCompo extends Component {
               />
             ))} */}
         </GoogleMap>
+        {mapApiLoaded && (
+          <AutoComplete map={mapInstance} mapApi={mapApi} customCenter={customCenter} addplace={this.addPlace} displayInput={this.props.displayInput} />
+        )}
       </Fragment>
     );
   }

@@ -28,7 +28,7 @@ class NavBar extends React.Component {
 			// console.log(username)
 			axios.get(`http://localhost:4000/API/notifications/${username}`, {headers: {"x-auth-token": token}})
 				.then(response => {
-					console.log(response.data.payload.result);
+					// console.log(response.data.payload.result);
 					let notificationsParsed = [];
 					let j = 0;
 					/* Save notifications except the 'unlike' ones */
@@ -45,7 +45,7 @@ class NavBar extends React.Component {
 					})
 					// console.log(notificationsParsed);
 					this.setState({ notifications: notificationsParsed}, function () {
-						console.log(this.state.notifications);
+						// console.log(this.state.notifications);
 						let unreadNotifs = 0;
 						for (let i = 0; i < this.state.notifications.length; i++) {
 							if (this.state.notifications[i].read === false) {
@@ -56,7 +56,7 @@ class NavBar extends React.Component {
 						if (unreadNotifs > 0) {
 							this.setState({
 								unreadNotifs: unreadNotifs
-							}, function() { console.log(this.state.unreadNotifs)});
+							}/*, function() { console.log(this.state.unreadNotifs)}*/);
 						}
 						if (this.context.newNotif.new) {
 							console.log(this.context.newNotif);

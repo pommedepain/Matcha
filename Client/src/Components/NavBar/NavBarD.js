@@ -76,8 +76,8 @@ const NavBarDummy = (props) => {
 									You currently have no notification to display.
 								</div>]
 								: props.notifications.map((elem, i) => {
-									console.log(props.notifications)
-									console.log(elem);
+									// console.log(props.notifications)
+									// console.log(elem);
 									let style = null;
 									if (elem.read === false) {
 										style = { fontWeight: '600', color: '#ff665e' };

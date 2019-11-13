@@ -409,8 +409,6 @@
 	width: 40%;
 	justify-content: center;
 	position: relative;
-	left: 50%;
-	/* top: 100%; */
 }
 .matchIndicator {
 	display: flex;
@@ -439,13 +437,15 @@
 @media (max-width: 1450px) {
 	.geolocCont {
 		width: 60%;
-		position: absolute;
+		height: 200%;
+		position: relative;
 	}
 }
 @media (min-width: 1450px) {
 	.geolocCont {
 		width: 60%;
-		position: absolute;
+		height: 200%;
+		position: relative;
 		/* top: 120%; */
 	} 
 }

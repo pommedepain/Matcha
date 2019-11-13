@@ -6,7 +6,6 @@ const Wrapper = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
-  padding: 20px;
 `;
 
 class AutoComplete extends Component {
@@ -56,8 +55,25 @@ class AutoComplete extends Component {
   }
 
   render() {
+    const style = {
+      position: 'relative',
+      paddingLeft: '16px',
+      marginTop: '2px',
+      width: '100%',
+      height: '35px',
+      fontFamily: 'montserrat',
+      fontSize: '1.5vw',
+      fontWeight: '400',
+      outline: 'none',
+      padding: '15px',
+      border: '1px solid #ccc',
+      borderRadius: '3px',
+      marginBottom: '10px',
+      boxSizing: 'border-box',
+      color: '#2C3E50',
+  }
     return (
-      <Wrapper>
+      <Wrapper style={this.props.displayInput}>
         <input
           ref={(ref) => {
             this.searchInput = ref;
@@ -65,6 +81,7 @@ class AutoComplete extends Component {
           type="text"
           onFocus={this.clearSearchBox}
           placeholder="Enter a location"
+          style={style}
         />
 
       </Wrapper>
