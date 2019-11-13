@@ -25,7 +25,7 @@ const MessagesDummy = (props) => {
 					{props.messagesList ?
 						props.messagesList.map((elem, i) => {
 							console.log(elem);
-							return (elem);
+							return (<div key={i}>{elem.message}</div>);
 						})
 						: null
 					}

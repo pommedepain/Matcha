@@ -44,8 +44,7 @@ class MessagesSmart extends Component {
 		console.log(username);
 		axios.get(`http://localhost:4000/API/users/${username}/conversationWith/${this.context.JWT.data.username}`, {headers: {"x-auth-token": this.context.JWT.token}})
 			.then((res) => {
-				console.log(res);
-				// this.setState({ messagesList: res.data.payload.result }, function() {console.log(this.state.messgesList)})
+				this.setState({ messagesList: res.data.payload.result[0].conversation }, function() {console.log(this.state.messagesList)})
 			})
 			.catch((err) => console.log(err))
 	}
