@@ -660,10 +660,11 @@ class User extends Node {
   }
 
   updateUser(newData) {
+    debug(newData);
     return new Promise((resolve, reject) => (
       new UserValidator(this.updateRequirements, this.user).validate()
-        .then(() => { if (newData.password) { this.user.password = newData.password; } return this.hashGenerator(); })
-        .then((pass) => { this.newData = newData; debug('newData:', this.newData); this.newData.password = pass; return this.updateNode(this.newData); })
+        .then(() => { if (newData.password) { this.user.password = newData.password;  return this.hashGenerator();} return new Promise(res => (res()))  })
+        .then((pass) => { this.newData = newData; debug('newData:', this.newData); if (pass) {this.newData.password = pass }; return this.updateNode(this.newData); })
         .then((user) => {
           this.user = user;
           if (newData.tags) {

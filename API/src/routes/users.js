@@ -254,6 +254,7 @@ router.post('/:username/visit/:target', [auth, identify], wrapper(async (req, re
 router.put('/update/:username', [auth, identify], wrapper(async (req, res) => {
   res.locals.check = req.params.username;
   debug('Request to update :\n', { username: req.params.username });
+  debug('newData:', req.body);
   return (new User({ username: req.params.username }).updateUser(req.body)
     .then((result) => {
       debug(result);
