@@ -96,10 +96,11 @@ class Notifications {
   read() {
     return new Promise((resolve, reject) => {
       if (!this.id) resolve('No id Provided!');
+      const date = new Date().toLocaleString();
       const session = this.driver.session();
       const query = `MATCH (n)-[r:Notification]-(b)
                     WHERE ID(r) = ${this.id}
-                    SET r.read=true`;
+                    SET r.read='${date}'`;
       session.run(query)
         .then(() => resolve('notification has been read'))
         .catch(err => debug(err));

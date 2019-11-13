@@ -19,7 +19,7 @@ async function randomNotifications() {
       new Promise((res) => {
         for (let i = 0; i < chaosCounter; i += 1) {
           const target = users[rand(0, users.length - 1)];
-          if (target !== user) {
+          if (target !== user && user !== 'camille' && user !== 'philoutre') {
             notifications.push(
               {
                 type: 'like',
@@ -42,6 +42,26 @@ async function randomNotifications() {
 function populatenotifications() {
   return (randomNotifications()
     .then((notifications) => {
+      notifications.push({
+        type: 'like',
+        emitter: 'camille',
+        receiver: 'philoutre',
+      });
+      notifications.push({
+        type: 'like',
+        emitter: 'philoutre',
+        receiver: 'camille',
+      });
+      notifications.push({
+        type: 'match',
+        emitter: 'camille',
+        receiver: 'philoutre',
+      });
+      notifications.push({
+        type: 'match',
+        emitter: 'philoutre',
+        receiver: 'camille',
+      });
       return (notifications.reduce(async (prev, next) => {
         await prev;
         return new Notifications(next).create();
