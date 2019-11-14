@@ -36,6 +36,7 @@ const input = (props) => {
 	switch (props.elementType) {
 		case ( 'input' ) :
 			inputElement = <input
+				id={props.id}
 				name={props.name}
 				style={props.style}
 				className={inputClasses.join(' ')} 

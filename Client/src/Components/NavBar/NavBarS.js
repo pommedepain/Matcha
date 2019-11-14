@@ -10,6 +10,8 @@ class NavBar extends React.Component {
 		errors: {},
 		notifications: [],
 		unreadNotifs: 0,
+		messages: [],
+		unreadMessages: 0,
 		displayNotifs: false,
 		usersOnline: null
 	}
@@ -30,13 +32,18 @@ class NavBar extends React.Component {
 				.then(response => {
 					// console.log(response.data.payload.result);
 					let notificationsParsed = [];
+					let messagesParsed = [];
+					let i = 0;
 					let j = 0;
 					/* Save notifications except the 'unlike' ones */
 					response.data.payload.result.map(elem => {
 						if (elem.type === 'unlike') {
 							return null;
 						}
-						if (elem.type === 'unmatch') {
+						else if (elem.type === 'message') {
+							return (messagesParsed[i++] = elem);
+						}
+						else if (elem.type === 'unmatch') {
 							return (notificationsParsed[j++] = elem);
 						}
 						else {
@@ -44,22 +51,33 @@ class NavBar extends React.Component {
 						}
 					})
 					// console.log(notificationsParsed);
-					this.setState({ notifications: notificationsParsed}, function () {
+					this.setState({ 
+						notifications: notificationsParsed,
+						messages: messagesParsed
+					}, function () {
 						// console.log(this.state.notifications);
+						// console.log(this.state.messages)
 						let unreadNotifs = 0;
 						for (let i = 0; i < this.state.notifications.length; i++) {
 							if (this.state.notifications[i].read === false) {
 								unreadNotifs += 1;
 							}
 						}
+						let unreadMessages = 0;
+						for (let j = 0; j < this.state.messages.length; j++) {
+							if (this.state.messages[j].read === false) {
+								unreadMessages += 1;
+							}
+						}
 						// console.log(unreadNotifs);
 						if (unreadNotifs > 0) {
 							this.setState({
-								unreadNotifs: unreadNotifs
+								unreadNotifs: unreadNotifs,
+								unreadMessages: unreadMessages
 							}/*, function() { console.log(this.state.unreadNotifs)}*/);
 						}
 						if (this.context.newNotif.new) {
-							console.log(this.context.newNotif);
+							// console.log(this.context.newNotif);
 							this.context.toggleNotifReceived(this.context.newNotif);
 						}
 					});
@@ -127,7 +145,7 @@ class NavBar extends React.Component {
 	
 	render() {
 		if (this.context.newNotif.new === true) {
-			console.log("new notif in localStorage detected");
+			// console.log("new notif in localStorage detected");
 			this.getNotifications();
 		}
 		return (

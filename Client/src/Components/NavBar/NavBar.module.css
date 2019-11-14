@@ -120,6 +120,48 @@ a, a:hover {
   margin-right: 2%;
 }
 
+@media (max-width: 1450px) {
+  .unreadMessages {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ff665e;
+    position: absolute;
+    width: 2%;
+    height: 1vh;
+    top: 0;
+    right: 46%;
+    border-radius: 50%;
+    background-color: #ff665e;
+    color: white;
+    text-align: center;
+    font-size: 1vw;
+    font-family: 'Ubuntu', sans-serif;
+    font-weight: 400;
+  }
+}
+
+@media (min-width: 1450px) {
+  .unreadMessages {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ff665e;
+    position: absolute;
+    width: 10%;
+    height: 2.5vh;
+    top: 0;
+    right: 30%;
+    border-radius: 50%;
+    background-color: #ff665e;
+    color: white;
+    text-align: center;
+    font-size: 1vw;
+    font-family: 'Ubuntu', sans-serif;
+    font-weight: 400;
+  }
+}
+
 /* Notifications */
 .right {
   width: 15%;
