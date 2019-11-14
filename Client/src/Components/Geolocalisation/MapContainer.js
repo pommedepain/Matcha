@@ -5,6 +5,7 @@ import axios from 'axios';
 import Geocode from "react-geocode";
 import { UserContext } from '../../Contexts/UserContext';
 
+
 Geocode.setApiKey(process.env.REACT_APP_MAP_KEY);
 
 class NewCompo extends Component {
@@ -66,9 +67,17 @@ class NewCompo extends Component {
         // console.log(pos);
         const customCenter = [pos.coords.latitude, pos.coords.longitude];
         this.setState({ customCenter })
+        const icon = {
+          url: 'https://uinames.com/api/photos/female/16.jpg', // url
+          scaledSize: new maps.Size(34, 34), // scaled size
+          origin: new maps.Point(0,0), // origin
+          anchor: new maps.Point(0, 0), // anchor
+          shape:{coords:[17,17,18],type:'circle'},
+          optimized: false,
+        };
         markers.push(new maps.Marker({
-          draggable:true,
-                title:"Drag me!",
+          icon,
+          animation: maps.Animation.DROP,
           position: {
             lat: this.state.customCenter[0],
             lng: this.state.customCenter[1],
@@ -118,9 +127,17 @@ class NewCompo extends Component {
               this.setState({
                 customCenter: [position.data.payload.localisation.latitude,position.data.payload.localisation.longitude],
               })
+              const icon = {
+                shape:{coords:[17,17,18],type:'circle'},
+                optimized: false,
+                url: 'https://uinames.com/api/photos/female/16.jpg', // url
+                scaledSize: new maps.Size(34, 34), // scaled size
+                origin: new maps.Point(0,0), // origin
+                anchor: new maps.Point(0, 0) // anchor
+              };
               markers.push(new maps.Marker({
-                draggable:true,
-                title:"Drag me!",
+                icon,
+                animation: maps.Animation.DROP,
                 position: {
                   lat: this.state.customCenter[0],
                   lng: this.state.customCenter[1],
@@ -173,9 +190,17 @@ class NewCompo extends Component {
     const map = this.state.mapInstance;
     markers[0].setMap(null);
     markers = [];
+    const icon = {
+      shape:{coords:[17,17,18],type:'circle'},
+      optimized: false,
+      url: 'https://uinames.com/api/photos/female/16.jpg', // url
+      scaledSize: new maps.Size(34, 34), // scaled size
+      origin: new maps.Point(0,0), // origin
+      anchor: new maps.Point(0, 0) // anchor
+    };
     markers.push(new maps.Marker({
-      draggable:true,
-                title:"Drag me!",
+      icon,
+      animation: maps.Animation.DROP,
       position: {
         lat: place.geometry.location.lat(),
         lng: place.geometry.location.lng(),
