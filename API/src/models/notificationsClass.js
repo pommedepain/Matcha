@@ -24,6 +24,7 @@ class Notifications {
     return new Promise((resolve, reject) => {
       if (!this.emitter || !this.receiver || !this.type) resolve('Missing information');
       const date = new Date().toLocaleString();
+      const time = new Date().getTime();
       const session = this.driver.session();
       if (this.type === 'visit') this.previous = 'visit';
       if (this.type === 'like') this.previous = 'unlike';
@@ -35,7 +36,7 @@ class Notifications {
         if (!this.message) { resolve('no message'); }
         const query = `MATCH (a:User {username:'${this.emitter}'}),(b:User {username:'${this.receiver}'})
                       CREATE (a)-[r:Notification $props]->(b)`;
-        const props = { type: this.type, date, message: this.message, emitter: this.emitter, receiver: this.receiver, read: false };
+        const props = { type: this.type, date, time, message: this.message, emitter: this.emitter, receiver: this.receiver, read: false };
         session.run(query, { props })
           .then((res) => {
             debug('Notification created:', this.data);
@@ -96,10 +97,10 @@ class Notifications {
 
   read() {
     return new Promise((resolve, reject) => {
-      if (!this.id) resolve('No id Provided!');
+      if (!this.id || !this.receiver) resolve('Bad input');
       const date = new Date().toLocaleString();
       const session = this.driver.session();
-      const query = `MATCH (n)-[r:Notification]-(b)
+      const query = `MATCH (n:User {username:'${this.receiver}'})<-[r:Notification]-(b)
                     WHERE ID(r) = ${this.id}
                     SET r.read='${date}'`;
       session.run(query)

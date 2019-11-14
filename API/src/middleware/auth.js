@@ -14,8 +14,9 @@ module.exports = (req, res, next) => {
     const decoded = jwt.verify(token, config.get('jwtPrivateKey'));
     res.locals.user = decoded.data;
     if (req.params.username) res.locals.check = req.params.username;
-    else if (req.body.receiver) res.locals.check = req.body.receiver;
-    else if (req.body.node_a && req.body.node_a.properties && req.body.node_a.properties.username) res.locals.check = req.body.node_a.properties.username;
+    else if (req.body && req.body.emitter) res.locals.check = req.body.emitter;
+    else if (req.body && req.body.receiver && req.body.id) res.locals.check = req.body.receiver;
+    else if (req.body && req.body.node_a && req.body.node_a.properties && req.body.node_a.properties.username) res.locals.check = req.body.node_a.properties.username;
     // debug('Valid token decoded : ', decoded);
     // return (new User(decoded.username).generateAuthToken()
     //   .then((result) => { req.token = result; return (next()); }));
