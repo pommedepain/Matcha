@@ -34,8 +34,9 @@ class Notifications {
         this.previous = 'message';
         if (!this.message) { resolve('no message'); }
         const query = `MATCH (a:User {username:'${this.emitter}'}),(b:User {username:'${this.receiver}'})
-                      CREATE (a)-[r:Notification {type:'${this.type}', date:'${date}', message:'${this.message}', emitter:'${this.emitter}', receiver:'${this.receiver}', read:false}]->(b)`;
-        session.run(query)
+                      CREATE (a)-[r:Notification $props]->(b)`;
+        const props = { type: this.type, date, message: this.message, emitter: this.emitter, receiver: this.receiver, read: false };
+        session.run(query, { props })
           .then((res) => {
             debug('Notification created:', this.data);
             session.close();
