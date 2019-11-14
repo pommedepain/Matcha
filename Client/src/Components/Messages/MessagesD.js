@@ -35,7 +35,7 @@ const MessagesDummy = (props) => {
 									</div>
 								);
 							}
-							else if (elem.emitter === user.username) {
+							else {
 								return (
 									<div className={classes.takePlaceRight} key={i} >
 										<blockquote className={cx(classes.speech_bubbleSent)}>

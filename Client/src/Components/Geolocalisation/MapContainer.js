@@ -1,6 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import isEmpty from 'lodash.isempty';
-import Marker from './Marker';
 import GoogleMap from './GoogleMap';
 import AutoComplete from './AutoComplete';
 import axios from 'axios';
