@@ -102,14 +102,15 @@ class NavBar extends React.Component {
 
 	handleNotifClick = (e, index) => {
 		e.preventDefault();
+		const { username } = this.context.JWT.data;
     	const { token } = this.context.JWT;
 		let notifID = null;
-		notifID = { id: this.state.notifications[index].id.low };
+		notifID = { id: this.state.notifications[index].id.low, receiver: username };
 
-		console.log(this.state.notifications[index]);
+		// console.log(this.state.notifications[index]);
 		axios.put('http://localhost:4000/API/notifications/read', notifID, {headers: {"x-auth-token": token}})
 			.then((response) => {
-				console.log(response);
+				// console.log(response);
 				if (response.data.payload.result === "notification has been read") {
 					const notifications = this.state.notifications;
 					notifications[index].read = true;

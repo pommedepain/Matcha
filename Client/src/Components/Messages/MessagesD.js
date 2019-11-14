@@ -5,17 +5,17 @@ import classes from './Messages.module.css';
 import Input from '../Utils/Input/Input';
 
 const MessagesDummy = (props) => {
-	console.log(props.messagesList)
+	const user = props.JWT.data;
+	// console.log(props.messagesList)
 	return (
 		<div className={classes.main}>
 			<div className={classes.usersList}>
 				{props.matchList ?
 					props.matchList.map((elem, i) => {
-						console.log(elem)
 						return (
-							<div key={i} className={classes.userDiv} onClick={(e) => props.getConversation(e, elem.username)} >
-								<img src={elem.photos[0]} alt="profil" className={classes.photo} />
-								<div className={classes.names}>{elem.firstName} {elem.lastName}</div>
+							<div key={i} className={classes.userDiv} onClick={(e) => props.getConversation(e, elem.user.username)} >
+								<img src={elem.user.photos[0]} alt="profil" className={classes.photo} />
+								<div className={classes.names}>{elem.user.firstName} {elem.user.lastName}</div>
 							</div>)
 					})
 					: null
@@ -25,8 +25,26 @@ const MessagesDummy = (props) => {
 				<div className={classes.messagesList}>
 					{props.messagesList ?
 						props.messagesList.map((elem, i) => {
-							console.log(elem);
-							return (<div key={i}>{elem.message}</div>);
+							if (elem.emitter !== user.username) {
+								return (
+									<div className={classes.takePlaceLeft} key={i} >
+										<blockquote className={classes.speech_bubble}>
+											<p>{elem.message}</p>
+											<cite>{elem.date}</cite>
+										</blockquote>
+									</div>
+								);
+							}
+							else if (elem.emitter === user.username) {
+								return (
+									<div className={classes.takePlaceRight} key={i} >
+										<blockquote className={cx(classes.speech_bubbleSent)}>
+											<p>{elem.message}</p>
+											<cite>{elem.date}</cite>
+										</blockquote>
+									</div>
+								);
+							}
 						})
 						: null
 					}
@@ -43,7 +61,7 @@ const MessagesDummy = (props) => {
 						shouldValidate={props.sendBar.validation}
 						touched={props.sendBar.touched}
 					/>
-					<i className={cx("fas fa-paper-plane", classes.send)}></i>
+					<i className={cx("fas fa-paper-plane", classes.send)} onClick={props.sendMessage}></i>
 				</div>
 			</div>
 		</div>

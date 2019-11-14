@@ -9,7 +9,7 @@
 
 .usersList {
 	/* border: 1px solid red; */
-	border-right: 2px solid rgb(53, 161, 190);;
+	border-right: 2px solid rgb(116, 209, 234);;
 	width: 40%;
 	min-height: 100vh;
 	position: relative;
@@ -17,7 +17,7 @@
 	flex-direction: column;
 }
 .userDiv {
-	border: 1px solid rgb(53, 161, 190);
+	border: 1px solid rgb(116, 209, 234);
 	border-radius: 2px;
 	position: relative;
 	width: 100%;
@@ -27,11 +27,18 @@
 	justify-content: flex-start;
 	align-items: center;
 }
-.userDiv:hover, .userDiv:active {
+.userDiv:hover {
 	background: -moz-linear-gradient(-45deg, #e2a9e5 15%, #2b94e5 100%);
 	background: -webkit-linear-gradient(-45deg, #e2a9e5 15%,#2b94e5 100%);
 	background: linear-gradient(135deg, #e2a9e5 15%,#2b94e5 100%);
 	border: none;
+}
+.active {
+	background: -moz-linear-gradient(-45deg, #e2a9e5 15%, #2b94e5 100%);
+	background: -webkit-linear-gradient(-45deg, #e2a9e5 15%,#2b94e5 100%);
+	background: linear-gradient(135deg, #e2a9e5 15%,#2b94e5 100%);
+	border: none;
+	color: white;
 }
 .photo {
 	border-radius: 50%;
@@ -45,7 +52,7 @@
 	font-family: 'Ubuntu', sans-serif;
 	font-size: 2vw;
 	font-weight: 300;
-	color: rgb(53, 161, 190);
+	color: rgb(116, 209, 234);
 	width: 100%;
 }
 .userDiv:hover .names {
@@ -69,11 +76,109 @@
 	flex-direction: column;
 	position: relative;
 }
-.sendBar {
-	position: absolute;
+p {
+	margin-bottom: 0.5vh;
+	margin-left: 1%;
+}
+.takePlaceLeft {
+	display: flex;
 	width: 100%;
-	/* min-height: 8vh; */
-	/* border: 1px solid blue; */
+	justify-content: flex-start;
+}
+.speech_bubble {
+	-webkit-filter: drop-shadow(-1px -1px 2px rgba(0, 0, 0, 0.1)) drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.15));
+			filter: drop-shadow(-1px -1px 2px rgba(0, 0, 0, 0.1)) drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.15));
+	margin: 1%;
+	margin-bottom: 20px;
+	padding: 1%;
+	position: relative;
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 2vw;
+	font-weight: 300;
+	background: rgb(116, 209, 234);
+	border-radius: 2px;
+	color: white;
+	width: 30%;
+}
+.speech_bubble::before {
+	border: 12.5px solid transparent;
+	border-top: 12.5px solid rgb(116, 209, 234);
+	border-bottom: 0;
+	height: 0;
+	width: 0;
+	border-top-width: 25px;
+	content: '';
+	display: block;
+	position: absolute;
+	left: 1vw;
+	bottom: -25px;
+	-webkit-transform-origin: center;
+			transform-origin: center;
+	-webkit-transform: rotate(130deg) skew(-40deg) translateY(16.6666666667px);
+			transform: rotate(130deg) skew(-40deg) translateY(16.6666666667px);
+}
+.speech_bubble cite {
+	position: absolute;
+	bottom: -2vw;
+	left: 5vw;
+	font-size: 1vw;
+	font-style: normal;
+	font-weight: 300;
+	letter-spacing: 0.5px;
+	color: rgb(116, 209, 234);
+}
+
+.takePlaceRight {
+	display: flex;
+	width: 100%;
+	justify-content: flex-end;
+}
+.speech_bubbleSent {
+	-webkit-filter: drop-shadow(-1px -1px 2px rgba(0, 0, 0, 0.1)) drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.15));
+			filter: drop-shadow(-1px -1px 2px rgba(0, 0, 0, 0.1)) drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.15));
+	margin: 1%;
+	margin-bottom: 20px;
+	padding: 1%;
+	position: relative;
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 2vw;
+	font-weight: 300;
+	background: rgb(169, 238, 138);
+	border-radius: 2px;
+	color: white;
+	width: 30%;
+}
+.speech_bubbleSent::before {
+	border: 12.5px solid transparent;
+	border-top: 12.5px solid rgb(169, 238, 138);
+	border-bottom: 0;
+	height: 0;
+	width: 0;
+	border-top-width: 25px;
+	content: '';
+	display: block;
+	position: absolute;
+	left: 15vw;
+	bottom: -25px;
+	-webkit-transform-origin: center;
+			transform-origin: center;
+	-webkit-transform: rotate(90deg) skew(-40deg) translateY(16.6666666667px);
+			transform: rotate(90deg) skew(-40deg) translateY(16.6666666667px);
+}
+.speech_bubbleSent cite {
+	position: absolute;
+	bottom: -2vw;
+	left: 0;
+	font-size: 1vw;
+	font-style: normal;
+	font-weight: 300;
+	letter-spacing: 0.5px;
+	color: rgb(169, 238, 138);
+}
+
+.sendBar {
+	position: sticky;
+	width: 100%;
 	bottom: 0;
 	display: flex;
 	flex-direction: row;
@@ -81,8 +186,17 @@
 	align-items: center;
 	margin-bottom: -1%;
 }
+input {
+	margin-left: 3%;
+	width: 95%;
+}
 .send {
 	margin-left: 2%;
-	margin-right: 2%;
+	margin-right: 5%;
 	padding-bottom: 2%;
+	color: #524A54;
+	cursor: pointer;
+}
+.send:hover {
+	color: rgb(116, 209, 234);
 }
