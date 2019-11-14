@@ -412,7 +412,7 @@ class User extends Node {
       const session = this.driver.session();
       const query = `MATCH (a:User {username:'${this.user.username}'})<-[r:Notification {type:'match'}]-(b)
                     OPTIONAL MATCH (a)<-[p:Notification {type:'message', read:false}]-(b)
-                    WITH b, collect(properties(p)) as lol
+                    WITH b, collect({notif:properties(r),id:ID(r)}) as lol
                     RETURN properties(b),lol`;
       session.run(query)
         .then((res) => {

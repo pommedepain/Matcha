@@ -84,7 +84,7 @@ router.get('/infos/:username', [auth, identify], wrapper(async (req, res) => {
     }));
 }));
 
-router.get('/matches/:username', [auth, identify], wrapper(async (req, res) => {
+router.get('/matches/:username',  wrapper(async (req, res) => {
   res.locals.check = req.params.username;
   debug('Request to get user matches :', req.params.username);
   return (new User({ username: req.params.username }).getMatches()
