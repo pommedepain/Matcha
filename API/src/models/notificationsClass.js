@@ -57,7 +57,7 @@ class Notifications {
         const query0 = `MATCH (a:User {username:'${this.emitter}'})-[r:Notification {type:'${this.previous}'}]->(b:User {username:'${this.receiver}'})
                       DELETE r`;
         const query = `MATCH (a:User {username:'${this.emitter}'}),(b:User {username:'${this.receiver}'})
-                      CREATE (a)-[r:Notification {type:'${this.type}', date:'${date}', read:false}]->(b)`;
+                      CREATE (a)-[r:Notification {type:'${this.type}', date:'${date}', read:'false'}]->(b)`;
         session.run(query0)
           .then(() => session.run(query))
           .then((res) => {
