@@ -1027,7 +1027,7 @@ class User extends Node {
       const session = this.driver.session();
       const query = `MATCH (n:User { username:'${this.user.username}'})-[r:Notification {type:'message'}]-(b:User {username:'${target}'})
                     WITH b,r ORDER BY r.time ASC
-                    WITH b,collect(properties(r)) as conv
+                    WITH b, collect({notif:properties(r),id:ID(r)}) as conv
                     return b.username,conv`;
       session.run(query)
         .then((res) => {

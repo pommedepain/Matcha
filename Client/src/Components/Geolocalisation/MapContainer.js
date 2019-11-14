@@ -67,6 +67,8 @@ class NewCompo extends Component {
         const customCenter = [pos.coords.latitude, pos.coords.longitude];
         this.setState({ customCenter })
         markers.push(new maps.Marker({
+          draggable:true,
+                title:"Drag me!",
           position: {
             lat: this.state.customCenter[0],
             lng: this.state.customCenter[1],
@@ -117,6 +119,8 @@ class NewCompo extends Component {
                 customCenter: [position.data.payload.localisation.latitude,position.data.payload.localisation.longitude],
               })
               markers.push(new maps.Marker({
+                draggable:true,
+                title:"Drag me!",
                 position: {
                   lat: this.state.customCenter[0],
                   lng: this.state.customCenter[1],
@@ -170,6 +174,8 @@ class NewCompo extends Component {
     markers[0].setMap(null);
     markers = [];
     markers.push(new maps.Marker({
+      draggable:true,
+                title:"Drag me!",
       position: {
         lat: place.geometry.location.lat(),
         lng: place.geometry.location.lng(),
@@ -219,7 +225,7 @@ class NewCompo extends Component {
       <Fragment>
         <GoogleMap
           defaultZoom={15}
-          defaultCenter={[customCenter[0], customCenter[1]]}
+          defaultCenter={[48.896704899999996, 1.3184218]}
           bootstrapURLKeys={{
             key: process.env.REACT_APP_MAP_KEY,
             libraries: ['places', 'geometry'],

@@ -36,11 +36,20 @@ class Notifications {
         if (!this.message) { resolve('no message'); }
         const query = `MATCH (a:User {username:'${this.emitter}'}),(b:User {username:'${this.receiver}'})
                       CREATE (a)-[r:Notification $props]->(b)`;
-        const props = { type: this.type, date, time, message: this.message, emitter: this.emitter, receiver: this.receiver, read: false };
+        const props = {
+          type: this.type,
+          date,
+          time,
+          message: this.message,
+          emitter: this.emitter,
+          receiver: this.receiver,
+          read: false,
+        };
         session.run(query, { props })
           .then((res) => {
             debug('Notification created:', this.data);
             session.close();
+            new User({ username: this.receiver }).updateScore();
             resolve(true);
           })
           .catch(err => debug(err));
@@ -54,6 +63,7 @@ class Notifications {
           .then((res) => {
             debug('Notification created:', this.data);
             session.close();
+            new User({ username: this.receiver }).updateScore();
             resolve(true);
           })
           .catch(err => debug(err));
