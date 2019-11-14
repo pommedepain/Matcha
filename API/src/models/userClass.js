@@ -411,13 +411,24 @@ class User extends Node {
     return new Promise((resolve, reject) => {
       const session = this.driver.session();
       const query = `MATCH (a:User {username:'${this.user.username}'})<-[r:Notification {type:'match'}]-(b)
-                    WITH a, collect(properties(b)) as col
-                    RETURN col`;
+                    OPTIONAL MATCH (a)<-[p:Notification {type:'message', read:false}]-(b)
+                    WITH b, collect(properties(p)) as lol
+                    RETURN properties(b),lol`;
       session.run(query)
         .then((res) => {
           session.close();
           if (res.records.length !== 0) {
-            return this.getProfiles(res.records[0]._fields[0]);
+            // debug('here1', res.records[0]._fields[0]);
+            // debug('here1', res.records[0]._fields[1]);
+            // debug('here2', res.records[1]._fields[0]);
+            // debug('here2', res.records[1]._fields[1]);
+            const result = res.records.map((record) => {
+              const user = record._fields[0];
+              const messages = record._fields[1];
+              const unread = record._fields[1].length;
+              return { user, unreadMessages: messages, unreadCount: unread };
+            });
+            return result;
           } return [];
         })
         .then(res => resolve(res))

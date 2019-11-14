@@ -16,22 +16,22 @@ const notifications = [
     message: 'message 2',
   },
   {
+    emitter: 'philoutre',
+    receiver: 'camille',
+    type: 'message',
+    message: 'message 3',
+  },
+  {
     emitter: 'camille',
     receiver: 'philoutre',
     type: 'message',
-    message: 'message 3',
+    message: 'message 4',
   },
   {
     emitter: 'camille',
     receiver: 'amandine28',
     type: 'message',
     message: 'message 1',
-  },
-  {
-    emitter: 'amandine28',
-    receiver: 'camille',
-    type: 'message',
-    message: 'message 2',
   },
   {
     emitter: 'camille',
