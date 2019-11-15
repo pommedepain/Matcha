@@ -56,25 +56,25 @@ class NavBar extends React.Component {
 						messages: messagesParsed
 					}, function () {
 						// console.log(this.state.notifications);
-						// console.log(this.state.messages)
+						console.log(this.state.messages)
 						let unreadNotifs = 0;
 						for (let i = 0; i < this.state.notifications.length; i++) {
-							if (this.state.notifications[i].read === false) {
+							if (this.state.notifications[i].read === "false") {
 								unreadNotifs += 1;
 							}
 						}
 						let unreadMessages = 0;
 						for (let j = 0; j < this.state.messages.length; j++) {
-							if (this.state.messages[j].read === false) {
+							if (this.state.messages[j].read === "false") {
 								unreadMessages += 1;
 							}
 						}
-						// console.log(unreadNotifs);
-						if (unreadNotifs > 0) {
+						console.log(unreadMessages);
+						if (unreadNotifs > 0 || unreadMessages > 0) {
 							this.setState({
 								unreadNotifs: unreadNotifs,
 								unreadMessages: unreadMessages
-							}/*, function() { console.log(this.state.unreadNotifs)}*/);
+							}, /*function() { console.log(this.state.unreadMessages) }*/);
 						}
 						if (this.context.newNotif.new) {
 							// console.log(this.context.newNotif);

@@ -71,7 +71,7 @@ const SearchDummy = (props) => {
 									</div>
 									<div className={classes.secondRow}>
 										<div className={classes.geolocCont} >
-											<MapContainer className={classes.map} />
+											<MapContainer className={classes.map} suggestions={props.suggestionsSearched}/>
 										</div>
 										<div className={classes.filterBy} >
 											<h4>Filter by...</h4>

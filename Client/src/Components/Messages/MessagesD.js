@@ -6,6 +6,7 @@ import Input from '../Utils/Input/Input';
 
 const MessagesDummy = (props) => {
 	const user = props.JWT.data;
+	// console.log(props.matchList)
 	return (
 		<div className={classes.main}>
 			<div className={classes.usersList}>
@@ -28,7 +29,6 @@ const MessagesDummy = (props) => {
 				<div className={classes.messagesList}>
 					{props.messagesList ?
 						props.messagesList.map((elem, i) => {
-							console.log(props.messagesList[i + 1])
 							if (elem.notif.emitter !== user.username) {
 								if (props.messagesList[i + 1] !== undefined) {
 									return (

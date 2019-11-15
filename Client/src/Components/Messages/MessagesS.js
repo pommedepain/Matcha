@@ -36,6 +36,7 @@ class MessagesSmart extends Component {
 	componentDidMount() {
 		axios.get(`http://localhost:4000/API/users/matches/${this.context.JWT.data.username}`, {headers: {"x-auth-token": this.context.JWT.token}})
 			.then((res) => {
+				// console.log(res)
 				this.setState({ matchList: res.data.payload.result }, function() {console.log(this.state.matchList)})
 			})
 			.catch((err) => console.log(err))
@@ -48,18 +49,19 @@ class MessagesSmart extends Component {
 		/* Automatically set all messages as true for read for the user's div clicked */
 		this.state.matchList.forEach(elem => {
 			if (elem.user.username === username) {
-				for (let k = 0; k < elem.unreadMessages.length; k++) {
-					let messagesID = null;
-					messagesID = { id: elem.unreadMessages[k].id.low, receiver: this.context.JWT.data.username };
-					console.log(messagesID);
-					axios.put(`http://localhost:4000/API/notifications/read/`, messagesID, {headers: {"x-auth-token": this.context.JWT.token}})
-						.then((res) => {
-							console.log(res);
-							if (res.data.payload.result === "notification has been read") {
-								console.log("OK");
-							}
-						})
-						.catch((err) => console.log(err))
+				if (elem.unreadMessages[0].id !== null) {
+					for (let k = 0; k < elem.unreadMessages.length; k++) {
+						let messagesID = null;
+						messagesID = { id: elem.unreadMessages[k].id.low, receiver: this.context.JWT.data.username };
+						axios.put(`http://localhost:4000/API/notifications/read/`, messagesID, {headers: {"x-auth-token": this.context.JWT.token}})
+							.then((res) => {
+								console.log(res);
+								if (res.data.payload.result === "notification has been read") {
+									console.log("OK");
+								}
+							})
+							.catch((err) => console.log(err))
+					}
 				}
 			}
 		});

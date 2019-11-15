@@ -6,7 +6,7 @@ import classes from './NavBar.module.css';
 import Login from '../Forms/LogIn/LoginS';
 
 const NavBarDummy = (props) => {
-  // console.log(props)
+//   console.log(props.unreadMessages)
 	return (
 		<div className={classes.conteneur}>
 				<div className={classes.NavBar}>
@@ -88,7 +88,7 @@ const NavBarDummy = (props) => {
 									// console.log(props.notifications)
 									// console.log(elem);
 									let style = null;
-									if (elem.read === false) {
+									if (elem.read === "false") {
 										style = { fontWeight: '600', color: '#ff665e' };
 									}
 									let action = null;

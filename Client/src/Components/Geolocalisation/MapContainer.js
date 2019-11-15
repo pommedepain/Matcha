@@ -244,6 +244,7 @@ class NewCompo extends Component {
 
 
   render() {
+    console.log(this.props.suggestions)
     const {
       locations, mapApiLoaded, mapInstance, mapApi, customCenter
     } = this.state;
