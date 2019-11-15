@@ -412,8 +412,8 @@ class User extends Node {
       const session = this.driver.session();
       const query = `MATCH (a:User {username:'${this.user.username}'})<-[r:Notification {type:'match'}]-(b)
                     OPTIONAL MATCH (a)<-[p:Notification {type:'message', read:'false'}]-(b)
-                    WITH b, collect({notif:properties(p),id:ID(p)}) as lol
-                    RETURN properties(b),lol`;
+                    WITH b,r, collect({notif:properties(p),id:ID(p)}) as lol
+                    RETURN properties(b),lol,r.date`;
       session.run(query)
         .then((res) => {
           session.close();
@@ -423,10 +423,11 @@ class User extends Node {
             // debug('here2', res.records[1]._fields[0]);
             // debug('here2', res.records[1]._fields[1]);
             const result = res.records.map((record) => {
+              const date = record._fields[2];
               const user = record._fields[0];
               const messages = record._fields[1];
               const unread = record._fields[1].length;
-              return { user, unreadMessages: messages, unreadCount: unread };
+              return { user, unreadMessages: messages, unreadCount: unread, matchCreation: date };
             });
             return result;
           } return [];

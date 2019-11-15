@@ -60,8 +60,7 @@ class NewCompo extends Component {
     }
    };
 
-  apiHasLoaded = (map, maps, locations) => {
-    console.log(this.context.suggestionList);
+  apiHasLoaded = (map, maps, locations, suggestions) => {
     const markers = [];
     if (navigator && navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(pos => {
@@ -183,6 +182,26 @@ class NewCompo extends Component {
             })
       }})
     }
+    console.log(suggestions);
+    suggestions.forEach((user) => {
+      const icon = {
+        shape:{coords:[17,17,18],type:'circle'},
+        optimized: false,
+        url: user.photos[0], // url
+        scaledSize: new maps.Size(34, 34), // scaled size
+        origin: new maps.Point(0,0), // origin
+        anchor: new maps.Point(0, 0) // anchor
+      };
+      markers.push(new maps.Marker({
+        icon,
+        animation: maps.Animation.DROP,
+        position: {
+          lat: user.lat,
+          lng: user.lon,
+        },
+        map,
+      }));
+    });
   };
 
   addPlace = (place) => {
@@ -244,7 +263,6 @@ class NewCompo extends Component {
 
 
   render() {
-    console.log(this.props.suggestions)
     const {
       locations, mapApiLoaded, mapInstance, mapApi, customCenter
     } = this.state;
@@ -258,7 +276,7 @@ class NewCompo extends Component {
             libraries: ['places', 'geometry'],
           }}
           yesIWantToUseGoogleMapApiInternals
-          onGoogleApiLoaded={({ map, maps }) => this.apiHasLoaded(map, maps, locations)}
+          onGoogleApiLoaded={({ map, maps }) => this.apiHasLoaded(map, maps, locations, this.props.suggestions)}
         >
           {/* {!isEmpty(places) &&
             places.map(place => (
