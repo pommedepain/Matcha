@@ -190,7 +190,7 @@ class NewCompo extends Component {
     const maps = this.state.mapApi;
     const map = this.state.mapInstance;
     markers[0].setMap(null);
-    markers = [];
+
     const icon = {
       shape:{coords:[17,17,18],type:'circle'},
       optimized: false,
@@ -199,7 +199,7 @@ class NewCompo extends Component {
       origin: new maps.Point(0,0), // origin
       anchor: new maps.Point(0, 0) // anchor
     };
-    markers.push(new maps.Marker({
+    markers[0] = new maps.Marker({
       icon,
       animation: maps.Animation.DROP,
       position: {
@@ -207,7 +207,7 @@ class NewCompo extends Component {
         lng: place.geometry.location.lng(),
       },
       map,
-    }))
+    })
     this.setState({
       mapApiLoaded: true,
       mapInstance: map,
