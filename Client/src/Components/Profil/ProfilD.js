@@ -241,7 +241,7 @@ const ProfilDummy = (props) => {
 				</div>
 				<div className={classes.secondRow}>
 					<div className={classes.geolocCont} >
-						<MapContainer displayInput={props.displayInput} />
+						<MapContainer displayInput={props.displayInput} suggestions={[]} photo={props.JWT.data.photos[0]}/>
 					</div>
 					<div className={classes.cercle}>
 						<div className={classes.matchIndicator}>

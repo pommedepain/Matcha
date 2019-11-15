@@ -29,7 +29,7 @@ const MessagesDummy = (props) => {
 				<div className={classes.messagesList}>
 					{props.messagesList ?
 						props.messagesList.map((elem, i) => {
-							if (elem.notif.emitter !== user.username) {
+							if (elem.notif.emitter !== user.username && elem.notif.emitter !== "admin") {
 								if (props.messagesList[i + 1] !== undefined) {
 									return (
 										<div className={classes.takePlaceLeft} key={i} >
@@ -51,7 +51,7 @@ const MessagesDummy = (props) => {
 									)
 								}
 							}
-							else {
+							else if (elem.notif.emitter === user.username && elem.notif.emitter !== "admin") {
 								if (props.messagesList[i + 1] !== undefined) {
 									return (
 										<div className={classes.takePlaceRight} key={i} >
@@ -72,6 +72,13 @@ const MessagesDummy = (props) => {
 										</div>
 									)
 								}
+							}
+							else {
+								return (
+									<div className={classes.noMessage} key={i}>
+										{elem.notif.message}
+									</div>
+								)
 							}
 						})
 						: null

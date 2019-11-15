@@ -50,8 +50,24 @@ class MessagesSmart extends Component {
 				let lastMessage = res.data.payload.result;
 				lastMessage = _.orderBy(lastMessage, ['lastMessage.date'], ['desc']);
 				console.log(lastMessage);
-				let sortedList = list;
+				console.log(list);
+				let sortedList = [];
 				sortedList = _.orderBy(sortedList, ['matchCreation'], ['desc']);
+				for (let i = 0; i < lastMessage.length; i++) {
+					for (let j = 0; j < list.length; j++) {
+						if (list[j].user.username === lastMessage[i].username) {
+							sortedList[i] = list[j];
+						}
+					}
+				}
+				if (list.length > lastMessage.length) {
+					let howMuch = list.length - lastMessage.length;
+					console.log(howMuch);
+					let k = 0;
+					for (howMuch; howMuch > 0; howMuch--) {
+						sortedList.push(list[k++]);
+					}
+				}
 				this.setState({ matchList: sortedList }, function() { console.log(this.state.matchList); });
 			})
 			.catch((err) => console.log(err))
@@ -73,6 +89,9 @@ class MessagesSmart extends Component {
 								console.log(res);
 								if (res.data.payload.result === "notification has been read") {
 									console.log("OK");
+									let isRead = this.state.matchList;
+									console.log(isRead);
+									// this.setState({  })
 								}
 							})
 							.catch((err) => console.log(err))
@@ -100,7 +119,7 @@ class MessagesSmart extends Component {
 				.then((res) => {
 					this.setState({ 
 						messagesList: res.data.payload.result[0].conversation
-					}, function() {console.log(this.state.messagesList)})
+					}/*, function() {console.log(this.state.messagesList)}*/)
 				})
 				.catch((err) => console.log(err))
 		}
@@ -114,12 +133,13 @@ class MessagesSmart extends Component {
 						this.setState({ 
 							messagesList: res.data.payload.result[0].conversation,
 							currentInterlocutor: username
-						}, function() {console.log(this.state.messagesList)})
+						}/*, function() {console.log(this.state.messagesList)}*/)
 					}
 					else {
 						this.setState({
-							messagesList: [{notif: {message: "No message to display. Go ahead and send the first one !", emitter: "admin"}}]
-						}, function() {console.log(this.state.messagesList)})
+							messagesList: [{notif: {message: "No message to display. Go ahead and send the first one !", emitter: "admin"}}],
+							currentInterlocutor: username
+						}/*, function() {console.log(this.state.messagesList)}*/)
 					}
 				})
 				.catch((err) => console.log(err))
@@ -201,21 +221,26 @@ class MessagesSmart extends Component {
 
 	sendMessage = (e) => {
 		e.preventDefault();
-		console.log(this.state.sendBar.value);
-		axios.post('http://localhost:4000/API/notifications/create', 
-					{type:'message', 
-					emitter: this.context.JWT.data.username, 
-					receiver: this.state.currentInterlocutor, 
-					message: this.state.sendBar.value}, 
-					{headers: {"x-auth-token": this.context.JWT.token}}
-				)
+		const message = {
+			type:'message', 
+			emitter: this.context.JWT.data.username, 
+			receiver: this.state.currentInterlocutor, 
+			message: this.state.sendBar.value
+		} 
+		// console.log(message);
+		axios.post('http://localhost:4000/API/notifications/create', message, {headers: {"x-auth-token": this.context.JWT.token}})
 			.then((res) => {
-				console.log(res);
-				document.getElementById("sendBar").value = "";
-				const sendBarCleared = this.state.sendBar;
-				sendBarCleared.value = '';
-				this.setState({ sendBar: sendBarCleared });
-				this.getConversation("get");
+				if (res.data.payload.result === "missing information") {
+					console.log("ERROR sendMessage()");
+				}
+				else {
+					document.getElementById("sendBar").value = "";
+					const sendBarCleared = this.state.sendBar;
+					sendBarCleared.value = '';
+					this.setState({ sendBar: sendBarCleared });
+					this.getConversation("get");
+					this.sortMatchList(this.state.matchList);
+				}
 			})
 			.catch((err) => console.log(err))
 

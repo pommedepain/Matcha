@@ -202,6 +202,16 @@ p {
 .lastMessage {
 	margin-bottom: 12%;
 }
+.noMessage {
+	margin: 0 auto;
+	width: 30%;
+	text-align: center;
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 1vw;
+	font-weight: 300;
+	color: #524A54;
+	margin-top: 3%;
+}
 
 /* 
 	SENDBAR FOR MESSAGES
