@@ -19,8 +19,9 @@ router.get('/geocode', handler(async (req, res) => {
 
   if (ip === '::1' || ip === '::ffff:127.0.0.1' || ip === '127.0.0.1') ip = await publicIp.v4();
   // const localisation = await axios.get(`https://www.iplocate.io/api/lookup/${ip}`);
-  // const localisation = await axios.get(`https://api.ipgeolocation.io/ipgeo?apiKey=6ec1c766d7d3402ea36680595e7bb16f&ip=${ip}`);
-  const localisation = await axios.get('https://api.ipdata.co/?api-key=test');
+  // const localisation = await axios.get(`https://api.ipgeolocation.io/ipgeo?apiKey=6ec1c766d7d3402ea36680595e7bb16f`);
+  const localisation = await axios.get(`http://api.ipstack.com/${ip}?access_key=50e20f387ee5f01ba3aca5fd1c6bc7a9`);
+  // const localisation = await axios.get('https://api.ipdata.co?api-key=ddccecd17e6cc559ddbb1bb2e41db865f1cb5d82ecf71edfa684a5ff');
   // const adress = await axios.get(`https://www.latlong.net/c/?lat=${localisation.data.lat}&long=${localisation.data.lat}`);
   // const adress = await axios.get(`https://api.opencagedata.com/geocode/v1/json?q=LAT=${localisation.data.lat}&LNG=${localisation.data.lat}&key=251f06800b5a4219839cd2a3f802e878`);
   // const adress = await axios.get(`https://eu1.locationiq.com/v1/reverse.php?key=6693e45f2d8b2d&lat=${localisation.data.latitude}&lon=${localisation.data.longitude}&format=json`);
