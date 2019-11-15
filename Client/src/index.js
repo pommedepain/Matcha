@@ -5,6 +5,7 @@ import registerServiceWorker from './registerServiceWorker';
 import classes from './index.module.css';
 import App from './Containers/App';
 import openSocket from 'socket.io-client';
+import UserContextProvider from './Contexts/UserContext';
 
 const socket = openSocket('http://localhost:5000');
 const username = '';
@@ -14,7 +15,9 @@ socket.emit('LoginUser', username);
 
 ReactDOM.render(
 <div className={classes.conteneur}>
-  <App />
+  <UserContextProvider>
+    <App />
+  </UserContextProvider>
 </div>,
   document.getElementById('root')
 );

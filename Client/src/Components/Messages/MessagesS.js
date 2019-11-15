@@ -5,6 +5,8 @@ import MessagesDummy from './MessagesD';
 import { UserContext } from '../../Contexts/UserContext';
 import axios from 'axios';
 
+const _ = require('lodash');
+
 class MessagesSmart extends Component {
 	state = {
 		matchList: [],
@@ -37,7 +39,20 @@ class MessagesSmart extends Component {
 		axios.get(`http://localhost:4000/API/users/matches/${this.context.JWT.data.username}`, {headers: {"x-auth-token": this.context.JWT.token}})
 			.then((res) => {
 				// console.log(res)
-				this.setState({ matchList: res.data.payload.result }, function() {console.log(this.state.matchList)})
+				this.sortMatchList(res.data.payload.result);
+			})
+			.catch((err) => console.log(err))
+	}
+
+	sortMatchList = (list) => {
+		axios.get(`http://localhost:4000/API/users/${this.context.JWT.data.username}/conversations`, {headers: {"x-auth-token": this.context.JWT.token}})
+			.then((res) => {
+				let lastMessage = res.data.payload.result;
+				lastMessage = _.orderBy(lastMessage, ['lastMessage.date'], ['desc']);
+				console.log(lastMessage);
+				let sortedList = list;
+				sortedList = _.orderBy(sortedList, ['matchCreation'], ['desc']);
+				this.setState({ matchList: sortedList }, function() { console.log(this.state.matchList); });
 			})
 			.catch((err) => console.log(err))
 	}
@@ -69,7 +84,7 @@ class MessagesSmart extends Component {
 		/* If there's a new message from the notifications, we get again the conversation */
 		if (this.context.newNotif.new) {
 			console.log(this.context.newNotif);
-			// this.context.toggleNotifReceived(this.context.newNotif);
+			this.context.toggleNotifReceived(this.context.newNotif);
 			axios.get(`http://localhost:4000/API/users/${this.context.newNotif.emitter}/conversationWith/${this.context.JWT.data.username}`, {headers: {"x-auth-token": this.context.JWT.token}})
 				.then((res) => {
 					this.setState({ 
@@ -94,10 +109,18 @@ class MessagesSmart extends Component {
 			e.preventDefault();
 			axios.get(`http://localhost:4000/API/users/${username}/conversationWith/${this.context.JWT.data.username}`, {headers: {"x-auth-token": this.context.JWT.token}})
 				.then((res) => {
-					this.setState({ 
-						messagesList: res.data.payload.result[0].conversation,
-						currentInterlocutor: username
-					}, function() {console.log(this.state.messagesList)})
+					console.log(res)
+					if (res.data.payload.result[0]) {
+						this.setState({ 
+							messagesList: res.data.payload.result[0].conversation,
+							currentInterlocutor: username
+						}, function() {console.log(this.state.messagesList)})
+					}
+					else {
+						this.setState({
+							messagesList: [{notif: {message: "No message to display. Go ahead and send the first one !", emitter: "admin"}}]
+						}, function() {console.log(this.state.messagesList)})
+					}
 				})
 				.catch((err) => console.log(err))
 		}

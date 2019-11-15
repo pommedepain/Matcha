@@ -5,7 +5,16 @@ import { UserContext } from '../Contexts/UserContext';
 
 const PrivateRoute = ({component: Component, ...rest}) => {
 	const { isLoggedIn } = useContext(UserContext);
-	// console.log(isLoggedIn);
+	const { JWT } = useContext(UserContext);
+	
+	if (JWT.token !== null && JWT.data.firstName) {
+		let dateNow = new Date();
+		console.log(JWT.exp);
+		console.log(dateNow.getTime() / 1000);
+		if (JWT.exp < (dateNow.getTime() / 1000)) {
+			this.context.toggleUser(null);
+		}
+	}
 
 	return (
 		<Route 

@@ -16,7 +16,7 @@ const MessagesDummy = (props) => {
 							<div key={i} className={classes.userDiv} id={elem.user.username} onClick={(e) => props.getConversation(e, elem.user.username)} >
 								<img src={elem.user.photos[0]} alt="profil" className={classes.photo} />
 								<div className={classes.names}>{elem.user.firstName} {elem.user.lastName}</div>
-								{elem.unreadCount > 0 ?
+								{elem.unreadMessages[0].id !== null ?
 									[<div className={classes.unreadMessages} key={i}></div>]
 									:null
 								}

@@ -12,8 +12,7 @@ class NavBar extends React.Component {
 		unreadNotifs: 0,
 		messages: [],
 		unreadMessages: 0,
-		displayNotifs: false,
-		usersOnline: null
+		displayNotifs: false
 	}
 
 	static contextType = UserContext;
@@ -56,7 +55,7 @@ class NavBar extends React.Component {
 						messages: messagesParsed
 					}, function () {
 						// console.log(this.state.notifications);
-						console.log(this.state.messages)
+						// console.log(this.state.messages)
 						let unreadNotifs = 0;
 						for (let i = 0; i < this.state.notifications.length; i++) {
 							if (this.state.notifications[i].read === "false") {
@@ -69,7 +68,7 @@ class NavBar extends React.Component {
 								unreadMessages += 1;
 							}
 						}
-						console.log(unreadMessages);
+						// console.log(unreadMessages);
 						if (unreadNotifs > 0 || unreadMessages > 0) {
 							this.setState({
 								unreadNotifs: unreadNotifs,

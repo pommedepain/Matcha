@@ -39,7 +39,7 @@ const UserContextProvider = (props) => {
 	const [isLoggedIn, setLog] = useState(() => {
 		const localDatas = localStorage.getItem('JWT');
 		const token = JSON.parse(localDatas);
-		console.log(token);
+		// console.log(token);
 		if (token !== null) {
 			let dateNow = new Date();
 			if (JWT.token.exp < (dateNow.getTime() / 1000)) {
