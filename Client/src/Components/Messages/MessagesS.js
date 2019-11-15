@@ -27,7 +27,8 @@ class MessagesSmart extends Component {
 			title: 'sendBar'
 		},
 		messagesList: [],
-		currentInterlocutor: null
+		currentInterlocutor: null,
+		activeDiv: false
 	};
 
 	static contextType = UserContext;
@@ -41,21 +42,66 @@ class MessagesSmart extends Component {
 	}
 
 	getConversation = (e, username) => {
-		e.preventDefault();
 		console.log("getConversation triggered");
-		console.log(username);
-		console.log(e.target);
-		axios.get(`http://localhost:4000/API/users/${username}/conversationWith/${this.context.JWT.data.username}`, {headers: {"x-auth-token": this.context.JWT.token}})
-			.then((res) => {
-				this.setState({ 
-					messagesList: res.data.payload.result[0].conversation,
-					currentInterlocutor: username
-				}, function() {console.log(this.state.messagesList)})
-			})
-			.catch((err) => console.log(err))
+		this.setState({ activeDiv: true });
+
+		/* Automatically set all messages as true for read for the user's div clicked */
+		this.state.matchList.forEach(elem => {
+			if (elem.user.username === username) {
+				for (let k = 0; k < elem.unreadMessages.length; k++) {
+					let messagesID = null;
+					messagesID = { id: elem.unreadMessages[k].id.low, receiver: this.context.JWT.data.username };
+					console.log(messagesID);
+					axios.put(`http://localhost:4000/API/notifications/read/`, messagesID, {headers: {"x-auth-token": this.context.JWT.token}})
+						.then((res) => {
+							console.log(res);
+							if (res.data.payload.result === "notification has been read") {
+								console.log("OK");
+							}
+						})
+						.catch((err) => console.log(err))
+				}
+			}
+		});
+
+		/* If there's a new message from the notifications, we get again the conversation */
+		if (this.context.newNotif.new) {
+			console.log(this.context.newNotif);
+			// this.context.toggleNotifReceived(this.context.newNotif);
+			axios.get(`http://localhost:4000/API/users/${this.context.newNotif.emitter}/conversationWith/${this.context.JWT.data.username}`, {headers: {"x-auth-token": this.context.JWT.token}})
+				.then((res) => {
+					this.setState({ 
+						messagesList: res.data.payload.result[0].conversation,
+						currentInterlocutor: this.context.newNotif.emitter
+					}, function() {console.log(this.state.messagesList)})
+				})
+				.catch((err) => console.log(err))
+		}
+		/* If the user just sent a message, we get the conversation again in order for the new message to appear in real time */
+		else if (e === "get") {
+			axios.get(`http://localhost:4000/API/users/${this.state.currentInterlocutor}/conversationWith/${this.context.JWT.data.username}`, {headers: {"x-auth-token": this.context.JWT.token}})
+				.then((res) => {
+					this.setState({ 
+						messagesList: res.data.payload.result[0].conversation
+					}, function() {console.log(this.state.messagesList)})
+				})
+				.catch((err) => console.log(err))
+		}
+		/* If the user just clicked on a user's div, we get the conversation */
+		else {
+			e.preventDefault();
+			axios.get(`http://localhost:4000/API/users/${username}/conversationWith/${this.context.JWT.data.username}`, {headers: {"x-auth-token": this.context.JWT.token}})
+				.then((res) => {
+					this.setState({ 
+						messagesList: res.data.payload.result[0].conversation,
+						currentInterlocutor: username
+					}, function() {console.log(this.state.messagesList)})
+				})
+				.catch((err) => console.log(err))
+		}
 	}
 
-	checkValidity(value, rules, inputIdentifier, state) {
+	checkValidity(value, rules, inputIdentifier) {
 		return new Promise (function (resolve, reject) {
 			let isValid = true;
 			let errorMessages = [];
@@ -112,7 +158,7 @@ class MessagesSmart extends Component {
 		};
 
 		updatedOrderForm.value = event.target.value;
-		this.checkValidity(updatedOrderForm.value, updatedOrderForm.validation, inputIdentifier, this.state)
+		this.checkValidity(updatedOrderForm.value, updatedOrderForm.validation, inputIdentifier)
 			.then((response) => {
 				// console.log(response);
 				updatedOrderForm.valid = response;
@@ -139,7 +185,12 @@ class MessagesSmart extends Component {
 					{headers: {"x-auth-token": this.context.JWT.token}}
 				)
 			.then((res) => {
-				console.log(res)
+				console.log(res);
+				document.getElementById("sendBar").value = "";
+				const sendBarCleared = this.state.sendBar;
+				sendBarCleared.value = '';
+				this.setState({ sendBar: sendBarCleared });
+				this.getConversation("get");
 			})
 			.catch((err) => console.log(err))
 
@@ -151,6 +202,10 @@ class MessagesSmart extends Component {
 	}
 
 	render() {
+		if (this.context.newNotif.new === true) {
+			console.log("new notif in localStorage detected");
+			this.getConversation();
+		}
 		return (
 			<MessagesDummy
 				getConversation={this.getConversation.bind(this)}

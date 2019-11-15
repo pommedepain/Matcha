@@ -50,7 +50,16 @@ const NavBarDummy = (props) => {
 						<Link
 							to="/messages"
 							className={classes.messages}
-						><i className="far fa-envelope"></i> Messages</Link>
+						>
+							<i className="far fa-envelope"></i> 
+							{props.unreadMessages > 0 ?
+							[<div className={classes.unreadMessages} key={0} >
+								{props.unreadMessages}
+							</div>]
+							: null
+							}
+							Messages
+						</Link>
 						<Link
 							to="/search"
 							className={classes.search}
