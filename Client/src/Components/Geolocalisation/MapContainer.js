@@ -61,6 +61,7 @@ class NewCompo extends Component {
    };
 
   apiHasLoaded = (map, maps, locations) => {
+    console.log(this.context.suggestionList);
     const markers = [];
     if (navigator && navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(pos => {

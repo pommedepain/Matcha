@@ -43,7 +43,7 @@ class Notifications {
           message: this.message,
           emitter: this.emitter,
           receiver: this.receiver,
-          read: false,
+          read: 'false',
         };
         session.run(query, { props })
           .then((res) => {
