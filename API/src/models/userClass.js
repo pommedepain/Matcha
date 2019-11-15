@@ -1005,8 +1005,9 @@ class User extends Node {
     return new Promise((resolve, reject) => {
       const session = this.driver.session();
       const query = `MATCH (n:User { username:'${this.user.username}'})-[r:Notification {type:'message'}]-(b:User)
-                    WITH n,b, collect(properties(r)) as conv
-                    return b.username,conv`;
+                    WITH b,r ORDER BY r.time DESC 
+                    WITH b, collect(properties(r)) as conv
+                    return b.username,head(conv)`;
       session.run(query)
         .then((res) => {
           const result = [];
@@ -1015,7 +1016,7 @@ class User extends Node {
             res.records.forEach((record) => {
               result.push({
                 username: record._fields[0],
-                conversation: record._fields[1],
+                lastMessage: record._fields[1],
               });
             });
           } resolve(result);

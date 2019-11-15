@@ -16,13 +16,55 @@ class NewCompo extends Component {
       mapInstance: null,
       mapApi: null,
       markers: [],
-      places: [],
+      // places: [],
       locations: [],
       customCenter: [48.896704899999996, 1.3184218],
+      updated: true
     };
   }
 
   static contextType = UserContext;
+
+  componentDidUpdate() {
+    let { markers } = this.state;
+    const maps = this.state.mapApi;
+    const map = this.state.mapInstance;
+    console.log(this.props.suggestions);
+    if (this.props.suggestions.length && maps && map) {
+      let { markers } = this.state;
+      const maps = this.state.mapApi;
+      const map = this.state.mapInstance;
+      console.log(this.props.suggestions);
+      this.props.suggestions.forEach((suggestion) => {
+        if (suggestion.user.photos && suggestion.user.photos.length) {
+          console.log(suggestion);
+        const icon = {
+          shape:{coords:[17,17,18],type:'circle'},
+          optimized: false,
+          url: suggestion.user.photos[0], // url
+          scaledSize: new maps.Size(34, 34), // scaled size
+          origin: new maps.Point(0,0), // origin
+          anchor: new maps.Point(0, 0) // anchor
+        };
+        markers.push(new maps.Marker({
+          icon,
+          animation: maps.Animation.DROP,
+          position: {
+            lat: parseInt(suggestion.user.lat),
+            lng: parseInt(suggestion.user.lon),
+          },
+          map,
+        }));
+        }
+      });
+      // this.setState({
+      //   mapApiLoaded: true,
+      //   mapInstance: map,
+      //   mapApi: maps,
+      //   markers,
+      // }, function() { console.log(this.state.markers); });
+    }
+  }
 
   getCity = ( addressArray ) => {
     let city = '';
@@ -60,7 +102,7 @@ class NewCompo extends Component {
     }
    };
 
-  apiHasLoaded = (map, maps, locations, suggestions) => {
+  apiHasLoaded = (map, maps, locations) => {
     const markers = [];
     if (navigator && navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(pos => {
@@ -182,26 +224,6 @@ class NewCompo extends Component {
             })
       }})
     }
-    console.log(suggestions);
-    suggestions.forEach((user) => {
-      const icon = {
-        shape:{coords:[17,17,18],type:'circle'},
-        optimized: false,
-        url: user.photos[0], // url
-        scaledSize: new maps.Size(34, 34), // scaled size
-        origin: new maps.Point(0,0), // origin
-        anchor: new maps.Point(0, 0) // anchor
-      };
-      markers.push(new maps.Marker({
-        icon,
-        animation: maps.Animation.DROP,
-        position: {
-          lat: user.lat,
-          lng: user.lon,
-        },
-        map,
-      }));
-    });
   };
 
   addPlace = (place) => {
@@ -262,10 +284,12 @@ class NewCompo extends Component {
   };
 
 
+
   render() {
     const {
       locations, mapApiLoaded, mapInstance, mapApi, customCenter
     } = this.state;
+    console.log(this.props.suggestions);
     return (
       <Fragment>
         <GoogleMap
@@ -276,7 +300,7 @@ class NewCompo extends Component {
             libraries: ['places', 'geometry'],
           }}
           yesIWantToUseGoogleMapApiInternals
-          onGoogleApiLoaded={({ map, maps }) => this.apiHasLoaded(map, maps, locations, this.props.suggestions)}
+          onGoogleApiLoaded={({ map, maps }) => this.apiHasLoaded(map, maps, locations)}
         >
           {/* {!isEmpty(places) &&
             places.map(place => (
