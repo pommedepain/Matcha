@@ -4,6 +4,7 @@ import AutoComplete from './AutoComplete';
 import axios from 'axios';
 import Geocode from "react-geocode";
 import { UserContext } from '../../Contexts/UserContext';
+import { shallowEqual } from 'fast-equals';
 
 
 Geocode.setApiKey(process.env.REACT_APP_MAP_KEY);
@@ -19,50 +20,61 @@ class NewCompo extends Component {
       // places: [],
       locations: [],
       customCenter: [48.896704899999996, 1.3184218],
-      updated: true
+      suggestions: [],
     };
   }
 
   static contextType = UserContext;
 
   componentDidUpdate() {
-    let { markers } = this.state;
-    const maps = this.state.mapApi;
-    const map = this.state.mapInstance;
-    console.log(this.props.suggestions);
-    if (this.props.suggestions.length && maps && map) {
-      let { markers } = this.state;
+    if (!shallowEqual(this.state.suggestions, this.props.suggestions)) {
+      console.log(this.props.suggestions);
       const maps = this.state.mapApi;
       const map = this.state.mapInstance;
-      console.log(this.props.suggestions);
-      this.props.suggestions.forEach((suggestion) => {
-        if (suggestion.user.photos && suggestion.user.photos.length) {
-          console.log(suggestion);
-        const icon = {
-          shape:{coords:[17,17,18],type:'circle'},
-          optimized: false,
-          url: suggestion.user.photos[0], // url
-          scaledSize: new maps.Size(34, 34), // scaled size
-          origin: new maps.Point(0,0), // origin
-          anchor: new maps.Point(0, 0) // anchor
-        };
-        markers.push(new maps.Marker({
-          icon,
-          animation: maps.Animation.DROP,
-          position: {
-            lat: parseInt(suggestion.user.lat),
-            lng: parseInt(suggestion.user.lon),
-          },
-          map,
-        }));
+      let { markers } = this.state;
+      if (this.props.suggestions.length && maps && map) {
+        for (let i = 0; i < markers.length; i += 1) {
+          if (i !== 0) {
+            markers[i].setMap(null);
+          }
         }
-      });
-      // this.setState({
-      //   mapApiLoaded: true,
-      //   mapInstance: map,
-      //   mapApi: maps,
-      //   markers,
-      // }, function() { console.log(this.state.markers); });
+        this.props.suggestions.reduce(async (prev, next) => {
+          await prev;
+          if (next.user.photos && next.user.photos.length) {
+            return new Promise((resolve) => {
+              const icon = {
+                optimized: false,
+                url: next.user.photos[0],
+                scaledSize: new maps.Size(34, 34),
+                origin: new maps.Point(0, 0),
+                anchor: new maps.Point(0, 0),
+              };
+              console.log(parseFloat(next.user.lat))
+              console.log(parseFloat(next.user.lon))
+
+              markers.push(new maps.Marker({
+                icon,
+                animation: maps.Animation.DROP,
+                position: {
+                  lat: parseFloat(next.user.lat),
+                  lng: parseFloat(next.user.lon),
+                },
+                map,
+              }));
+              resolve();
+            })
+          } return new Promise(resolve => resolve());
+        }, Promise.resolve())
+          .then(() => {
+            this.setState({
+              mapApiLoaded: true,
+              mapInstance: map,
+              mapApi: maps,
+              markers,
+              suggestions: this.props.suggestions,
+            }, function() { console.log(this.state.markers); });
+          })
+      }
     }
   }
 
