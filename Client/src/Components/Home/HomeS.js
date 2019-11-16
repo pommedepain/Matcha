@@ -132,7 +132,7 @@ class Home extends Component {
 							};
 							const ret = distance(toCompute.user1, toCompute.user2);
 							elem.user['distance'] = ret;
-							// console.log(ret);
+							console.log(ret);
 							suggestions[i] = elem;
 						}
 						return (suggestions);

@@ -10,6 +10,8 @@ const TagDatas = require('../../Datas/tagSuggestions.json');
 const _ = require('lodash');
 
 class Search extends Component {
+	_isMounted = false;
+
 	state = {
 		ageRange: [18, 25],
 		popularityRange: [0, 100],
@@ -41,23 +43,27 @@ class Search extends Component {
 	static contextType = UserContext;
 
 	componentDidMount () {
-		const mySocket = io('http://localhost:5000');
-		mySocket.on('notification', notification => {
-			if (notification.type === 'isOnline') {
-				let onlineUsers = [{ howMany: 0 }];
-				for (let i = 0; i < notification.result.length; i++) {
-					if (notification.result[i].isOnline === true) {
-						onlineUsers[0].howMany += 1;
-						onlineUsers[notification.result[i].username] = true;
-					}
-				}
-				this.setState({ usersOnline: onlineUsers }, function() { console.log(this.state.usersOnline); });
-			}
-		});
+		this._isMounted = true;
 
-		this.updateFilters();
-		this.getLocation();
-		this.getSuggestions();
+		if (this._isMounted) {
+			const mySocket = io('http://localhost:5000');
+			mySocket.on('notification', notification => {
+				if (notification.type === 'isOnline') {
+					let onlineUsers = [{ howMany: 0 }];
+					for (let i = 0; i < notification.result.length; i++) {
+						if (notification.result[i].isOnline === true) {
+							onlineUsers[0].howMany += 1;
+							onlineUsers[notification.result[i].username] = true;
+						}
+					}
+					this.setState({ usersOnline: onlineUsers }, function() { console.log(this.state.usersOnline); });
+				}
+			});
+
+			this.updateFilters();
+			this.getLocation();
+			this.getSuggestions();
+		}
 	}
 
 	getSuggestions = () => {
@@ -454,6 +460,10 @@ class Search extends Component {
 			.catch((err) => {
 				console.log(err);
 			})
+	}
+
+	componentWillUnmount() {
+		this._isMounted = false;
 	}
 
 	render () {

@@ -9,22 +9,22 @@ class UserPage extends Component {
 	constructor (props) {
 		super(props);
 		this.state = {
-			liked: {
-				node_a: {
-					label: "User",
-					id: "username",
-					properties: {}
-				},
-				node_b: {
-					label: "User",
-					id: "username",
-					properties: {}
-				},
-				relation: {
-					label: "LIKES",
-					properties: {}
-				}
-			},
+			// liked: {
+			// 	node_a: {
+			// 		label: "User",
+			// 		id: "username",
+			// 		properties: {}
+			// 	},
+			// 	node_b: {
+			// 		label: "User",
+			// 		id: "username",
+			// 		properties: {}
+			// 	},
+			// 	relation: {
+			// 		label: "LIKES",
+			// 		properties: {}
+			// 	}
+			// },
 			block: {
 				node_a: {
 					label: "User",
@@ -106,17 +106,16 @@ class UserPage extends Component {
 		const token = this.context.JWT.token;
 		if (e.type === "click") {
 			/* Construction of node to send to db */
-			const usersnames = this.state.liked;
-			const userlike = usersnames.node_a;
-			const userliked = usersnames.node_b;
-			userlike.properties = { username: this.context.JWT.data.username };
-			userliked.properties = { username: this.props.user.username };
-			this.setState({
-				liked: usersnames
-			}, function() { console.log(this.state.liked); });
+			// const usersnames = this.state.liked;
+			// const userlike = usersnames.node_a;
+			// const userliked = usersnames.node_b;
+			// userlike.properties = { username: this.context.JWT.data.username };
+			// userliked.properties = { username: this.props.user.username };
+			// this.setState({
+			// 	liked: usersnames
+			// }, function() { console.log(this.state.liked); });
 
-			axios
-				.post('http://localhost:4000/API/relationships/toggle', this.state.liked, {headers: {"x-auth-token": token}})
+			axios.put(`http://localhost:4000/API/users/${this.context.JWT.data.username}/toggleLike/${this.props.user.username}`, null, {headers: {"x-auth-token": token}})
 				.then(response => {
 					console.log(response.data);
 					this.setState({ loading: false });
