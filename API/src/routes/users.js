@@ -279,6 +279,20 @@ router.put('/update/:username', [auth, identify], wrapper(async (req, res) => {
     }));
 }));
 
+router.put(':username/toggleLike/:target', [auth, identify], wrapper(async (req, res) => {
+  res.locals.check = req.params.username;
+  debug('Request to update :\n', { username: req.params.username });
+  debug('newData:', req.body);
+  return (new User({ username: req.params.username }).toggleLike(req.params.target)
+    .then((result) => {
+      debug(result);
+      return res.status(200).json({
+        success: true,
+        payload: { value: 'update', result },
+      });
+    }));
+}));
+
 router.put('/connect/:username', [auth, identify], wrapper(async (req, res) => {
   res.locals.check = req.params.username;
   debug('Request to connect :\n', { username: req.params.username });
