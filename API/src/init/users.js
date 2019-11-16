@@ -11,7 +11,7 @@ const optionalProperties = ['bio', 'lat', 'lon', 'lastConnection', 'complete', '
 
 function getUsers() {
   return new Promise(async (resolve, reject) => {
-    await fs.readFile('./src/init/seedDEV.json', (err, data) => {
+    await fs.readFile('./src/init/seedDEV2.json', (err, data) => {
       const res = data;
       const users = JSON.parse(res);
       resolve(users);

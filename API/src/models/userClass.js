@@ -726,7 +726,7 @@ class User extends Node {
         .then(() => {
           this.updatedUser = this.user;
           debug(this.updatedUser);
-          if (this.updatedUser.sexOrient && this.updatedUser.gender && this.updatedUser.photos[0]) {
+          if (this.updatedUser.sexOrient && this.updatedUser.gender && this.updatedUser.photos && this.updatedUser.photos[0]) {
             const session = this.driver.session();
             const query = `MATCH (n:User {username:'${this.updatedUser.username}'})
                           SET n.complete = 'true'`;
@@ -1115,7 +1115,6 @@ class User extends Node {
       session.run(query1)
         .then((res) => {
           session.close();
-          debug(res);
           res.records[0] ? this.prev = 1 : this.prev = 0;
           return session.run(query2);
         })

@@ -27,36 +27,6 @@ const notifications = [
     type: 'message',
     message: 'message 4',
   },
-  {
-    emitter: 'camille',
-    receiver: 'amandine28',
-    type: 'message',
-    message: 'message 1',
-  },
-  {
-    emitter: 'camille',
-    receiver: 'amandine28',
-    type: 'message',
-    message: '<h1>mess\'age3`</h1>',
-  },
-  {
-    emitter: 'philoutre',
-    receiver: 'amandine28',
-    type: 'message',
-    message: 'message 1',
-  },
-  {
-    emitter: 'amandine28',
-    receiver: 'philoutre',
-    type: 'message',
-    message: 'message 2',
-  },
-  {
-    emitter: 'philoutre',
-    receiver: 'amandine28',
-    type: 'message',
-    message: '<h1>mess\'age3`</h1>',
-  },
 ];
 
 function populateFakeConv() {

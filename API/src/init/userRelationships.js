@@ -62,46 +62,6 @@ function populatenotifications() {
         emitter: 'philoutre',
         receiver: 'camille',
       });
-      notifications.push({
-        type: 'like',
-        emitter: 'camille',
-        receiver: 'amandine28',
-      });
-      notifications.push({
-        type: 'like',
-        emitter: 'amandine28',
-        receiver: 'camille',
-      });
-      notifications.push({
-        type: 'match',
-        emitter: 'camille',
-        receiver: 'amandine28',
-      });
-      notifications.push({
-        type: 'match',
-        emitter: 'amandine28',
-        receiver: 'camille',
-      });
-      notifications.push({
-        type: 'like',
-        emitter: 'philoutre',
-        receiver: 'amandine28',
-      });
-      notifications.push({
-        type: 'like',
-        emitter: 'amandine28',
-        receiver: 'philoutre',
-      });
-      notifications.push({
-        type: 'match',
-        emitter: 'philoutre',
-        receiver: 'amandine28',
-      });
-      notifications.push({
-        type: 'match',
-        emitter: 'amandine28',
-        receiver: 'philoutre',
-      });
       return (notifications.reduce(async (prev, next) => {
         await prev;
         return new Notifications(next).create();

@@ -9,15 +9,15 @@ const User = require('../models/userClass');
 
 const props = ['gender', 'email', 'password'];
 const requiredProperties = ['username', 'firstName', 'lastName', 'password', 'email', 'birthdate'];
-const optionalProperties = ['bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'tags', 'isTags', 'photos', 'localisation', 'optional', 'isAdmin'];
+const optionalProperties = ['bio', 'gender', 'active', 'lat', 'lon', 'sexOrient', 'ageMin', 'ageMax', 'tags', 'isTags', 'photos', 'localisation', 'optional', 'isAdmin'];
 const amount = 10;
-const latLonBox = { minLat: '48.11', maxLat: '49.31', minLon: '-1.00', maxLon: '-3.41' };
+const latLonBox = { minLat: 47.11, maxLat: 48.31, minLon: 1.00, maxLon: 3.41 };
 function rand(min, max) { // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
 function randFloat(min, max) {
-  return Math.random() * (max - min + 1) + min;
+  return Math.random() * (max - min) + min;;
 }
 
 const admin = {
@@ -32,6 +32,7 @@ const admin = {
   birthdate: '1992-03-27',
   ageMin: 18,
   ageMax: 99,
+  photos: ['https://uinames.com/api/photos/male/19.jpg', 'https://uinames.com/api/photos/male/17.jpg'],
   tags: [{ id: 'athlete', text: 'something' }, { id: 'book', text: 'lala' }],
   isTags: [{ id: 'geek', text: 'something' }, { id: 'book', text: 'lala' }],
   isAdmin: 'true',
@@ -60,6 +61,7 @@ const admin2 = {
   active: 'true',
   lat: '47.39',
   lon: '-3.20',
+  photos: ['https://uinames.com/api/photos/female/19.jpg', 'https://uinames.com/api/photos/female/17.jpg'],
 };
 
 const tags = [
@@ -142,6 +144,11 @@ function userParser(user) {
       newUser.tags = [];
       newUser.isTags = [];
       newUser.active = 'true';
+      const lat = randFloat(48.887398399999995 - 0.5, 48.887398399999995 + 0.5);
+      const lon = randFloat(2.3134208 - 0.5, 2.3134208 + 0.5) * -1;
+      debug(lat, lon);
+      newUser.lat = lat;
+      newUser.lon = lon;
       resolve(newUser);
     }
   });
@@ -175,22 +182,22 @@ function getUsers() {
         users = _.concat(users, res);
         return axios.get(`https://uinames.com/api/?amount=${amount}&region=france&ext`);
       })
-      .then((res) => {
-        const promises = res.data.map(user => (userParser(user)));
-        return (Promise.all(promises));
-      })
-      .then((res) => {
-        users = _.concat(users, res);
-        return axios.get(`https://uinames.com/api/?amount=${amount}&region=france&ext`);
-      })
-      .then((res) => {
-        const promises = res.data.map(user => (userParser(user)));
-        return (Promise.all(promises));
-      })
-      .then((res) => {
-        users = _.concat(users, res);
-        return axios.get(`https://uinames.com/api/?amount=${amount}&region=france&ext`);
-      })
+      // .then((res) => {
+      //   const promises = res.data.map(user => (userParser(user)));
+      //   return (Promise.all(promises));
+      // })
+      // .then((res) => {
+      //   users = _.concat(users, res);
+      //   return axios.get(`https://uinames.com/api/?amount=${amount}&region=france&ext`);
+      // })
+      // .then((res) => {
+      //   const promises = res.data.map(user => (userParser(user)));
+      //   return (Promise.all(promises));
+      // })
+      // .then((res) => {
+      //   users = _.concat(users, res);
+      //   return axios.get(`https://uinames.com/api/?amount=${amount}&region=france&ext`);
+      // })
       .then((res) => {
         const promises = res.data.map(user => (userParser(user)));
         return (Promise.all(promises));
