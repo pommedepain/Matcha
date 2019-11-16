@@ -236,19 +236,6 @@ router.post('/', wrapper(async (req, res) => {
     }));
 }));
 
-// router.post('/:username/chat', [auth, identify], wrapper(async (req, res) => {
-//   res.locals.check = req.params.username;
-//   debug('Requesting relation list...');
-//   return (new Notification(req.body).create()
-//     .then((result) => {
-//       debug(result);
-//       return res.status(200).json({
-//         success: true,
-//         payload: { value: 'read', result },
-//       });
-//     })
-//   );
-// }));
 
 router.post('/:username/visit/:target', [auth, identify], wrapper(async (req, res) => {
   res.locals.check = req.params.username;
