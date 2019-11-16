@@ -119,7 +119,11 @@ class NewCompo extends Component {
     if (navigator && navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(pos => {
         // console.log(pos);
-        const customCenter = [pos.coords.latitude, pos.coords.longitude];
+        let customCenter = null;
+        if (!this.context.JWT.data.forcedLat) {
+         customCenter = [pos.coords.latitude, pos.coords.longitude];
+        } else { customCenter = [parseFloat(this.context.JWT.data.forcedLat), parseFloat(this.context.JWT.data.forcedLon)];}
+        
         this.setState({ customCenter })
         const icon = {
           url: 'https://uinames.com/api/photos/female/16.jpg', // url
@@ -178,9 +182,12 @@ class NewCompo extends Component {
         console.log('geoloc denied');
         axios.get('http://localhost:4000/API/locate/geocode')
             .then((position) => {
-              this.setState({
-                customCenter: [position.data.payload.localisation.latitude,position.data.payload.localisation.longitude],
-              })
+              let customCenter = null;
+              if (!this.context.JWT.data.forcedLat) {
+               customCenter = [position.data.payload.localisation.latitude,position.data.payload.localisation.longitude];
+              } else { customCenter = [parseFloat(this.context.JWT.data.forcedLat), parseFloat(this.context.JWT.data.forcedLon)];}
+              
+              this.setState({ customCenter})
               const icon = {
                 shape:{coords:[17,17,18],type:'circle'},
                 optimized: false,
@@ -277,7 +284,7 @@ class NewCompo extends Component {
         state = this.getState( addressArray );
      
       //  console.log( 'city', city, area, state );
-        axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, {lat: place.geometry.location.lat(), lon: place.geometry.location.lng()} , {headers: {"x-auth-token": this.context.JWT.token}})
+        axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, {forcedLat: place.geometry.location.lat(), forcedLon: place.geometry.location.lng()} , {headers: {"x-auth-token": this.context.JWT.token}})
           .then((res) => {
             this.context.toggleUser(res.data.payload.result.token);
           })

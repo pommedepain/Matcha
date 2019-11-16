@@ -111,6 +111,12 @@ class UserValidator {
       if (this.req.lon) sch.lon = Joi.any().required();
       else sch.lon = Joi.any();
       
+      if (this.req.forcedLat) sch.forcedLat = Joi.any().required();
+      else sch.forcedLat = Joi.any();
+
+      if (this.req.forcedLon) sch.forcedLon = Joi.any().required();
+      else sch.forcedLon = Joi.any();
+      
       if (this.req.gps) sch.gps = Joi.any().required();
       else sch.gps = Joi.any();
 

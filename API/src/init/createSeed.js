@@ -11,9 +11,13 @@ const props = ['gender', 'email', 'password'];
 const requiredProperties = ['username', 'firstName', 'lastName', 'password', 'email', 'birthdate'];
 const optionalProperties = ['bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'tags', 'isTags', 'photos', 'localisation', 'optional', 'isAdmin'];
 const amount = 10;
-
+const latLonBox = { minLat: '48.11', maxLat: '49.31', minLon: '-1.00', maxLon: '-3.41' };
 function rand(min, max) { // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+function randFloat(min, max) {
+  return Math.random() * (max - min + 1) + min;
 }
 
 const admin = {
@@ -31,6 +35,10 @@ const admin = {
   tags: [{ id: 'athlete', text: 'something' }, { id: 'book', text: 'lala' }],
   isTags: [{ id: 'geek', text: 'something' }, { id: 'book', text: 'lala' }],
   isAdmin: 'true',
+  complete: 'true',
+  active: 'true',
+  lat: '47.37',
+  lon: '-3.22',
 };
 
 const admin2 = {
@@ -48,6 +56,10 @@ const admin2 = {
   tags: [{ id: 'athlete', text: 'something' }, { id: 'book', text: 'lala' }],
   isTags: [{ id: 'geek', text: 'something' }, { id: 'book', text: 'lala' }],
   isAdmin: 'true',
+  complete: 'true',
+  active: 'true',
+  lat: '47.39',
+  lon: '-3.20',
 };
 
 const tags = [

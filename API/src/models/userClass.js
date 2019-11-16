@@ -1110,8 +1110,8 @@ class User extends Node {
   toggleLike(target) {
     return new Promise((resolve, reject) => {
       const session = this.driver.session();
-      const query1 = `MATCH (a:User { username:'${this.user.username}'})-[r:Notification {type:'like'}]->(b:User {username:'target'}) return count(*)`;
-      const query2 = `MATCH (a:User { username:'${this.user.username}'})<-[r:Notification {type:'like'}]-(b:User {username:'target'}) return count(*)`;
+      const query1 = `MATCH p=(a:User { username:'${this.user.username}'})-[r:Notification {type:'like'}]->(b:User {username:'target'}) return p`;
+      const query2 = `MATCH p=(a:User { username:'${this.user.username}'})<-[r:Notification {type:'like'}]-(b:User {username:'target'}) return p`;
       session.run(query1)
         .then((res) => {
           console.log(res.records[0].length);
