@@ -48,6 +48,7 @@
 a, a:hover {
   text-decoration: none;
   color: #524a54;
+  width: 20%;
 }
 
 .wrapper {
@@ -107,7 +108,7 @@ a, a:hover {
 }
 
 .left > a {
-  width: 100%;
+  /* width: 100%; */
   color: white;
   font-weight: 300;
   font-size: 1vw;
@@ -120,17 +121,17 @@ a, a:hover {
   margin-right: 2%;
 }
 
-@media (max-width: 1450px) {
+@media only screen and (max-device-width: 1450px) {
   .unreadMessages {
     display: flex;
     justify-content: center;
     align-items: center;
     border: 1px solid #ff665e;
     position: absolute;
-    width: 2%;
-    height: 1vh;
+    width: 2vh;
+    height: 2vh;
     top: 0;
-    right: 46%;
+    right: 43.5%;
     border-radius: 50%;
     background-color: #ff665e;
     color: white;
@@ -181,15 +182,15 @@ a, a:hover {
 .showNotifs:focus {
   outline: none;
 }
-@media (max-width: 1450px) {
+@media only screen and (max-device-width: 1450px) {
   .unreadNotifs {
     display: flex;
     justify-content: center;
     align-items: center;
     border: 1px solid #ff665e;
     position: absolute;
-    width: 10%;
-    height: 1vh;
+    width: 2vh;
+    height: 2vh;
     top: 0;
     right: 30%;
     border-radius: 50%;

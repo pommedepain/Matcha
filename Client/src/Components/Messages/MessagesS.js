@@ -8,6 +8,8 @@ import axios from 'axios';
 const _ = require('lodash');
 
 class MessagesSmart extends Component {
+	_isMounted = false;
+
 	state = {
 		matchList: [],
 		sendBar: {
@@ -36,12 +38,16 @@ class MessagesSmart extends Component {
 	static contextType = UserContext;
 
 	componentDidMount() {
-		axios.get(`http://localhost:4000/API/users/matches/${this.context.JWT.data.username}`, {headers: {"x-auth-token": this.context.JWT.token}})
-			.then((res) => {
-				// console.log(res)
-				this.sortMatchList(res.data.payload.result);
-			})
-			.catch((err) => console.log(err))
+		this._isMounted = true;
+
+		if (this._isMounted) {
+			axios.get(`http://localhost:4000/API/users/matches/${this.context.JWT.data.username}`, {headers: {"x-auth-token": this.context.JWT.token}})
+				.then((res) => {
+					// console.log(res)
+						this.sortMatchList(res.data.payload.result);
+				})
+				.catch((err) => console.log(err))
+		}
 	}
 
 	sortMatchList = (list) => {
@@ -249,6 +255,10 @@ class MessagesSmart extends Component {
 					{type:'message', 
 					emitter: this.context.JWT.data.username, 
 					receiver: this.state.currentInterlocutor});
+	}
+
+	componentWillUnmount() {
+		this._isMounted = false;
 	}
 
 	render() {

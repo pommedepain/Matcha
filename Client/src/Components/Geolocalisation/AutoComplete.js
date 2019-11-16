@@ -59,6 +59,7 @@ class AutoComplete extends Component {
       position: 'relative',
       paddingLeft: '16px',
       marginTop: '2px',
+      marginLeft: '0',
       width: '100%',
       height: '35px',
       fontFamily: 'montserrat',

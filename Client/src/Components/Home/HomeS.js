@@ -8,6 +8,8 @@ import HomeDumb from './HomeD';
 const TagDatas = require('../../Datas/tagSuggestions.json');
 
 class Home extends Component {
+	_isMounted = false;
+
 	constructor (props) {
 		super(props);
 		this.state = {
@@ -29,22 +31,26 @@ class Home extends Component {
 	static contextType = UserContext;
 
 	componentDidMount () {
-		const mySocket = io('http://localhost:5000');
-		mySocket.on('notification', notification => {
-			if (notification.type === 'isOnline') {
-				let onlineUsers = [{ howMany: 0 }];
-				for (let i = 0; i < notification.result.length; i++) {
-					if (notification.result[i].isOnline === true) {
-						onlineUsers[0].howMany += 1;
-						onlineUsers[notification.result[i].username] = true;
-					}
-				}
-				this.setState({ usersOnline: onlineUsers }, function() { console.log(this.state.usersOnline); });
-			}
-		});
+		this._isMounted = true;
 
-		this.getSuggestions();
-		this.updateFilters();
+		if (this._isMounted) {
+			const mySocket = io('http://localhost:5000');
+			mySocket.on('notification', notification => {
+				if (notification.type === 'isOnline') {
+					let onlineUsers = [{ howMany: 0 }];
+					for (let i = 0; i < notification.result.length; i++) {
+						if (notification.result[i].isOnline === true) {
+							onlineUsers[0].howMany += 1;
+							onlineUsers[notification.result[i].username] = true;
+						}
+					}
+					this.setState({ usersOnline: onlineUsers }, function() { console.log(this.state.usersOnline); });
+				}
+			});
+
+			this.getSuggestions();
+			this.updateFilters();
+		}
 	}
 
 	/* Make sure that the infos such as "username liked you" displayed on their profil are updated immediately */
@@ -222,6 +228,10 @@ class Home extends Component {
 					console.log(err);
 				})
 		}
+	}
+	
+	componentWillUnmount() {
+		this._isMounted = false;
 	}
 
 	render() {
