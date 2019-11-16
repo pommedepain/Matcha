@@ -71,7 +71,13 @@ const SearchDummy = (props) => {
 									</div>
 									<div className={classes.secondRow}>
 										<div className={classes.geolocCont} >
-											<MapContainer className={classes.map} suggestions={props.suggestionsSearched}/>
+											<MapContainer 
+												className={classes.map} 
+												suggestions={props.suggestionsSearched}
+												currentLocation={props.currentLocation} 
+												rerender={props.rerender} 
+											/>
+											<i className={cx("fas fa-map-marked-alt", classes.geolocate)} onClick={props.geolocateUser}></i>
 										</div>
 										<div className={classes.filterBy} >
 											<h4>Filter by...</h4>

@@ -498,6 +498,24 @@
 		width: 60%;
 		height: 70%;
 		position: relative;
+		display: flex;
+		flex-direction: row;
+	}
+	.map{
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+	}
+	.geolocate {
+		font-size: 2vw;
+		position: absolute;
+		left: 93%;
+		top: 85%;
+		color: #524A54;
+		cursor: pointer;
+	}
+	.geolocate:hover {
+		color: rgb(116, 209, 234);
 	}
 }
 @media only screen and (min-device-width: 1500px) {
@@ -505,8 +523,26 @@
 		width: 60%;
 		height: 250%;
 		position: relative;
+		display: flex;
+		flex-direction: row;
 		/* top: 120%; */
 	} 
+	.map{
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+	}
+	.geolocate {
+		font-size: 2vw;
+		position: absolute;
+		left: 93%;
+		top: 85%;
+		color: #524A54;
+		cursor: pointer;
+	}
+	.geolocate:hover {
+		color: rgb(116, 209, 234);
+	}
 }
 
 

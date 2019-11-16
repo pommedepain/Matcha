@@ -241,7 +241,18 @@ const ProfilDummy = (props) => {
 				</div>
 				<div className={classes.secondRow}>
 					<div className={classes.geolocCont} >
-						<MapContainer displayInput={props.displayInput} suggestions={[]} photo={props.JWT.data.photos[0]}/>
+						<div className={classes.map}>
+							<MapContainer 
+								displayInput={props.displayInput} 
+								suggestions={[]} photo={props.JWT.data.photos[0]} 
+								currentLocation={props.currentLocation} 
+								rerender={props.rerender} 
+							/>
+						</div>
+						{props.edit.active ?
+							<i className={cx("fas fa-map-marked-alt", classes.geolocate)} onClick={props.geolocateUser}></i>
+							: null
+						}
 					</div>
 					<div className={classes.cercle}>
 						<div className={classes.matchIndicator}>

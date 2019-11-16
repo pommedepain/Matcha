@@ -21,6 +21,7 @@ class NewCompo extends Component {
       locations: [],
       customCenter: [48.896704899999996, 1.3184218],
       suggestions: [],
+      rerender: false,
     };
   }
 
@@ -49,8 +50,8 @@ class NewCompo extends Component {
                 origin: new maps.Point(0, 0),
                 anchor: new maps.Point(0, 0),
               };
-              console.log(parseFloat(next.user.lat))
-              console.log(parseFloat(next.user.lon))
+              // console.log(parseFloat(next.user.lat))
+              // console.log(parseFloat(next.user.lon))
 
               markers.push(new maps.Marker({
                 icon,
@@ -75,6 +76,37 @@ class NewCompo extends Component {
             }, function() { console.log(this.state.markers); });
           })
       }
+    } if (this.props.rerender) {
+      let { markers } = this.state;
+      const maps = this.state.mapApi;
+      const map = this.state.mapInstance;
+      markers[0].setMap(null);
+
+      const icon = {
+        shape:{coords:[17,17,18],type:'circle'},
+        optimized: false,
+        url: 'https://uinames.com/api/photos/female/16.jpg', // url
+        scaledSize: new maps.Size(34, 34), // scaled size
+        origin: new maps.Point(0,0), // origin
+        anchor: new maps.Point(0, 0) // anchor
+      };
+      markers[0] = new maps.Marker({
+        icon,
+        animation: maps.Animation.DROP,
+        position: {
+          lat: this.props.currentLocation.lat,
+          lng: this.props.currentLocation.lng,
+        },
+        map,
+      })
+      map.setCenter({ lat: this.props.currentLocation.lat, lng: this.props.currentLocation.lng })
+      this.setState({
+        mapApiLoaded: true,
+        mapInstance: map,
+        mapApi: maps,
+        markers,
+      });
+      // this.setState({rerender: !this.state.rerender});
     }
   }
 
@@ -302,13 +334,10 @@ class NewCompo extends Component {
      );
   };
 
-
-
   render() {
     const {
       locations, mapApiLoaded, mapInstance, mapApi, customCenter
     } = this.state;
-    console.log(this.props.suggestions);
     return (
       <Fragment>
         <GoogleMap

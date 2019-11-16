@@ -95,7 +95,6 @@ class UserPage extends Component {
 		const token = this.context.JWT.token;
 		const allElem = document.getElementsByClassName("empty_heart");
 		const elem = allElem[this.props.id];
-		console.log(elem);
 		console.log(this.props.user);
 		if (e.type === "click") {
 			axios.put(`http://localhost:4000/API/users/${this.context.JWT.data.username}/toggleLike/${this.props.user.username}`, null, {headers: {"x-auth-token": token}})
@@ -122,10 +121,8 @@ class UserPage extends Component {
 							});
 						}
 						console.log("elem was " + removeClass + " and is now " + addClass);
-						console.log(elem.classList);
 						elem.classList.add(addClass);
 						elem.classList.remove(removeClass);
-						console.log(elem);
 
 						const mySocket = io('http://localhost:5000');
 						response.data.payload.result.map((elem, i) => {

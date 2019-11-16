@@ -20,7 +20,7 @@ const PrivateRoute = ({component: Component, ...rest}) => {
 			this.context.toggleUser(null);
 		}
 	}
-	console.log("_isMounted: " + _isMounted);
+	// console.log("_isMounted: " + _isMounted);
 
 	return (
 		<Route 
