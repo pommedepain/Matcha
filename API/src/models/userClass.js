@@ -652,7 +652,9 @@ class User extends Node {
             this.data.node_a.properties.active = 'false';
           }
           if (this.data.node_a.properties && this.data.node_a.properties.complete === undefined) {
-            this.data.node_a.properties.complete = 'false';
+            if (this.data.node_a.properties.sexOrient && this.data.node_a.properties.gender && this.data.node_a.properties.photos[0]) {
+              this.data.node_a.properties.complete = 'true';
+            } else this.data.node_a.properties.complete = 'false';
           }
           if (this.data.node_a.properties.active === 'false') {
             return this.sendConfLink();
@@ -958,6 +960,24 @@ class User extends Node {
     return new Promise((resolve, reject) => {
       const session = this.driver.session();
       const query = `MATCH (n:User { username:'${this.user.username}'})<-[r:Notification {type:'visit'}]-(b:User)
+                    RETURN properties(b),r.date`;
+      session.run(query)
+        .then((res) => {
+          const result = [];
+          if (res.records.length !== 0) {
+            res.records.forEach((record) => {
+              result.push({ user: record._fields[0], date: record._fields[1] });
+            });
+          } resolve(result);
+        })
+        .catch(err => debug(err));
+    });
+  }
+
+  getLikes() {
+    return new Promise((resolve, reject) => {
+      const session = this.driver.session();
+      const query = `MATCH (n:User { username:'${this.user.username}'})<-[r:Notification {type:'like'}]-(b:User)
                     RETURN properties(b),r.date`;
       session.run(query)
         .then((res) => {
