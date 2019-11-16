@@ -8,18 +8,25 @@ import { UserContext } from '../../Contexts/UserContext';
 const _ = require('lodash');
 
 class MatchesSmart extends Component {
+	_isMounted = false;
+
 	state = {
 		matchesList: [],
 		visitsHistoric: [],
-		usersOnline: []
+		usersOnline: [],
+		visits_likesHistoric: []
 	};
 
 	static contextType = UserContext;
 
 	componentDidMount() {
-		this.getMatches();
-		this.getVisits();
-		this.getUsersOnline();
+		this._isMounted = true;
+
+		if (this._isMounted) {
+			this.getMatches();
+			this.getVisits_Likes();
+			this.getUsersOnline();
+		}
 	}
 
 	getMatches = () => {
@@ -30,13 +37,27 @@ class MatchesSmart extends Component {
 			.catch((err) => console.log(err))
 	}
 
-	getVisits = () => {
+	getVisits_Likes = () => {
 		axios.get(`http://localhost:4000/API/users/${this.context.JWT.data.username}/visits`, {headers: {"x-auth-token": this.context.JWT.token}})
 			.then((res) => {
-				this.visitsSort(res.data.payload.result);
+				this.setState({ visitsHistoric: res.data.payload.result }, function() {
+					axios.get(`http://localhost:4000/API/users/${this.context.JWT.data.username}/likedBy`, {headers: {"x-auth-token": this.context.JWT.token}})
+					.then((res) => {
+						this.visits_LikesSort(this.state.visitsHistoric, res.data.payload.result);
+					})
+					.catch((err) => console.log(err))
+				})
 			})
 			.catch((err) => console.log(err))
 	}
+
+	// getLikes = () => {
+	// 	axios.get(`http://localhost:4000/API/users/${this.context.JWT.data.username}/likedBy`, {headers: {"x-auth-token": this.context.JWT.token}})
+	// 		.then((res) => {
+	// 			this.likesSort(res.data.payload.result);
+	// 		})
+	// 		.catch((err) => console.log(err))
+	// }
 
 	getUsersOnline = () => {
 		const mySocket = io('http://localhost:5000');
@@ -60,10 +81,19 @@ class MatchesSmart extends Component {
 		this.setState({ matchesList: sortedList }, function() { console.log(this.state.matchesList); });
 	}
 
-	visitsSort = (list) => {
-		let sortedList = list;
+	visits_LikesSort = (visitsList, likesList) => {
+		let sortedList = visitsList;
+		likesList.forEach(elem => {
+			sortedList.push(elem);
+		});
+		console.log(sortedList);
 		sortedList = _.orderBy(sortedList, ['date'], ['desc']);
-		this.setState({ visitsHistoric: sortedList }, function() { console.log(this.state.visitsHistoric); });
+		console.log(sortedList);
+		this.setState({ visits_likesHistoric: visitsList }, function() { console.log(this.state.visits_likesHistoric); });
+	}
+
+	componentWillUnmount() {
+		this._isMounted = false;
 	}
 
 	render () {

@@ -237,6 +237,7 @@ const UserPageDumb = (props) => {
 							<h4 className={classes.usernameAge}>{props.user.username}, {props.user.age} yo</h4>
 							<h4 className={classes.genderSex}><i className={cx(genderIcon, classes.genderIcon)}></i>{gender}, {sexOrient}</h4>
 						</div>
+						{/* Conditional rendering depending on if user liked the profil he/she's consulted and on if the profil liked him/her back  */}
 						<div className={classes.heartGroup}>
 							{props.user.Uliked ? 
 								<i className={cx(classes.empty_heart, "fas fa-heart", "empty_heart")} id={props.id} onClick={props.handleHeartClick} ></i>

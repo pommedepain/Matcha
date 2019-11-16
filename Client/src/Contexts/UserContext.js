@@ -45,7 +45,7 @@ const UserContextProvider = (props) => {
 			if (JWT.token.exp < (dateNow.getTime() / 1000)) {
 				return (false);
 			}
-			token.data.firstName ? console.log("isLoggedIn initialized true"): console.log("isLoggedIn initialized false");
+			// token.data.firstName ? console.log("isLoggedIn initialized true"): console.log("isLoggedIn initialized false");
 			return (token.data.firstName ? true : false);
 		}
 		else {

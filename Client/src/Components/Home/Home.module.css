@@ -9,35 +9,27 @@
 	align-items: center;
 }
 
-.filters {
-	width: 100%;
-	/* height: 10vh; */
-	display: flex;
-	justify-content: center;
+@media only screen and (max-device-width: 1450px) {
+	.geolocCont {
+		width: 90%;
+		margin-top: 3%;
+		/* height: 200%; */
+		height: 30vh;
+		position: relative;
+		justify-content: center;
+		/* top: 120%; */
+	}
 }
-
-.filters > h3 {
-	position: absolute;
-	font-weight: 400;
-	font-size: 2vw;
-	margin-top: 2%;
-	left: 20%;
-	background-color: white;
-	padding-left: 10px;
-	padding-right: 10px;
-}
-
-.border {
-	display: flex;
-	flex-direction: row;
-	justify-content: space-around;
-	/* align-items: center; */
-	border: 1px solid rgb(116, 209, 234);
-	width: 80%;
-	margin-top: 3%;
-	margin-bottom: 1%;
-	padding-left: 3%;
-	padding-bottom: 1%;
+@media (min-width: 1450px) {
+	.geolocCont {
+		width: 90%;
+		margin-top: 3%;
+		height: 30vh;
+		/* height: 200%; */
+		position: relative;
+		justify-content: center;
+		/* top: 120%; */
+	} 
 }
 
 input {

@@ -9,8 +9,8 @@ const PrivateRoute = ({component: Component, ...rest}) => {
 	
 	if (JWT.token !== null && JWT.data.firstName) {
 		let dateNow = new Date();
-		console.log(JWT.exp);
-		console.log(dateNow.getTime() / 1000);
+		// console.log(JWT.exp);
+		// console.log(dateNow.getTime() / 1000);
 		if (JWT.exp < (dateNow.getTime() / 1000)) {
 			this.context.toggleUser(null);
 		}
@@ -20,7 +20,7 @@ const PrivateRoute = ({component: Component, ...rest}) => {
 		<Route 
 			{...rest}
 			render={props => {
-				console.log("isLoggedIn: " + isLoggedIn + " & Component is " + Component.name)
+				// console.log("isLoggedIn: " + isLoggedIn + " & Component is " + Component.name)
 				if (isLoggedIn === true && Component.name !== "SignUp") {
 					return (<Component {...props} />) 
 				}

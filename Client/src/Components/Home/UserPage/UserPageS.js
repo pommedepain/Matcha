@@ -113,11 +113,12 @@ class UserPage extends Component {
 			userliked.properties = { username: this.props.user.username };
 			this.setState({
 				liked: usersnames
-			});
+			}, function() { console.log(this.state.liked); });
 
 			axios
 				.post('http://localhost:4000/API/relationships/toggle', this.state.liked, {headers: {"x-auth-token": token}})
 				.then(response => {
+					console.log(response.data);
 					this.setState({ loading: false });
 	
 					if (response.data.success) {

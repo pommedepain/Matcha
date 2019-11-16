@@ -136,12 +136,12 @@ const MatchesDummy = (props) => {
 				</div>
 				<div className={classes.visitsHistoric}>
 					<h2>Visits Historic</h2>
-					{props.visitsHistoric ?
-						props.visitsHistoric.map((elem, i) => {
+					{props.visits_likesHistoric ?
+						props.visits_likesHistoric.map((elem, i) => {
 							let isOnline = false;
 							if (props.usersOnline) {
 								for (let i = 0; i < props.usersOnline.length; i++) {
-									if (props.usersOnline[i].name === elem.user.username) {
+									if (elem.user && props.usersOnline[i].name === elem.user.username) {
 										isOnline = true;
 									}
 								}
@@ -234,25 +234,30 @@ const MatchesDummy = (props) => {
 									}
 								}
 							}
-							return (
-								<div className={classes.match} key={i}>
-									<div className={classes.mainInfos}>
-										<img src={elem.user.photos[0]} alt="profil" />
-										<div className={classes.textInfos}>
-											<div className={classes.name}>{elem.user.username}</div>
-											<div className={classes.matchTime}>Visit was {time} ago</div>
+							if (elem.user) {
+								return (
+									<div className={classes.match} key={i}>
+										<div className={classes.mainInfos}>
+											<img src={elem.user.photos[0]} alt="profil" />
+											<div className={classes.textInfos}>
+												<div className={classes.name}>{elem.user.username}</div>
+												<div className={classes.matchTime}>Visit was {time} ago</div>
+											</div>
+										</div>
+										<div className={classes.subInfos}>
+											{isOnline ?
+												[<div className={classes.onlineCont} key={0}>
+													<div className={classes.onlineDot}></div> Active
+												</div>]
+												: <p className={classes.lastConnect}>last active: <br /> {elem.user.lastConnection}</p>
+											}
 										</div>
 									</div>
-									<div className={classes.subInfos}>
-										{isOnline ?
-											[<div className={classes.onlineCont} key={0}>
-												<div className={classes.onlineDot}></div> Active
-											</div>]
-											: <p className={classes.lastConnect}>last active: <br /> {elem.user.lastConnection}</p>
-										}
-									</div>
-								</div>
-							)
+								)
+							}
+							else {
+								return (null)
+							}
 						})
 						: null
 					}
