@@ -128,7 +128,7 @@ router.get('/:username/commonTags', [auth, admin], wrapper(async (req, res) => {
 router.get('/:username/likedBy', [auth, identify], wrapper(async (req, res) => {
   res.locals.check = req.params.username;
   debug('Requesting likedBy list...');
-  return (new User({ username: req.params.username }).getLikedBy()
+  return (new User({ username: req.params.username }).getLikes()
     .then((result) => {
       debug(result);
       return res.status(200).json({
