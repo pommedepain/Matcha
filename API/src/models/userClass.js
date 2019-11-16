@@ -992,35 +992,6 @@ class User extends Node {
     });
   }
 
-  // chat(data) {
-  //   return new Promise((resolve, reject) => {
-  //     const { target, message } = data;
-  //     const date = new Date().toLocaleString();
-  //     const session = this.driver.session();
-  //     const query = `MATCH p=(n:User { username:'${this.user.username}'})-[r:CONVERSATION]-(b:User {username:'${target}'}) return p`;
-  //     const query1 = `CREATE (n:User { username:'${this.user.username}'})-[r:CONVERSATION { messages: [{ emitter:'${this.user.username}' , receiver:'${target}' , date:'${date}', content:'${message}' }] }]->(b:User {username:'${target}'})
-  //                     RETURN r.messages`;
-  //     const query2 = `MATCH (n:User { username:'${this.user.username}'})-[r:CONVERSATION]-(b:User {username:'${target}'})
-  //                     SET r.messages= r.messages + { emitter:'${this.user.username}' , receiver:'${target}' , date:'${date}', content:'${message}' }
-  //                     RETURN r.messages`;
-  //     session.run(query)
-  //       .then((res) => {
-  //         debug('first res', res.records);
-  //         if (res.records.length === 0) {
-  //           return (session.run(query1));
-  //         } return (session.run(query2));
-  //       })
-  //       .then((messages) => {
-  //         this.messages = messages;
-  //         debug(messages);
-  //         return this.updateScore();
-  //       })
-  //       .then(() => new User({ username: target }).updateScore())
-  //       .then(() => resolve(this.messages))
-  //       .catch(err => debug(err));
-  //   });
-  // }
-
   getConversations() {
     return new Promise((resolve, reject) => {
       const session = this.driver.session();
@@ -1135,6 +1106,102 @@ class User extends Node {
         .catch(err => debug(err));
     });
   }
+
+  toggleLike(target) {
+    return new Promise((resolve, reject) => {
+      const session = this.driver.session();
+      const query1 = `MATCH (a:User { username:'${this.user.username}'})-[r:Notification {type:'like'}]->(b:User {username:'target'})`;
+      const query2 = `MATCH (a:User { username:'${this.user.username}'})<-[r:Notification {type:'like'}]-(b:User {username:'target'})`;
+      session.run(query1)
+        .then((res) => {
+          session.close();
+          this.case = res.records[0].length;
+          return session.run(query2);
+        })
+        .then((res) => {
+          session.close();
+          this.case = [this.case, res.records[0].length];
+          let toEmit = [];
+          switch (this.case) {
+            case (this.case[0] === 0 && this.case[1] === 0):
+              toEmit = [
+                {
+                  emitter: this.user.username,
+                  receiver: target,
+                  type: 'like',
+                },
+              ];
+              toEmit.reduce(async (prev, next) => {
+                await prev;
+                return new Notification(next).create();
+              }, Promise.resolve())
+                .then(() => resolve(toEmit));
+              break;
+            case (this.case[0] === 0 && this.case[1] === 1):
+              toEmit = [
+                {
+                  emitter: this.user.username,
+                  receiver: target,
+                  type: 'like',
+                },
+                {
+                  emitter: this.user.username,
+                  receiver: target,
+                  type: 'match',
+                },
+                {
+                  emitter: target,
+                  receiver: this.user.username,
+                  type: 'match',
+                },
+              ];
+              toEmit.reduce(async (prev, next) => {
+                await prev;
+                return new Notification(next).create();
+              }, Promise.resolve())
+                .then(() => resolve(toEmit));
+              break;
+            case (this.case[0] === 1 && this.case[1] === 0):
+              toEmit = [
+                {
+                  emitter: this.user.username,
+                  receiver: target,
+                  type: 'unlike',
+                },
+              ];
+              toEmit.reduce(async (prev, next) => {
+                await prev;
+                return new Notification(next).create();
+              }, Promise.resolve())
+                .then(() => resolve(toEmit));
+              break;
+            case (this.case[0] === 1 && this.case[1] === 1):
+              toEmit = [
+                {
+                  emitter: this.user.username,
+                  receiver: target,
+                  type: 'unlike',
+                },
+                {
+                  emitter: this.user.username,
+                  receiver: target,
+                  type: 'unmatch',
+                },
+              ];
+              toEmit.reduce(async (prev, next) => {
+                await prev;
+                return new Notification(next).create();
+              }, Promise.resolve())
+                .then(() => resolve([toEmit[1]]));
+              break;
+            default:
+              resolve('NoooooOOooOooooooooooo!!!!!!!!!!!!!!');
+          }
+        })
+        .catch(err => debug(err));
+    });
+  }
+
 }
 
 module.exports = User;
