@@ -70,7 +70,6 @@ router.get('/confirm/:username/:token', wrapper(async (req, res) => {
 }));
 
 router.get('/infos/:username', [auth, identify], wrapper(async (req, res) => {
-  res.locals.check = req.params.username;
   debug('Request to get user information for :', req.params.username);
   return (new User({ username: req.params.username }).getUserInfo()
     .then((user) => {
@@ -85,7 +84,6 @@ router.get('/infos/:username', [auth, identify], wrapper(async (req, res) => {
 }));
 
 router.get('/matches/:username', [auth, identify], wrapper(async (req, res) => {
-  res.locals.check = req.params.username;
   debug('Request to get user matches :', req.params.username);
   return (new User({ username: req.params.username }).getMatches()
     .then((result) => {
@@ -98,7 +96,6 @@ router.get('/matches/:username', [auth, identify], wrapper(async (req, res) => {
 }));
 
 router.get('/suggestions/:username', [auth, identify], wrapper(async (req, res) => {
-  res.locals.check = req.params.username;
   debug('Request to get user matches :', req.params.username);
   return (new User({ username: req.params.username }).getSuggestions()
     .then((result) => {
@@ -112,7 +109,6 @@ router.get('/suggestions/:username', [auth, identify], wrapper(async (req, res) 
 
 
 router.get('/:username/commonTags', [auth, admin], wrapper(async (req, res) => {
-  res.locals.check = req.params.username;
   debug('Requesting list...');
   return (new User({ username: req.params.username }).getCommonTags()
     .then((result) => {
@@ -126,7 +122,6 @@ router.get('/:username/commonTags', [auth, admin], wrapper(async (req, res) => {
 }));
 
 router.get('/:username/likedBy', [auth, identify], wrapper(async (req, res) => {
-  res.locals.check = req.params.username;
   debug('Requesting likedBy list...');
   return (new User({ username: req.params.username }).getLikes()
     .then((result) => {
@@ -141,7 +136,6 @@ router.get('/:username/likedBy', [auth, identify], wrapper(async (req, res) => {
 
 
 router.get('/:username/visits', [auth, identify], wrapper(async (req, res) => {
-  res.locals.check = req.params.username;
   debug('Requesting visit list...');
   return (new User({ username: req.params.username }).getVisits()
     .then((result) => {
@@ -155,7 +149,6 @@ router.get('/:username/visits', [auth, identify], wrapper(async (req, res) => {
 }));
 
 router.get('/:username/score', [auth, identify], wrapper(async (req, res) => {
-  res.locals.check = req.params.username;
   debug('Request to get score:\n');
   return (new User({ username: req.params.username }).updateScore()
     .then((result) => {
@@ -168,7 +161,6 @@ router.get('/:username/score', [auth, identify], wrapper(async (req, res) => {
 }));
 
 router.get('/:username/conversations', [auth, identify], wrapper(async (req, res) => {
-  res.locals.check = req.params.username;
   debug('Requesting list...');
   return (new User({ username: req.params.username }).getConversations()
     .then((result) => {
@@ -182,7 +174,6 @@ router.get('/:username/conversations', [auth, identify], wrapper(async (req, res
 }));
 
 router.get('/:username/conversationWith/:target', [auth, identify], wrapper(async (req, res) => {
-  res.locals.check = req.params.username;
   debug('Requesting list...');
   return (new User({ username: req.params.username }).getConversationWith(req.params.target)
     .then((result) => {
@@ -196,7 +187,6 @@ router.get('/:username/conversationWith/:target', [auth, identify], wrapper(asyn
 }));
 
 router.get('/:username/BLOCK', [auth, identify], wrapper(async (req, res) => {
-  res.locals.check = req.params.username;
   debug('Requesting relation list...');
   return (new User({ username: req.params.username }).getBlocked()
     .then((result) => {
@@ -210,7 +200,6 @@ router.get('/:username/BLOCK', [auth, identify], wrapper(async (req, res) => {
 }));
 
 router.get('/:username/:relation', [auth, identify], wrapper(async (req, res) => {
-  res.locals.check = req.params.username;
   debug('Requesting relation list...');
   return (new User({ username: req.params.username }).getRelations(req.params.relation)
     .then((result) => {
@@ -238,7 +227,6 @@ router.post('/', wrapper(async (req, res) => {
 
 
 router.post('/:username/visit/:target', [auth, identify], wrapper(async (req, res) => {
-  res.locals.check = req.params.username;
   debug('Requesting list...');
   return (new User({ username: req.params.username }).visits(req.params.target)
     .then((result) => {
@@ -253,7 +241,6 @@ router.post('/:username/visit/:target', [auth, identify], wrapper(async (req, re
 
 
 router.put('/update/:username', [auth, identify], wrapper(async (req, res) => {
-  res.locals.check = req.params.username;
   debug('Request to update :\n', { username: req.params.username });
   debug('newData:', req.body);
   return (new User({ username: req.params.username }).updateUser(req.body)
@@ -266,10 +253,8 @@ router.put('/update/:username', [auth, identify], wrapper(async (req, res) => {
     }));
 }));
 
-router.put(':username/toggleLike/:target', [auth, identify], wrapper(async (req, res) => {
-  res.locals.check = req.params.username;
-  debug('Request to update :\n', { username: req.params.username });
-  debug('newData:', req.body);
+router.put('/:username/toggleLike/:target', [auth, identify], wrapper(async (req, res) => {
+  debug('Request to toggle :\n', { username: req.params.username });
   return (new User({ username: req.params.username }).toggleLike(req.params.target)
     .then((result) => {
       debug(result);
@@ -281,7 +266,6 @@ router.put(':username/toggleLike/:target', [auth, identify], wrapper(async (req,
 }));
 
 router.put('/connect/:username', [auth, identify], wrapper(async (req, res) => {
-  res.locals.check = req.params.username;
   debug('Request to connect :\n', { username: req.params.username });
   return (new User({ username: req.params.username }).connect()
     .then((result) => {

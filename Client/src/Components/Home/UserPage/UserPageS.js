@@ -118,175 +118,175 @@ class UserPage extends Component {
 			axios.put(`http://localhost:4000/API/users/${this.context.JWT.data.username}/toggleLike/${this.props.user.username}`, null, {headers: {"x-auth-token": token}})
 				.then(response => {
 					console.log(response.data);
-					this.setState({ loading: false });
+					this.setState({ loading: false })});
 	
-					if (response.data.success) {
-						/* Dynamically changes the heart icon depending on if user liked or unliked someone */
-						const addClass = response.data.payload.result.search("CREATED") !== -1 ? "fas" : "far";
-						const removeClass = response.data.payload.result.search("CREATED") !== -1 ? "far" : "fas";
-						const allElem = document.getElementsByClassName("empty_heart");
-						const elem = allElem[this.props.id];
-						elem.classList.add(addClass);
-						elem.classList.remove(removeClass);
-						const newNotification = {
-							emitter: this.context.JWT.data.username,
-							receiver: this.props.user.username,
-							type: null,
-							new: true
-						};
+				// 	if (response.data.success) {
+				// 		/* Dynamically changes the heart icon depending on if user liked or unliked someone */
+				// 		const addClass = response.data.payload.result.search("CREATED") !== -1 ? "fas" : "far";
+				// 		const removeClass = response.data.payload.result.search("CREATED") !== -1 ? "far" : "fas";
+				// 		const allElem = document.getElementsByClassName("empty_heart");
+				// 		const elem = allElem[this.props.id];
+				// 		elem.classList.add(addClass);
+				// 		elem.classList.remove(removeClass);
+				// 		const newNotification = {
+				// 			emitter: this.context.JWT.data.username,
+				// 			receiver: this.props.user.username,
+				// 			type: null,
+				// 			new: true
+				// 		};
 
-						console.log("this user liked u?: " + this.props.user.likedU);
-						console.log(addClass);
-						/* If the user liked someone, send a notification 'like' to the receiver */
-						if (addClass === "fas" && this.props.user.likedU === false) {
-							console.log("user liked someone, send a notification 'like'")
-							const mySocket = io('http://localhost:5000');
-							const ret = mySocket.emit('notification', {
-								type: 'like',
-								emitter: this.context.JWT.data.username,
-								receiver: this.props.user.username,
-							})
-							console.log(ret);
-							newNotification.type = 'like';
-							axios.post('http://localhost:4000/API/notifications/create', newNotification, {headers: {"x-auth-token": this.context.JWT.token}})
-								.then((response) => {
-									if (response.data.payload.result === "Missing information") {
-										console.log(response.data.payload.result);
-									}
-									else {
-										console.log("like sent to db successfully");
-									}
-								})
-								.catch((err) => {
-									console.log(err);
-								})
-						}
-						/* If the user unliked someone, create a notification 'unlike' that will not be displayed */
-						else if (addClass === "far" && this.props.user.likedU === false /*&& this.context.notifications*/) {
-							const mySocket = io('http://localhost:5000');
-							const ret = mySocket.emit('notification', {
-								type: 'unlike',
-								emitter: this.context.JWT.data.username,
-								receiver: this.props.user.username,
-							})
-							console.log(ret);
-							newNotification.type = 'unlike';
-							axios.post('http://localhost:4000/API/notifications/create', newNotification, {headers: {"x-auth-token": this.context.JWT.token}})
-								.then((response) => {
-									if (response.data.payload.result === "Missing information") {
-										console.log(response.data.payload.result);
-									}
-									else {
-										console.log("unlike sent to db successfully");
-									}
-								})
-								.catch((err) => {
-									console.log(err);
-								})
-						}
+				// 		console.log("this user liked u?: " + this.props.user.likedU);
+				// 		console.log(addClass);
+				// 		/* If the user liked someone, send a notification 'like' to the receiver */
+				// 		if (addClass === "fas" && this.props.user.likedU === false) {
+				// 			console.log("user liked someone, send a notification 'like'")
+				// 			const mySocket = io('http://localhost:5000');
+				// 			const ret = mySocket.emit('notification', {
+				// 				type: 'like',
+				// 				emitter: this.context.JWT.data.username,
+				// 				receiver: this.props.user.username,
+				// 			})
+				// 			console.log(ret);
+				// 			newNotification.type = 'like';
+				// 			axios.post('http://localhost:4000/API/notifications/create', newNotification, {headers: {"x-auth-token": this.context.JWT.token}})
+				// 				.then((response) => {
+				// 					if (response.data.payload.result === "Missing information") {
+				// 						console.log(response.data.payload.result);
+				// 					}
+				// 					else {
+				// 						console.log("like sent to db successfully");
+				// 					}
+				// 				})
+				// 				.catch((err) => {
+				// 					console.log(err);
+				// 				})
+				// 		}
+				// 		/* If the user unliked someone, create a notification 'unlike' that will not be displayed */
+				// 		else if (addClass === "far" && this.props.user.likedU === false /*&& this.context.notifications*/) {
+				// 			const mySocket = io('http://localhost:5000');
+				// 			const ret = mySocket.emit('notification', {
+				// 				type: 'unlike',
+				// 				emitter: this.context.JWT.data.username,
+				// 				receiver: this.props.user.username,
+				// 			})
+				// 			console.log(ret);
+				// 			newNotification.type = 'unlike';
+				// 			axios.post('http://localhost:4000/API/notifications/create', newNotification, {headers: {"x-auth-token": this.context.JWT.token}})
+				// 				.then((response) => {
+				// 					if (response.data.payload.result === "Missing information") {
+				// 						console.log(response.data.payload.result);
+				// 					}
+				// 					else {
+				// 						console.log("unlike sent to db successfully");
+				// 					}
+				// 				})
+				// 				.catch((err) => {
+				// 					console.log(err);
+				// 				})
+				// 		}
 
-						/* If the user unlike someone that was previously a match, send an "unmatch" notification to both emitter and receiver to warn */
-						else if (addClass === "far" && this.props.user.likedU === true) {
-							console.log("user unlike someone that was previously a match, send an 'unmatch'");
-							const mySocket = io('http://localhost:5000');
-							const ret = mySocket.emit('notification', {
-								type: 'unmatch',
-								emitter: this.context.JWT.data.username,
-								receiver: this.props.user.username,
-							})
-							mySocket.emit('notification', {
-								type: 'unmatch',
-								emitter: this.props.user.username,
-								receiver: this.context.JWT.data.username,
-							})
-							console.log(ret);
-							newNotification.type = 'unmatch';
-							axios.post('http://localhost:4000/API/notifications/create', newNotification, {headers: {"x-auth-token": this.context.JWT.token}})
-								.then((response) => {
-									if (response.data.payload.result === "Missing information") {
-										console.log(response.data.payload.result);
-									}
-									else {
-										console.log("unmatch sent to db successfully");
-									}
-								})
-								.catch((err) => {
-									console.log(err);
-								})
-							const myUnmatchNotif = {
-								emitter: this.props.user.username,
-								receiver: this.context.JWT.data.username,
-								type: 'unmatch',
-								new: true
-							}
-							axios.post('http://localhost:4000/API/notifications/create',myUnmatchNotif, {headers: {"x-auth-token": this.context.JWT.token}})
-									.then((response) => {
-										if (response.data.payload.result === "Missing information") {
-											console.log(response.data.payload.result);
-										}
-										else {
-											console.log("unmatch sent to self in db successfully");
-										}
-									})
-									.catch((err) => {
-										console.log(err);
-									})
-						}
+				// 		/* If the user unlike someone that was previously a match, send an "unmatch" notification to both emitter and receiver to warn */
+				// 		else if (addClass === "far" && this.props.user.likedU === true) {
+				// 			console.log("user unlike someone that was previously a match, send an 'unmatch'");
+				// 			const mySocket = io('http://localhost:5000');
+				// 			const ret = mySocket.emit('notification', {
+				// 				type: 'unmatch',
+				// 				emitter: this.context.JWT.data.username,
+				// 				receiver: this.props.user.username,
+				// 			})
+				// 			mySocket.emit('notification', {
+				// 				type: 'unmatch',
+				// 				emitter: this.props.user.username,
+				// 				receiver: this.context.JWT.data.username,
+				// 			})
+				// 			console.log(ret);
+				// 			newNotification.type = 'unmatch';
+				// 			axios.post('http://localhost:4000/API/notifications/create', newNotification, {headers: {"x-auth-token": this.context.JWT.token}})
+				// 				.then((response) => {
+				// 					if (response.data.payload.result === "Missing information") {
+				// 						console.log(response.data.payload.result);
+				// 					}
+				// 					else {
+				// 						console.log("unmatch sent to db successfully");
+				// 					}
+				// 				})
+				// 				.catch((err) => {
+				// 					console.log(err);
+				// 				})
+				// 			const myUnmatchNotif = {
+				// 				emitter: this.props.user.username,
+				// 				receiver: this.context.JWT.data.username,
+				// 				type: 'unmatch',
+				// 				new: true
+				// 			}
+				// 			axios.post('http://localhost:4000/API/notifications/create',myUnmatchNotif, {headers: {"x-auth-token": this.context.JWT.token}})
+				// 					.then((response) => {
+				// 						if (response.data.payload.result === "Missing information") {
+				// 							console.log(response.data.payload.result);
+				// 						}
+				// 						else {
+				// 							console.log("unmatch sent to self in db successfully");
+				// 						}
+				// 					})
+				// 					.catch((err) => {
+				// 						console.log(err);
+				// 					})
+				// 		}
 
-						/* If it's a match, sends a notification to both emitter and receiver to congrats */
-						if (this.props.user.likedU === true && addClass === "fas") {
-							console.log("user just matched someone");
-							const mySocket = io('http://localhost:5000');
-							const ret = mySocket.emit('notification', {
-								type: 'match',
-								emitter: this.context.JWT.data.username,
-								receiver: this.props.user.username,
-							})
-							mySocket.emit('notification', {
-								type: 'match',
-								emitter: this.props.user.username,
-								receiver: this.context.JWT.data.username,
-							})
-							console.log(ret);
-							newNotification.type = 'match';
-							axios.post('http://localhost:4000/API/notifications/create', newNotification, {headers: {"x-auth-token": this.context.JWT.token}})
-								.then((response) => {
-									if (response.data.payload.result === "Missing information") {
-										console.log(response.data.payload.result);
-									}
-									else {
-										console.log("match sent to target in db successfully");
-									}
-								})
-								.catch((err) => {
-									console.log(err);
-								})
-							const myMatchNotif = {
-								emitter: this.props.user.username,
-								receiver: this.context.JWT.data.username,
-								type: 'match',
-								new: true
-							}
-							axios.post('http://localhost:4000/API/notifications/create',myMatchNotif, {headers: {"x-auth-token": this.context.JWT.token}})
-								.then((response) => {
-									if (response.data.payload.result === "Missing information") {
-										console.log(response.data.payload.result);
-									}
-									else {
-										console.log("match sent to self in db successfully");
-									}
-								})
-								.catch((err) => {
-									console.log(err);
-								})
-						}
-					}
-				})
-				.catch(error => {
-					this.setState({ loading: false });
-					console.log(error);
-				})
-		}
+				// 		/* If it's a match, sends a notification to both emitter and receiver to congrats */
+				// 		if (this.props.user.likedU === true && addClass === "fas") {
+				// 			console.log("user just matched someone");
+				// 			const mySocket = io('http://localhost:5000');
+				// 			const ret = mySocket.emit('notification', {
+				// 				type: 'match',
+				// 				emitter: this.context.JWT.data.username,
+				// 				receiver: this.props.user.username,
+				// 			})
+				// 			mySocket.emit('notification', {
+				// 				type: 'match',
+				// 				emitter: this.props.user.username,
+				// 				receiver: this.context.JWT.data.username,
+				// 			})
+				// 			console.log(ret);
+				// 			newNotification.type = 'match';
+				// 			axios.post('http://localhost:4000/API/notifications/create', newNotification, {headers: {"x-auth-token": this.context.JWT.token}})
+				// 				.then((response) => {
+				// 					if (response.data.payload.result === "Missing information") {
+				// 						console.log(response.data.payload.result);
+				// 					}
+				// 					else {
+				// 						console.log("match sent to target in db successfully");
+				// 					}
+				// 				})
+				// 				.catch((err) => {
+				// 					console.log(err);
+				// 				})
+				// 			const myMatchNotif = {
+				// 				emitter: this.props.user.username,
+				// 				receiver: this.context.JWT.data.username,
+				// 				type: 'match',
+				// 				new: true
+				// 			}
+				// 			axios.post('http://localhost:4000/API/notifications/create',myMatchNotif, {headers: {"x-auth-token": this.context.JWT.token}})
+				// 				.then((response) => {
+				// 					if (response.data.payload.result === "Missing information") {
+				// 						console.log(response.data.payload.result);
+				// 					}
+				// 					else {
+				// 						console.log("match sent to self in db successfully");
+				// 					}
+				// 				})
+				// 				.catch((err) => {
+				// 					console.log(err);
+				// 				})
+				// 		}
+				// 	}
+				// })
+				// .catch(error => {
+				// 	this.setState({ loading: false });
+				// 	console.log(error);
+				// })
+			}
 	}
 
 	handleBlock = (e) => {
