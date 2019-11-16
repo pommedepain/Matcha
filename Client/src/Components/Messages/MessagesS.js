@@ -32,7 +32,8 @@ class MessagesSmart extends Component {
 		},
 		messagesList: [],
 		currentInterlocutor: null,
-		activeDiv: false
+		activeDiv: false,
+		unread: false
 	};
 
 	static contextType = UserContext;
@@ -55,8 +56,8 @@ class MessagesSmart extends Component {
 			.then((res) => {
 				let lastMessage = res.data.payload.result;
 				lastMessage = _.orderBy(lastMessage, ['lastMessage.date'], ['desc']);
-				console.log(lastMessage);
-				console.log(list);
+				// console.log(lastMessage);
+				// console.log(list);
 				let sortedList = [];
 				sortedList = _.orderBy(sortedList, ['matchCreation'], ['desc']);
 				for (let i = 0; i < lastMessage.length; i++) {
@@ -84,7 +85,7 @@ class MessagesSmart extends Component {
 		this.setState({ activeDiv: true });
 
 		/* Automatically set all messages as true for read for the user's div clicked */
-		this.state.matchList.forEach(elem => {
+		this.state.matchList.forEach((elem, i) => {
 			if (elem.user.username === username) {
 				if (elem.unreadMessages[0].id !== null) {
 					for (let k = 0; k < elem.unreadMessages.length; k++) {
@@ -96,8 +97,9 @@ class MessagesSmart extends Component {
 								if (res.data.payload.result === "notification has been read") {
 									console.log("OK");
 									let isRead = this.state.matchList;
+									isRead[i]['isRead'] = true;
 									console.log(isRead);
-									// this.setState({  })
+									this.setState({ matchList: isRead }, function() {console.log(this.state.matchList)})
 								}
 							})
 							.catch((err) => console.log(err))

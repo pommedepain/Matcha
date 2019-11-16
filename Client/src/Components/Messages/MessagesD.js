@@ -12,15 +12,29 @@ const MessagesDummy = (props) => {
 			<div className={classes.usersList}>
 				{props.matchList ?
 					props.matchList.map((elem, i) => {
-						return (
+						if (elem.unreadMessages[0].id !== null) {
+							return (
+								<div key={i} className={classes.userDiv} id={elem.user.username} onClick={(e) => props.getConversation(e, elem.user.username)} >
+									<img src={elem.user.photos[0]} alt="profil" className={classes.photo} />
+									<div className={classes.names}>{elem.user.firstName} {elem.user.lastName}</div>
+									<div className={classes.unreadMessages} key={i}></div>
+								</div>
+							)
+						}
+						else if (elem.isRead === true) {
+							return (
+								<div key={i} className={classes.userDiv} id={elem.user.username} onClick={(e) => props.getConversation(e, elem.user.username)} >
+									<img src={elem.user.photos[0]} alt="profil" className={classes.photo} />
+									<div className={classes.names}>{elem.user.firstName} {elem.user.lastName}</div>
+								</div>
+							)
+						}
+						else return (
 							<div key={i} className={classes.userDiv} id={elem.user.username} onClick={(e) => props.getConversation(e, elem.user.username)} >
 								<img src={elem.user.photos[0]} alt="profil" className={classes.photo} />
 								<div className={classes.names}>{elem.user.firstName} {elem.user.lastName}</div>
-								{elem.unreadMessages[0].id !== null ?
-									[<div className={classes.unreadMessages} key={i}></div>]
-									:null
-								}
-							</div>)
+							</div>
+						)
 					})
 					: null
 				}

@@ -95,11 +95,10 @@ class UserPage extends Component {
 		const token = this.context.JWT.token;
 		const allElem = document.getElementsByClassName("empty_heart");
 		const elem = allElem[this.props.id];
-		console.log(this.props.user);
 		if (e.type === "click") {
 			axios.put(`http://localhost:4000/API/users/${this.context.JWT.data.username}/toggleLike/${this.props.user.username}`, null, {headers: {"x-auth-token": token}})
 				.then(response => {
-					console.log(response.data.payload.result);
+					// console.log(response.data.payload.result);
 					this.setState({ loading: false });
 	
 					if (response.data.success) {
@@ -107,41 +106,42 @@ class UserPage extends Component {
 						let removeClass = null;
 						/* Dynamically changes the heart icon depending on if user liked or unliked someone */
 						if (response.data.payload.result[0].type === 'unlike' || response.data.payload.result[0].type === 'unmatch') {
-							console.log("change heart to UNLIKE");
+							// console.log("change heart to UNLIKE");
 							addClass = "far";
 							removeClass = "fas";
 							this.setState({ addClass: "far fa-heart" });
 						}
 						else if (response.data.payload.result[0].type === 'like' || response.data.payload.result[0].type === 'match') {
-							console.log("change heart to LIKE");
+							// console.log("change heart to LIKE");
 							addClass = "fas";
 							removeClass = "far";
 							this.setState({ 
 								addClass: "fas fa-heart"
 							});
 						}
-						console.log("elem was " + removeClass + " and is now " + addClass);
+						// console.log("elem was " + removeClass + " and is now " + addClass);
 						elem.classList.add(addClass);
 						elem.classList.remove(removeClass);
 
 						const mySocket = io('http://localhost:5000');
-						response.data.payload.result.map((elem, i) => {
-							console.log(elem.emitter + " " + elem.type + " " + elem.receiver);
-							console.log(elem);
+						response.data.payload.result.map( elem => {
+							// console.log(elem.emitter + " " + elem.type + " " + elem.receiver);
+							// console.log(elem);
 							mySocket.emit('notification', elem);
 							axios.post('http://localhost:4000/API/notifications/create', elem, {headers: {"x-auth-token": this.context.JWT.token}})
 								.then((response) => {
 									if (response.data.payload.result === "Missing information") {
-										console.log(response.data.payload.result);
+										return console.log(response.data.payload.result);
 									}
 									else {
 										console.log(response.data.payload);
-										console.log(elem.type + " sent to db successfully");
+										return console.log(elem.type + " sent to db successfully");
 									}
 								})
 								.catch((err) => {
-									console.log(err);
+									return console.log(err);
 								})
+							return true;
 						})
 					}
 				})
