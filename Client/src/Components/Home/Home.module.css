@@ -72,7 +72,7 @@ div.ReactTags__tagInput input.ReactTags__tagInputField:focus {
 	}
 }
 
-@media only screen and (min-device-width: 1500px) {
+@media only screen and (min-device-width: 1450px) {
 	.questionsS3 {
 		font-size: 1.4vw;
 		font-weight: 300;

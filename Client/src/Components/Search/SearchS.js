@@ -42,6 +42,10 @@ class Search extends Component {
 
 	static contextType = UserContext;
 
+	CancelToken = axios.CancelToken;
+  	source = this.CancelToken.source();
+	abortController = new AbortController();
+
 	componentDidMount () {
 		this._isMounted = true;
 
@@ -71,7 +75,7 @@ class Search extends Component {
 		const { token } = this.context.JWT;
 	
 		if (username !== undefined) {
-			axios.get(`http://localhost:4000/API/users/suggestions/${username}`, {headers: {"x-auth-token": token}})
+			axios.get(`http://localhost:4000/API/users/suggestions/${username}`, {headers: {"x-auth-token": token}}, { signal: this.abortController.signal })
 				.then(response => {
 					let suggestions = [];
 					response.data.payload.result.map((elem, i) => {
@@ -110,7 +114,7 @@ class Search extends Component {
 					}
 				}, function () {
 					// axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, {lat: coords.latitude, lon: coords.longitude}, {headers: {'x-auth-token': this.context.JWT.token}});
-					axios.get(`http://localhost:4000/API/locate/reverseGeocode/${coords.latitude}/${coords.longitude}`)
+					axios.get(`http://localhost:4000/API/locate/reverseGeocode/${coords.latitude}/${coords.longitude}`, { signal: this.abortController.signal })
 						.then((res) => {
 							const datas = res.data.payload.adress.address;
 							const currentCoords = this.state.currentLocation;
@@ -126,7 +130,7 @@ class Search extends Component {
 			error => {
 				if (error.code === error.PERMISSION_DENIED) {
 				console.log('geoloc denied');
-				axios.get('http://localhost:4000/API/locate/geocode')
+				axios.get('http://localhost:4000/API/locate/geocode', { signal: this.abortController.signal })
 					.then((position) => {
 						this.setState({
 							currentLocation: {
@@ -138,7 +142,7 @@ class Search extends Component {
 							console.log(position.data.payload.localisation.latitude);
 							console.log(position.data.payload.localisation.longitude);
 							// axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, {lat: position.data.payload.localisation.latitude, lon: position.data.payload.localisation.longitude}, {headers: {'x-auth-token': this.context.JWT.token}});
-							axios.get(`http://localhost:4000/API/locate/reverseGeocode/${position.data.payload.localisation.latitude}/${position.data.payload.localisation.longitude}`)
+							axios.get(`http://localhost:4000/API/locate/reverseGeocode/${position.data.payload.localisation.latitude}/${position.data.payload.localisation.longitude}`, { signal: this.abortController.signal })
 								.then((res) => {
 									console.log(res);
 									const datas = res.data.payload.adress.address;
@@ -402,7 +406,7 @@ class Search extends Component {
 		/* Changes the filters infos of this user and get a new list of suggestions according to his/her new filters */
 		if (username !== undefined && (newFilters.ageMax || newFilters.localisation || newFilters.tags)) {
 			console.log(newFilters)
-			axios.put(`http://localhost:4000/API/users/update/${username}`, newFilters, {headers: {"x-auth-token": token}})
+			axios.put(`http://localhost:4000/API/users/update/${username}`, newFilters, {headers: {"x-auth-token": token}}, { signal: this.abortController.signal })
 				.then(response => {
 					console.log(response)
 					this.context.toggleUser(response.data.payload.result.token);
@@ -448,7 +452,7 @@ class Search extends Component {
 			type: 'visit',
 			new: true
 		}
-		axios.post('http://localhost:4000/API/notifications/create', newNotification, {headers: {"x-auth-token": this.context.JWT.token}})
+		axios.post('http://localhost:4000/API/notifications/create', newNotification, {headers: {"x-auth-token": this.context.JWT.token}}, { signal: this.abortController.signal })
 			.then((response) => {
 				if (response.data.payload.result === "Missing information") {
 					console.log(response.data.payload.result);
@@ -464,6 +468,7 @@ class Search extends Component {
 
 	componentWillUnmount() {
 		this._isMounted = false;
+		this.abortController.abort();
 	}
 
 	render () {

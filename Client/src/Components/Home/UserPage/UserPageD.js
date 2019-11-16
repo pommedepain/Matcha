@@ -239,9 +239,11 @@ const UserPageDumb = (props) => {
 						</div>
 						{/* Conditional rendering depending on if user liked the profil he/she's consulted and on if the profil liked him/her back  */}
 						<div className={classes.heartGroup}>
-							{props.user.Uliked ? 
-								<i className={cx(classes.empty_heart, "fas fa-heart", "empty_heart")} id={props.id} onClick={props.handleHeartClick} ></i>
-								: <i className={cx(classes.empty_heart, "far fa-heart", "empty_heart")} id={props.id} onClick={props.handleHeartClick} ></i>
+							{props.addClass ? 
+								<i className={cx(classes.empty_heart, props.addClass, "empty_heart")} id={props.id} onClick={props.handleHeartClick} ></i>
+								: props.user.Uliked ?
+									<i className={cx(classes.empty_heart, "fas fa-heart", "empty_heart")} id={props.id} onClick={props.handleHeartClick} ></i>
+									: <i className={cx(classes.empty_heart, "far fa-heart", "empty_heart")} id={props.id} onClick={props.handleHeartClick} ></i>
 							}
 							{props.user.likedU ?
 								<h6>{props.user.username} liked you!</h6>

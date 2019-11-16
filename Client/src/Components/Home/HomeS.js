@@ -23,6 +23,10 @@ class Home extends Component {
 
 	static contextType = UserContext;
 
+	CancelToken = axios.CancelToken;
+  	source = this.CancelToken.source();
+	abortController = new AbortController();
+
 	componentDidMount () {
 		this._isMounted = true;
 
@@ -64,7 +68,7 @@ class Home extends Component {
 						lng: coords.longitude
 					}
 				}, function () {
-					axios.get(`http://localhost:4000/API/locate/reverseGeocode/${coords.latitude}/${coords.longitude}`)
+					axios.get(`http://localhost:4000/API/locate/reverseGeocode/${coords.latitude}/${coords.longitude}`, { signal: this.abortController.signal })
 						.then((res) => {
 							const datas = res.data.payload.adress.address;
 							const currentCoords = this.state.currentLocation;
@@ -83,7 +87,7 @@ class Home extends Component {
 			error => {
 				if (error.code === error.PERMISSION_DENIED) {
 				console.log('geoloc denied');
-				axios.get('http://localhost:4000/API/locate/geocode')
+				axios.get('http://localhost:4000/API/locate/geocode', { signal: this.abortController.signal })
 					.then((position) => {
 						this.setState({
 							currentLocation: {
@@ -94,7 +98,7 @@ class Home extends Component {
 						}, function () {
 							console.log(position.data.payload.localisation.latitude);
 							console.log(position.data.payload.localisation.longitude);
-							axios.get(`http://localhost:4000/API/locate/reverseGeocode/${position.data.payload.localisation.latitude}/${position.data.payload.localisation.longitude}`)
+							axios.get(`http://localhost:4000/API/locate/reverseGeocode/${position.data.payload.localisation.latitude}/${position.data.payload.localisation.longitude}`, { signal: this.abortController.signal })
 								.then((res) => {
 									console.log(res);
 									const datas = res.data.payload.adress.address;
@@ -121,7 +125,7 @@ class Home extends Component {
     	const { token } = this.context.JWT;
 
 		if (username !== undefined) {
-			axios.get(`http://localhost:4000/API/users/suggestions/${username}`, {headers: {"x-auth-token": token}})
+			axios.get(`http://localhost:4000/API/users/suggestions/${username}`, {headers: {"x-auth-token": token}}, { signal: this.abortController.signal })
 				.then(response => {
 					let suggestions = response.data.payload.result;
 					response.data.payload.result.map((elem, i) => {
@@ -184,7 +188,7 @@ class Home extends Component {
 			type: 'visit',
 			new: true
 		}
-		axios.post('http://localhost:4000/API/notifications/create', newNotification, {headers: {"x-auth-token": this.context.JWT.token}})
+		axios.post('http://localhost:4000/API/notifications/create', newNotification, {headers: {"x-auth-token": this.context.JWT.token}}, { signal: this.abortController.signal })
 			.then((response) => {
 				if (response.data.payload.result === "Missing information") {
 					console.log(response.data.payload.result);
@@ -200,6 +204,7 @@ class Home extends Component {
 	
 	componentWillUnmount() {
 		this._isMounted = false;
+		this.abortController.abort();
 	}
 
 	render() {

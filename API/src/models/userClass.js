@@ -1114,15 +1114,15 @@ class User extends Node {
       const query2 = `MATCH p=(a:User { username:'${this.user.username}'})<-[r:Notification {type:'like'}]-(b:User {username:'target'}) return p`;
       session.run(query1)
         .then((res) => {
-          console.log(res.records[0].length);
           session.close();
-          this.prev = res.records[0].length;
+
+          res.records[0] ? this.prev = 1 : this.prev = 0;
           return session.run(query2);
         })
         .then((res) => {
-          console.log(res.records[0].length);
           session.close();
-          this.case = [this.prev, res.records[0].length];
+          res.records[0] ? this.next = 1 : this.next = 0;
+          this.case = [this.prev, this.next];
           debug(this.case);
           let toEmit = [];
           if (this.case[0] === 0 && this.case[1] === 0) {
