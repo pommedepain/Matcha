@@ -14,7 +14,7 @@
 	}
 }
 
-@media (min-width: 1450px) {
+@media only screen and (min-device-width: 1450px) {
 	.bubble {
 		display: flex;
 		flex-direction: column;

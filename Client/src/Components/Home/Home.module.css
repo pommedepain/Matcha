@@ -20,7 +20,7 @@
 		/* top: 120%; */
 	}
 }
-@media (min-width: 1450px) {
+@media only screen and (min-device-width: 1450px) {
 	.geolocCont {
 		width: 90%;
 		margin-top: 3%;

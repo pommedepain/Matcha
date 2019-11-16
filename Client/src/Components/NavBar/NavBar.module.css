@@ -142,17 +142,17 @@ a, a:hover {
   }
 }
 
-@media (min-width: 1450px) {
+@media only screen and (min-device-width: 1450px) {
   .unreadMessages {
     display: flex;
     justify-content: center;
     align-items: center;
     border: 1px solid #ff665e;
     position: absolute;
-    width: 10%;
-    height: 2.5vh;
-    top: 0;
-    right: 30%;
+    width: 1.4vh;
+    height: 1.4vh;
+    top: -10%;
+    right: 43.5%;
     border-radius: 50%;
     background-color: #ff665e;
     color: white;
@@ -203,15 +203,15 @@ a, a:hover {
   }
 }
 
-@media (min-width: 1450px) {
+@media only screen and (min-device-width: 1450px) {
   .unreadNotifs {
     display: flex;
     justify-content: center;
     align-items: center;
     border: 1px solid #ff665e;
     position: absolute;
-    width: 10%;
-    height: 2.5vh;
+    width: 1.4vh;
+    height: 1.4vh;
     top: 0;
     right: 30%;
     border-radius: 50%;
