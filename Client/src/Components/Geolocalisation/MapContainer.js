@@ -147,7 +147,7 @@ class NewCompo extends Component {
         map,
       }));
     }
-    map.setCenter({ lat: this.state.customCenter[0], lng: this.state.customCenter[1] })
+    map.setCenter({ lat: parseFloat(this.state.customCenter[0]), lng: parseFloat(this.state.customCenter[1]) })
     this.setState({
     mapApiLoaded: true,
     mapInstance: map,

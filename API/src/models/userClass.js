@@ -669,6 +669,12 @@ class User extends Node {
           if (this.data.node_a.properties && !this.data.node_a.properties.ageMax) {
             this.data.node_a.properties.ageMax = 84;
           }
+          if (this.data.node_a.properties && !this.data.node_a.properties.lat) {
+            this.data.node_a.properties.lat = 48.896704899999996;
+          }
+          if (this.data.node_a.properties && !this.data.node_a.properties.lon) {
+            this.data.node_a.properties.lon = 1.3184218;
+          }
           if (this.data.node_a.properties && !this.data.node_a.properties.active) {
             this.data.node_a.properties.active = 'false';
           }
