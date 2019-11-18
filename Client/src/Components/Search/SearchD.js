@@ -77,7 +77,7 @@ const SearchDummy = (props) => {
 												currentLocation={props.currentLocation} 
 												rerender={props.rerender} 
 											/>
-											<i className={cx("fas fa-map-marked-alt", classes.geolocate)} onClick={props.geolocateUser}></i>
+											<div className={classes.pos}><i className={cx("fas fa-map-marked-alt", classes.geolocate)} onClick={props.geolocateUser}></i></div>
 										</div>
 										<div className={classes.filterBy} >
 											<h4>Filter by...</h4>

@@ -145,6 +145,10 @@ const UserContextProvider = (props) => {
 			});
 		}
 		else {
+			mySocket.once('$destroy', (e) => {
+				console.log(e);
+				mySocket.removeAllListeners();
+			})
 			setLog(false);
 			setSocket(null);
 		}

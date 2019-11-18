@@ -50,11 +50,8 @@ class Profil extends Component {
 			lookTags: this.context.JWT.data.lookTags,
 			photos: this.context.JWT.data.photos,
 			orderForm: newInfos
-		}, function() { 
-			console.log(this.state);
-			console.log(document.getElementsByClassName("searchNewLocationInput")[0]);
 		});
-		console.log(document.getElementsByClassName("searchNewLocationInput"));
+		// console.log(document.getElementsByClassName("searchNewLocationInput"));
 	}
 
 	checkValidity2(value, rules, inputIdentifier) {
@@ -343,6 +340,22 @@ class Profil extends Component {
 		}
 	}
 
+	handleNewProfil = (e) => {
+		e.preventDefault();
+		const newProfil = e.target.src;
+		const oldProfil = document.getElementById("profilPic").src;
+		document.getElementById("profilPic").src = newProfil;
+		e.target.src = oldProfil;
+	}
+
+	deletePic = (e) => {
+		e.preventDefault();
+		// console.log("deletePic() triggered");
+		const photoDel = e.target.parentElement.getElementsByTagName('img')[0].src;
+		const newArray = this.state.photos.filter(elem => elem !== photoDel);
+		this.setState({ photos: newArray, photosTouched: true });
+	}
+
 	geolocateUser = (e) => {
 		e.preventDefault();
 		if (navigator && navigator.geolocation) {
@@ -415,10 +428,15 @@ class Profil extends Component {
 		if (this.state.edit.active === false) {
 			newEdit.active = true;
 			isDisplayed = {display: 'flex'};
+			let elems = document.getElementsByClassName("suppress");
+			Array.from(elems).forEach(elem => elem.style.display = 'flex')
 		}
 		else {
 			newEdit.active = false;
 			isDisplayed = {display: 'none'};
+
+			let elems = document.getElementsByClassName("suppress");
+			Array.from(elems).forEach(elem => elem.style.display = 'none')
 
 			let profilChanges = {};
 			if (this.state.isTagsTouched === true) {
@@ -465,6 +483,8 @@ class Profil extends Component {
 				handleAdditionLookFor={this.handleAdditionLookFor.bind(this)}
 				handleChangeTags={this.handleChangeTags.bind(this)}
 				geolocateUser={this.geolocateUser.bind(this)}
+				deletePic={this.deletePic.bind(this)}
+				handleNewProfil={this.handleNewProfil.bind(this)}
 				{...this.state}
 				{...this.context}
 			/>

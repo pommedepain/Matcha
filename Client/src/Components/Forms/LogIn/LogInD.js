@@ -1,6 +1,5 @@
 import React from 'react';
 import cx from 'classnames';
-// import { Link } from 'react-router-dom';
 
 import classes from './LogIn.module.css';
 import Input from '../../Utils/Input/Input';
@@ -16,7 +15,7 @@ const LogIn = (props) => {
 			config: props.orderForm[key]
 		});
 	}
-	// console.log(props.alertDesign);
+
 	return (
 		<div>
 			{props.logInPopup ?
@@ -24,16 +23,16 @@ const LogIn = (props) => {
 				<div className={classes.popup_inner}>
 					<form id={classes.msform}>
 						{props.alertDesign ?
-						<AlertBox
-							message={props.alertDesign.message}
-							button={props.alertDesign.button}
-							handleChange={props.handleChange}
-							color={props.alertDesign.color}
-							function={props.alertDesign.function}
-							logIn={true}
-							toggleUser={props.toggleUser}
-						/>
-						: null}
+							<AlertBox
+								message={props.alertDesign.message}
+								button={props.alertDesign.button}
+								handleChange={props.handleChange}
+								color={props.alertDesign.color}
+								function={props.alertDesign.function}
+								logIn={true}
+							/>
+							: null
+						}
 						<button type="button" onClick={props.popup} className={cx(classes.close, classes.heavy, classes.rounded)}></button>
 						<fieldset>
 							<h2 className={classes.fs_title}>Log In</h2>
@@ -69,6 +68,7 @@ const LogIn = (props) => {
 								<button
 									type="submit" 
 									name="submit" 
+									href="/home"
 									className={cx(classes.submit, classes.action_button)}
 									onClick={props.submit}
 									disabled={!props.formIsValid}

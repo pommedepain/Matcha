@@ -9,7 +9,6 @@ import LoginDumb from './LogInD';
 import Account from '../Account/AccountS';
 const axios = require('axios');
 const datas = require('../../../Datas/loginForm.json');
-// const io = require('socket.io');
 
 
 class Login extends Component {
@@ -20,8 +19,7 @@ class Login extends Component {
 		showPopup: false,
 		hidden: true,
 		loading: false,
-		alertDesign: null,
-		payload: null
+		alertDesign: null
 	}
 
 	static contextType = UserContext;
@@ -67,24 +65,13 @@ class Login extends Component {
 		this.setState({ orderForm: updatedOrderForm, formIsValid: formIsValid });
 	}
 
-	handleChange = (event, message) => {
+	handleChange = (event) => {
 		const {name, value} = event.target
 		if (event.type === "click") {
-			if (message === "confirm user"){
-				// console.log("message === confirm user")
-				event.preventDefault();
-				this.context.toggleUser(this.state.payload);
-				this.setState({
-					payload: null,
-					alertDesign: null
-				})
-			}
-			else {
-				event.preventDefault();
-				this.setState({
-					alertDesign: null
-				});	
-			}
+			event.preventDefault();
+			this.setState({
+				alertDesign: null
+			});
 		}
 		else {
 			event.preventDefault();
@@ -141,23 +128,16 @@ class Login extends Component {
 		axios
 			.post('http://localhost:4000/API/auth', formDatas)
 			.then(response => {
-				// console.log(response);
+				console.log(response);
 				this.setState({ 
 					loading: false,
 					formIsValid: true
 				});
 				if (response.data.success) {
+					this.context.toggleUser(response.data.payload);
 					this.setState({
-						alertDesign: {
-							message:"You are now successfully logged in !",
-							button:"OK",
-							color: "green",
-							function: true,
-							logIn: true
-						},
-						payload: response.data.payload
-					}/*, function() {console.log(this.state)}*/);
-					
+						alertDesign: null
+					});
 				}
 			})
 			.catch(error => {
@@ -170,13 +150,8 @@ class Login extends Component {
 						color: "red"
 					}
 				});
-				console.log(error)
-				return (false);
+				console.log(error);
 			})
-	}
-
-	toggleUser = () => {
-		console.log("working");
 	}
 
 	render () {
@@ -196,7 +171,6 @@ class Login extends Component {
 						submit={this.submit.bind(this)}
 						toggleShow={this.toggleShow.bind(this)}
 						inputChangedHandler={this.inputChangedHandler.bind(this)}
-						toggleUser={this.toggleUser.bind(this)}
 						{...this.state}
 						{...this.context}
 					/>

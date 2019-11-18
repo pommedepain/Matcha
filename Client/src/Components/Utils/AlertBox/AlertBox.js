@@ -51,9 +51,12 @@ class AlertBox extends Component {
 							onClick={(event) => {
 								// event.preventDefault();
 								this.context.toggleLogInPopup();
-								this.props.logIn ?
-								this.props.handleChange(event, "confirm user")
-								: this.props.handleChange(event, "go to log in");
+								if (this.props.logIn) {
+									this.props.handleChange(event, "go to log in");
+								}
+								// this.props.logIn ?
+								// this.props.handleChange(event, "confirm user")
+								// : this.props.handleChange(event, "go to log in");
 								if (document.getElementById("display_page") !== null) { 
 									document.getElementById("display_page").style.filter = ''
 								}

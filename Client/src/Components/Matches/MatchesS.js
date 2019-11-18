@@ -6,9 +6,9 @@ import MatchesDummy from './MatchesD';
 import { UserContext } from '../../Contexts/UserContext';
 
 const _ = require('lodash');
+const mySocket = io('http://localhost:5000');
 
 class MatchesSmart extends Component {
-	_isMounted = false;
 
 	state = {
 		matchesList: [],
@@ -20,13 +20,9 @@ class MatchesSmart extends Component {
 	static contextType = UserContext;
 
 	componentDidMount() {
-		this._isMounted = true;
-
-		if (this._isMounted) {
-			this.getMatches();
-			this.getVisits_Likes();
-			this.getUsersOnline();
-		}
+		this.getMatches();
+		this.getVisits_Likes();
+		this.getUsersOnline();
 	}
 
 	getMatches = () => {
@@ -60,7 +56,6 @@ class MatchesSmart extends Component {
 	// }
 
 	getUsersOnline = () => {
-		const mySocket = io('http://localhost:5000');
 		mySocket.on('notification', notification => {
 			if (notification.type === 'isOnline') {
 				let onlineUsers = [];
@@ -93,7 +88,9 @@ class MatchesSmart extends Component {
 	}
 
 	componentWillUnmount() {
-		this._isMounted = false;
+		mySocket.on('notification', () => {
+			mySocket.removeAllListeners();
+		});
 	}
 
 	render () {

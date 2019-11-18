@@ -443,7 +443,7 @@ class SignUp extends Component {
 			submitDatas["gender"] = this.state.orderForm2.gender.value;
 		}
 		if (this.state.orderForm2.sexualOrient.touched === true && this.state.orderForm2.sexualOrient.value.trim() !== "") {
-			submitDatas["sexualOrient"] = this.state.orderForm2.sexualOrient.value;
+			submitDatas["sexOrient"] = this.state.orderForm2.sexualOrient.value;
 		}
 		if (this.state.orderForm2.bio.touched === true && this.state.orderForm2.bio.value.trim() !== "") {
 			submitDatas["bio"] = this.state.orderForm2.bio.value;
@@ -459,7 +459,7 @@ class SignUp extends Component {
 			.post('http://localhost:4000/API/users', submitDatas)
 			.then(response => {
 				this.setState({ loading: false })
-				console.log(response.data.success)
+				console.log(response)
 				if (response.data.success) {
 					this.setState({
 						retSubmit: {

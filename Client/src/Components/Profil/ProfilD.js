@@ -13,7 +13,11 @@ const ProfilDummy = (props) => {
 	let photosArray = [];
 	let i = 0;
 	for (let j = 1; j < props.photos.length; j++) {
-		photosArray[i++] = <img src={props.photos[j]} alt="others" className={classes.otherPic} key={j} />;
+		photosArray[i++] = 
+			<div key={j} className={classes.enveloppe}>
+				<img src={props.photos[j]} alt="others" className={classes.otherPic} key={j} onClick={props.handleNewProfil} />
+				<div className={cx(classes.suppress, "suppress")} onClick={props.deletePic}></div>
+			</div>;
 	}
 	let rest = 4 - photosArray.length;
 	if (photosArray.length < 4) {
@@ -74,9 +78,12 @@ const ProfilDummy = (props) => {
 				<div className={classes.firstRow}>
 					<div className={classes.leftPart}>
 						<div className={classes.photosCont}>
-							{props.photos ?
-								<img src={props.photos[0]} className={classes.profilPic} alt="profil"/>
-								: <i className={cx(classes.icon, "fas fa-user-circle")}></i>
+							{props.photos[0] ?
+								<div key={0}>
+									<img src={props.photos[0]} className={classes.profilPic} alt="profil" id="profilPic"/>
+									<div className={cx(classes.suppressFirst, "suppress")} onClick={props.deletePic}></div>
+								</div>
+								: <i className={cx(classes.profilIcon, "fas fa-user-circle")}></i>
 							}
 							<div className={classes.otherPics}>
 								{photosArray.map((elem) => (elem))}

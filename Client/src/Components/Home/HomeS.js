@@ -7,9 +7,9 @@ import HomeDumb from './HomeD';
 import distance from '../Geolocalisation/distance';
 
 const _ = require('lodash');
+const mySocket = io('http://localhost:5000');
 
 class Home extends Component {
-	_isMounted = false;
 
 	constructor (props) {
 		super(props);
@@ -24,10 +24,7 @@ class Home extends Component {
 	static contextType = UserContext;
 
 	componentDidMount () {
-		this._isMounted = true;
-
-		if (this._isMounted) {
-			const mySocket = io('http://localhost:5000');
+		if (this.context.JWT.data.complete === true) {
 			mySocket.on('notification', notification => {
 				if (notification.type === 'isOnline') {
 					let onlineUsers = [{ howMany: 0 }];
@@ -40,7 +37,6 @@ class Home extends Component {
 					this.setState({ usersOnline: onlineUsers }, function() { console.log(this.state.usersOnline); });
 				}
 			});
-
 			this.getLocation();
 		}
 	}
@@ -120,7 +116,7 @@ class Home extends Component {
     	const { username } = this.context.JWT.data;
     	const { token } = this.context.JWT;
 
-		if (username !== undefined) {
+		if (username !== undefined && this.context.JWT.data.complete === true) {
 			axios.get(`http://localhost:4000/API/users/suggestions/${username}`, {headers: {"x-auth-token": token}})
 				.then(response => {
 					let suggestions = response.data.payload.result;
@@ -199,7 +195,9 @@ class Home extends Component {
 	}
 	
 	componentWillUnmount() {
-		this._isMounted = false;
+		mySocket.on('notification', () => {
+			mySocket.removeAllListeners();
+		});
 	}
 
 	render() {
