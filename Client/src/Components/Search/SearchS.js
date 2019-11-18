@@ -43,21 +43,25 @@ class Search extends Component {
 	static contextType = UserContext;
 
 	componentDidMount () {
-		mySocket.on('notification', notification => {
-			if (notification.type === 'isOnline') {
-				let onlineUsers = [{ howMany: 0 }];
-				for (let i = 0; i < notification.result.length; i++) {
-					if (notification.result[i].isOnline === true) {
-						onlineUsers[0].howMany += 1;
-						onlineUsers[notification.result[i].username] = true;
+		this.getLocation()
+			.then(() => {
+				mySocket.on('notification', notification => {
+					if (notification.type === 'isOnline') {
+						let onlineUsers = [{ howMany: 0 }];
+						for (let i = 0; i < notification.result.length; i++) {
+							if (notification.result[i].isOnline === true) {
+								onlineUsers[0].howMany += 1;
+								onlineUsers[notification.result[i].username] = true;
+							}
+						}
+						this.setState({ usersOnline: onlineUsers }, function() { console.log(this.state.usersOnline); });
 					}
-				}
-				this.setState({ usersOnline: onlineUsers }, function() { console.log(this.state.usersOnline); });
-			}
-		});
-		this.updateFilters();
-		this.getLocation();
-		this.getSuggestions();
+				});
+				this.updateFilters();
+				
+				this.getSuggestions();
+			});
+		
 	}
 
 	getSuggestions = () => {
@@ -97,70 +101,75 @@ class Search extends Component {
 	}
 
 	getLocation = () => {
-		if (navigator && navigator.geolocation) {
-			navigator.geolocation.getCurrentPosition(pos => {
-				const coords = pos.coords;
-				this.setState({
-					currentLocation: {
-						denied: false,
-						lat: coords.latitude,
-						lng: coords.longitude
+		return new Promise((resolve, reject) => {
+			if (navigator && navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition(pos => {
+					const coords = pos.coords;
+					this.setState({
+						currentLocation: {
+							denied: false,
+							lat: coords.latitude,
+							lng: coords.longitude
+						}
+					}, function () {
+						axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, { lat: coords.latitude, lon: coords.longitude} , {headers: {"x-auth-token": this.context.JWT.token}})
+							.then((res) => {
+								this.context.toggleUser(res.data.payload.result.token);
+							})
+							.catch((err) => console.log(err))
+						axios.get(`http://localhost:4000/API/locate/reverseGeocode/${coords.latitude}/${coords.longitude}`)
+							.then((res) => {
+								const datas = res.data.payload.adress.address;
+								const currentCoords = this.state.currentLocation;
+								currentCoords['adress'] = datas.road;
+								currentCoords['city'] = datas.village;
+								currentCoords['state'] = datas.state;
+								currentCoords['postcode'] = datas.postcode;
+								currentCoords['country'] = datas.country;
+								this.setState({ currentLocation: currentCoords }, function() { console.log(this.state.currentLocation)});
+								resolve();
+							})
+					});
+				},
+				error => {
+					if (error.code === error.PERMISSION_DENIED) {
+					console.log('geoloc denied');
+					axios.get('http://localhost:4000/API/locate/geocode')
+						.then((position) => {
+							this.setState({
+								currentLocation: {
+									denied: true,
+									lat: position.data.payload.localisation.latitude,
+									lng: position.data.payload.localisation.longitude
+								}
+							}, function () {
+								console.log(position.data.payload.localisation.latitude);
+								console.log(position.data.payload.localisation.longitude);
+								axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, { lat: position.data.payload.localisation.latitude, lon: position.data.payload.localisation.longitude} , {headers: {"x-auth-token": this.context.JWT.token}})
+									.then((res) => {
+										this.context.toggleUser(res.data.payload.result.token);
+									})
+									.catch((err) => console.log(err))
+								axios.get(`http://localhost:4000/API/locate/reverseGeocode/${position.data.payload.localisation.latitude}/${position.data.payload.localisation.longitude}`)
+									.then((res) => {
+										console.log(res);
+										const datas = res.data.payload.adress.address;
+										const currentCoords = this.state.currentLocation;
+										currentCoords['adress'] = datas.road;
+										currentCoords['city'] = datas.village;
+										currentCoords['state'] = datas.state;
+										currentCoords['postcode'] = datas.postcode;
+										currentCoords['country'] = datas.country;
+										this.setState({ currentLocation: currentCoords }, function() {console.log(this.state.currentLocation)});
+										resolve();
+									})
+							});
+						})
 					}
-				}, function () {
-					axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, { lat: coords.latitude, lon: coords.longitude} , {headers: {"x-auth-token": this.context.JWT.token}})
-						.then((res) => {
-							this.context.toggleUser(res.data.payload.result.token);
-						})
-						.catch((err) => console.log(err))
-					axios.get(`http://localhost:4000/API/locate/reverseGeocode/${coords.latitude}/${coords.longitude}`)
-						.then((res) => {
-							const datas = res.data.payload.adress.address;
-							const currentCoords = this.state.currentLocation;
-							currentCoords['adress'] = datas.road;
-							currentCoords['city'] = datas.village;
-							currentCoords['state'] = datas.state;
-							currentCoords['postcode'] = datas.postcode;
-							currentCoords['country'] = datas.country;
-							this.setState({ currentLocation: currentCoords }, function() { console.log(this.state.currentLocation)});
-						})
-				});
-			},
-			error => {
-				if (error.code === error.PERMISSION_DENIED) {
-				console.log('geoloc denied');
-				axios.get('http://localhost:4000/API/locate/geocode')
-					.then((position) => {
-						this.setState({
-							currentLocation: {
-								denied: true,
-								lat: position.data.payload.localisation.latitude,
-								lng: position.data.payload.localisation.longitude
-							}
-						}, function () {
-							console.log(position.data.payload.localisation.latitude);
-							console.log(position.data.payload.localisation.longitude);
-							axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, { lat: position.data.payload.localisation.latitude, lon: position.data.payload.localisation.longitude} , {headers: {"x-auth-token": this.context.JWT.token}})
-								.then((res) => {
-									this.context.toggleUser(res.data.payload.result.token);
-								})
-								.catch((err) => console.log(err))
-							axios.get(`http://localhost:4000/API/locate/reverseGeocode/${position.data.payload.localisation.latitude}/${position.data.payload.localisation.longitude}`)
-								.then((res) => {
-									console.log(res);
-									const datas = res.data.payload.adress.address;
-									const currentCoords = this.state.currentLocation;
-									currentCoords['adress'] = datas.road;
-									currentCoords['city'] = datas.village;
-									currentCoords['state'] = datas.state;
-									currentCoords['postcode'] = datas.postcode;
-									currentCoords['country'] = datas.country;
-									this.setState({ currentLocation: currentCoords }, function() {console.log(this.state.currentLocation)});
-								})
-						});
-					})
-				}
-			})
-		}
+				})
+			}
+		});
+		
 	}
 
 	geolocateUser = (e) => {

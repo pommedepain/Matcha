@@ -57,7 +57,6 @@ class NewCompo extends Component {
                 icon,
                 animation: maps.Animation.DROP,
                 position: new maps.LatLng(parseFloat(next.user.lat), parseFloat(next.user.lon)),
-                
                 map,
               }));
               resolve();
@@ -79,24 +78,35 @@ class NewCompo extends Component {
       const maps = this.state.mapApi;
       const map = this.state.mapInstance;
       markers[0].setMap(null);
-
-      const icon = {
-        shape:{coords:[17,17,18],type:'circle'},
-        optimized: false,
-        url: this.context.JWT.data.photos[0], // url
-        scaledSize: new maps.Size(34, 34), // scaled size
-        origin: new maps.Point(0,0), // origin
-        anchor: new maps.Point(0, 0) // anchor
-      };
-      markers[0] = new maps.Marker({
-        icon,
-        animation: maps.Animation.DROP,
-        position: {
-          lat: this.props.currentLocation.lat,
-          lng: this.props.currentLocation.lng,
-        },
-        map,
-      })
+      if (this.context.JWT.data.photos[0]) {
+        const icon = {
+          shape:{coords:[17,17,18],type:'circle'},
+          optimized: false,
+          url: this.context.JWT.data.photos[0], // url
+          scaledSize: new maps.Size(34, 34), // scaled size
+          origin: new maps.Point(0,0), // origin
+          anchor: new maps.Point(0, 0) // anchor
+        };
+        markers[0] = new maps.Marker({
+          icon,
+          animation: maps.Animation.DROP,
+          position: {
+            lat: this.props.currentLocation.lat,
+            lng: this.props.currentLocation.lng,
+          },
+          map,
+        })
+      } else {
+        markers[0] = new maps.Marker({
+          animation: maps.Animation.DROP,
+          position: {
+            lat: this.props.currentLocation.lat,
+            lng: this.props.currentLocation.lng,
+          },
+          map,
+        })
+      }
+      
       map.setCenter({ lat: parseFloat(this.props.currentLocation.lat), lng: parseFloat(this.props.currentLocation.lng) })
       this.setState({
         mapApiLoaded: true,
