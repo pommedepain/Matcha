@@ -6,12 +6,16 @@ import UserPage from './UserPage/UserPageS';
 import MapContainer from '../Geolocalisation/MapContainer';
 
 const HomeDumb = (props) => {
-	console.log(props.JWT.data.complete);
+	// console.log(props.JWT.data.complete);
+	const complete = props.JWT.data.complete === "false" ? null : true;
+
 	return (
 		<div>
 			{props.JWT.data.username ?
-				props.JWT.data.complete === false ?
-					<div className={classes.uncompleteUser}></div>
+				complete === null ?
+					[<div className={classes.uncompleteUser} key={0}>
+						<p>Your profil is incomplete. PLease fill out the missing fields to access to your suggestions</p>
+					</div>]
 					: [<div className={classes.main} id="main" key={0}>
 						<div className={classes.geolocCont} >
 							<MapContainer displayInput={props.displayInput} suggestions={props.suggestions} photo={props.JWT.data.photos[0]}/>

@@ -10,21 +10,34 @@ import Tags from '../Utils/Tags/Tags';
 
 const ProfilDummy = (props) => {
 	const user = props.JWT.data;
+	for (let elem in user) {
+		if (user[elem].length <= 0 && (elem === "age" || elem === "gender")) {
+			user[elem] = 'unknown';
+		}
+	}
 	let photosArray = [];
 	let i = 0;
-	for (let j = 1; j < props.photos.length; j++) {
-		photosArray[i++] = 
-			<div key={j} className={classes.enveloppe}>
-				<img src={props.photos[j]} alt="others" className={classes.otherPic} key={j} onClick={props.handleNewProfil} />
-				<div className={cx(classes.suppress, "suppress")} onClick={props.deletePic}></div>
-			</div>;
-	}
-	let rest = 4 - photosArray.length;
-	if (photosArray.length < 4) {
-		let k = photosArray.length;
-		for (rest; rest > 0; rest--) {
-			photosArray[k++] = <i className={cx(classes.icon, "fas fa-user-circle")} key={k} ></i>;
+	if (props.photos) {
+		for (let j = 1; j < props.photos.length; j++) {
+			photosArray[i++] = 
+				<div key={i} className={classes.enveloppe}>
+					<img src={props.photos[j]} alt="others" className={classes.otherPic} key={j} onClick={props.handleNewProfil} />
+					<div className={cx(classes.suppress, "suppress")} onClick={props.deletePic}></div>
+				</div>;
 		}
+		let rest = 4 - photosArray.length;
+		if (photosArray.length < 4) {
+			let k = photosArray.length;
+			for (rest; rest > 0; rest--) {
+				photosArray[k++] = <i className={cx(classes.icon, "fas fa-user-circle")} key={k} ></i>;
+			}
+		}
+	}
+	else {
+		for (let l = 0; l < 5; l) {
+			photosArray[l++] = <i className={cx(classes.icon, "fas fa-user-circle")} key={l} ></i>;
+		}
+		console.log(photosArray);
 	}
 
 	/* Picking the right gender icon to display */
@@ -62,6 +75,9 @@ const ProfilDummy = (props) => {
 	else if (user.gender === "genderQueer") {
 		gender = "Queer";
 	}
+	else if (user.gender === "unknown") {
+		gender = "unknown";
+	}
 
 	let formElementsArray = [];
 	// eslint-disable-next-line no-unused-vars
@@ -78,12 +94,14 @@ const ProfilDummy = (props) => {
 				<div className={classes.firstRow}>
 					<div className={classes.leftPart}>
 						<div className={classes.photosCont}>
-							{props.photos[0] ?
-								<div key={0}>
-									<img src={props.photos[0]} className={classes.profilPic} alt="profil" id="profilPic"/>
-									<div className={cx(classes.suppressFirst, "suppress")} onClick={props.deletePic}></div>
-								</div>
-								: <i className={cx(classes.profilIcon, "fas fa-user-circle")}></i>
+							{props.photos ?
+								props.photos[0] ?
+									<div key={0}>
+										<img src={props.photos[0]} className={classes.profilPic} alt="profil" id="profilPic"/>
+										<div className={cx(classes.suppressFirst, "suppress")} onClick={props.deletePic}></div>
+									</div>
+									: <i className={cx(classes.profilIcon, "fas fa-user-circle")}></i>
+								: null
 							}
 							<div className={classes.otherPics}>
 								{photosArray.map((elem) => (elem))}
@@ -251,7 +269,7 @@ const ProfilDummy = (props) => {
 						<div className={classes.map}>
 							<MapContainer 
 								displayInput={props.displayInput} 
-								suggestions={[]} photo={props.JWT.data.photos[0]} 
+								suggestions={[]} 
 								currentLocation={props.currentLocation} 
 								rerender={props.rerender} 
 							/>

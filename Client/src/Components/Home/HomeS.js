@@ -24,7 +24,7 @@ class Home extends Component {
 	static contextType = UserContext;
 
 	componentDidMount () {
-		if (this.context.JWT.data.complete === true) {
+		if (this.context.JWT.data.complete === "true") {
 			mySocket.on('notification', notification => {
 				if (notification.type === 'isOnline') {
 					let onlineUsers = [{ howMany: 0 }];
@@ -118,11 +118,11 @@ class Home extends Component {
     	const { username } = this.context.JWT.data;
     	const { token } = this.context.JWT;
 
-		if (username !== undefined && this.context.JWT.data.complete === true) {
+		if (username !== undefined && this.context.JWT.data.complete === "true") {
 			axios.get(`http://localhost:4000/API/users/suggestions/${username}`, {headers: {"x-auth-token": token}})
 				.then(response => {
 					let suggestions = response.data.payload.result;
-					response.data.payload.result.map((elem, i) => {
+					suggestions.map((elem, i) => {
 						if (this.state.currentLocation) {
 							const toCompute = {
 								user1: {lat: this.state.currentLocation.lat, lon: this.state.currentLocation.lng}, 
@@ -144,7 +144,7 @@ class Home extends Component {
 	}
 
 	filterByDistance = (suggestions) => {
-		if (this.state.currentLocation && suggestions) {
+		if (this.state.currentLocation && suggestions.length > 0) {
 				let sortedArray = [];
 				let j = 0;
 				suggestions.map((elem) => {

@@ -12,9 +12,9 @@ const mySocket = io('http://localhost:5000');
 
 class Search extends Component {
 	state = {
-		ageRange: [18, 25],
+		ageRange: [18, 100],
 		popularityRange: [0, 100],
-		localisation: 5,
+		localisation: 160,
 		tags: [],
 		touched: {
 			ageRange: false,

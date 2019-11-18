@@ -9,6 +9,22 @@
 	align-items: center;
 }
 
+.uncompleteUser {
+	position: relative;
+	display: flex;
+	background-color: white;
+	min-height: 100vh;
+	color: rgb(116, 209, 234);
+	flex-direction: column;
+	align-items: center;
+}
+
+.uncompleteUser > p {
+	font-size: 2vw;
+	font-weight: 300;
+	margin-top: 5%;
+}
+
 .noSuggestions {
 	display: flex;
 	justify-content: center;
