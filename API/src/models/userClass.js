@@ -660,6 +660,15 @@ class User extends Node {
           if (this.data.node_a.properties && !this.data.node_a.properties.sexOrient) {
             this.data.node_a.properties.sexOrient = 'bi';
           }
+          if (this.data.node_a.properties && !this.data.node_a.properties.localisation) {
+            this.data.node_a.properties.localisation = 42;
+          }
+          if (this.data.node_a.properties && !this.data.node_a.properties.ageMin) {
+            this.data.node_a.properties.ageMin = 42;
+          }
+          if (this.data.node_a.properties && !this.data.node_a.properties.ageMax) {
+            this.data.node_a.properties.ageMax = 84;
+          }
           if (this.data.node_a.properties && !this.data.node_a.properties.active) {
             this.data.node_a.properties.active = 'false';
           }
