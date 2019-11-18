@@ -108,6 +108,10 @@ class Search extends Component {
 					}
 				}, function () {
 					axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, { lat: coords.latitude, lon: coords.longititude} , {headers: {"x-auth-token": this.context.JWT.token}})
+						.then((res) => {
+							this.context.toggleUser(res.data.payload.result.token);
+						})
+						.catch((err) => console.log(err))
 					axios.get(`http://localhost:4000/API/locate/reverseGeocode/${coords.latitude}/${coords.longitude}`)
 						.then((res) => {
 							const datas = res.data.payload.adress.address;
@@ -136,6 +140,10 @@ class Search extends Component {
 							console.log(position.data.payload.localisation.latitude);
 							console.log(position.data.payload.localisation.longitude);
 							axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, { lat: position.data.payload.localisation.latitude, lon: position.data.payload.localisation.longitude} , {headers: {"x-auth-token": this.context.JWT.token}})
+								.then((res) => {
+									this.context.toggleUser(res.data.payload.result.token);
+								})
+								.catch((err) => console.log(err))
 							axios.get(`http://localhost:4000/API/locate/reverseGeocode/${position.data.payload.localisation.latitude}/${position.data.payload.localisation.longitude}`)
 								.then((res) => {
 									console.log(res);

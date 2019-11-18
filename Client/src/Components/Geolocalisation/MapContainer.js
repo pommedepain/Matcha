@@ -128,16 +128,25 @@ class NewCompo extends Component {
         shape:{coords:[17,17,18],type:'circle'},
         optimized: false,
       };
-    } else icon = {}
-    markers.push(new maps.Marker({
-      icon,
-      animation: maps.Animation.DROP,
-      position: {
-        lat: this.state.customCenter[0],
-        lng: this.state.customCenter[1],
-      },
-      map,
-    }));
+      markers.push(new maps.Marker({
+        icon,
+        animation: maps.Animation.DROP,
+        position: {
+          lat: this.state.customCenter[0],
+          lng: this.state.customCenter[1],
+        },
+        map,
+      }));
+    } else {
+      markers.push(new maps.Marker({
+        animation: maps.Animation.DROP,
+        position: {
+          lat: this.state.customCenter[0],
+          lng: this.state.customCenter[1],
+        },
+        map,
+      }));
+    }
     map.setCenter({ lat: this.state.customCenter[0], lng: this.state.customCenter[1] })
     this.setState({
     mapApiLoaded: true,
@@ -163,16 +172,25 @@ class NewCompo extends Component {
         origin: new maps.Point(0,0), // origin
         anchor: new maps.Point(0, 0) // anchor
       };
-    } else icon = {};
-    markers[0] = new maps.Marker({
-      icon,
-      animation: maps.Animation.DROP,
-      position: {
-        lat: place.geometry.location.lat(),
-        lng: place.geometry.location.lng(),
-      },
-      map,
-    })
+      markers[0] = new maps.Marker({
+        icon,
+        animation: maps.Animation.DROP,
+        position: {
+          lat: place.geometry.location.lat(),
+          lng: place.geometry.location.lng(),
+        },
+        map,
+      })
+    } else {
+      markers[0] = new maps.Marker({
+        animation: maps.Animation.DROP,
+        position: {
+          lat: place.geometry.location.lat(),
+          lng: place.geometry.location.lng(),
+        },
+        map,
+      })
+    }
     this.setState({
       mapApiLoaded: true,
       mapInstance: map,
