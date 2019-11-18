@@ -56,10 +56,8 @@ class NewCompo extends Component {
               markers.push(new maps.Marker({
                 icon,
                 animation: maps.Animation.DROP,
-                position: {
-                  lat: parseFloat(next.user.lat),
-                  lng: parseFloat(next.user.lon),
-                },
+                position: new maps.LatLng(parseFloat(next.user.lat), parseFloat(next.user.lon)),
+                
                 map,
               }));
               resolve();

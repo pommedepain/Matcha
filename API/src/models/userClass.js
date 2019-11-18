@@ -652,7 +652,7 @@ class User extends Node {
             this.data.node_a.properties.active = 'false';
           }
           if (this.data.node_a.properties && this.data.node_a.properties.complete === undefined) {
-            if (this.data.node_a.properties.sexOrient && this.data.node_a.properties.gender && this.data.node_a.properties.photos[0]) {
+            if (this.data.node_a.properties.sexOrient && this.data.node_a.properties.gender && this.data.node_a.properties.photos && this.data.node_a.properties.photos[0]) {
               this.data.node_a.properties.complete = 'true';
             } else this.data.node_a.properties.complete = 'false';
           }
