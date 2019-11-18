@@ -118,14 +118,17 @@ class NewCompo extends Component {
       axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, { forcedLat: null, forcedLon:null} , {headers: {"x-auth-token": this.context.JWT.token}})
     }
     this.setState({ customCenter })
-    const icon = {
-      url: this.context.JWT.data.photos[0], // url
-      scaledSize: new maps.Size(34, 34), // scaled size
-      origin: new maps.Point(0,0), // origin
-      anchor: new maps.Point(0, 0), // anchor
-      shape:{coords:[17,17,18],type:'circle'},
-      optimized: false,
-    };
+    let icon = {}
+    if (this.context.JWT.data.photos[0]){
+      icon = {
+        url: this.context.JWT.data.photos[0], // url
+        scaledSize: new maps.Size(34, 34), // scaled size
+        origin: new maps.Point(0,0), // origin
+        anchor: new maps.Point(0, 0), // anchor
+        shape:{coords:[17,17,18],type:'circle'},
+        optimized: false,
+      };
+    } else icon = {}
     markers.push(new maps.Marker({
       icon,
       animation: maps.Animation.DROP,
@@ -150,15 +153,17 @@ class NewCompo extends Component {
     const maps = this.state.mapApi;
     const map = this.state.mapInstance;
     markers[0].setMap(null);
-
-    const icon = {
-      shape:{coords:[17,17,18],type:'circle'},
-      optimized: false,
-      url: this.context.JWT.data.photos[0], // url
-      scaledSize: new maps.Size(34, 34), // scaled size
-      origin: new maps.Point(0,0), // origin
-      anchor: new maps.Point(0, 0) // anchor
-    };
+    let icon = {};
+    if (this.context.JWT.data.photos[0]) {
+      icon = {
+        shape:{coords:[17,17,18],type:'circle'},
+        optimized: false,
+        url: this.context.JWT.data.photos[0], // url
+        scaledSize: new maps.Size(34, 34), // scaled size
+        origin: new maps.Point(0,0), // origin
+        anchor: new maps.Point(0, 0) // anchor
+      };
+    } else icon = {};
     markers[0] = new maps.Marker({
       icon,
       animation: maps.Animation.DROP,

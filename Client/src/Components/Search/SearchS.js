@@ -160,6 +160,11 @@ class Search extends Component {
 		if (navigator && navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(pos => {
 				const coords = pos.coords;
+				axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, {forcedLat:  coords.latitude, forcedLon: coords.longitude, lat:  coords.latitude, lon: coords.longitude} , {headers: {"x-auth-token": this.context.JWT.token}})
+				.then((res) => {
+					this.context.toggleUser(res.data.payload.result.token);
+				})
+				.catch((err) => console.log(err))
 				this.setState({
 					currentLocation: {
 						denied: false,
@@ -189,6 +194,11 @@ class Search extends Component {
 				console.log('geoloc denied');
 				axios.get('http://localhost:4000/API/locate/geocode')
 					.then((position) => {
+						axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, {forcedLat: position.data.payload.localisation.latitude, forcedLon: position.data.payload.localisation.longitude, lat: position.data.payload.localisation.latitude, lon: position.data.payload.localisation.longitude} , {headers: {"x-auth-token": this.context.JWT.token}})
+						.then((res) => {
+							this.context.toggleUser(res.data.payload.result.token);
+						})
+						.catch((err) => console.log(err))
 						this.setState({
 							currentLocation: {
 								denied: true,
