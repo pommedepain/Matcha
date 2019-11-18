@@ -46,7 +46,7 @@ class NewCompo extends Component {
               const icon = {
                 optimized: false,
                 url: next.user.photos[0],
-                scaledSize: new maps.Size(34, 34),
+                scaledSize: new maps.Size(30,30),
                 origin: new maps.Point(0, 0),
                 anchor: new maps.Point(0, 0),
               };
@@ -84,7 +84,7 @@ class NewCompo extends Component {
         shape:{coords:[17,17,18],type:'circle'},
         optimized: false,
         url: this.context.JWT.data.photos[0], // url
-        scaledSize: new maps.Size(34, 34), // scaled size
+        scaledSize: new maps.Size(35,35), // scaled size
         origin: new maps.Point(0,0), // origin
         anchor: new maps.Point(0, 0) // anchor
       };
@@ -92,8 +92,8 @@ class NewCompo extends Component {
         icon,
         animation: maps.Animation.DROP,
         position: {
-          lat: this.props.currentLocation.lat,
-          lng: this.props.currentLocation.lng,
+          lat: parseFloat(this.props.currentLocation.lat),
+          lng: parseFloat(this.props.currentLocation.lng),
         },
         map,
       })
@@ -108,52 +108,16 @@ class NewCompo extends Component {
     }
   }
 
-  getCity = ( addressArray ) => {
-    let city = '';
-    for( let i = 0; i < addressArray.length; i++ ) {
-     if ( addressArray[ i ].types[0] && 'administrative_area_level_2' === addressArray[ i ].types[0] ) {
-      city = addressArray[ i ].long_name;
-      return city;
-     }
-    }
-   };
-
-   getArea = ( addressArray ) => {
-    let area = '';
-    for( let i = 0; i < addressArray.length; i++ ) {
-     if ( addressArray[ i ].types[0]  ) {
-      for ( let j = 0; j < addressArray[ i ].types.length; j++ ) {
-       if ( 'sublocality_level_1' === addressArray[ i ].types[j] || 'locality' === addressArray[ i ].types[j] ) {
-        area = addressArray[ i ].long_name;
-        return area;
-       }
-      }
-     }
-    }
-   };
-
-   getState = ( addressArray ) => {
-    let state = '';
-    for( let i = 0; i < addressArray.length; i++ ) {
-     for( let i = 0; i < addressArray.length; i++ ) {
-      if ( addressArray[ i ].types[0] && 'administrative_area_level_1' === addressArray[ i ].types[0] ) {
-       state = addressArray[ i ].long_name;
-       return state;
-      }
-     }
-    }
-   };
-
   apiHasLoaded = (map, maps, locations) => {
     let markers = [];
     let customCenter = null;
     if (!this.context.JWT.data.forcedLat) {
-     customCenter = [this.context.JWT.data.lat, this.context.JWT.data.lon];
+     customCenter = [parseFloat(this.context.JWT.data.lat), parseFloat(this.context.JWT.data.lon)];
     } else { customCenter = [parseFloat(this.context.JWT.data.forcedLat), parseFloat(this.context.JWT.data.forcedLon)];}
     this.setState({ customCenter })
     const icon = {
       url: this.context.JWT.data.photos[0], // url
-      scaledSize: new maps.Size(34, 34), // scaled size
+      scaledSize: new maps.Size(35,35), // scaled size
       origin: new maps.Point(0,0), // origin
       anchor: new maps.Point(0, 0), // anchor
       shape:{coords:[17,17,18],type:'circle'},
@@ -190,7 +154,7 @@ class NewCompo extends Component {
             const icon = {
               optimized: false,
               url: next.user.photos[0],
-              scaledSize: new maps.Size(34, 34),
+              scaledSize: new maps.Size(30,30),
               origin: new maps.Point(0, 0),
               anchor: new maps.Point(0, 0),
             };
@@ -229,7 +193,7 @@ class NewCompo extends Component {
       shape:{coords:[17,17,18],type:'circle'},
       optimized: false,
       url: this.context.JWT.data.photos[0], // url
-      scaledSize: new maps.Size(34, 34), // scaled size
+      scaledSize: new maps.Size(30,30), // scaled size
       origin: new maps.Point(0,0), // origin
       anchor: new maps.Point(0, 0) // anchor
     };
@@ -249,31 +213,11 @@ class NewCompo extends Component {
       places: [place],
       markers,
     });
-    Geocode.fromLatLng( place.geometry.location.lat() , place.geometry.location.lng() ).then(
-      response => {
-       const address = response.results[0].formatted_address,
-        addressArray =  response.results[0].address_components,
-        city = this.getCity( addressArray ),
-        area = this.getArea( addressArray ),
-        state = this.getState( addressArray );
-     
-      //  console.log( 'city', city, area, state );
-        axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, {forcedLat: place.geometry.location.lat(), forcedLon: place.geometry.location.lng()} , {headers: {"x-auth-token": this.context.JWT.token}})
-          .then((res) => {
-            this.context.toggleUser(res.data.payload.result.token);
-          })
-          .catch((err) => console.log(err))
-       this.setState( {
-        address: ( address ) ? address : '',
-        area: ( area ) ? area : '',
-        city: ( city ) ? city : '',
-        state: ( state ) ? state : '',
-       } )
-      },
-      error => {
-       console.error(error);
-      }
-     );
+    axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, {forcedLat: place.geometry.location.lat(), forcedLon: place.geometry.location.lng(), lat: place.geometry.location.lat(), lon: place.geometry.location.lng()} , {headers: {"x-auth-token": this.context.JWT.token}})
+      .then((res) => {
+        this.context.toggleUser(res.data.payload.result.token);
+      })
+      .catch((err) => console.log(err))
   };
 
   render() {
