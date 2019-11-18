@@ -325,10 +325,22 @@ class User extends Node {
     return new Promise((resolve, reject) => {
       this.getUserInfo()
         .then((infos) => {
-          this.token = jwt.sign(_.omit(infos, 'password'), config.get('jwtPrivateKey'));
+          const publicProperties = ['age', 'lastConnection', 'lat', 'lon', 'complete', 'isTags', 'popularity', 'blocked', 'lookTags', 'username', 'firstName', 'lastName', 'birthdate', 'bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'localisation', 'tags', 'photos'];
+          const user = {};
+          let tmp = [];
+          tmp = publicProperties.map((key) => {
+            if (infos[key]) return ({ [key]: infos[key] });
+            return ({ [key]: [] });
+          });
+          tmp.forEach(elem => (Object.assign(user, elem)));
+          // debug('debug', user);
+          debug('debug', user);
+
+          // debug(_.omit(infos, 'password'));
+          // this.token = jwt.sign(user, config.get('jwtPrivateKey'));
           this.token = jwt.sign({
             exp: Math.floor(Date.now() / 1000) + (3600), // 30s
-            data: _.omit(infos, 'password'),
+            data: user,
           }, config.get('jwtPrivateKey'));
 
           debug('Generating Auth token :', this.token);
