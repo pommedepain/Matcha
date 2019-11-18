@@ -144,8 +144,8 @@ function userParser(user) {
       newUser.tags = [];
       newUser.isTags = [];
       newUser.active = 'true';
-      const lat = randFloat(48.887398399999995 - 0.5, 48.887398399999995 + 0.5);
-      const lon = randFloat(2.3134208 - 0.5, 2.3134208 + 0.5) * -1;
+      const lat = randFloat(48.856613 - 0.5, 48.856613 + 0.5);
+      const lon = randFloat(2.352222 - 0.5, 2.352222 + 0.5);
       debug(lat, lon);
       newUser.lat = lat;
       newUser.lon = lon;

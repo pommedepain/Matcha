@@ -84,6 +84,11 @@ class Server {
                     emitter: notification.receiver,
                   },
                 })
+                debug('emitted', {
+                  type: notification.type,
+                  emitter: notification.emitter,
+                  receiver: notification.receiver,
+                });
               })
             }
           }
@@ -113,6 +118,11 @@ class Server {
                   receiver: message.receiver,
                 },
               })
+              debug('emitted', {
+                type: notification.type,
+                emitter: notification.emitter,
+                receiver: notification.receiver,
+              });
             })
           }
         }
