@@ -33,7 +33,7 @@ class NewCompo extends Component {
       const maps = this.state.mapApi;
       const map = this.state.mapInstance;
       let { markers } = this.state;
-      if (this.props.suggestions.length && maps && map) {
+      if (this.props.suggestions && this.props.suggestions.length && maps && map) {
         for (let i = 0; i < markers.length; i += 1) {
           if (i !== 0) {
             markers[i].setMap(null);
@@ -83,7 +83,7 @@ class NewCompo extends Component {
       const icon = {
         shape:{coords:[17,17,18],type:'circle'},
         optimized: false,
-        url: 'https://uinames.com/api/photos/female/16.jpg', // url
+        url: this.context.JWT.data.photos[0], // url
         scaledSize: new maps.Size(34, 34), // scaled size
         origin: new maps.Point(0,0), // origin
         anchor: new maps.Point(0, 0) // anchor
@@ -145,133 +145,77 @@ class NewCompo extends Component {
    };
 
   apiHasLoaded = (map, maps, locations) => {
-    const markers = [];
-    if (navigator && navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(pos => {
-        // console.log(pos);
-        let customCenter = null;
-        if (!this.context.JWT.data.forcedLat) {
-         customCenter = [pos.coords.latitude, pos.coords.longitude];
-        } else { customCenter = [parseFloat(this.context.JWT.data.forcedLat), parseFloat(this.context.JWT.data.forcedLon)];}
-        
-        this.setState({ customCenter })
-        const icon = {
-          url: 'https://uinames.com/api/photos/female/16.jpg', // url
-          scaledSize: new maps.Size(34, 34), // scaled size
-          origin: new maps.Point(0,0), // origin
-          anchor: new maps.Point(0, 0), // anchor
-          shape:{coords:[17,17,18],type:'circle'},
-          optimized: false,
-        };
-        markers.push(new maps.Marker({
-          icon,
-          animation: maps.Animation.DROP,
-          position: {
-            lat: this.state.customCenter[0],
-            lng: this.state.customCenter[1],
-          },
-          map,
-        }));
-        map.setCenter({ lat: this.state.customCenter[0], lng: this.state.customCenter[1] })
-        // console.log({ lat: this.state.customCenter[0], lng: this.state.customCenter[1] });
-        this.setState({
-        mapApiLoaded: true,
-        mapInstance: map,
-        mapApi: maps,
-        locations,
-        markers,
-        });
-        axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, { lat: this.state.customCenter[0], lon: this.state.customCenter[1]} , {headers: {"x-auth-token": this.context.JWT.token}})
-          .then((res) => {
-            this.context.toggleUser(res.data.payload.result.token);
-          })
-          .catch((err) => console.log(err))
-        Geocode.fromLatLng( this.state.customCenter[0] , this.state.customCenter[1] ).then(
-          response => {
-           const address = response.results[0].formatted_address,
-            addressArray =  response.results[0].address_components,
-            city = this.getCity( addressArray ),
-            area = this.getArea( addressArray ),
-            state = this.getState( addressArray );
-         
-          //  console.log( 'city', city, area, state );
-         
-           this.setState( {
-            address: ( address ) ? address : '',
-            area: ( area ) ? area : '',
-            city: ( city ) ? city : '',
-            state: ( state ) ? state : '',
-           } )
-          },
-          error => {
-           console.error(error);
-          }
-         );
-      }, (error) => {
-      if (error.code === error.PERMISSION_DENIED) {
-        console.log('geoloc denied');
-        axios.get('http://localhost:4000/API/locate/geocode')
-            .then((position) => {
-              let customCenter = null;
-              if (!this.context.JWT.data.forcedLat) {
-               customCenter = [position.data.payload.localisation.latitude,position.data.payload.localisation.longitude];
-              } else { customCenter = [parseFloat(this.context.JWT.data.forcedLat), parseFloat(this.context.JWT.data.forcedLon)];}
+    let markers = [];
+    let customCenter = null;
+    if (!this.context.JWT.data.forcedLat) {
+     customCenter = [this.context.JWT.data.lat, this.context.JWT.data.lon];
+    } else { customCenter = [parseFloat(this.context.JWT.data.forcedLat), parseFloat(this.context.JWT.data.forcedLon)];}
+    this.setState({ customCenter })
+    const icon = {
+      url: this.context.JWT.data.photos[0], // url
+      scaledSize: new maps.Size(34, 34), // scaled size
+      origin: new maps.Point(0,0), // origin
+      anchor: new maps.Point(0, 0), // anchor
+      shape:{coords:[17,17,18],type:'circle'},
+      optimized: false,
+    };
+    markers.push(new maps.Marker({
+      icon,
+      animation: maps.Animation.DROP,
+      position: {
+        lat: customCenter[0],
+        lng: customCenter[1],
+      },
+      map,
+    }));
+    map.setCenter({ lat: customCenter[0], lng: customCenter[1] })
+    this.setState({
+    mapApiLoaded: true,
+    mapInstance: map,
+    mapApi: maps,
+    locations,
+    markers,
+    });
+    markers= this.state.markers;
+    if (this.props.suggestions && this.props.suggestions.length && maps && map) {
+      for (let i = 0; i < markers.length; i += 1) {
+        if (i !== 0) {
+          markers[i].setMap(null);
+        }
+      }
+      this.props.suggestions.reduce(async (prev, next) => {
+        await prev;
+        if (next.user.photos && next.user.photos.length) {
+          return new Promise((resolve) => {
+            const icon = {
+              optimized: false,
+              url: next.user.photos[0],
+              scaledSize: new maps.Size(34, 34),
+              origin: new maps.Point(0, 0),
+              anchor: new maps.Point(0, 0),
+            };
+            // console.log(parseFloat(next.user.lat))
+            // console.log(parseFloat(next.user.lon))
+            markers.push(new maps.Marker({
+              icon,
+              animation: maps.Animation.DROP,
+              position: new maps.LatLng(parseFloat(next.user.lat), parseFloat(next.user.lon)),
               
-              this.setState({ customCenter})
-              const icon = {
-                shape:{coords:[17,17,18],type:'circle'},
-                optimized: false,
-                url: 'https://uinames.com/api/photos/female/16.jpg', // url
-                scaledSize: new maps.Size(34, 34), // scaled size
-                origin: new maps.Point(0,0), // origin
-                anchor: new maps.Point(0, 0) // anchor
-              };
-              markers.push(new maps.Marker({
-                icon,
-                animation: maps.Animation.DROP,
-                position: {
-                  lat: this.state.customCenter[0],
-                  lng: this.state.customCenter[1],
-                },
-                map,
-              }));
-              map.setCenter({ lat: this.state.customCenter[0], lng: this.state.customCenter[1] })
-              // console.log({ lat: this.state.customCenter[0], lng: this.state.customCenter[1] });
-              this.setState({
-              mapApiLoaded: true,
-              mapInstance: map,
-              mapApi: maps,
-              locations,
-              markers,
-              });
-              axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, { lat: this.state.customCenter[0], lon: this.state.customCenter[1]} , {headers: {"x-auth-token": this.context.JWT.token}})
-                .then((res) => {
-                  this.context.toggleUser(res.data.payload.result.token);
-                })
-                .catch((err) => console.log(err))
-              Geocode.fromLatLng( this.state.customCenter[0] , this.state.customCenter[1] ).then(
-                response => {
-                 const address = response.results[0].formatted_address,
-                  addressArray =  response.results[0].address_components,
-                  city = this.getCity( addressArray ),
-                  area = this.getArea( addressArray ),
-                  state = this.getState( addressArray );
-               
-                //  console.log( 'city', city, area, state );
-               
-                 this.setState( {
-                  address: ( address ) ? address : '',
-                  area: ( area ) ? area : '',
-                  city: ( city ) ? city : '',
-                  state: ( state ) ? state : '',
-                 } )
-                },
-                error => {
-                 console.error(error);
-                }
-               );
-            })
-      }})
+              map,
+            }));
+            resolve();
+          })
+        } return new Promise(resolve => resolve());
+      }, Promise.resolve())
+        .then(() => {
+          this.setState({
+            mapApiLoaded: true,
+            mapInstance: map,
+            mapApi: maps,
+            markers,
+            suggestions: this.props.suggestions,
+          }, function() { console.log(this.state.markers); });
+        })
     }
   };
 
@@ -284,7 +228,7 @@ class NewCompo extends Component {
     const icon = {
       shape:{coords:[17,17,18],type:'circle'},
       optimized: false,
-      url: 'https://uinames.com/api/photos/female/16.jpg', // url
+      url: this.context.JWT.data.photos[0], // url
       scaledSize: new maps.Size(34, 34), // scaled size
       origin: new maps.Point(0,0), // origin
       anchor: new maps.Point(0, 0) // anchor

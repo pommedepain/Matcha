@@ -12,7 +12,7 @@ const HomeDumb = (props) => {
 		<div>
 			<div className={classes.main} id="main" >
 				<div className={classes.geolocCont} >
-					<MapContainer displayInput={props.displayInput} suggestions={[]} photo={props.JWT.data.photos[0]}/>
+					<MapContainer displayInput={props.displayInput} suggestions={props.suggestions} photo={props.JWT.data.photos[0]}/>
 				</div>
 				<div className={classes.wrapper}>
 					{props.suggestions !== null ?
