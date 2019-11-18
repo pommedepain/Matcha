@@ -60,6 +60,7 @@ class Home extends Component {
 						lng: coords.longitude
 					}
 				}, function () {
+					axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, { lat: coords.latitude, lon: coords.longititude} , {headers: {"x-auth-token": this.context.JWT.token}})
 					axios.get(`http://localhost:4000/API/locate/reverseGeocode/${coords.latitude}/${coords.longitude}`)
 						.then((res) => {
 							const datas = res.data.payload.adress.address;
@@ -90,6 +91,7 @@ class Home extends Component {
 						}, function () {
 							console.log(position.data.payload.localisation.latitude);
 							console.log(position.data.payload.localisation.longitude);
+							axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, { lat: position.data.payload.localisation.latitude, lon: position.data.payload.localisation.longitude} , {headers: {"x-auth-token": this.context.JWT.token}})
 							axios.get(`http://localhost:4000/API/locate/reverseGeocode/${position.data.payload.localisation.latitude}/${position.data.payload.localisation.longitude}`)
 								.then((res) => {
 									console.log(res);

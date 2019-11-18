@@ -110,103 +110,39 @@ class NewCompo extends Component {
 
   apiHasLoaded = (map, maps, locations) => {
     const markers = [];
-    if (navigator && navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(pos => {
-        // console.log(pos);
-        let customCenter = null;
-        if (!this.context.JWT.data.forcedLat) {
-         customCenter = [pos.coords.latitude, pos.coords.longitude];
-        } else {
-          customCenter = [parseFloat(this.context.JWT.data.forcedLat), parseFloat(this.context.JWT.data.forcedLon)];
-          axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, { forcedLat: null, forcedLon:null, lat: customCenter[0], lon: customCenter[1]} , {headers: {"x-auth-token": this.context.JWT.token}})
-            .then((res) => {
-              this.context.toggleUser(res.data.payload.result.token);
-            })
-            .catch((err) => console.log(err))
-        }
-        
-        this.setState({ customCenter })
-        const icon = {
-          url: this.context.JWT.data.photos[0], // url
-          scaledSize: new maps.Size(34, 34), // scaled size
-          origin: new maps.Point(0,0), // origin
-          anchor: new maps.Point(0, 0), // anchor
-          shape:{coords:[17,17,18],type:'circle'},
-          optimized: false,
-        };
-        markers.push(new maps.Marker({
-          icon,
-          animation: maps.Animation.DROP,
-          position: {
-            lat: this.state.customCenter[0],
-            lng: this.state.customCenter[1],
-          },
-          map,
-        }));
-        map.setCenter({ lat: this.state.customCenter[0], lng: this.state.customCenter[1] })
-        this.setState({
-        mapApiLoaded: true,
-        mapInstance: map,
-        mapApi: maps,
-        locations,
-        markers,
-        });
-        axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, { lat: this.state.customCenter[0], lon: this.state.customCenter[1]} , {headers: {"x-auth-token": this.context.JWT.token}})
-          .then((res) => {
-            this.context.toggleUser(res.data.payload.result.token);
-          })
-          .catch((err) => console.log(err))
-      }, (error) => {
-      if (error.code === error.PERMISSION_DENIED) {
-        console.log('geoloc denied');
-        axios.get('http://localhost:4000/API/locate/geocode')
-            .then((position) => {
-              let customCenter = null;
-              if (!this.context.JWT.data.forcedLat) {
-                customCenter = [position.data.payload.localisation.latitude,position.data.payload.localisation.longitude];
-               } else {
-                 customCenter = [parseFloat(this.context.JWT.data.forcedLat), parseFloat(this.context.JWT.data.forcedLon)];
-                 axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, { forcedLat: null, forcedLon:null, lat: customCenter[0], lon: customCenter[1]} , {headers: {"x-auth-token": this.context.JWT.token}})
-                   .then((res) => {
-                     this.context.toggleUser(res.data.payload.result.token);
-                   })
-                   .catch((err) => console.log(err))
-               }
-              this.setState({ customCenter})
-              const icon = {
-                shape:{coords:[17,17,18],type:'circle'},
-                optimized: false,
-                url: this.context.JWT.data.photos[0], // url
-                scaledSize: new maps.Size(34, 34), // scaled size
-                origin: new maps.Point(0,0), // origin
-                anchor: new maps.Point(0, 0) // anchor
-              };
-              markers.push(new maps.Marker({
-                icon,
-                animation: maps.Animation.DROP,
-                position: {
-                  lat: this.state.customCenter[0],
-                  lng: this.state.customCenter[1],
-                },
-                map,
-              }));
-              map.setCenter({ lat: this.state.customCenter[0], lng: this.state.customCenter[1] })
-              // console.log({ lat: this.state.customCenter[0], lng: this.state.customCenter[1] });
-              this.setState({
-              mapApiLoaded: true,
-              mapInstance: map,
-              mapApi: maps,
-              locations,
-              markers,
-              });
-              axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, { lat: this.state.customCenter[0], lon: this.state.customCenter[1]} , {headers: {"x-auth-token": this.context.JWT.token}})
-                .then((res) => {
-                  this.context.toggleUser(res.data.payload.result.token);
-                })
-                .catch((err) => console.log(err))
-            })
-      }})
+    let customCenter = null;
+    if (!this.context.JWT.data.forcedLat.length) {
+     customCenter = [parseFloat(this.context.JWT.data.lat), parseFloat(this.context.JWT.data.lon)];
+    } else {
+      customCenter = [parseFloat(this.context.JWT.data.forcedLat), parseFloat(this.context.JWT.data.forcedLon)];
+      axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, { forcedLat: null, forcedLon:null} , {headers: {"x-auth-token": this.context.JWT.token}})
     }
+    this.setState({ customCenter })
+    const icon = {
+      url: this.context.JWT.data.photos[0], // url
+      scaledSize: new maps.Size(34, 34), // scaled size
+      origin: new maps.Point(0,0), // origin
+      anchor: new maps.Point(0, 0), // anchor
+      shape:{coords:[17,17,18],type:'circle'},
+      optimized: false,
+    };
+    markers.push(new maps.Marker({
+      icon,
+      animation: maps.Animation.DROP,
+      position: {
+        lat: this.state.customCenter[0],
+        lng: this.state.customCenter[1],
+      },
+      map,
+    }));
+    map.setCenter({ lat: this.state.customCenter[0], lng: this.state.customCenter[1] })
+    this.setState({
+    mapApiLoaded: true,
+    mapInstance: map,
+    mapApi: maps,
+    locations,
+    markers,
+    });
   };
 
   addPlace = (place) => {

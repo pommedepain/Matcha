@@ -325,7 +325,7 @@ class User extends Node {
     return new Promise((resolve, reject) => {
       this.getUserInfo()
         .then((infos) => {
-          const publicProperties = ['age', 'lastConnection', 'lat', 'lon', 'complete', 'isTags', 'popularity', 'blocked', 'lookTags', 'username', 'firstName', 'lastName', 'birthdate', 'bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'localisation', 'tags', 'photos'];
+          const publicProperties = ['age', 'lastConnection', 'lat', 'lon', 'complete', 'isTags', 'popularity', 'blocked', 'lookTags', 'username', 'firstName', 'lastName', 'birthdate', 'bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'localisation', 'tags', 'forcedLon', 'forcedLat', 'photos'];
           const user = {};
           let tmp = [];
           tmp = publicProperties.map((key) => {
