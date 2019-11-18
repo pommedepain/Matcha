@@ -97,7 +97,7 @@ class NewCompo extends Component {
         },
         map,
       })
-      map.setCenter({ lat: this.props.currentLocation.lat, lng: this.props.currentLocation.lng })
+      map.setCenter({ lat: parseFloat(this.props.currentLocation.lat), lng: parseFloat(this.props.currentLocation.lng) })
       this.setState({
         mapApiLoaded: true,
         mapInstance: map,

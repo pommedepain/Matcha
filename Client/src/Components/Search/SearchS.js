@@ -107,7 +107,7 @@ class Search extends Component {
 						lng: coords.longitude
 					}
 				}, function () {
-					axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, { lat: coords.latitude, lon: coords.longititude} , {headers: {"x-auth-token": this.context.JWT.token}})
+					axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, { lat: coords.latitude, lon: coords.longitude} , {headers: {"x-auth-token": this.context.JWT.token}})
 						.then((res) => {
 							this.context.toggleUser(res.data.payload.result.token);
 						})
