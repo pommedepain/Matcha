@@ -847,7 +847,7 @@ class User extends Node {
           pass: 'Ff7midgar6',
         },
       });
-      const token = oldtoken.replace(/\//gi, '#');
+      const token = oldtoken.replace(/\//gi, '+');
       debug(token);
       transporter.sendMail({
         from: 'cajulien.42.matcha@gmail.com',
@@ -864,7 +864,7 @@ class User extends Node {
     return new Promise((resolve, reject) => {
       this.getUserInfo()
         .then((user) => {
-          const decodedToken = token.replace(/%#/gi, '/');
+          const decodedToken = token.replace(/\+/gi, '/');
           // decodedToken = token.replace(/\\/gi, '/');
           debug(user.resetToken, decodedToken);
           if (user.resetToken === decodedToken) resolve(true);
@@ -932,7 +932,7 @@ class User extends Node {
           pass: 'Ff7midgar6',
         },
       });
-      const token = oldtoken.replace(/\//gi, '#');
+      const token = oldtoken.replace(/\//gi, '+');
       debug(token);
       transporter.sendMail({
         from: 'cajulien.42.matcha@gmail.com',
@@ -950,7 +950,7 @@ class User extends Node {
       this.getUserInfo()
         .then((user) => {
           debug('HERE', user);
-          const decodedToken = token.replace(/#/gi, '/');
+          const decodedToken = token.replace(/\+/gi, '/');
           debug(user.confToken, decodedToken);
           if (user.confToken === decodedToken) resolve(true);
           else reject(new Error('wrong token'));

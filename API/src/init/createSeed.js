@@ -10,7 +10,7 @@ const User = require('../models/userClass');
 const props = ['gender', 'email', 'password'];
 const requiredProperties = ['username', 'firstName', 'lastName', 'password', 'email', 'birthdate'];
 const optionalProperties = ['bio', 'gender', 'active', 'lat', 'lon', 'sexOrient', 'ageMin', 'ageMax', 'tags', 'isTags', 'photos', 'localisation', 'optional', 'isAdmin'];
-const amount = 10;
+const amount = 100;
 const latLonBox = { minLat: 47.11, maxLat: 48.31, minLon: 1.00, maxLon: 3.41 };
 function rand(min, max) { // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -144,8 +144,8 @@ function userParser(user) {
       newUser.tags = [];
       newUser.isTags = [];
       newUser.active = 'true';
-      const lat = randFloat(48.856613 - 0.5, 48.856613 + 0.5);
-      const lon = randFloat(2.352222 - 0.5, 2.352222 + 0.5);
+      const lat = randFloat(48.856613 - 0.7, 48.856613 + 0.7);
+      const lon = randFloat(2.352222 - 0.7, 2.352222 + 0.7);
       debug(lat, lon);
       newUser.lat = lat;
       newUser.lon = lon;
@@ -182,22 +182,22 @@ function getUsers() {
         users = _.concat(users, res);
         return axios.get(`https://uinames.com/api/?amount=${amount}&region=france&ext`);
       })
-      // .then((res) => {
-      //   const promises = res.data.map(user => (userParser(user)));
-      //   return (Promise.all(promises));
-      // })
-      // .then((res) => {
-      //   users = _.concat(users, res);
-      //   return axios.get(`https://uinames.com/api/?amount=${amount}&region=france&ext`);
-      // })
-      // .then((res) => {
-      //   const promises = res.data.map(user => (userParser(user)));
-      //   return (Promise.all(promises));
-      // })
-      // .then((res) => {
-      //   users = _.concat(users, res);
-      //   return axios.get(`https://uinames.com/api/?amount=${amount}&region=france&ext`);
-      // })
+      .then((res) => {
+        const promises = res.data.map(user => (userParser(user)));
+        return (Promise.all(promises));
+      })
+      .then((res) => {
+        users = _.concat(users, res);
+        return axios.get(`https://uinames.com/api/?amount=${amount}&region=france&ext`);
+      })
+      .then((res) => {
+        const promises = res.data.map(user => (userParser(user)));
+        return (Promise.all(promises));
+      })
+      .then((res) => {
+        users = _.concat(users, res);
+        return axios.get(`https://uinames.com/api/?amount=${amount}&region=france&ext`);
+      })
       .then((res) => {
         const promises = res.data.map(user => (userParser(user)));
         return (Promise.all(promises));
