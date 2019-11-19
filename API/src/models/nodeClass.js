@@ -77,7 +77,7 @@ class Node extends Relationship {
           session.close();
           if (res.records.length !== 0) {
             const result = res.records[0]._fields[0].properties;
-            // debug('Data fetched :\n', result);
+            debug('Data fetched :\n', result);
             resolve(result);
           } else resolve(`${this.data.node_a.label} does not exist`);
         })

@@ -889,7 +889,10 @@ class User extends Node {
   resetPwd(token) {
     return new Promise((resolve, reject) => {
       this.matchResetTokens(token)
-        .then(() => this.eraseResetToken())
+        .then((result) => {
+          if (result === true) return this.eraseResetToken();
+          reject();
+        })
         .then(() => this.generateAuthToken())
         .then(auth => resolve(auth))
         .catch(err => reject(err));
@@ -946,6 +949,7 @@ class User extends Node {
     return new Promise((resolve, reject) => {
       this.getUserInfo()
         .then((user) => {
+          debug('HERE', user);
           let decodedToken = token.replace(/%5C/gi, '/');
           decodedToken = token.replace(/\\/gi, '/');
           debug(user.confToken, decodedToken);
@@ -972,7 +976,10 @@ class User extends Node {
   confirmUser(token) {
     return new Promise((resolve, reject) => {
       this.matchConfTokens(token)
-        .then(() => this.eraseConfToken())
+        .then((result) => {
+          if (result === true) return this.eraseConfToken();
+          reject();
+        })
         .then(user => resolve(true))
         .catch(err => reject(err));
     });

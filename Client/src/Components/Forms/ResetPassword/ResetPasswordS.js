@@ -25,7 +25,10 @@ class ResetPasswordSmart extends Component {
 	static contextType = UserContext;
 
 	componentDidMount () {
-		axios.get(`http://localhost:4000/API/users/reset/${this.props.match.params.username}/${this.props.match.params.token}`)
+		console.log(this.props.match.params.token);
+		const newToken = this.props.match.params.token.replace(/\\/gi, '%5C');
+		console.log(newToken);
+		axios.get(`http://localhost:4000/API/users/reset/${this.props.match.params.username}/${newToken}`)
 			.then(res => {
 				console.log(res);
 				this.setState({ 
