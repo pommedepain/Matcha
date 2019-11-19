@@ -31,23 +31,12 @@ class ResetPasswordSmart extends Component {
 		axios.get(`http://localhost:4000/API/users/reset/${this.props.match.params.username}/${newToken}`)
 			.then(res => {
 				console.log(res);
-
+				this.setState({ 
+					loading: false,
+					formIsValid: true
+				});
 				if (res.data.success) {
-					this.setState({ 
-						loading: false,
-						formIsValid: true,
-						token: res.data.payload.result
-					});
-				} else {
-					this.setState({ 
-						loading: false,
-						formIsValid: false,
-						alertDesign: {
-							message: "This link doesn't seem to work anymore...",
-							button:"Try Again",
-							color: "red"
-						}
-					}, function () { this.props.history.push('/home')});
+					this.setState({ token: res.data.payload.result });
 				}
 			})
 			.catch(error => {
@@ -59,7 +48,7 @@ class ResetPasswordSmart extends Component {
 						button:"Try Again",
 						color: "red"
 					}
-				}, function () { this.props.history.push('/home')});
+				});
 				console.log(error);
 			})
 	}
@@ -155,9 +144,7 @@ class ResetPasswordSmart extends Component {
 				});
 				if (res.data.success) {
 					this.context.toggleUser(res.data.payload.result.token);
-					this.setState({
-						alertDesign: null
-					}, function () { this.props.history.push('/home'); });
+					this.setState({ alertDesign: null });
 				}
 			})
 			.catch(error => {

@@ -26,7 +26,7 @@ class Home extends Component {
 	componentDidMount () {
 		this.getLocation()
 			.then(() => {
-				console.log(this.state.currentLocation);
+				// console.log(this.state.currentLocation);
 				if (this.context.JWT.data.complete === "true") {
 					mySocket.on('notification', notification => {
 						if (notification.type === 'isOnline') {
@@ -37,7 +37,7 @@ class Home extends Component {
 									onlineUsers[notification.result[i].username] = true;
 								}
 							}
-							this.setState({ usersOnline: onlineUsers }, function() { console.log(this.state.usersOnline); });
+							this.setState({ usersOnline: onlineUsers });
 						}
 					});
 				}
@@ -170,7 +170,7 @@ class Home extends Component {
 					else return null;
 				});
 				sortedArray = _.orderBy(sortedArray, ['user.distance'], ['asc']);
-				this.setState({ suggestions: sortedArray }, function() { console.log(this.state.suggestions)});
+				this.setState({ suggestions: sortedArray });
 		}
 	}
 
