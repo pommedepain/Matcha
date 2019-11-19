@@ -23,6 +23,7 @@ const PrivateRoute = ({component: Component, ...rest}) => {
 			{...rest}
 			render={props => {
 				const path = props.location.pathname.split("/");
+				console.log(path[1]);
 				// console.log("isLoggedIn: " + isLoggedIn + " & Component is " + Component.name)
 				if (isLoggedIn === true && Component.name !== "SignUp" && path[1] !== "reset_password") {
 					return (<Component {...props} />) ;
@@ -37,7 +38,12 @@ const PrivateRoute = ({component: Component, ...rest}) => {
 					return (<Component {...props} />);
 				}
 				else if (isLoggedIn === true && path[1] === "reset_password") {
-					console.log("redirect to Home");
+					return (<Redirect to={{pathname: '/home', state:{from: props.location }}} />);
+				}
+				else if (isLoggedIn === false && path[1] === "confirm") {
+					return (<Component {...props} />);
+				}
+				else if (isLoggedIn === true && path[1] === "confirm") {
 					return (<Redirect to={{pathname: '/home', state:{from: props.location }}} />);
 				}
 				else if (isLoggedIn === false && Component.name === "SendMailResetSmart") {

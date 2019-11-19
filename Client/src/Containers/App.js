@@ -12,6 +12,7 @@ import Messages from '../Components/Messages/MessagesS';
 import Matches from '../Components/Matches/MatchesS';
 import SendMailReset from '../Components/Forms/SendMailReset/SendMailResetS';
 import ResetPassword from '../Components/Forms/ResetPassword/ResetPasswordS';
+import ConfirmEmail from '../Components/Forms/ConfirmEmail/ConfirmEmailS';
 import PrivateRoute from './PrivateRoute';
 
 class App extends Component {
@@ -32,6 +33,7 @@ class App extends Component {
               <PrivateRoute path="/search" component={Search} />
               <PrivateRoute path="/messages" component={Messages} />
               <PrivateRoute path="/matches" component={Matches} />
+              <PrivateRoute path="/confirm/:username/:token" component={ConfirmEmail} />
             </Switch>
             <Footer />
           </div>

@@ -156,17 +156,31 @@ class Login extends Component {
 					formIsValid: true
 				});
 				if (response.data.success) {
-					if (response.data.payload !== "Please Confirm your email.") {
+					if (response.data.payload === "Please Confirm your email.") {
+						this.setState({
+							loading: false,
+							formIsValid: true,
+							alertDesign: {
+								message: "Please confirm your email first.",
+								button:"OK",
+								color: "red"
+							}
+						});
+					} 
+					else {
 						this.context.toggleUser(response.data.payload);
 						this.setState({
 							alertDesign: null
 						});
-					} else this.setState({
+					}
+				}
+				else if (response.data.success === false) {
+					this.setState({
 						loading: false,
 						formIsValid: true,
 						alertDesign: {
-							message: "Please confirm your email first.",
-							button:"OK",
+							message: "Wrong combination password/user",
+							button:"Try Again",
 							color: "red"
 						}
 					})
