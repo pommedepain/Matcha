@@ -31,8 +31,8 @@ class NewCompo extends Component {
   static contextType = UserContext;
 
   componentDidUpdate() {
-    console.log(this.props.currentLocation);
-    console.log(this.context.JWT.data.lat);
+    // console.log(this.props.currentLocation);
+    // console.log(this.context.JWT.data.lat);
     if (!shallowEqual(this.state.suggestions, this.props.suggestions)) {
       console.log(this.props.suggestions);
       const maps = this.state.mapApi;
@@ -112,16 +112,18 @@ class NewCompo extends Component {
           map,
         })
       }
+      if (this.context.JWT.data.lat) {
+        map.setCenter({ lat: parseFloat(this.context.JWT.data.lat), lng: parseFloat(this.context.JWT.data.lon) })
+        this.setState({
+          mapApiLoaded: true,
+          mapInstance: map,
+          mapApi: maps,
+          markers,
+          previousLat: parseFloat(this.context.JWT.data.lat),
+          updated: true,
+        });
+      }
       
-      map.setCenter({ lat: parseFloat(this.context.JWT.data.lat), lng: parseFloat(this.context.JWT.data.lon) })
-      this.setState({
-        mapApiLoaded: true,
-        mapInstance: map,
-        mapApi: maps,
-        markers,
-        previousLat: parseFloat(this.context.JWT.data.lat),
-        updated: true,
-      });
     }
   }
 

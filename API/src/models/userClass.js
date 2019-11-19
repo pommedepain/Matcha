@@ -868,7 +868,7 @@ class User extends Node {
           decodedToken = token.replace(/\\/gi, '/');
           debug(user.resetToken, decodedToken);
           if (user.resetToken === decodedToken) resolve(true);
-          else resolve(false);
+          else reject(new Error('wrong token'));
         })
         .catch(err => reject(err));
     });
@@ -954,7 +954,7 @@ class User extends Node {
           decodedToken = token.replace(/\\/gi, '/');
           debug(user.confToken, decodedToken);
           if (user.confToken === decodedToken) resolve(true);
-          else resolve(false);
+          else reject(new Error('wrong token'));
         })
         .catch(err => reject(err));
     });
