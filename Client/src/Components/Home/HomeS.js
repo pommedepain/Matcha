@@ -26,6 +26,7 @@ class Home extends Component {
 	componentDidMount () {
 		this.getLocation()
 			.then(() => {
+				console.log(this.state.currentLocation);
 				if (this.context.JWT.data.complete === "true") {
 					mySocket.on('notification', notification => {
 						if (notification.type === 'isOnline') {
@@ -212,9 +213,7 @@ class Home extends Component {
 	}
 	
 	componentWillUnmount() {
-		mySocket.on('notification', () => {
-			mySocket.removeAllListeners();
-		});
+		mySocket.removeAllListeners();
 	}
 
 	render() {

@@ -854,7 +854,7 @@ class User extends Node {
         to: ['kamillejulien@gmail.com', 'psentilh@student.42.fr', this.user.email],
         subject: 'Change password for Matcha',
         text: 'Hi',
-        html: `Hi ${this.user.username}, to change your password for Matcha, please click on <a href='http://localhost:3000/reset/${this.user.username}/${token}'>this link</a>`,
+        html: `Hi ${this.user.username}, to change your password for Matcha, please click on <a href='http://localhost:3000/reset_password/${this.user.username}/${token}'>this link</a>`,
       }).then(() => resolve())
         .catch(err => reject(err));
     });

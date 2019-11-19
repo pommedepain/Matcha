@@ -28,6 +28,7 @@ class NewCompo extends Component {
   static contextType = UserContext;
 
   componentDidUpdate() {
+    console.log(this.props.currentLocation);
     if (!shallowEqual(this.state.suggestions, this.props.suggestions)) {
       console.log(this.props.suggestions);
       const maps = this.state.mapApi;
@@ -74,6 +75,7 @@ class NewCompo extends Component {
           })
       }
     } if (this.props.rerender) {
+      console.log('HAHA');
       let { markers } = this.state;
       const maps = this.state.mapApi;
       const map = this.state.mapInstance;
@@ -91,8 +93,8 @@ class NewCompo extends Component {
           icon,
           animation: maps.Animation.DROP,
           position: {
-            lat: this.props.currentLocation.lat,
-            lng: this.props.currentLocation.lng,
+            lat: this.context.JWT.data.lat,
+            lng: this.context.JWT.data.lon,
           },
           map,
         })
@@ -100,14 +102,14 @@ class NewCompo extends Component {
         markers[0] = new maps.Marker({
           animation: maps.Animation.DROP,
           position: {
-            lat: this.props.currentLocation.lat,
-            lng: this.props.currentLocation.lng,
+            lat: this.context.JWT.data.lat,
+            lng: this.context.JWT.data.lon,
           },
           map,
         })
       }
       
-      map.setCenter({ lat: parseFloat(this.props.currentLocation.lat), lng: parseFloat(this.props.currentLocation.lng) })
+      map.setCenter({ lat: parseFloat(this.context.JWT.data.lat), lng: parseFloat(this.context.JWT.data.lon) })
       this.setState({
         mapApiLoaded: true,
         mapInstance: map,
@@ -120,6 +122,7 @@ class NewCompo extends Component {
   apiHasLoaded = (map, maps, locations) => {
     const markers = [];
     let customCenter = null;
+    console.log(this.props.currentLocation);
     if (!this.context.JWT.data.forcedLat.length) {
      customCenter = [parseFloat(this.context.JWT.data.lat), parseFloat(this.context.JWT.data.lon)];
     } else {

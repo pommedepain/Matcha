@@ -88,9 +88,7 @@ class MatchesSmart extends Component {
 	}
 
 	componentWillUnmount() {
-		mySocket.on('notification', () => {
-			mySocket.removeAllListeners();
-		});
+		mySocket.removeAllListeners();
 	}
 
 	render () {
