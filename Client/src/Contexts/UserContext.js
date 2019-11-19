@@ -107,6 +107,7 @@ const UserContextProvider = (props) => {
 	}
 
 	const toggleLogInPopup = () => {
+		console.log("toggleLogInPopup triggered");
 		setLogInPopup(!logInPopup);
 	}
 

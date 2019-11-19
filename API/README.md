@@ -22,7 +22,7 @@ Run tests: npm test (after one of the above)
 GET /:value                     | NONE (will only return public| returns :value list
                                 | properties though)           | from db
 
-GET /:sendReset/:username       | NONE                         | send reset pwd mail
+GET /sendReset/:username       | NONE                         | send reset pwd mail
                                 |                              | to :username
 
 GET /reset/:username/:token     | NONE                         | erase token and returns 

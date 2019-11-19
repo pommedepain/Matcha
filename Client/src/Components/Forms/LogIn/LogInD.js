@@ -1,5 +1,6 @@
 import React from 'react';
 import cx from 'classnames';
+import { Link } from 'react-router-dom';
 
 import classes from './LogIn.module.css';
 import Input from '../../Utils/Input/Input';
@@ -65,6 +66,8 @@ const LogIn = (props) => {
 									onClick={(event) => props.toggleShow(event, formElementsArray[1].id)}
 								>{props.hidden ? "Show" : "Hide"}</span>
 							</div>
+							<div className={classes.submit_reset}>
+								<Link to="/send_mail_reset" className={classes.resetPasswd} onClick={props.closeLogIn} >Forgot Password ?</Link>
 								<button
 									type="submit" 
 									name="submit" 
@@ -73,6 +76,7 @@ const LogIn = (props) => {
 									onClick={props.submit}
 									disabled={!props.formIsValid}
 								>Submit</button>
+							</div>
 						</fieldset>
 					</form>
 				</div>

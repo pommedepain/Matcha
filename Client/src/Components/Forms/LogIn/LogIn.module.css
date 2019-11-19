@@ -192,25 +192,6 @@
 	color: #2C3E50;
 	font-size: 13px;
 }
-/*buttons*/
-#msform .action_button {
-	width: 8vw;
-	background: #27AE60;
-	font-weight: bold;
-	color: white;
-	border: 0 none;
-	border-radius: 1px;
-	cursor: pointer;
-	padding: 10px 5px;
-	margin: 10px 5px;
-}
-#msform .action_button:hover, #msform .action_button:focus {
-	box-shadow: 0 0 0 2px white, 0 0 0 3px #27AE60;
-}
-#msform .action_button:disabled {
-	color: #ccc;
-	cursor: not-allowed;
-}
 
 /*headings*/
 .fs_title {
@@ -248,17 +229,12 @@
 	}
 }
 
-@media only screen and (min-device-width: 380px) {
+@media only screen and (min-device-width: 1450px) {
 	.passwdToggle {
 		box-sizing: content-box;
 		position: absolute;
-		/* width: 8%; */
-		/* left: 190px; */
-		/* top: 10px; */
-		bottom: 100px;
-		left: 73%;
-		/*bottom: 55%; */
-		/* margin-bottom: -20%; */
+		bottom: 110px;
+		left: 75%;
 		background: #727272;
 		color: white;
 		padding: 4px 8px;
@@ -269,6 +245,49 @@
 	}
 }
 
+.submit_reset {
+	display:flex;
+	flex-direction: column;
+	width: 100%;
+	height: 100%;
+}
+.resetPasswd {
+	font-size: 1vw;
+	font-weight: 300;
+	font-family: 'Ubuntu', sans-serif;
+	align-self: flex-end;
+	width: 100%;
+	height: 100%;
+	text-align: end;
+}
+.resetPasswd:hover {
+	width: 100%;
+	height: 100%;
+	align-self: flex-end;
+	text-align: end;
+	color: rgb(116, 209, 234);
+}
+
+/*buttons*/
+#msform .action_button {
+	width: 8vw;
+	background: #27AE60;
+	font-weight: bold;
+	color: white;
+	border: 0 none;
+	border-radius: 1px;
+	cursor: pointer;
+	padding: 10px 5px;
+	margin: 10px 5px;
+	align-self: center;
+}
+#msform .action_button:hover, #msform .action_button:focus {
+	box-shadow: 0 0 0 2px white, 0 0 0 3px #27AE60;
+}
+#msform .action_button:disabled {
+	color: #ccc;
+	cursor: not-allowed;
+}
 .submit {
 	font-family: montserrat;
 	font-size: 1.2vw;

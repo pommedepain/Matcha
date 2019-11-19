@@ -1,25 +1,29 @@
 /* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
 import cx from 'classnames';
-
+import { withRouter } from 'react-router-dom';
 
 import { UserContext } from '../../../Contexts/UserContext';
 import classes from './LogIn.module.css';
 import LoginDumb from './LogInD';
-import Account from '../Account/AccountS';
+
 const axios = require('axios');
 const datas = require('../../../Datas/loginForm.json');
 
 
 class Login extends Component {
-	state = {
-		orderForm: datas.orderForm,
-		formIsValid: false,
-		style: '',
-		showPopup: false,
-		hidden: true,
-		loading: false,
-		alertDesign: null
+	constructor (props) {
+		super(props);
+		console.log(props)
+		this.state = {
+			orderForm: datas.orderForm,
+			formIsValid: false,
+			style: '',
+			showPopup: false,
+			hidden: true,
+			loading: false,
+			alertDesign: null
+		};
 	}
 
 	static contextType = UserContext;
@@ -112,6 +116,25 @@ class Login extends Component {
 		});
 	}
 
+	closeLogIn = (e) => {
+		console.log(e.target);
+		e.preventDefault();
+		if (this.context.logInPopup)
+		{
+			console.log("if OK");
+			this.context.toggleLogInPopup();
+			document.getElementById("display_page").style.filter = '';
+			console.log(this.props);
+			this.props.history.push('/send_mail_reset');
+		}
+		else
+		{
+			console.log("else");
+			this.context.toggleLogInPopup();
+			document.getElementById("display_page").style.filter = 'blur(3px)'
+		}
+	}
+
 	submit = (event) => {
 		event.preventDefault();
 		const { toggleUser } = this.context;
@@ -125,39 +148,29 @@ class Login extends Component {
 			formDatas[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
 		}
 
-		// axios.interceptors.response.use(function (response) {
-		// 	// Any status code that lie within the range of 2xx cause this function to trigger
-		// 	console.log('ytoll')
-		// 	return response;
-		// }, function (error) {
-		// 	// Any status codes that falls outside the range of 2xx cause this function to trigger
-		// 	// Do something with response error
-		// 	error.response.status = 200;
-		// 	return (error);
-		// });
-		axios
-			.post('http://localhost:4000/API/auth', formDatas)
+		axios.post('http://localhost:4000/API/auth', formDatas)
 			.then(response => {
-				// console.log(response);
-				// console.log('error');
+				console.log(response);
 				this.setState({ 
 					loading: false,
 					formIsValid: true
 				});
 				if (response.data.success) {
-					this.context.toggleUser(response.data.payload);
-					this.setState({
-						alertDesign: null
-					});
-				} else this.setState({ 
-					loading: false,
-					formIsValid: true,
-					alertDesign: {
-						message: "Error.",
-						button:"Try Again",
-						color: "red"
-					}
-				})
+					if (response.data.payload !== "Please Confirm your email.") {
+						this.context.toggleUser(response.data.payload);
+						this.setState({
+							alertDesign: null
+						});
+					} else this.setState({
+						loading: false,
+						formIsValid: true,
+						alertDesign: {
+							message: "Please confirm your email first.",
+							button:"OK",
+							color: "red"
+						}
+					})
+				}
 			})
 			.catch(error => {
 				this.setState({ 
@@ -173,7 +186,6 @@ class Login extends Component {
 	}
 
 	render () {
-		// console.log(this.context);
 		const { isLoggedIn, JWT } = this.context;
 		return (
 			<div className={classes.log}>
@@ -189,6 +201,7 @@ class Login extends Component {
 						submit={this.submit.bind(this)}
 						toggleShow={this.toggleShow.bind(this)}
 						inputChangedHandler={this.inputChangedHandler.bind(this)}
+						closeLogIn={this.closeLogIn.bind(this)}
 						{...this.state}
 						{...this.context}
 					/>
@@ -198,4 +211,4 @@ class Login extends Component {
 	}
 }
 
-export default Login;
+export default withRouter(Login);
