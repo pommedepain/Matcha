@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 
 import ResetPasswordDummy from './ResetPasswordD';
 import { UserContext } from '../../../Contexts/UserContext';
@@ -7,16 +8,47 @@ const axios = require('axios');
 const datas = require('../../../Datas/resetForm.json');
 
 class ResetPasswordSmart extends Component {
-	state = {
-		orderForm: datas.orderForm,
-		hiddenFirst: true,
-		hiddenSecond: true,
-		formIsValid: false,
-		alertDesign: null,
-		loading: false
-	};
+	constructor (props) {
+		super(props);
+		console.log(props)
+		this.state = {
+			orderForm: datas.orderForm,
+			hiddenFirst: true,
+			hiddenSecond: true,
+			formIsValid: false,
+			alertDesign: null,
+			loading: false,
+			token: null,
+		};
+	}
 
 	static contextType = UserContext;
+
+	componentDidMount () {
+		axios.get(`http://localhost:4000/API/users/reset/${this.props.match.params.username}/${this.props.match.params.token}`)
+			.then(res => {
+				console.log(res);
+				this.setState({ 
+					loading: false,
+					formIsValid: true
+				});
+				if (res.data.success) {
+					this.setState({ token: res.data.payload.result });
+				}
+			})
+			.catch(error => {
+				this.setState({ 
+					loading: false,
+					formIsValid: false,
+					alertDesign: {
+						message: "This link doesn't seem to work anymore...",
+						button:"Try Again",
+						color: "red"
+					}
+				});
+				console.log(error);
+			})
+	}
 
 	checkValidity(value, rules) {
 		let isValid = true;
@@ -87,46 +119,45 @@ class ResetPasswordSmart extends Component {
 			});
 		}
 	}
+
 	submit = (event) => {
 		event.preventDefault();
 		const { toggleUser } = this.context;
-		// console.log(event.target)
 		this.setState({ 
 			loading: true,
 			formIsValid: false
 		});
-		const formDatas = {};
-		for (let formElementIdentifier in this.state.orderForm) {
-			formDatas[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
+		let body = null;
+		if (this.state.orderForm.password.value === this.state.orderForm.cPasswd.value){
+			body = {password: this.state.orderForm.password.value};
 		}
-		console.loh(formDatas);
 
-		// axios.put(`http://localhost:4000/API/update/${}`, formDatas, {headers: {"x-auth-token": }})
-		// 	.then(res => {
-		// 		console.log(res);
-		// 		this.setState({ 
-		// 			loading: false,
-		// 			formIsValid: true
-		// 		});
-		// 		if (res.data.success) {
-		// 			this.context.toggleUser(res.data.payload);
-		// 			this.setState({
-		// 				alertDesign: null
-		// 			});
-		// 		}
-		// 	})
-		// 	.catch(error => {
-		// 		this.setState({ 
-		// 			loading: false,
-		// 			formIsValid: true,
-		// 			alertDesign: {
-		// 				message: "Error.",
-		// 				button:"Try Again",
-		// 				color: "red"
-		// 			}
-		// 		});
-		// 		console.log(error);
-		// 	})
+		axios.put(`http://localhost:4000/API/users/update/${this.props.match.params.username}`, body, {headers: {"x-auth-token": this.state.token}} )
+			.then(res => {
+				console.log(res);
+				this.setState({ 
+					loading: false,
+					formIsValid: true
+				});
+				if (res.data.success) {
+					this.context.toggleUser(res.data.payload.result.token);
+					this.setState({
+						alertDesign: null
+					}, function () { this.props.history.push('/home'); });
+				}
+			})
+			.catch(error => {
+				this.setState({ 
+					loading: false,
+					formIsValid: true,
+					alertDesign: {
+						message: "Error.",
+						button:"Try Again",
+						color: "red"
+					}
+				});
+				console.log(error);
+			})
 	}
 
 	render () {
@@ -142,4 +173,4 @@ class ResetPasswordSmart extends Component {
 	}
 }
 
-export default ResetPasswordSmart;
+export default withRouter(ResetPasswordSmart);

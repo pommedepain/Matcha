@@ -60,7 +60,7 @@ const ResetPasswordDummy = (props) => {
 							invalid={!formElementsArray[1].config.valid}
 							shouldValidate={formElementsArray[1].config.validation}
 							touched={formElementsArray[1].config.touched}
-							errorMessage="Must be at least 7 characters long and contain 1 lowercase, 1 uppercase, 1 number and 1 special character."
+							errorMessage={formElementsArray[1].config.errorMessage}
 						/>
 						<span
 							className={classes.passwdToggle}

@@ -15,6 +15,7 @@ import ResetPassword from '../Components/Forms/ResetPassword/ResetPasswordS';
 import PrivateRoute from './PrivateRoute';
 
 class App extends Component {
+  // console.log(Reset)
   render() {
     return (
       <Router>
@@ -24,7 +25,7 @@ class App extends Component {
               <PrivateRoute path="/" exact component={Home} />
               <PrivateRoute path="/home" component={Home} />
               <PrivateRoute path="/sign-up" component={SignUp} />
-              <PrivateRoute path="/reset_password" component={ResetPassword} />
+              <PrivateRoute path="/reset_password/:username/:token" component={ResetPassword} />
               <PrivateRoute path="/send_mail_reset" component={SendMailReset} />
               <PrivateRoute path="/account" component={Account} />
               <PrivateRoute path="/profil" component={Profil} />
