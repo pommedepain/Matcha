@@ -325,7 +325,7 @@ class User extends Node {
     return new Promise((resolve, reject) => {
       this.getUserInfo()
         .then((infos) => {
-          const publicProperties = ['age', 'lastConnection', 'lat', 'lon', 'complete', 'isTags', 'popularity', 'blocked', 'lookTags', 'username', 'firstName', 'lastName', 'birthdate', 'bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'localisation', 'tags', 'forcedLon', 'forcedLat', 'photos'];
+          const publicProperties = ['age', 'lastConnection', 'lat', 'lon', 'complete', 'isTags', 'popularity', 'blocked', 'lookTags', 'username', 'firstName', 'lastName', 'birthdate', 'bio', 'gender', 'sexOrient', 'ageMin', 'ageMax', 'active', 'localisation', 'tags', 'forcedLon', 'forcedLat', 'photos'];
           const user = {};
           let tmp = [];
           tmp = publicProperties.map((key) => {
@@ -782,8 +782,15 @@ class User extends Node {
       new UserValidator(this.authRequirements, this.user).validate()
         .then(() => this.getUserInfo())
         .then(existingUser => this.matchPasswords(existingUser))
-        .then(existingUser => this.generateAuthToken(existingUser))
-        .then(token => resolve(token))
+        .then((existingUser) => {
+          this.active = existingUser.active;
+          return this.generateAuthToken(existingUser);
+        })
+        .then((token) => {
+          if (this.acive === 'true') resolve(token);
+          this.sendConfLink();
+          resolve('Please Confirm your email.');
+        })
         .catch(err => reject(err))
     ));
   }
@@ -925,7 +932,7 @@ class User extends Node {
         to: ['kamillejulien@gmail.com', 'philousentilhes@gmail.com', this.user.email],
         subject: 'Email confirmation for Matcha',
         text: 'Hi',
-        html: `Hi ${this.user.username}, to complete your registration to Matcha, please click on <a href='http://localhost:4000/api/users/confirm/${this.user.username}/${token}'>this link</a>`,
+        html: `Hi ${this.user.username}, to complete your registration to Matcha, please click on <a href='http://localhost:3000/confirm/${this.user.username}/${token}'>this link</a>`,
       }).then(() => resolve())
         .catch(err => reject(err));
     });

@@ -46,7 +46,7 @@ class NewCompo extends Component {
               const icon = {
                 optimized: false,
                 url: next.user.photos[0],
-                scaledSize: new maps.Size(34, 34),
+                scaledSize: new maps.Size(30, 30),
                 origin: new maps.Point(0, 0),
                 anchor: new maps.Point(0, 0),
               };
@@ -83,7 +83,7 @@ class NewCompo extends Component {
           shape:{coords:[17,17,18],type:'circle'},
           optimized: false,
           url: this.context.JWT.data.photos[0], // url
-          scaledSize: new maps.Size(34, 34), // scaled size
+          scaledSize: new maps.Size(35, 35), // scaled size
           origin: new maps.Point(0,0), // origin
           anchor: new maps.Point(0, 0) // anchor
         };
@@ -114,7 +114,6 @@ class NewCompo extends Component {
         mapApi: maps,
         markers,
       });
-      // this.setState({rerender: !this.state.rerender});
     }
   }
 
@@ -132,7 +131,7 @@ class NewCompo extends Component {
     if (this.context.JWT.data.photos[0]){
       icon = {
         url: this.context.JWT.data.photos[0], // url
-        scaledSize: new maps.Size(34, 34), // scaled size
+        scaledSize: new maps.Size(35, 35), // scaled size
         origin: new maps.Point(0,0), // origin
         anchor: new maps.Point(0, 0), // anchor
         shape:{coords:[17,17,18],type:'circle'},
@@ -178,7 +177,7 @@ class NewCompo extends Component {
         shape:{coords:[17,17,18],type:'circle'},
         optimized: false,
         url: this.context.JWT.data.photos[0], // url
-        scaledSize: new maps.Size(34, 34), // scaled size
+        scaledSize: new maps.Size(35, 35), // scaled size
         origin: new maps.Point(0,0), // origin
         anchor: new maps.Point(0, 0) // anchor
       };
