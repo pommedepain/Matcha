@@ -787,9 +787,12 @@ class User extends Node {
           return this.generateAuthToken(existingUser);
         })
         .then((token) => {
-          if (this.acive === 'true') resolve(token);
-          this.sendConfLink();
-          resolve('Please Confirm your email.');
+          debug(this.active);
+          if (this.active === 'true') resolve(token);
+          else {
+            this.sendConfLink();
+            resolve('Please Confirm your email.');
+          }
         })
         .catch(err => reject(err))
     ));
@@ -851,7 +854,7 @@ class User extends Node {
         to: ['kamillejulien@gmail.com', 'psentilh@student.42.fr', this.user.email],
         subject: 'Change password for Matcha',
         text: 'Hi',
-        html: `Hi ${this.user.username}, to change your password for Matcha, please click on <a href='http://localhost:4000/api/users/reset/${this.user.username}/${token}'>this link</a>`,
+        html: `Hi ${this.user.username}, to change your password for Matcha, please click on <a href='http://localhost:3000/reset/${this.user.username}/${token}'>this link</a>`,
       }).then(() => resolve())
         .catch(err => reject(err));
     });
