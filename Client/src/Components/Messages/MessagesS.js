@@ -82,6 +82,7 @@ class MessagesSmart extends Component {
 
 	getConversation = (e, username) => {
 		console.log("getConversation triggered");
+		console.log(username);
 		this.setState({ activeDiv: true });
 
 		/* Automatically set all messages as true for read for the user's div clicked */
@@ -112,7 +113,7 @@ class MessagesSmart extends Component {
 		if (this.context.newNotif.new) {
 			console.log(this.context.newNotif);
 			this.context.toggleNotifReceived(this.context.newNotif);
-			axios.get(`http://localhost:4000/API/users/${this.context.newNotif.emitter}/conversationWith/${this.context.JWT.data.username}`, {headers: {"x-auth-token": this.context.JWT.token}})
+			axios.get(`http://localhost:4000/API/users/${this.context.JWT.data.username}/conversationWith/${this.context.newNotif.emitter}`, {headers: {"x-auth-token": this.context.JWT.token}})
 				.then((res) => {
 					this.setState({ 
 						messagesList: res.data.payload.result[0].conversation,
@@ -123,7 +124,7 @@ class MessagesSmart extends Component {
 		}
 		/* If the user just sent a message, we get the conversation again in order for the new message to appear in real time */
 		else if (e === "get") {
-			axios.get(`http://localhost:4000/API/users/${this.state.currentInterlocutor}/conversationWith/${this.context.JWT.data.username}`, {headers: {"x-auth-token": this.context.JWT.token}})
+			axios.get(`http://localhost:4000/API/users/${this.context.JWT.data.username}/conversationWith/${this.state.currentInterlocutor}`, {headers: {"x-auth-token": this.context.JWT.token}})
 				.then((res) => {
 					this.setState({ 
 						messagesList: res.data.payload.result[0].conversation
@@ -134,7 +135,7 @@ class MessagesSmart extends Component {
 		/* If the user just clicked on a user's div, we get the conversation */
 		else {
 			e.preventDefault();
-			axios.get(`http://localhost:4000/API/users/${username}/conversationWith/${this.context.JWT.data.username}`, {headers: {"x-auth-token": this.context.JWT.token}})
+			axios.get(`http://localhost:4000/API/users/${this.context.JWT.data.username}/conversationWith/${username}`, {headers: {"x-auth-token": this.context.JWT.token}})
 				.then((res) => {
 					console.log(res)
 					if (res.data.payload.result[0]) {
@@ -227,6 +228,19 @@ class MessagesSmart extends Component {
 			})
 	}
 
+	formatMessage = (message) => {
+		const length = message.length;
+		const array = [];
+		console.log(message.length);
+		if (length > 30) {
+			for (let i = 0; i < length / 30; i +=1) {
+				console.log(i);
+				array.push(message.slice((i * 30), (i * 30) + 30));
+			}
+		}
+		return array;
+	}
+
 	sendMessage = (e) => {
 		e.preventDefault();
 		const message = {
@@ -235,7 +249,9 @@ class MessagesSmart extends Component {
 			receiver: this.state.currentInterlocutor, 
 			message: this.state.sendBar.value
 		} 
-		// console.log(message);
+		console.log('testing message mod');
+		console.log(message.message);
+		console.log(this.formatMessage(message.message))
 		axios.post('http://localhost:4000/API/notifications/create', message, {headers: {"x-auth-token": this.context.JWT.token}})
 			.then((res) => {
 				if (res.data.payload.result === "missing information") {

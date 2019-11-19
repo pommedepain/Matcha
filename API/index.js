@@ -18,7 +18,7 @@ const initdb = require('./src/init/initDb');
 const seed = require('./src/init/createSeed');
 const error = require('./src/middleware/error');
 
-
+// console.log = console.warn = console.error = () => {}; 
 const app = express();
 
 if (!config.get('jwtPrivateKey')) {

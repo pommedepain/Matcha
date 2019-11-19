@@ -125,10 +125,21 @@ class Login extends Component {
 			formDatas[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
 		}
 
+		// axios.interceptors.response.use(function (response) {
+		// 	// Any status code that lie within the range of 2xx cause this function to trigger
+		// 	console.log('ytoll')
+		// 	return response;
+		// }, function (error) {
+		// 	// Any status codes that falls outside the range of 2xx cause this function to trigger
+		// 	// Do something with response error
+		// 	error.response.status = 200;
+		// 	return (error);
+		// });
 		axios
 			.post('http://localhost:4000/API/auth', formDatas)
 			.then(response => {
-				console.log(response);
+				// console.log(response);
+				// console.log('error');
 				this.setState({ 
 					loading: false,
 					formIsValid: true
@@ -138,7 +149,15 @@ class Login extends Component {
 					this.setState({
 						alertDesign: null
 					});
-				}
+				} else this.setState({ 
+					loading: false,
+					formIsValid: true,
+					alertDesign: {
+						message: "Error.",
+						button:"Try Again",
+						color: "red"
+					}
+				})
 			})
 			.catch(error => {
 				this.setState({ 
@@ -150,7 +169,6 @@ class Login extends Component {
 						color: "red"
 					}
 				});
-				console.log(error);
 			})
 	}
 

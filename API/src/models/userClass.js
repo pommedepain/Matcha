@@ -890,7 +890,8 @@ class User extends Node {
     return new Promise((resolve, reject) => {
       this.matchResetTokens(token)
         .then(() => this.eraseResetToken())
-        .then(user => resolve(true))
+        .then(() => this.generateAuthToken())
+        .then(auth => resolve(auth))
         .catch(err => reject(err));
     });
   }
