@@ -47,7 +47,7 @@ class Home extends Component {
 	/* Make sure that the infos such as "username liked you" displayed on their profil are updated immediately */
 	componentDidUpdate () {
 		if (this.context.newNotif.new === true) {
-			console.log("new notif in localStorage detected in HOMES");
+			// console.log("new notif in localStorage detected in HOMES");
 			this.getSuggestions();
 		}
 	}

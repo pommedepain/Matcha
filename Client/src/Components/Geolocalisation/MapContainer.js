@@ -5,6 +5,7 @@ import axios from 'axios';
 import Geocode from "react-geocode";
 import { UserContext } from '../../Contexts/UserContext';
 import { shallowEqual } from 'fast-equals';
+import { isNumber } from 'util';
 
 
 Geocode.setApiKey(process.env.REACT_APP_MAP_KEY);
@@ -22,6 +23,8 @@ class NewCompo extends Component {
       customCenter: [48.896704899999996, 1.3184218],
       suggestions: [],
       rerender: false,
+      previousLat: null,
+      updated: false,
     };
   }
 
@@ -29,6 +32,7 @@ class NewCompo extends Component {
 
   componentDidUpdate() {
     console.log(this.props.currentLocation);
+    console.log(this.context.JWT.data.lat);
     if (!shallowEqual(this.state.suggestions, this.props.suggestions)) {
       console.log(this.props.suggestions);
       const maps = this.state.mapApi;
@@ -74,13 +78,13 @@ class NewCompo extends Component {
             }, function() { console.log(this.state.markers); });
           })
       }
-    } if (this.props.rerender) {
+    } if (this.props.rerender || (this.state.previousLat !== parseFloat(this.context.JWT.data.lat) && this.state.markers[0] && !isNumber(this.context.JWT.data.forcedLat))) {
       console.log('HAHA');
       let { markers } = this.state;
       const maps = this.state.mapApi;
       const map = this.state.mapInstance;
       markers[0].setMap(null);
-      if (this.context.JWT.data.photos[0]) {
+      if (this.context.JWT.data.photos && this.context.JWT.data.photos[0]) {
         const icon = {
           shape:{coords:[17,17,18],type:'circle'},
           optimized: false,
@@ -93,8 +97,8 @@ class NewCompo extends Component {
           icon,
           animation: maps.Animation.DROP,
           position: {
-            lat: this.context.JWT.data.lat,
-            lng: this.context.JWT.data.lon,
+            lat: parseFloat(this.context.JWT.data.lat),
+            lng: parseFloat(this.context.JWT.data.lon),
           },
           map,
         })
@@ -102,8 +106,8 @@ class NewCompo extends Component {
         markers[0] = new maps.Marker({
           animation: maps.Animation.DROP,
           position: {
-            lat: this.context.JWT.data.lat,
-            lng: this.context.JWT.data.lon,
+            lat: parseFloat(this.context.JWT.data.lat),
+            lng: parseFloat(this.context.JWT.data.lon),
           },
           map,
         })
@@ -115,6 +119,8 @@ class NewCompo extends Component {
         mapInstance: map,
         mapApi: maps,
         markers,
+        previousLat: parseFloat(this.context.JWT.data.lat),
+        updated: true,
       });
     }
   }
@@ -131,7 +137,7 @@ class NewCompo extends Component {
     }
     this.setState({ customCenter })
     let icon = {}
-    if (this.context.JWT.data.photos[0]){
+    if (this.context.JWT.data.photos && this.context.JWT.data.photos[0]){
       icon = {
         url: this.context.JWT.data.photos[0], // url
         scaledSize: new maps.Size(35, 35), // scaled size
@@ -175,7 +181,7 @@ class NewCompo extends Component {
     const map = this.state.mapInstance;
     markers[0].setMap(null);
     let icon = {};
-    if (this.context.JWT.data.photos[0]) {
+    if (this.context.JWT.data.photos && this.context.JWT.data.photos[0]) {
       icon = {
         shape:{coords:[17,17,18],type:'circle'},
         optimized: false,
