@@ -153,7 +153,7 @@ class User extends Node {
 
   addOrientRelationships() {
     return new Promise((resolve, reject) => {
-      if (this.data.node_a.properties.sexOrient) {
+      if (this.data.node_a.properties.sexOrient && this.data.node_a.properties.gender) {
         const date = new Date();
         let orientation = this.data.node_a.properties.gender === 'male' ? 'm' : 'f';
         orientation = `${orientation}_${this.data.node_a.properties.sexOrient}`;
@@ -189,7 +189,7 @@ class User extends Node {
 
   addCompatibilities() {
     return new Promise((resolve, reject) => {
-      if (this.data.node_a.properties.sexOrient) {
+      if (this.data.node_a.properties.sexOrient && this.data.node_a.properties.gender) {
         const session = this.driver.session();
         const query = `MATCH z=(a:User { username: '${this.data.node_a.properties.username}'})-[p:IS]->(c:Orientation)-[q:LOOK_FOR]-(d:Orientation)<-[r:IS]-(b:User)
                       WHERE (b.age <= a.ageMax AND b.age >= a.ageMin AND a.age <= b.ageMax AND a.age >= b.ageMin)
