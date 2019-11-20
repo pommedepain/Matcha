@@ -576,18 +576,16 @@ class Search extends Component {
 		document.getElementById("main").style.filter = 'blur(3px)';
 
 		/* Creates a visit notification to receiver */
-		mySocket.emit('notification', {
-			type: 'visit',
-			emitter: this.context.JWT.data.username,
-			receiver: this.state.suggestions[id].user.username,
-		})
-
 		const newNotification = {
 			emitter: this.context.JWT.data.username,
 			receiver: this.state.suggestions[id].user.username,
 			type: 'visit',
 			new: true
 		}
+		mySocket.emit('notification', 
+			newNotification
+		)
+
 		axios.post('http://localhost:4000/API/notifications/create', newNotification, {headers: {"x-auth-token": this.context.JWT.token}})
 			.then((response) => {
 				if (response.data.payload.result === "Missing information") {

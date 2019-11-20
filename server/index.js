@@ -73,25 +73,25 @@ class Server {
               });
             })
           }
-          const emitter = notification.emitter
-          if (notification.type === 'match') {
-            if (this.socketTable[emitter] !== undefined
-            && this.socketTable[emitter].length) {
-              this.socketTable[emitter].forEach((socketId) => {
-                this.io.to(`${socketId}`).emit('notification', {
-                  data: {
-                    type: notification.type,
-                    emitter: notification.receiver,
-                  },
-                })
-                debug('emitted', {
-                  type: notification.type,
-                  emitter: notification.emitter,
-                  receiver: notification.receiver,
-                });
-              })
-            }
-          }
+          // const emitter = notification.emitter
+          // if (notification.type === 'match' || notification.type === 'unmatch') {
+          //   if (this.socketTable[emitter] !== undefined
+          //   && this.socketTable[emitter].length) {
+          //     this.socketTable[emitter].forEach((socketId) => {
+          //       this.io.to(`${socketId}`).emit('notification', {
+          //         data: {
+          //           type: notification.type,
+          //           emitter: notification.receiver,
+          //         },
+          //       })
+          //       debug('emitted', {
+          //         type: notification.type,
+          //         emitter: notification.receiver,
+          //         receiver: notification.emitter,
+          //       });
+          //     })
+          //   }
+          // }
         } else if (notification.type === 'isOnline') {
               const result = Object.keys(this.socketTable).map((key) => {
                 debug(key);

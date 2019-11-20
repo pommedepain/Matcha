@@ -642,8 +642,8 @@ class User extends Node {
       new UserValidator(this.getRequirements, this.data.node_a.properties).validate()
         .then(() => this.getNodeInfo())
         .then((user) => { this.result = user; return (this.getUserIsTags(this.data.node_a.properties.username)); })
-        .then((isTags) => { this.result.isTags = isTags; return (this.getUserLookTags(this.data.node_a.properties.username)); })
-        .then((lookTags) => { this.result.lookTags = lookTags; return (this.getBlocked()); })
+        .then((isTags) => { if (isTags) { this.result.isTags = isTags; } else this.result.isTags = []; return (this.getUserLookTags(this.data.node_a.properties.username)); })
+        .then((lookTags) => { if (lookTags) { this.result.lookTags = lookTags; } else this.result.lookTags = []; return (this.getBlocked()); })
         .then((blocked) => { this.result.blocked = blocked; resolve(this.result); })
         .catch(err => reject(err));
     });
@@ -1201,17 +1201,17 @@ class User extends Node {
               {
                 emitter: this.user.username,
                 receiver: target,
-                type: 'like',
-              },
-              {
-                emitter: this.user.username,
-                receiver: target,
                 type: 'match',
               },
               {
                 emitter: target,
                 receiver: this.user.username,
                 type: 'match',
+              },
+              {
+                emitter: this.user.username,
+                receiver: target,
+                type: 'like',
               },
             ];
           }
@@ -1229,12 +1229,17 @@ class User extends Node {
               {
                 emitter: this.user.username,
                 receiver: target,
-                type: 'unlike',
+                type: 'unmatch',
+              },
+              {
+                emitter: target,
+                receiver: this.user.username,
+                type: 'unmatch',
               },
               {
                 emitter: this.user.username,
                 receiver: target,
-                type: 'unmatch',
+                type: 'unlike',
               },
             ];
           } resolve(toEmit);

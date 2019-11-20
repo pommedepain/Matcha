@@ -126,7 +126,7 @@ class UserPage extends Component {
 						const mySocket = io('http://localhost:5000');
 						response.data.payload.result.map( elem => {
 							// console.log(elem.emitter + " " + elem.type + " " + elem.receiver);
-							// console.log(elem);
+							console.log(elem);
 							mySocket.emit('notification', elem);
 							axios.post('http://localhost:4000/API/notifications/create', elem, {headers: {"x-auth-token": this.context.JWT.token}})
 								.then((response) => {
