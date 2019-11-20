@@ -669,12 +669,12 @@ class User extends Node {
           if (this.data.node_a.properties && !this.data.node_a.properties.ageMax) {
             this.data.node_a.properties.ageMax = 84;
           }
-          if (this.data.node_a.properties && !this.data.node_a.properties.lat) {
-            this.data.node_a.properties.lat = 48.896704899999996;
-          }
-          if (this.data.node_a.properties && !this.data.node_a.properties.lon) {
-            this.data.node_a.properties.lon = 1.3184218;
-          }
+          // if (this.data.node_a.properties && !this.data.node_a.properties.lat) {
+          //   this.data.node_a.properties.lat = 48.896704899999996;
+          // }
+          // if (this.data.node_a.properties && !this.data.node_a.properties.lon) {
+          //   this.data.node_a.properties.lon = 1.3184218;
+          // }
           if (this.data.node_a.properties && !this.data.node_a.properties.active) {
             this.data.node_a.properties.active = 'false';
           }
@@ -704,12 +704,31 @@ class User extends Node {
     debug(newData);
     return new Promise((resolve, reject) => (
       new UserValidator(this.updateRequirements, this.user).validate()
-        .then(() => { if (newData.password) { this.user.password = newData.password;  return this.hashGenerator();} return new Promise(res => (res()))  })
-        .then((pass) => { this.newData = newData; debug('newData:', this.newData); if (pass) {this.newData.password = pass }; return this.updateNode(this.newData); })
+        .then(() => {
+          if (newData.password) {
+            this.user.password = newData.password;
+            return this.hashGenerator();
+          } return new Promise(res => (res()));
+        })
+        .then((pass) => {
+          this.newData = newData;
+          debug('newData:', this.newData);
+          if (pass) {
+            this.newData.password = pass;
+          }
+          if (newData.birthdate) {
+            this.data.node_a.properties.birthdate = newData.birthdate;
+            return this.calcAge()
+              .then(() => {
+                newData.age = this.data.node_a.properties.age;
+                return this.updateNode(this.newData);
+              })
+          } else return this.updateNode(this.newData);
+        })
         .then((user) => {
           this.user = user;
           if (newData.tags) {
-            debug('new looktags detected')
+            debug('new looktags detected');
             this.user.tags = newData.tags;
             const node = {
               label: 'User',
@@ -723,7 +742,7 @@ class User extends Node {
         })
         .then(() => {
           if (newData.isTags) {
-            debug('new isTags detected')
+            debug('new isTags detected');
             this.user.isTags = newData.isTags;
             const node = {
               label: 'User',
