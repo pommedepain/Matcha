@@ -755,8 +755,9 @@ class User extends Node {
           } return (new Promise(res => res()));
         })
         .then(() => {
-          if (newData.sexOrient) {
-            this.user.sexOrient = newData.sexOrient;
+          if (newData.sexOrient || (this.user.sexOrient && newData.gender)) {
+            if (newData.sexOrient) { this.user.sexOrient = newData.sexOrient; }
+            if (newData.gender) { this.user.gender = newData.gender; }
             const node = {
               label: 'User',
               id: 'username',
