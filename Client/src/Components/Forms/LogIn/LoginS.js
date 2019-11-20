@@ -206,6 +206,7 @@ class Login extends Component {
 				<div key={1}>
 					<button 
 						className={cx(classes.sidebar, "btn-sm")} 
+						id="LogIn"
 						onClick={this.togglePopup.bind(this)}>
 						Log In
 					</button>

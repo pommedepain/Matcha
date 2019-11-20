@@ -28,24 +28,24 @@ class Home extends Component {
 		this._isMounted = true;
 
 		if (this._isMounted) {
-			this.getLocation()
-				.then(() => {
-					// console.log(this.state.currentLocation);
-					if (this.context.JWT.data.complete === "true") {
-						mySocket.on('notification', notification => {
-							if (notification.type === 'isOnline') {
-								let onlineUsers = [{ howMany: 0 }];
-								for (let i = 0; i < notification.result.length; i++) {
-									if (notification.result[i].isOnline === true) {
-										onlineUsers[0].howMany += 1;
-										onlineUsers[notification.result[i].username] = true;
-									}
-								}
-								this.setState({ usersOnline: onlineUsers });
+			this.getLocation
+				.promise
+				.then(() => console.log('resolved'))
+				.catch((reason) => console.log('isCanceled', reason.isCanceled));
+			if (this.context.JWT.data.complete === "true") {
+				mySocket.on('notification', notification => {
+					if (notification.type === 'isOnline') {
+						let onlineUsers = [{ howMany: 0 }];
+						for (let i = 0; i < notification.result.length; i++) {
+							if (notification.result[i].isOnline === true) {
+								onlineUsers[0].howMany += 1;
+								onlineUsers[notification.result[i].username] = true;
 							}
-						});
+						}
+						this.setState({ usersOnline: onlineUsers });
 					}
 				});
+			}
 		}
 	}
 
@@ -57,8 +57,27 @@ class Home extends Component {
 		}
 	}
 
-	getLocation = () => {
-		return new Promise((resolve, reject) => {
+	makeCancelable = (promise) => {
+		let hasCanceled_ = false;
+	
+		const wrappedPromise = new Promise((resolve, reject) => {
+			promise.then((val) =>
+				hasCanceled_ ? reject({isCanceled: true}) : resolve(val)
+		  	);
+		  	promise.catch((error) =>
+				hasCanceled_ ? reject({isCanceled: true}) : reject(error)
+		  	);
+		});
+
+		return {
+			promise: wrappedPromise,
+			cancel() {
+				hasCanceled_ = true;
+			},
+		};
+	};
+	
+	tmp = new Promise((resolve, reject) => {
 			if (navigator && navigator.geolocation) {
 				navigator.geolocation.getCurrentPosition(pos => {
 					const coords = pos.coords;
@@ -71,6 +90,7 @@ class Home extends Component {
 					}, function () {
 						axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, { lat: coords.latitude, lon: coords.longitude} , {headers: {"x-auth-token": this.context.JWT.token}})
 							.then((res) => {
+								console.log(res);
 								this.context.toggleUser(res.data.payload.result.token);
 							})
 							.catch((err) => console.log(err))
@@ -89,6 +109,7 @@ class Home extends Component {
 									resolve();
 								});
 							})
+							.catch((err) => console.log(err))
 					});
 				},
 				error => {
@@ -126,14 +147,15 @@ class Home extends Component {
 											resolve();
 										});
 									})
+									.catch((err) => console.log(err))
 							});
 						})
 					}
 				})
 			}
-		});
+	});
 
-	}
+	getLocation = this.makeCancelable(this.tmp) 
 
 	getSuggestions = () => {
     	const { username } = this.context.JWT.data;
@@ -219,6 +241,7 @@ class Home extends Component {
 	
 	componentWillUnmount() {
 		this._isMounted = false;
+		this.getLocation.cancel();
 		mySocket.removeAllListeners();
 	}
 

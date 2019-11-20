@@ -43,26 +43,31 @@ class Search extends Component {
 
 	static contextType = UserContext;
 
+	_isMounted = false;
+
 	componentDidMount () {
-		this.getLocation()
-			.then(() => {
-				mySocket.on('notification', notification => {
-					if (notification.type === 'isOnline') {
-						let onlineUsers = [{ howMany: 0 }];
-						for (let i = 0; i < notification.result.length; i++) {
-							if (notification.result[i].isOnline === true) {
-								onlineUsers[0].howMany += 1;
-								onlineUsers[notification.result[i].username] = true;
-							}
+		this._isMounted = true;
+
+		if (this._isMounted) {
+			this.getLocation
+				.promise
+				.then(() => console.log('resolved'))
+				.catch((reason) => console.log('isCanceled', reason.isCanceled));
+			mySocket.on('notification', notification => {
+				if (notification.type === 'isOnline') {
+					let onlineUsers = [{ howMany: 0 }];
+					for (let i = 0; i < notification.result.length; i++) {
+						if (notification.result[i].isOnline === true) {
+							onlineUsers[0].howMany += 1;
+							onlineUsers[notification.result[i].username] = true;
 						}
-						this.setState({ usersOnline: onlineUsers }, function() { console.log(this.state.usersOnline); });
 					}
-				});
-				this.updateFilters();
-				
-				this.getSuggestions();
+					this.setState({ usersOnline: onlineUsers }, function() { console.log(this.state.usersOnline); });
+				}
 			});
-		
+			this.updateFilters();
+			this.getSuggestions();
+		}
 	}
 
 	getSuggestions = () => {
@@ -101,8 +106,27 @@ class Search extends Component {
 		}
 	}
 
-	getLocation = () => {
-		return new Promise((resolve, reject) => {
+	makeCancelable = (promise) => {
+		let hasCanceled_ = false;
+	
+		const wrappedPromise = new Promise((resolve, reject) => {
+			promise.then((val) =>
+				hasCanceled_ ? reject({isCanceled: true}) : resolve(val)
+		  	);
+		  	promise.catch((error) =>
+				hasCanceled_ ? reject({isCanceled: true}) : reject(error)
+		  	);
+		});
+
+		return {
+			promise: wrappedPromise,
+			cancel() {
+				hasCanceled_ = true;
+			},
+		};
+	};
+
+	tmp = new Promise((resolve, reject) => {
 			if (navigator && navigator.geolocation) {
 				navigator.geolocation.getCurrentPosition(pos => {
 					const coords = pos.coords;
@@ -169,9 +193,9 @@ class Search extends Component {
 					}
 				})
 			}
-		});
-		
-	}
+	});
+
+	getLocation = this.makeCancelable(this.tmp) 
 
 	geolocateUser = (e) => {
 		e.preventDefault();
@@ -579,6 +603,8 @@ class Search extends Component {
 	}
 
 	componentWillUnmount() {
+		this._isMounted = false;
+		this.getLocation.cancel();
 		mySocket.removeAllListeners();
 	}
 
