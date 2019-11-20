@@ -10,7 +10,7 @@ class AlertBox extends Component {
 		// console.log(this.props);
 		return (
 			this.props.color === "red" ?
-			<div id={classes.error_box}>
+			<div id={classes.error_box} style={this.props.style}>
 				<div className={classes.dot}></div>
 				<div className={`${classes.dot} ${classes.two}`}></div>
 				<div className={classes.face2}>

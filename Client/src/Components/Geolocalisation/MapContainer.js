@@ -252,7 +252,7 @@ class NewCompo extends Component {
             ))} */}
         </GoogleMap>
         {mapApiLoaded && (
-          <AutoComplete map={mapInstance} mapApi={mapApi} customCenter={customCenter} addplace={this.addPlace} displayInput={this.props.displayInput} />
+          <AutoComplete map={mapInstance} mapApi={mapApi} customCenter={customCenter} addplace={this.addPlace} displayInput={this.props.displayInput} complete={this.context.JWT.data.complete}/>
         )}
       </Fragment>
     );

@@ -10,7 +10,6 @@ const _ = require('lodash');
 const mySocket = io('http://localhost:5000');
 
 class Home extends Component {
-
 	constructor (props) {
 		super(props);
 		this.state = {
@@ -23,25 +22,31 @@ class Home extends Component {
 
 	static contextType = UserContext;
 
+	_isMounted = false;
+
 	componentDidMount () {
-		this.getLocation()
-			.then(() => {
-				// console.log(this.state.currentLocation);
-				if (this.context.JWT.data.complete === "true") {
-					mySocket.on('notification', notification => {
-						if (notification.type === 'isOnline') {
-							let onlineUsers = [{ howMany: 0 }];
-							for (let i = 0; i < notification.result.length; i++) {
-								if (notification.result[i].isOnline === true) {
-									onlineUsers[0].howMany += 1;
-									onlineUsers[notification.result[i].username] = true;
+		this._isMounted = true;
+
+		if (this._isMounted) {
+			this.getLocation()
+				.then(() => {
+					// console.log(this.state.currentLocation);
+					if (this.context.JWT.data.complete === "true") {
+						mySocket.on('notification', notification => {
+							if (notification.type === 'isOnline') {
+								let onlineUsers = [{ howMany: 0 }];
+								for (let i = 0; i < notification.result.length; i++) {
+									if (notification.result[i].isOnline === true) {
+										onlineUsers[0].howMany += 1;
+										onlineUsers[notification.result[i].username] = true;
+									}
 								}
+								this.setState({ usersOnline: onlineUsers });
 							}
-							this.setState({ usersOnline: onlineUsers });
-						}
-					});
-				}
-			});
+						});
+					}
+				});
+		}
 	}
 
 	/* Make sure that the infos such as "username liked you" displayed on their profil are updated immediately */
@@ -213,6 +218,7 @@ class Home extends Component {
 	}
 	
 	componentWillUnmount() {
+		this._isMounted = false;
 		mySocket.removeAllListeners();
 	}
 

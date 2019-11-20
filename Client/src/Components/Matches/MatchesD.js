@@ -1,19 +1,15 @@
 import React from 'react';
+import cx from 'classnames';
 
 import classes from './Matches.module.css';
 
-
-/* 
-	- Historique des visites
-	- Liste des matches
-*/
 const MatchesDummy = (props) => {
 	return (
 		<div className={classes.main}>
 			<div className={classes.container}>
 				<div className={classes.matchesList}>
 					<h2>Matches</h2>
-					{props.matchesList ?
+					{props.matchesList[0] ?
 						props.matchesList.map((elem, i) => {
 							let isOnline = false;
 							if (props.usersOnline) {
@@ -131,12 +127,23 @@ const MatchesDummy = (props) => {
 								</div>
 							)
 						})
-						: null
+						: <div className={classes.match} key={0}>
+							<div className={classes.mainInfos}>
+								<i className={cx(classes.icon, "fas fa-user-circle")}></i> 
+								<div className={classes.textInfos}>
+									<div className={classes.name}>Username</div>
+									<div className={classes.matchTime}>Match happened ... ago</div>
+								</div>
+							</div>
+							<div className={classes.subInfos}>
+								<p className={classes.lastConnect}>last active: <br /> Today</p>
+							</div>
+						</div>
 					}
 				</div>
 				<div className={classes.visitsHistoric}>
-					<h2>Visits Historic</h2>
-					{props.visits_likesHistoric ?
+					<h2>Visits & Likes Historic</h2>
+					{props.visits_likesHistoric[0] ?
 						props.visits_likesHistoric.map((elem, i) => {
 							let isOnline = false;
 							if (props.usersOnline) {
@@ -234,6 +241,7 @@ const MatchesDummy = (props) => {
 									}
 								}
 							}
+							const type = elem.type === "like" ? 'Like' : 'Visit';
 							if (elem.user) {
 								return (
 									<div className={classes.match} key={i}>
@@ -241,7 +249,7 @@ const MatchesDummy = (props) => {
 											<img src={elem.user.photos[0]} alt="profil" />
 											<div className={classes.textInfos}>
 												<div className={classes.name}>{elem.user.username}</div>
-												<div className={classes.matchTime}>Visit was {time} ago</div>
+												<div className={classes.matchTime}>{type} was {time} ago</div>
 											</div>
 										</div>
 										<div className={classes.subInfos}>
@@ -259,10 +267,27 @@ const MatchesDummy = (props) => {
 								return (null)
 							}
 						})
-						: null
+						: <div className={classes.match} key={0}>
+							<div className={classes.mainInfos}>
+								<i className={cx(classes.icon, "fas fa-user-circle")}></i> 
+								<div className={classes.textInfos}>
+									<div className={classes.name}>Username</div>
+									<div className={classes.matchTime}>Visit/Like was ... ago</div>
+								</div>
+							</div>
+							<div className={classes.subInfos}>
+								<p className={classes.lastConnect}>last active: <br /> Today</p>
+							</div>
+						</div>
 					}
 				</div>
 			</div>
+			{!props.matchesList[0] ?
+				!props.visits_likesHistoric[0] ?
+					<div className={classes.nothing}>You don't have any activity yet. Time to browse around !</div>
+					: null
+				: null
+			}
 		</div>
 	)
 }

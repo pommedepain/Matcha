@@ -47,14 +47,6 @@ class MatchesSmart extends Component {
 			.catch((err) => console.log(err))
 	}
 
-	// getLikes = () => {
-	// 	axios.get(`http://localhost:4000/API/users/${this.context.JWT.data.username}/likedBy`, {headers: {"x-auth-token": this.context.JWT.token}})
-	// 		.then((res) => {
-	// 			this.likesSort(res.data.payload.result);
-	// 		})
-	// 		.catch((err) => console.log(err))
-	// }
-
 	getUsersOnline = () => {
 		mySocket.on('notification', notification => {
 			if (notification.type === 'isOnline') {
@@ -79,6 +71,7 @@ class MatchesSmart extends Component {
 	visits_LikesSort = (visitsList, likesList) => {
 		let sortedList = visitsList;
 		likesList.forEach(elem => {
+			elem['type'] = 'like';
 			sortedList.push(elem);
 		});
 		console.log(sortedList);

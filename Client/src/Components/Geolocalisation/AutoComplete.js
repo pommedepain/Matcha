@@ -75,16 +75,27 @@ class AutoComplete extends Component {
   }
     return (
       <Wrapper style={this.props.displayInput}>
-        <input
-          ref={(ref) => {
-            this.searchInput = ref;
-          }}
-          type="text"
-          onFocus={this.clearSearchBox}
-          placeholder="Enter a location"
-          style={style}
-        />
-
+        {this.props.complete === "false" ?
+          <input
+            ref={(ref) => {
+              this.searchInput = ref;
+            }}
+            type="text"
+            onFocus={this.clearSearchBox}
+            placeholder="Enter a location"
+            style={style}
+            disabled
+          />
+          : <input
+            ref={(ref) => {
+              this.searchInput = ref;
+            }}
+            type="text"
+            onFocus={this.clearSearchBox}
+            placeholder="Enter a location"
+            style={style}
+          />
+        }
       </Wrapper>
     );
   }

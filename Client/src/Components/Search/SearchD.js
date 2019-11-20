@@ -8,6 +8,7 @@ import Tags from '../Utils/Tags/Tags';
 import MapContainer from '../Geolocalisation/MapContainer';
 import UserIcon from '../Home/UserIcon/UserIcon';
 import UserPage from '../Home/UserPage/UserPageS';
+import AlertBox from '../Utils/AlertBox/AlertBox';
 
 const SearchDummy = (props) => {
 	const ageRange = props.JWT.data.ageMin ? [props.JWT.data.ageMin, props.JWT.data.ageMax] : props.ageRange;
@@ -17,6 +18,17 @@ const SearchDummy = (props) => {
 		<div>
 			<div className={classes.main}>
 				<div className={classes.searchPart} id="main" >
+					{props.alertBox ?
+						<AlertBox
+							message={props.alertBox.message}
+							button={props.alertBox.button}
+							handleChange={props.handleChange}
+							color={props.alertBox.color}
+							function={props.alertBox.function}
+							style={{margin: '0 auto', top: '30%', zIndex:'2000', left: '40%'}}
+						/>
+						: null
+					}
 					<div className={classes.filters}>
 						<h3>Filters</h3>
 						<div className={classes.border}>
@@ -77,7 +89,10 @@ const SearchDummy = (props) => {
 												currentLocation={props.currentLocation} 
 												rerender={props.rerender} 
 											/>
-											<div className={classes.pos}><i className={cx("fas fa-map-marked-alt", classes.geolocate)} onClick={props.geolocateUser}></i></div>
+											{props.JWT.data.complete === "false" ?
+												<div className={classes.pos}><i className={cx("fas fa-map-marked-alt", classes.geolocate)} style={{cursor: 'not-allowed'}}></i></div>
+												: <div className={classes.pos}><i className={cx("fas fa-map-marked-alt", classes.geolocate)} onClick={props.geolocateUser}></i></div>
+											}
 										</div>
 										<div className={classes.filterBy} >
 											<h4>Filter by...</h4>
@@ -102,6 +117,7 @@ const SearchDummy = (props) => {
 										</div>
 									</div>
 									<div className={classes.searchbarCont}>
+									{props.JWT.data.complete === "false" ?
 										<input 
 											className={classes.searchbar}
 											type="text"
@@ -109,7 +125,17 @@ const SearchDummy = (props) => {
 											name="searchbar"
 											placeholder="Who are you looking for ?"
 											onChange={props.handleSearch}
+											disabled
 										/>
+										: <input 
+											className={classes.searchbar}
+											type="text"
+											value={props.searchbar}
+											name="searchbar"
+											placeholder="Who are you looking for ?"
+											onChange={props.handleSearch}
+										/>
+									}
 									</div>
 								</div>
 							</div>

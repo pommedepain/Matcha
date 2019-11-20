@@ -38,6 +38,7 @@ class Search extends Component {
 		suggestionsSearched: [],
 		submitButton: false,
 		rerender: false,
+		alertBox: null,
 	};
 
 	static contextType = UserContext;
@@ -245,6 +246,20 @@ class Search extends Component {
 					})
 				}
 			})
+		}
+	}
+
+	handleChange = (event) => {
+		const {name, value} = event.target
+		if (event.type === "click") {
+			event.preventDefault();
+			this.setState({
+				alertBox: null
+			});
+		}
+		else {
+			event.preventDefault();
+			this.setState({[name]: value});
 		}
 	}
 
@@ -476,43 +491,54 @@ class Search extends Component {
 
 	submit = (e) => {
 		e.preventDefault();
-    	const { username } = this.context.JWT.data;
-    	const { token } = this.context.JWT;
-		let newFilters = {};
-		if (this.state.touched.ageRange === true) {
-			newFilters['ageMin'] = this.state.ageRange[0];
-			newFilters['ageMax'] = this.state.ageRange[1];
-		}
-		if (this.state.touched.localisation === true) {
-			newFilters['localisation'] = this.state.localisation;
-		}
-		if (this.state.touched.tags === true) {
-			newFilters['tags'] = this.state.tags;
-		}
+		if (this.context.JWT.data.complete !== "false") {
+    		const { username } = this.context.JWT.data;
+    		const { token } = this.context.JWT;
+			let newFilters = {};
+			if (this.state.touched.ageRange === true) {
+				newFilters['ageMin'] = this.state.ageRange[0];
+				newFilters['ageMax'] = this.state.ageRange[1];
+			}
+			if (this.state.touched.localisation === true) {
+				newFilters['localisation'] = this.state.localisation;
+			}
+			if (this.state.touched.tags === true) {
+				newFilters['tags'] = this.state.tags;
+			}
 
-		/* Changes the filters infos of this user and get a new list of suggestions according to his/her new filters */
-		if (username !== undefined && (newFilters.ageMax || newFilters.localisation || newFilters.tags)) {
-			console.log(newFilters)
-			axios.put(`http://localhost:4000/API/users/update/${username}`, newFilters, {headers: {"x-auth-token": token}})
-				.then(response => {
-					console.log(response)
-					this.context.toggleUser(response.data.payload.result.token);
-					this.getSuggestions();
-					this.setState({ 
-						submitButton: true,
-						filterBy: ""
-					});
-				})
-				.catch(err => { 
-					console.log(err);
-				})
+			/* Changes the filters infos of this user and get a new list of suggestions according to his/her new filters */
+			if (username !== undefined && (newFilters.ageMax || newFilters.localisation || newFilters.tags)) {
+				console.log(newFilters)
+				axios.put(`http://localhost:4000/API/users/update/${username}`, newFilters, {headers: {"x-auth-token": token}})
+					.then(response => {
+						console.log(response)
+						this.context.toggleUser(response.data.payload.result.token);
+						this.getSuggestions();
+						this.setState({ 
+							submitButton: true,
+							filterBy: ""
+						});
+					})
+					.catch(err => { 
+						console.log(err);
+					})
+			}
+			else if (username !== undefined && (!newFilters.ageMax || !newFilters.localisation || !newFilters.tags)) {
+				this.getSuggestions();
+				this.setState({ 
+					submitButton: true,
+					filterBy: ""
+				});
+			}
 		}
-		else if (username !== undefined && (!newFilters.ageMax || !newFilters.localisation || !newFilters.tags)) {
-			this.getSuggestions();
-			this.setState({ 
-				submitButton: true,
-				filterBy: ""
-			});
+		else {
+			this.setState({
+				alertBox: {
+					message: "Your profil is uncomplete. Please fill out the missing fields in Profil before.",
+					color: "red",
+					button: "OK"
+				}
+			})
 		}
 	}
 
@@ -560,6 +586,7 @@ class Search extends Component {
 		return (
 			<SearchDummy
 				handleSearch={this.handleSearch.bind((this))}
+				handleChange={this.handleChange.bind(this)}
 				handleFilterBy={this.handleFilterBy.bind(this)}
 				submit={this.submit.bind(this)}
 				handleAddition={this.handleAddition.bind(this)}
