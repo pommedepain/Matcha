@@ -790,7 +790,6 @@ class User extends Node {
           debug(this.active);
           if (this.active === 'true') resolve(token);
           else {
-            this.sendConfLink();
             resolve('Please Confirm your email.');
           }
         })
