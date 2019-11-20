@@ -23,7 +23,7 @@ const PrivateRoute = ({component: Component, ...rest}) => {
 			{...rest}
 			render={props => {
 				const path = props.location.pathname.split("/");
-				console.log(path[1]);
+				// console.log(path[1]);
 				// console.log("isLoggedIn: " + isLoggedIn + " & Component is " + Component.name)
 				if (isLoggedIn === true && Component.name !== "SignUp" && path[1] !== "reset_password") {
 					return (<Component {...props} />) ;

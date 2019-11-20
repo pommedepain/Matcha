@@ -87,7 +87,7 @@ class Search extends Component {
 								user1: {lat: lat, lon: lon}, 
 								user2: {lat: elem.user.lat, lon: elem.user.lon}
 							};
-							console.log(toCompute);
+							// console.log(toCompute);
 							const ret = distance(toCompute.user1, toCompute.user2);
 							elem.user['distance'] = ret;
 						}

@@ -30,7 +30,7 @@ class Home extends Component {
 		if (this._isMounted) {
 			this.getLocation
 				.promise
-				.then(() => console.log('resolved'))
+				// .then(() => console.log('resolved'))
 				.catch((reason) => console.log('isCanceled', reason.isCanceled));
 			if (this.context.JWT.data.complete === "true") {
 				mySocket.on('notification', notification => {
@@ -90,7 +90,6 @@ class Home extends Component {
 					}, function () {
 						axios.put(`http://localhost:4000/API/users/update/${this.context.JWT.data.username}`, { lat: coords.latitude, lon: coords.longitude} , {headers: {"x-auth-token": this.context.JWT.token}})
 							.then((res) => {
-								console.log(res);
 								this.context.toggleUser(res.data.payload.result.token);
 							})
 							.catch((err) => console.log(err))

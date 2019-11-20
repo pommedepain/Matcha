@@ -34,7 +34,7 @@ class NewCompo extends Component {
     // console.log(this.props.currentLocation);
     // console.log(this.context.JWT.data.lat);
     if (!shallowEqual(this.state.suggestions, this.props.suggestions)) {
-      console.log(this.props.suggestions);
+      // console.log(this.props.suggestions);
       const maps = this.state.mapApi;
       const map = this.state.mapInstance;
       let { markers } = this.state;
@@ -75,11 +75,11 @@ class NewCompo extends Component {
               mapApi: maps,
               markers,
               suggestions: this.props.suggestions,
-            }, function() { console.log(this.state.markers); });
+            }/*, function() { console.log(this.state.markers); }*/);
           })
       }
     } if (this.props.rerender || (this.state.previousLat !== parseFloat(this.context.JWT.data.lat) && this.state.markers[0] && !isNumber(this.context.JWT.data.forcedLat))) {
-      console.log('HAHA');
+      // console.log('HAHA');
       let { markers } = this.state;
       const maps = this.state.mapApi;
       const map = this.state.mapInstance;
@@ -130,7 +130,7 @@ class NewCompo extends Component {
   apiHasLoaded = (map, maps, locations) => {
     const markers = [];
     let customCenter = null;
-    console.log(this.props.currentLocation);
+    // console.log(this.props.currentLocation);
     if (!this.context.JWT.data.forcedLat.length) {
      customCenter = [parseFloat(this.context.JWT.data.lat), parseFloat(this.context.JWT.data.lon)];
     } else {
