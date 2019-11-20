@@ -69,8 +69,8 @@ class UserValidator {
       if (this.req.email) sch.email = Joi.string().email({ minDomainSegments: 2 }).required();
       else sch.email = Joi.string().email({ minDomainSegments: 2 });
 
-      if (this.req.bio) sch.bio = Joi.any().required();
-      else sch.bio = Joi.any();
+      if (this.req.bio) sch.bio = Joi.string().max(255).required();
+      else sch.bio = Joi.string().max(255);
       // if (this.req.bio) sch.bio = Joi.string().regex(/^[\w 0-9_-àæéèëêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ,.;:?!&%/]{1,255}$/).required();
       // else sch.bio = Joi.string().regex(/^[\w 0-9_-àæéèëêçàùûîïÀÆÉÈÊÇÀÛÙÜÎÏ,.;:?!&%/]{1,255}$/);
 

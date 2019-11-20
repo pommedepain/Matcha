@@ -63,6 +63,9 @@ const ProfilDummy = (props) => {
 	else if (user.sexOrient === "pan") {
 		sexOrient = "Pansexual";
 	}
+	else if (user.sexOrient === "homo") {
+		sexOrient = "Homosexual";
+	}
 
 	/* Formatting data for display */
 	let gender = null;

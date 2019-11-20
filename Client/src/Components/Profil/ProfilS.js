@@ -43,6 +43,7 @@ class Profil extends Component {
 		}
 		newInfos.gender.value = this.context.JWT.data.gender;
 		newInfos.sexOrient.value = this.context.JWT.data.sexOrient;
+		console.log(this.context.JWT.data.sexOrient);
 		newInfos.birthdate.value = this.context.JWT.data.birthdate;
 
 		this.setState({
