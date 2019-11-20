@@ -29,7 +29,7 @@ class Node extends Relationship {
     });
 
     if (this.data && this.data.node_a) this.id_a = this.data.node_a.id;
-    debug('Node constructor called');
+    debug('Node constructor called', this.data);
     this.driver = driver;
   }
 

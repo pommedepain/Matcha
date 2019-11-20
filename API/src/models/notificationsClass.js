@@ -17,7 +17,7 @@ class Notifications {
     if (data.message) this.message = data.message;
     if (data.id) this.id = data.id;
     this.driver = driver;
-    debug('Notif constructor called', this.data);
+    // debug('Notif constructor called', this.data);
   }
 
   create() {
@@ -33,26 +33,29 @@ class Notifications {
       if (this.type === 'unmatch') this.previous = 'match';
       if (this.type === 'message') {
         this.previous = 'message';
-        if (!this.message) { resolve('no message'); }
-        const query = `MATCH (a:User {username:'${this.emitter}'}),(b:User {username:'${this.receiver}'})
+        debug(this.message.length);
+        if (!this.message || this.message === '' || (this.message && this.message.length > 255)) { debug('HA'); resolve('no message'); }
+        else {
+          const query = `MATCH (a:User {username:'${this.emitter}'}),(b:User {username:'${this.receiver}'})
                       CREATE (a)-[r:Notification $props]->(b)`;
-        const props = {
-          type: this.type,
-          date,
-          time,
-          message: this.message,
-          emitter: this.emitter,
-          receiver: this.receiver,
-          read: 'false',
-        };
-        session.run(query, { props })
-          .then((res) => {
-            debug('Notification created:', this.data);
-            session.close();
-            new User({ username: this.receiver }).updateScore();
-            resolve(true);
-          })
-          .catch(err => debug(err));
+          const props = {
+            type: this.type,
+            date,
+            time,
+            message: this.message,
+            emitter: this.emitter,
+            receiver: this.receiver,
+            read: 'false',
+          };
+          session.run(query, { props })
+            .then((res) => {
+              // debug('Notification created:', this.data);
+              session.close();
+              new User({ username: this.receiver }).updateScore();
+              resolve(true);
+            })
+            .catch(err => debug(err));
+        }
       } else {
         const query0 = `MATCH (a:User {username:'${this.emitter}'})-[r:Notification {type:'${this.previous}'}]->(b:User {username:'${this.receiver}'})
                       DELETE r`;
@@ -61,7 +64,7 @@ class Notifications {
         session.run(query0)
           .then(() => session.run(query))
           .then((res) => {
-            debug('Notification created:', this.data);
+            // debug('Notification created:', this.data);
             session.close();
             new User({ username: this.receiver }).updateScore();
             resolve(true);
