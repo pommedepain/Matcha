@@ -7,7 +7,7 @@ import App from './Containers/App';
 import openSocket from 'socket.io-client';
 import UserContextProvider from './Contexts/UserContext';
 
-// console.log = console.warn = console.error = () => {};
+console.log = console.warn = console.error = () => {};
 const socket = openSocket('http://localhost:5000');
 const username = '';
 // eslint-disable-next-line no-const-assign
