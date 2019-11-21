@@ -264,11 +264,20 @@ class Account extends Component {
 		const token = this.context.JWT.token;
 		// console.log(token);
 
+		console.log(this.state.orderForm)
 		// eslint-disable-next-line no-unused-vars
 		for (let key in this.state.orderForm) {
-			if (this.state.orderForm[key].touched === true && this.state.orderForm[key].value !== context[key].value) {
+			console.log(key)
+			console.log(submitDatas);
+			console.log( context[key]);
+			if (this.state.orderForm[key].touched === true) {
 				// console.log(this.state.orderForm[key]);
-				submitDatas[key] = this.state.orderForm[key].value; 
+				if (key !=="email" && this.state.orderForm[key].value !== context[key].value) {
+					submitDatas[key] = this.state.orderForm[key].value; 
+				}
+				else if (key === "email") {
+					submitDatas[key] = this.state.orderForm[key].value; 
+				}
 			}
 		}
 		if (this.state.password.touched === true) {

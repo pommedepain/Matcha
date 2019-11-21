@@ -309,12 +309,18 @@ class Profil extends Component {
 				}})
 				.then((res) => {
 					console.log(res);
+					// console.log(th)
 					this.setState({
 						photos: [...this.state.photos, res.data.url],
 						photosTouched: true,
 						file: '',
 						imagePreviewUrl: ''
-					}, function() { console.log(this.state.photos)})
+					}, function() { 
+						console.log(this.state.photos);
+						const isDisplayed = {display: 'flex'};
+						let elems = document.getElementsByClassName("suppress");
+						Array.from(elems).forEach(elem => elem.style.display = 'flex')
+					})
 				})
 		});
 	}
@@ -339,11 +345,18 @@ class Profil extends Component {
 	}
 
 	handleNewProfil = (e) => {
+		console.log("handleNewProfil triggered");
 		e.preventDefault();
-		const newProfil = e.target.src;
-		const oldProfil = document.getElementById("profilPic").src;
-		document.getElementById("profilPic").src = newProfil;
-		e.target.src = oldProfil;
+		if (this.state.edit.active === true) {
+			const newProfil = e.target.src;
+			const oldProfil = document.getElementById("profilPic").src;
+			document.getElementById("profilPic").src = newProfil;
+			e.target.src = oldProfil;
+			let newPhotosOrder = [document.getElementById("profilPic").src];
+			let elems = document.getElementsByClassName("otherPic");
+			Array.from(elems).forEach(elem => newPhotosOrder.push(elem.src));
+			this.setState({ photos: newPhotosOrder, photosTouched:true }, function() {console.log(this.state.photos)})
+		}
 	}
 
 	deletePic = (e) => {

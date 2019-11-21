@@ -21,7 +21,7 @@ const ProfilDummy = (props) => {
 		for (let j = 1; j < props.photos.length; j++) {
 			photosArray[i++] = 
 				<div key={i} className={classes.enveloppe}>
-					<img src={props.photos[j]} alt="others" className={classes.otherPic} key={j} onClick={props.handleNewProfil} />
+					<img src={props.photos[j]} alt="others" className={cx(classes.otherPic, "otherPic")} key={j} onClick={props.handleNewProfil} />
 					<div className={cx(classes.suppress, "suppress")} onClick={props.deletePic}></div>
 				</div>;
 		}
@@ -276,11 +276,11 @@ const ProfilDummy = (props) => {
 								currentLocation={props.currentLocation} 
 								rerender={props.rerender} 
 							/>
+							{props.edit.active ?
+								<div className={classes.pos}><i className={cx("fas fa-map-marked-alt", classes.geolocate)}></i></div>
+								: null
+							}
 						</div>
-						{props.edit.active ?
-							<i className={cx("fas fa-map-marked-alt", classes.geolocate)} onClick={props.geolocateUser}></i>
-							: null
-						}
 					</div>
 					<div className={classes.cercle}>
 						<div className={classes.matchIndicator}>
