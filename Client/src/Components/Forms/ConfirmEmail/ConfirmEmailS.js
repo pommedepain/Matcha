@@ -15,7 +15,9 @@ class ConfirmEmailSmart extends Component {
 	}
 
 	componentDidMount () {
-		document.getElementById("LogIn").disabled = true;
+		if(document.getElementById("LogIn") !== null) {
+			document.getElementById("LogIn").disabled = true;
+		}
 		console.log(this.props.match.params.token);
 		axios.get(`http://localhost:4000/API/users/confirm/${this.props.match.params.username}/${this.props.match.params.token}`)
 			.then(res => {
@@ -36,7 +38,9 @@ class ConfirmEmailSmart extends Component {
 	}
 
 	componentWillUnmount() {
-		document.getElementById("LogIn").disabled = false;
+		if(document.getElementById("LogIn") !== null) {
+			document.getElementById("LogIn").disabled = false;
+		}
 	}
 	
 	render () {

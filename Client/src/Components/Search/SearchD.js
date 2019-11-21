@@ -149,7 +149,7 @@ const SearchDummy = (props) => {
 								<UserIcon
 									{...elem}
 									key={i}
-									popupUser={props.popupUser}
+									popupUser={e => props.popupUser(e, i)}
 									id={i}
 								/>)
 						})

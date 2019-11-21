@@ -25,6 +25,7 @@ class ResetPasswordSmart extends Component {
 	static contextType = UserContext;
 
 	componentDidMount () {
+		document.getElementById("LogIn").style.display = 'none';
 		console.log(this.props.match.params.token);
 		axios.get(`http://localhost:4000/API/users/reset/${this.props.match.params.username}/${this.props.match.params.token}`)
 			.then(res => {
@@ -140,9 +141,20 @@ class ResetPasswordSmart extends Component {
 					loading: false,
 					formIsValid: true
 				});
-				if (res.data.success) {
+				if (res.data.success && res.data.payload.result.active === "true") {
 					this.context.toggleUser(res.data.payload.result.token);
 					this.setState({ alertDesign: null });
+				}
+				else {
+					this.setState({ 
+						loading: false,
+						formIsValid: true,
+						alertDesign: {
+							message: "Your password has been changed!",
+							button:"YEAY!",
+							color: "green"
+						}
+					});
 				}
 			})
 			.catch(error => {
@@ -157,6 +169,10 @@ class ResetPasswordSmart extends Component {
 				});
 				console.log(error);
 			})
+	}
+
+	componentWillUnmount() {
+		document.getElementById("LogIn").style.display = 'flex';
 	}
 
 	render () {

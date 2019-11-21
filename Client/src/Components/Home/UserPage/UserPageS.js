@@ -198,13 +198,13 @@ class UserPage extends Component {
 			}, function () { console.log(this.state.fake )});
 		}
 
-		axios.post('http://localhost:4000/API/relationships/toggle', this.state.fake, {headers: {"x-auth-token": token}})
+		axios.post(`http://localhost:4000/API/users/${this.context.JWT.data.username}/report/${this.props.user.username}`, null, {headers: {"x-auth-token": token}})
 			.then(response => {
 				this.setState({ loading: false });
 				console.log(response.data);
 				if (response.data.success) {
 					/* Dynamically changes the css display of fake to mark as active and making it unclickable */
-					const color = response.data.payload.result.search("CREATED") !== -1 ?  "#ff665e" : "#524A54";
+					const color = "#ff665e";
 					const allElem = document.getElementsByClassName("fake");
 					const elem = allElem[this.props.id];
 					elem.style.color = color;

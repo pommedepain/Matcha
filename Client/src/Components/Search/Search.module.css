@@ -217,14 +217,27 @@ div.ReactTags__tagInput input.ReactTags__tagInputField:focus {
 	width: 100%;
 	height: 2vw;
 }
-.geolocate {
-	font-size: 2vw;
-	position: absolute;
-	left: 10%;
-	top: 0;
-	color: #524A54;
-	cursor: pointer;
-	z-index: 5;
+@media (max-width: 1450px) {
+	.geolocate {
+		font-size: 2vw;
+		position: absolute;
+		left: 10%;
+		top: 0;
+		color: #524A54;
+		cursor: pointer;
+		z-index: 5;
+	}	
+}
+@media only screen and (min-device-width: 1450px) {
+	.geolocate {
+		font-size: 1.2vw;
+		position: absolute;
+		left: 15%;
+		top: 0;
+		color: #524A54;
+		cursor: pointer;
+		z-index: 5;
+	}
 }
 .geolocate:hover {
 	color: rgb(116, 209, 234);

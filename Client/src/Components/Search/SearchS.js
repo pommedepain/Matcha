@@ -531,7 +531,7 @@ class Search extends Component {
 			}
 
 			/* Changes the filters infos of this user and get a new list of suggestions according to his/her new filters */
-			if (username !== undefined && (newFilters.ageMax || newFilters.localisation || newFilters.tags)) {
+			if (username !== undefined && (newFilters.ageMin || newFilters.ageMax || newFilters.localisation || newFilters.tags)) {
 				console.log(newFilters)
 				axios.put(`http://localhost:4000/API/users/update/${username}`, newFilters, {headers: {"x-auth-token": token}})
 					.then(response => {
@@ -547,7 +547,7 @@ class Search extends Component {
 						console.log(err);
 					})
 			}
-			else if (username !== undefined && (!newFilters.ageMax || !newFilters.localisation || !newFilters.tags)) {
+			else if (username !== undefined && (!newFilters.ageMin || !newFilters.ageMax || !newFilters.localisation || !newFilters.tags)) {
 				this.getSuggestions();
 				this.setState({ 
 					submitButton: true,
@@ -567,9 +567,8 @@ class Search extends Component {
 	}
 
 	popupUser = (e, id) => {
-		console.log(id);
 		e.preventDefault();
-		if (this.state.suggestions[id]) {
+		if (this.state.suggestions[id] || this.state.suggestionsSearched[id]) {
 			const users = document.querySelectorAll('.back');
 			const underDiv = document.querySelectorAll('.underDiv');
 			users[id].style.display = "flex";
@@ -579,7 +578,7 @@ class Search extends Component {
 			/* Creates a visit notification to receiver */
 			const newNotification = {
 				emitter: this.context.JWT.data.username,
-				receiver: this.state.suggestions[id].user.username,
+				receiver: this.state.submitButton ? this.state.suggestionsSearched[id].user.username : this.state.suggestions[id].user.username,
 				type: 'visit',
 				new: true
 			}
@@ -599,7 +598,7 @@ class Search extends Component {
 				.catch((err) => {
 					console.log(err);
 				})
-			}
+		}
 		
 	}
 
