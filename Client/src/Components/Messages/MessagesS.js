@@ -82,44 +82,17 @@ class MessagesSmart extends Component {
 	}
 
 	getConversation = (e, username) => {
-		console.log("getConversation triggered");
-		console.log(username);
 		this.setState({ activeDiv: true });
-
-		/* Automatically set all messages as true for read for the user's div clicked */
-		this.state.matchList.forEach((elem, i) => {
-			if (elem.user.username === username) {
-				if (elem.unreadMessages[0].id !== null) {
-					for (let k = 0; k < elem.unreadMessages.length; k++) {
-						let messagesID = null;
-						messagesID = { id: elem.unreadMessages[k].id.low, receiver: this.context.JWT.data.username };
-						axios.put(`http://localhost:4000/API/notifications/read/`, messagesID, {headers: {"x-auth-token": this.context.JWT.token}})
-							.then((res) => {
-								console.log(res);
-								if (res.data.payload.result === "notification has been read") {
-									console.log("OK");
-									let isRead = this.state.matchList;
-									isRead[i]['isRead'] = true;
-									console.log(isRead);
-									this.setState({ matchList: isRead }, function() {console.log(this.state.matchList)})
-								}
-							})
-							.catch((err) => console.log(err))
-					}
-				}
-			}
-		});
 
 		/* If there's a new message from the notifications, we get again the conversation */
 		if (this.context.newNotif.new) {
-			console.log(this.context.newNotif);
 			this.context.toggleNotifReceived(this.context.newNotif);
 			axios.get(`http://localhost:4000/API/users/${this.context.JWT.data.username}/conversationWith/${this.context.newNotif.emitter}`, {headers: {"x-auth-token": this.context.JWT.token}})
 				.then((res) => {
 					this.setState({ 
 						messagesList: res.data.payload.result[0].conversation,
 						currentInterlocutor: this.context.newNotif.emitter
-					}, function() {console.log(this.state.messagesList)})
+					})
 				})
 				.catch((err) => console.log(err))
 		}
@@ -154,6 +127,27 @@ class MessagesSmart extends Component {
 				})
 				.catch((err) => console.log(err))
 		}
+
+		/* Automatically set all messages as true for read for the user's div clicked */
+		this.state.matchList.forEach((elem, i) => {
+			if (elem.user.username === username) {
+				if (elem.unreadMessages[0].id !== null) {
+					for (let k = 0; k < elem.unreadMessages.length; k++) {
+						let messagesID = null;
+						messagesID = { id: elem.unreadMessages[k].id.low, receiver: this.context.JWT.data.username };
+						axios.put(`http://localhost:4000/API/notifications/read/`, messagesID, {headers: {"x-auth-token": this.context.JWT.token}})
+							.then((res) => {
+								if (res.data.payload.result === "notification has been read") {
+									let isRead = this.state.matchList;
+									isRead[i]['isRead'] = true;
+									this.setState({ matchList: isRead })
+								}
+							})
+							.catch((err) => console.log(err))
+					}
+				}
+			}
+		});
 	}
 
 	checkValidity(value, rules, inputIdentifier) {
@@ -269,11 +263,13 @@ class MessagesSmart extends Component {
 		this._isMounted = false;
 	}
 
-	render() {
+	componentDidUpdate() {
 		if (this.context.newNotif.new === true) {
-			console.log("new notif in localStorage detected");
 			this.getConversation();
 		}
+	}
+
+	render() {
 		return (
 			<MessagesDummy
 				getConversation={this.getConversation.bind(this)}

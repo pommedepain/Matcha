@@ -6,13 +6,13 @@ import Input from '../Utils/Input/Input';
 
 const MessagesDummy = (props) => {
 	const user = props.JWT.data;
-	// console.log(props.matchList)
+	console.log(props.matchList)
 	return (
 		<div className={classes.main}>
 			<div className={classes.usersList}>
 				{props.matchList ?
 					props.matchList.map((elem, i) => {
-						if (elem.unreadMessages[0].id !== null) {
+						if (elem.unreadMessages[0].id !== null || (elem.unreadMessages[0].id !== null && elem.unreadMessages[0].notif.read === "false")) {
 							return (
 								<div key={i} className={classes.userDiv} id={elem.user.username} onClick={(e) => props.getConversation(e, elem.user.username)} >
 									<img src={elem.user.photos[0]} alt="profil" className={classes.photo} />

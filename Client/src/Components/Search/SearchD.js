@@ -91,7 +91,9 @@ const SearchDummy = (props) => {
 											/>
 											{props.JWT.data.complete === "false" ?
 												<div className={classes.pos}><i className={cx("fas fa-map-marked-alt", classes.geolocate)} style={{cursor: 'not-allowed'}}></i></div>
-												: <div className={classes.pos}><i className={cx("fas fa-map-marked-alt", classes.geolocate)} onClick={props.geolocateUser}></i></div>
+												: props.clicked === true ?
+													<div className={classes.pos}><i className={cx("fas fa-map-marked-alt", classes.geolocate)} ></i></div>
+													: <div className={classes.pos}><i className={cx("fas fa-map-marked-alt", classes.geolocate)} onClick={e => {props.geolocateUser(e)}}></i></div>
 											}
 										</div>
 										<div className={classes.filterBy} >

@@ -27,7 +27,8 @@ class Profil extends Component {
 			photosTouched: false,
 			displayInput: {display: 'none'},
 			currentLocation: null,
-			rerender: false
+			rerender: false,
+			clicked: false,
 		};
 	}
 
@@ -369,6 +370,7 @@ class Profil extends Component {
 
 	geolocateUser = (e) => {
 		e.preventDefault();
+		this.setState({clicked: true})
 		if (navigator && navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(pos => {
 				const coords = pos.coords;

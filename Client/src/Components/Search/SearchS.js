@@ -39,6 +39,7 @@ class Search extends Component {
 		submitButton: false,
 		rerender: false,
 		alertBox: null,
+		clicked: false
 	};
 
 	static contextType = UserContext;
@@ -80,25 +81,27 @@ class Search extends Component {
 		if (username !== undefined) {
 			axios.get(`http://localhost:4000/API/users/suggestions/${username}`, {headers: {"x-auth-token": token}})
 				.then(response => {
-					let suggestions = [];
-					response.data.payload.result.map((elem, i) => {
-						if (this.state.currentLocation) {
-							const toCompute = {
-								user1: {lat: lat, lon: lon}, 
-								user2: {lat: elem.user.lat, lon: elem.user.lon}
-							};
-							// console.log(toCompute);
-							const ret = distance(toCompute.user1, toCompute.user2);
-							elem.user['distance'] = ret;
-						}
-						if (this.state.popularityRange[0] <= elem.user.popularity) {
-							suggestions[i] = elem; 
-						}
-						return (suggestions);
-					})
-					this.state.submitButton ?
-					this.setState({ suggestionsSearched: suggestions })
-					: this.setState({ suggestions: suggestions });
+					if (this._isMounted) {
+						let suggestions = [];
+						response.data.payload.result.map((elem, i) => {
+							if (this.state.currentLocation) {
+								const toCompute = {
+									user1: {lat: lat, lon: lon}, 
+									user2: {lat: elem.user.lat, lon: elem.user.lon}
+								};
+								// console.log(toCompute);
+								const ret = distance(toCompute.user1, toCompute.user2);
+								elem.user['distance'] = ret;
+							}
+							if (this.state.popularityRange[0] <= elem.user.popularity) {
+								suggestions[i] = elem; 
+							}
+							return (suggestions);
+						})
+						this.state.submitButton ?
+						this.setState({ suggestionsSearched: suggestions })
+						: this.setState({ suggestions: suggestions });
+					}
 				})
 				.catch(err => { 
 					console.log(err);
@@ -199,6 +202,7 @@ class Search extends Component {
 
 	geolocateUser = (e) => {
 		e.preventDefault();
+		this.setState({clicked: true});
 		if (navigator && navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(pos => {
 				const coords = pos.coords;
@@ -224,7 +228,6 @@ class Search extends Component {
 							currentCoords['postcode'] = datas.postcode;
 							currentCoords['country'] = datas.country;
 							this.setState({ currentLocation: currentCoords, rerender: true }, function() {
-								// console.log(this.state.currentLocation); 
 								this.setState({rerender: false});
 								this.getSuggestions();
 							});
@@ -248,11 +251,8 @@ class Search extends Component {
 								lng: position.data.payload.localisation.longitude
 							}
 						}, function () {
-							// console.log(position.data.payload.localisation.latitude);
-							// console.log(position.data.payload.localisation.longitude);
 							axios.get(`http://localhost:4000/API/locate/reverseGeocode/${position.data.payload.localisation.latitude}/${position.data.payload.localisation.longitude}`)
 								.then((res) => {
-									console.log(res);
 									const datas = res.data.payload.adress.address;
 									const currentCoords = this.state.currentLocation;
 									currentCoords['adress'] = datas.road;
@@ -261,7 +261,6 @@ class Search extends Component {
 									currentCoords['postcode'] = datas.postcode;
 									currentCoords['country'] = datas.country;
 									this.setState({ currentLocation: currentCoords, rerender: true }, function() {
-										// console.log(this.state.currentLocation); 
 										this.setState({rerender: false});
 										this.getSuggestions();
 									});

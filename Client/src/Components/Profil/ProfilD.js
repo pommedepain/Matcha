@@ -277,7 +277,9 @@ const ProfilDummy = (props) => {
 								rerender={props.rerender} 
 							/>
 							{props.edit.active ?
-								<div className={classes.pos}><i className={cx("fas fa-map-marked-alt", classes.geolocate)}></i></div>
+								props.clicked === true ?
+									<div className={classes.pos}><i className={cx("fas fa-map-marked-alt", classes.geolocate)}></i></div>
+									: <div className={classes.pos}><i className={cx("fas fa-map-marked-alt", classes.geolocate)} onClick={props.geolocateUser}></i></div>
 								: null
 							}
 						</div>
