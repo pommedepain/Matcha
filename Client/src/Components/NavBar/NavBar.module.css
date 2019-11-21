@@ -149,10 +149,10 @@ a, a:hover {
     align-items: center;
     border: 1px solid #ff665e;
     position: absolute;
-    width: 1.4vh;
-    height: 1.4vh;
+    width: 2.5vh;
+    height: 2.5vh;
     top: -10%;
-    right: 43.5%;
+    right: 46%;
     border-radius: 50%;
     background-color: #ff665e;
     color: white;
@@ -210,8 +210,8 @@ a, a:hover {
     align-items: center;
     border: 1px solid #ff665e;
     position: absolute;
-    width: 1.4vh;
-    height: 1.4vh;
+    width: 2.5vh;
+    height: 2.5vh;
     top: 0;
     right: 30%;
     border-radius: 50%;

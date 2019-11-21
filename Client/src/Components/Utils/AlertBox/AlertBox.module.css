@@ -21,7 +21,7 @@
 .green {
   color: #4ec07d;
   font-family: 'Ubuntu', sans-serif;
-  font-size: 1em;
+  font-size:  2vw;
   padding-top: 10px;
   text-align: center;
 }
@@ -198,6 +198,9 @@
   background: #efefef;
   transform: scale(1.05);
   transition: all .3s ease-in-out;
+}
+a, a:hover {
+  width: 50%;
 }
 
 @keyframes bounce {
