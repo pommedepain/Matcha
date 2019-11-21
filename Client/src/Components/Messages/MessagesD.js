@@ -119,6 +119,7 @@ const MessagesDummy = (props) => {
 							invalid={!props.sendBar.valid}
 							shouldValidate={props.sendBar.validation}
 							touched={props.sendBar.touched}
+							errorMessage={props.sendBar.errorMessage}
 						/>
 						<i className={cx("fas fa-paper-plane", classes.send)} onClick={props.sendMessage}></i>
 					</div>]

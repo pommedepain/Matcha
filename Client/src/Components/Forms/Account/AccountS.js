@@ -301,6 +301,7 @@ class Account extends Component {
 						},
 						payload: response.data.payload.result.token
 					});
+					this.context.toggleUser(response.data.payload.result.token);
 				}
 				if (submitDatas.email) {
 					this.getEmails();

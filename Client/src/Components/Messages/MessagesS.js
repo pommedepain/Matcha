@@ -30,6 +30,7 @@ class MessagesSmart extends Component {
 			errorMessage: "",
 			title: 'sendBar'
 		},
+		formIsValid: true,
 		messagesList: [],
 		currentInterlocutor: null,
 		activeDiv: false,
@@ -214,31 +215,18 @@ class MessagesSmart extends Component {
 		updatedOrderForm.value = event.target.value;
 		this.checkValidity(updatedOrderForm.value, updatedOrderForm.validation, inputIdentifier)
 			.then((response) => {
-				// console.log(response);
+				console.log(response);
 				updatedOrderForm.valid = response;
 				updatedOrderForm.touched = true;
 				this.setState({ sendBar: updatedOrderForm }/*, function() {console.log(this.state.sendBar.value)}*/);
 			})
 			.catch((e) => {
 				updatedOrderForm.valid = false;
-				// console.log(e);
+				console.log(e);
 				updatedOrderForm.touched = true;
 				updatedOrderForm.errorMessage = e;
 				this.setState({ sendBar: updatedOrderForm });
 			})
-	}
-
-	formatMessage = (message) => {
-		const length = message.length;
-		const array = [];
-		console.log(message.length);
-		if (length > 30) {
-			for (let i = 0; i < length / 30; i +=1) {
-				console.log(i);
-				array.push(message.slice((i * 30), (i * 30) + 30));
-			}
-		}
-		return array;
 	}
 
 	sendMessage = (e) => {
@@ -248,31 +236,33 @@ class MessagesSmart extends Component {
 			emitter: this.context.JWT.data.username, 
 			receiver: this.state.currentInterlocutor, 
 			message: this.state.sendBar.value
-		} 
-		console.log('testing message mod');
-		console.log(message.message);
-		console.log(this.formatMessage(message.message))
-		axios.post('http://localhost:4000/API/notifications/create', message, {headers: {"x-auth-token": this.context.JWT.token}})
-			.then((res) => {
-				if (res.data.payload.result === "missing information") {
-					console.log("ERROR sendMessage()");
-				}
-				else {
-					document.getElementById("sendBar").value = "";
-					const sendBarCleared = this.state.sendBar;
-					sendBarCleared.value = '';
-					this.setState({ sendBar: sendBarCleared });
-					this.getConversation("get");
-					this.sortMatchList(this.state.matchList);
-				}
-			})
-			.catch((err) => console.log(err))
+		}
+		if (this.state.sendBar.valid === true) {
+			axios.post('http://localhost:4000/API/notifications/create', message, {headers: {"x-auth-token": this.context.JWT.token}})
+				.then((res) => {
+					if (res.data.payload.result === "missing information") {
+						console.log("ERROR sendMessage()");
+					}
+					else {
+						document.getElementById("sendBar").value = "";
+						const sendBarCleared = this.state.sendBar;
+						sendBarCleared.value = '';
+						this.setState({ sendBar: sendBarCleared });
+						this.getConversation("get");
+						this.sortMatchList(this.state.matchList);
+					}
+				})
+				.catch((err) => console.log(err))
 
-		const mySocket = io('http://localhost:5000');
-		mySocket.emit('notification', 
-					{type:'message', 
-					emitter: this.context.JWT.data.username, 
-					receiver: this.state.currentInterlocutor});
+			const mySocket = io('http://localhost:5000');
+			mySocket.emit('notification', 
+						{type:'message', 
+						emitter: this.context.JWT.data.username, 
+						receiver: this.state.currentInterlocutor});
+		}
+		else {
+			console.log("not valid:" + this.state.sendBar.errorMessage);
+		}
 	}
 
 	componentWillUnmount() {

@@ -96,6 +96,7 @@
 	position: relative;
 }
 p {
+	display: block;
 	margin-bottom: 0.5vh;
 	margin-left: 1%;
 	z-index: 3;
@@ -139,15 +140,29 @@ p {
 	-webkit-transform: rotate(130deg) skew(-40deg) translateY(16.6666666667px);
 			transform: rotate(130deg) skew(-40deg) translateY(16.6666666667px);
 }
-.speech_bubble cite {
-	position: absolute;
-	bottom: -1.5vh;
-	left: 5vw;
-	font-size: 1vw;
-	font-style: normal;
-	font-weight: 300;
-	letter-spacing: 0.5px;
-	color: rgb(116, 209, 234);
+@media only screen and (max-device-width: 1450px) {
+	.speech_bubble cite {
+		position: absolute;
+		bottom: -1.5vh;
+		left: 5vw;
+		font-size: 1vw;
+		font-style: normal;
+		font-weight: 300;
+		letter-spacing: 0.5px;
+		color: rgb(116, 209, 234);
+	}
+}
+@media only screen and (min-device-width: 1450px) {
+	.speech_bubble cite {
+		position: absolute;
+		bottom: -2.5vh;
+		left: 5vw;
+		font-size: 1vw;
+		font-style: normal;
+		font-weight: 300;
+		letter-spacing: 0.5px;
+		color: rgb(116, 209, 234);
+	}
 }
 
 .takePlaceRight {
@@ -189,16 +204,31 @@ p {
 	-webkit-transform: rotate(90deg) skew(-40deg) translateY(16.6666666667px);
 			transform: rotate(90deg) skew(-40deg) translateY(16.6666666667px);
 }
-.speech_bubbleSent cite {
-	position: absolute;
-	bottom: -1.5vh;
-	left: 0;
-	font-size: 1vw;
-	font-style: normal;
-	font-weight: 300;
-	letter-spacing: 0.5px;
-	color: rgb(169, 238, 138);
+@media only screen and (max-device-width: 1450px) {
+	.speech_bubbleSent cite {
+		position: absolute;
+		bottom: -1.5vh;
+		left: 0;
+		font-size: 1vw;
+		font-style: normal;
+		font-weight: 300;
+		letter-spacing: 0.5px;
+		color: rgb(169, 238, 138);
+	}	
 }
+@media only screen and (min-device-width: 1450px) {
+	.speech_bubbleSent cite {
+		position: absolute;
+		bottom: -2.5vh;
+		left: 0;
+		font-size: 1vw;
+		font-style: normal;
+		font-weight: 300;
+		letter-spacing: 0.5px;
+		color: rgb(169, 238, 138);
+	}
+}
+
 .lastMessage {
 	margin-bottom: 12%;
 }
@@ -243,4 +273,36 @@ input {
 }
 .send:hover {
 	color: rgb(116, 209, 234);
+}
+@media only screen and (max-device-width: 1450px) {
+	.sendBar {
+		/* position: sticky; */
+		/* width: 100%;
+		bottom: 0; */
+		position: absolute;
+		width: 50%;
+		bottom: 1%;
+		right: 5%;
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+		margin-bottom: -1%;
+	}
+}
+@media only screen and (min-device-width: 1450px) {
+	.sendBar {
+		/* position: sticky; */
+		/* width: 100%;
+		bottom: 0; */
+		position: absolute;
+		width: 50%;
+		bottom: 3%;
+		right: 5%;
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+		margin-bottom: -1%;
+	}
 }
