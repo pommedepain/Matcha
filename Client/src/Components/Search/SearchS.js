@@ -569,35 +569,38 @@ class Search extends Component {
 	popupUser = (e, id) => {
 		console.log(id);
 		e.preventDefault();
-		const users = document.querySelectorAll('.back');
-		const underDiv = document.querySelectorAll('.underDiv');
-		users[id].style.display = "flex";
-		underDiv[id].style.display = "flex";
-		document.getElementById("main").style.filter = 'blur(3px)';
-
-		/* Creates a visit notification to receiver */
-		const newNotification = {
-			emitter: this.context.JWT.data.username,
-			receiver: this.state.suggestions[id].user.username,
-			type: 'visit',
-			new: true
-		}
-		mySocket.emit('notification', 
-			newNotification
-		)
-
-		axios.post('http://localhost:4000/API/notifications/create', newNotification, {headers: {"x-auth-token": this.context.JWT.token}})
-			.then((response) => {
-				if (response.data.payload.result === "Missing information") {
-					console.log(response.data.payload.result);
-				}
-				else {
-					console.log("visit sent to db successfully");
-				}
-			})
-			.catch((err) => {
-				console.log(err);
-			})
+		if (this.state.suggestions[id]) {
+			const users = document.querySelectorAll('.back');
+			const underDiv = document.querySelectorAll('.underDiv');
+			users[id].style.display = "flex";
+			underDiv[id].style.display = "flex";
+			document.getElementById("main").style.filter = 'blur(3px)';
+			
+			/* Creates a visit notification to receiver */
+			const newNotification = {
+				emitter: this.context.JWT.data.username,
+				receiver: this.state.suggestions[id].user.username,
+				type: 'visit',
+				new: true
+			}
+			mySocket.emit('notification', 
+				newNotification
+			)
+		
+			axios.post('http://localhost:4000/API/notifications/create', newNotification, {headers: {"x-auth-token": this.context.JWT.token}})
+				.then((response) => {
+					if (response.data.payload.result === "Missing information") {
+						console.log(response.data.payload.result);
+					}
+					else {
+						console.log("visit sent to db successfully");
+					}
+				})
+				.catch((err) => {
+					console.log(err);
+				})
+			}
+		
 	}
 
 	componentWillUnmount() {

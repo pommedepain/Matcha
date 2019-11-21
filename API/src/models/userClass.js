@@ -964,6 +964,33 @@ class User extends Node {
     });
   }
 
+  sendReport() {
+    this.getUserInfo()
+      .then((user) => {
+        return new Promise((resolve, reject) => {
+          debug('SENDING Report MAIL');
+    
+          const transporter = nodemailer.createTransport({
+            service: 'Gmail',
+            auth: {
+              user: 'cajulien.42.matcha@gmail.com',
+              pass: 'Ff7midgar6',
+            },
+          });
+
+          transporter.sendMail({
+            from: 'cajulien.42.matcha@gmail.com',
+            to: ['kamillejulien@gmail.com', 'philousentilhes@gmail.com', user.email],
+            subject: 'Report from Matcha',
+            text: 'Hi',
+            html: `Hi ${user.username}, you have been reported and are now under investigation`,
+          }).then(() => resolve())
+            .catch(err => reject(err));
+        });
+      })
+      .catch(err => debug(err));
+  }
+
   matchConfTokens(token) {
     return new Promise((resolve, reject) => {
       this.getUserInfo()
@@ -1244,6 +1271,28 @@ class User extends Node {
             ];
           } resolve(toEmit);
         })
+        .catch(err => debug(err));
+    });
+  }
+
+  report(target) {
+    return new Promise((resolve, reject) => {
+      const date = new Date().toLocaleString();
+      const session = this.driver.session();
+      const query0 = `MATCH (n:User { username:'${this.user.username}'})-[r:REPORTED]->(b:User {username:'${target}'})
+                      RETURN properties(r)`;
+      const query1 = `MATCH (n:User { username:'${this.user.username}'})-[r:REPORTED]->(b:User {username:'${target}'})
+                      DELETE r`;
+      const query2 = `MATCH (n:User { username:'${this.user.username}'}),(b:User {username:'${target}'})
+                      CREATE (n)-[r:REPORTED {date:'${date}'}]->(b)`;
+      session.run(query0)
+        .then((res) => {
+          session.close();
+          if (!res.records[0]) { new User({ username: target }).sendReport(); }
+          return session.run(query1);
+        })
+        .then(() => { session.close(); return session.run(query2); })
+        .then(() => { session.close(); resolve(true); })
         .catch(err => debug(err));
     });
   }

@@ -233,7 +233,20 @@ router.post('/:username/visit/:target', [auth, identify], wrapper(async (req, re
       debug(result);
       return res.status(200).json({
         success: true,
-        payload: { value: 'read', result },
+        payload: { value: 'visit', result },
+      });
+    })
+  );
+}));
+
+router.post('/:username/report/:target', wrapper(async (req, res) => {
+  debug('Requesting list...');
+  return (new User({ username: req.params.username }).report(req.params.target)
+    .then((result) => {
+      debug(result);
+      return res.status(200).json({
+        success: true,
+        payload: { value: 'report', result },
       });
     })
   );
