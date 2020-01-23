@@ -16,15 +16,12 @@ We used Node and Express for the back, Neo4j for the database and Reactjs for th
 
 ```
 neo4j start
-./Matcha/API/
-npm i 
+./Matcha/API/npm i 
 npm run dev //OR
 npm run start //for production environment
-./Matcha/Client/
-npm i
+./Matcha/Client/npm i
 npm start
-./Matcha/server/
-npm i
+./Matcha/server/npm i
 npm start
 ```
 
