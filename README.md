@@ -4,7 +4,7 @@
 
 <b>Summary:</b> We had to create, in the language of our choice, a dating site. Interaction between users is the heart of the project!
 
-(Group project carried out with @cajulien42)
+(Group project carried out with [Camille Julien](https://github.com/cajulien42))
 
 ## What is Matcha ?
 
